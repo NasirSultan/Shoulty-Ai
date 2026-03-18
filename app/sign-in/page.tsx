@@ -6,12 +6,17 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
-import { googleLogin } from "@/api/authApi";
+import { useState } from "react";
+import { emailLogin, googleLogin } from "@/api/authApi";
 
 function SignInAccountContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const error = searchParams.get("error");
+    const googleError = searchParams.get("error");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [formError, setFormError] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
         try {
@@ -22,11 +27,43 @@ function SignInAccountContent() {
             router.push("/account-setup");
         } catch (err) {
             console.error("Google login failed:", err);
+            setFormError("Google login failed. Please try again.");
         }
     };
 
-    const onEmailSignIn = () => {
-        router.push("/account-setup");
+    const onEmailSignIn = async () => {
+        setFormError("");
+
+        if (!email.trim() || !password.trim()) {
+            setFormError("Please enter both email and password.");
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email.trim())) {
+            setFormError("Please enter a valid email address.");
+            return;
+        }
+
+        if (password.length < 6) {
+            setFormError("Password must be at least 6 characters.");
+            return;
+        }
+
+        try {
+            setIsSubmitting(true);
+            const { user } = await emailLogin(email.trim(), password);
+            localStorage.setItem("shoutly_user", JSON.stringify(user));
+            window.dispatchEvent(new Event("auth-changed"));
+            router.push("/account-setup");
+        } catch (err: any) {
+            const message =
+                err?.response?.data?.message ||
+                "Invalid email or password. Please try again.";
+            setFormError(message);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -71,9 +108,9 @@ function SignInAccountContent() {
                     />
                 </div>
 
-                {error && (
+                {(googleError || formError) && (
                     <div className="mb-6 rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-700">
-                        Sign-in failed: {error}
+                        Sign-in failed: {formError || googleError}
                     </div>
                 )}
 
@@ -90,6 +127,8 @@ function SignInAccountContent() {
                     <input
                         type="email"
                         placeholder="you@company.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-black focus:outline-none focus:ring-2 focus:ring-black placeholder:text-gray-400"
                         style={{ fontFamily: "Arial", fontWeight: 400 }}
                     />
@@ -108,6 +147,8 @@ function SignInAccountContent() {
                     <input
                         type="password"
                         placeholder="Enter your password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black placeholder:text-gray-400 text-black"
                         style={{ fontFamily: "Arial", fontWeight: 400 }}
                     />
@@ -130,10 +171,11 @@ function SignInAccountContent() {
                 {/* Sign In Button - ✅ Fixed */}
                 <button
                     onClick={onEmailSignIn}
+                    disabled={isSubmitting}
                     className="w-full h-12 bg-[#000000] text-white rounded-xl hover:opacity-90 transition mb-4"
                     style={{ fontFamily: "Arial", fontWeight: 400 }}
                 >
-                    Sign in
+                    {isSubmitting ? "Signing in..." : "Sign in"}
                 </button>
 
                 <p className="text-center text-sm text-gray-600 font-arial">

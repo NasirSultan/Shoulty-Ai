@@ -26,6 +26,16 @@ export const googleLogin = async (idToken: string) => {
     return { token, user };
 };
 
+export const emailLogin = async (email: string, password: string) => {
+    const response = await shoutlyClient.post(API_ENDPOINTS.emailLogin, {
+        email,
+        password,
+    });
+    const { token, user } = response.data;
+    localStorage.setItem("shoutly_token", token);
+    return { token, user };
+};
+
 export const logout = () => {
     localStorage.removeItem("shoutly_token");
 };
