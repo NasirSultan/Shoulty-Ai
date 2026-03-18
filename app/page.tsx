@@ -364,9 +364,14 @@ export default function LandingPage() {
                             <textarea
                                 value={brandDescription}
                                 onChange={(e) => setBrandDescription(e.target.value)}
+                                minLength={50}
                                 className="w-full min-h-[140px] sm:min-h-[180px] p-4 bg-white rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none text-sm sm:text-base mb-4 font-medium text-slate-700 shadow-inner"
                                 placeholder={animatedPlaceholder}
                             />
+
+                            <p className="text-xs sm:text-sm mb-6 text-slate-500 font-medium">
+                                Minimum 50 characters required ({brandDescription.trim().length}/50)
+                            </p>
 
                             {/* ... rest of the buttons and CTA ... */}
 
