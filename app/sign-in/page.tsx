@@ -2,21 +2,28 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation"; // ✅ Fixed import
-import { signIn } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
+import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
+import { googleLogin } from "@/api/authApi";
 
 export default function SignInAccountPage() {
-    const router = useRouter(); // ✅ Added router
+    const router = useRouter();
     const searchParams = useSearchParams();
     const error = searchParams.get("error");
 
-    const onGoogleSignIn = () => {
-        signIn("google", { callbackUrl: "/account-setup" });
+    const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
+        try {
+            const { user } = await googleLogin(credentialResponse.credential!);
+            localStorage.setItem("shoutly_user", JSON.stringify(user));
+            console.log("Logged in as:", user.name);
+            router.push("/account-setup");
+        } catch (err) {
+            console.error("Google login failed:", err);
+        }
     };
 
     const onEmailSignIn = () => {
-        // Add your email/password sign-in logic here
         router.push("/account-setup");
     };
 
@@ -54,23 +61,13 @@ export default function SignInAccountPage() {
                 </p>
 
                 {/* Google Sign-in */}
-                <button
-                    onClick={onGoogleSignIn}
-                    className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-xl py-3 mb-6 hover:bg-gray-50 transition"
-                >
-                    <Image
-                        src="/images/google.png"
-                        alt="Google"
-                        width={18}
-                        height={18}
+                <div className="w-full flex justify-center mb-6">
+                    <GoogleLogin
+                        onSuccess={handleGoogleSuccess}
+                        onError={() => console.error("Google login failed")}
+                        width="400"
                     />
-                    <span
-                        className="text-gray-600"
-                        style={{ fontFamily: "Arial", fontWeight: 600 }}
-                    >
-                        Sign in with Google
-                    </span>
-                </button>
+                </div>
 
                 {error && (
                     <div className="mb-6 rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-700">

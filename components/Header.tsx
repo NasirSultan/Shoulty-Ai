@@ -1,20 +1,59 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { User, SparklesIcon, ChevronDown, Menu, X } from "lucide-react";
 import { motion } from "framer-motion";
 import ShoutlyLogo from "@/components/common/ShoutlyLogo";
+import { logout } from "@/api/authApi";
+
+interface UserProfile {
+    name?: string;
+    email?: string;
+    picture?: string;
+}
 
 export default function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [profileOpen, setProfileOpen] = useState(false);
+    const [user, setUser] = useState<UserProfile | null>(null);
     const pathname = usePathname();
+    const router = useRouter();
+    const profileRef = useRef<HTMLDivElement>(null);
 
-    // Icons for the floating background (You can add your specific icons here)
     const icons = [User, SparklesIcon, User, SparklesIcon];
+
+    // Read token & stored user info on mount
+    useEffect(() => {
+        const token = localStorage.getItem("shoutly_token");
+        if (token) {
+            const stored = localStorage.getItem("shoutly_user");
+            if (stored) setUser(JSON.parse(stored));
+            else setUser({}); // logged in but no profile data yet
+        }
+    }, []);
+
+    // Close profile dropdown when clicking outside
+    useEffect(() => {
+        const handler = (e: MouseEvent) => {
+            if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+                setProfileOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handler);
+        return () => document.removeEventListener("mousedown", handler);
+    }, []);
+
+    const handleLogout = () => {
+        logout();
+        localStorage.removeItem("shoutly_user");
+        setUser(null);
+        setProfileOpen(false);
+        router.push("/");
+    };
 
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -113,16 +152,72 @@ export default function Header() {
 
                     {/* Right side (Desktop only) */}
                     <div className="hidden md:flex text-black items-center gap-4">
-                        <Link href="/sign-in" className="text-sm">
-                            Log In
-                        </Link>
+                        {user ? (
+                            <div className="relative" ref={profileRef}>
+                                <button
+                                    onClick={() => setProfileOpen(!profileOpen)}
+                                    className="flex items-center gap-2 focus:outline-none"
+                                >
+                                    {user.picture ? (
+                                        <Image
+                                            src={user.picture}
+                                            alt="Profile"
+                                            width={36}
+                                            height={36}
+                                            className="rounded-full border border-gray-200 object-cover"
+                                        />
+                                    ) : (
+                                        <div className="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center text-sm font-bold">
+                                            {user.name?.charAt(0)?.toUpperCase() ?? "U"}
+                                        </div>
+                                    )}
+                                    <ChevronDown className="w-4 h-4 text-gray-500" />
+                                </button>
 
-                        <Link
-                            href="/sign-up"
-                            className="px-5 py-2 bg-black text-white rounded-full text-sm font-medium"
-                        >
-                            Sign Up / Free Trial
-                        </Link>
+                                {profileOpen && (
+                                    <div className="absolute right-0 mt-2 w-52 bg-white border border-gray-200 rounded-xl shadow-lg py-2 z-50">
+                                        {user.name && (
+                                            <div className="px-4 py-2 border-b">
+                                                <p className="text-sm font-semibold text-gray-900 truncate">{user.name}</p>
+                                                <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                                            </div>
+                                        )}
+                                        <Link
+                                            href="/account-setup"
+                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                            onClick={() => setProfileOpen(false)}
+                                        >
+                                            My Profile
+                                        </Link>
+                                        <Link
+                                            href="/dashboards"
+                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                            onClick={() => setProfileOpen(false)}
+                                        >
+                                            Dashboard
+                                        </Link>
+                                        <button
+                                            onClick={handleLogout}
+                                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                                        >
+                                            Sign Out
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <>
+                                <Link href="/sign-in" className="text-sm">
+                                    Log In
+                                </Link>
+                                <Link
+                                    href="/sign-up"
+                                    className="px-5 py-2 bg-black text-white rounded-full text-sm font-medium"
+                                >
+                                    Sign Up / Free Trial
+                                </Link>
+                            </>
+                        )}
                     </div>
 
                     {/* Hamburger (Mobile only) */}
@@ -236,21 +331,47 @@ export default function Header() {
 
                         {/* Divider */}
                         <div className="border-t pt-4 space-y-3">
-                            <Link
-                                href="/sign-in"
-                                className="block text-center text-black text-sm font-medium"
-                                onClick={() => setMenuOpen(false)}
-                            >
-                                Log In
-                            </Link>
-
-                            <Link
-                                href="/sign-up"
-                                className="block text-center bg-black text-white py-3 rounded-full text-sm font-medium"
-                                onClick={() => setMenuOpen(false)}
-                            >
-                                Sign Up / Free Trial
-                            </Link>
+                            {user ? (
+                                <>
+                                    <Link
+                                        href="/account-setup"
+                                        className="block text-center text-black text-sm font-medium"
+                                        onClick={() => setMenuOpen(false)}
+                                    >
+                                        My Profile
+                                    </Link>
+                                    <Link
+                                        href="/dashboards"
+                                        className="block text-center text-black text-sm font-medium"
+                                        onClick={() => setMenuOpen(false)}
+                                    >
+                                        Dashboard
+                                    </Link>
+                                    <button
+                                        onClick={() => { setMenuOpen(false); handleLogout(); }}
+                                        className="w-full text-center bg-red-600 text-white py-3 rounded-full text-sm font-medium"
+                                    >
+                                        Sign Out
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <Link
+                                        href="/sign-in"
+                                        className="block text-center text-black text-sm font-medium"
+                                        onClick={() => setMenuOpen(false)}
+                                    >
+                                        Log In
+                                    </Link>
+                                    <Link
+                                        href="/sign-up"
+                                        className="block text-center bg-black text-white py-3 rounded-full text-sm font-medium"
+                                        onClick={() => setMenuOpen(false)}
+                                    >
+                                        Sign Up / Free Trial
+                                    </Link>
+                                </>
+                            )}
                         </div>
                     </div>
                 )}

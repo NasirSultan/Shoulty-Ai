@@ -743,12 +743,17 @@ __turbopack_context__.s([
     "API_BASE_URL",
     ()=>API_BASE_URL,
     "API_ENDPOINTS",
-    ()=>API_ENDPOINTS
+    ()=>API_ENDPOINTS,
+    "SHOUTLY_API_BASE_URL",
+    ()=>SHOUTLY_API_BASE_URL
 ]);
 const API_BASE_URL = "https://ai-shoutly-backend.onrender.com";
+const SHOUTLY_API_BASE_URL = "https://backend.shoutlyai.com";
 const API_ENDPOINTS = {
     displayImages: `${API_BASE_URL}/api/display-images`,
-    industries: `${API_BASE_URL}/api/industries/with-subindustries`
+    industries: `${API_BASE_URL}/api/industries/with-subindustries`,
+    googleLogin: `${SHOUTLY_API_BASE_URL}/api/auth/google/login`,
+    userProfile: `${SHOUTLY_API_BASE_URL}/api/user/profile`
 };
 }),
 "[project]/api/homeApi.tsx [app-ssr] (ecmascript)", ((__turbopack_context__) => {
