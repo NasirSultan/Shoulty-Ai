@@ -185,6 +185,10 @@ export default function LandingPage() {
             img.title?.toLowerCase().includes(filterTerm.toLowerCase())
         );
     });
+    const isGenerateReady =
+        !!selectedIndustry &&
+        !!pendingSubIndustry &&
+        brandDescription.trim().length >= 50;
     // REPLACE WITH:
     useEffect(() => {
         const loadIndustries = async () => {
@@ -382,9 +386,9 @@ export default function LandingPage() {
 
                             {/* Power CTA Button - Changed to Brand Black/Orange */}
                             <button 
-                                disabled={!selectedIndustry || !pendingSubIndustry || !brandDescription.trim()}
+                                disabled={!isGenerateReady}
                                 onClick={async () => {
-                                    if (selectedIndustry && pendingSubIndustry && brandDescription.trim()) {
+                                    if (isGenerateReady && pendingSubIndustry) {
                                         setSelectedSubIndustry(pendingSubIndustry); // Set the selected sub-industry to trigger useEffect for fetching images
                                         // Redirect first for faster UX
                                         scrollToSectionInOneSecond("gcontent");
@@ -397,7 +401,7 @@ export default function LandingPage() {
                                     }
                                 }}
                                 className={`w-full py-3 sm:py-4 rounded-2xl text-white text-base sm:text-lg font-black tracking-tight transition-all active:scale-95 shadow-xl uppercase ${
-                                    selectedIndustry && pendingSubIndustry && brandDescription.trim()
+                                    isGenerateReady
                                         ? "bg-gradient-to-r from-orange-500 to-red-600 hover:brightness-110 cursor-pointer"
                                         : "bg-gray-400 cursor-not-allowed opacity-60"
                                 }`}

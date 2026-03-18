@@ -26,7 +26,6 @@ const Footer = () => {
     {
       title: "Product",
       links: [
-        { label: "All Features"},
         { label: "Who We Help", href: "/#who-we-help" },
         { label: "Browse Our Library", href: "/#library" },
         { label: "Generate 365 days Content", href: "/#generator" },
@@ -36,7 +35,7 @@ const Footer = () => {
     {
       title: "Resources",
       links: [
-        { label: "Blog", href: "/blog" },
+        { label: "Blog", href: "https://blog.shoutlyai.com/" },
         { label: "Help Center", href: "/help-center" },
         { label: "Join Community", href: "/join-community" },
         { label: "Success Stories", href: "/case-studies" },
@@ -176,7 +175,7 @@ const Footer = () => {
         <div className="mt-8 pt-8 border-t border-gray-800">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-500 text-sm">
-              © {new Date().getFullYear()} ShoutlyAI. All rights reserved.
+              © {new Date().getFullYear()} shoutly ai. all rights reserved. smart ai powering your social media for the next 365 days.
             </p>
             <div className="flex gap-6">
               {[
