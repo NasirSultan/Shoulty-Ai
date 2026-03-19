@@ -169,7 +169,7 @@ const SocialMediaCalendar = () => {
     "/images/durga.jpg",
     "/images/ganesha.png",
     "/images/Eid.jpg",
-    "/images/indep.jpg",
+    "/images/Indep.jpg",
     "/images/ghandhi.jpg",
   ];
 
