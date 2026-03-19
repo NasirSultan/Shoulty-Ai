@@ -149,45 +149,71 @@ export default function LandingPage() {
 
         requestAnimationFrame(step);
     };
-    const [showSubIndustries, setShowSubIndustries] = useState(false);
-    const [selectedIndustry, setSelectedIndustry] = useState<string>("");
-    const [subIndustries, setSubIndustries] = useState<SubIndustry[]>([]);
-    const [images, setImages] = useState<ImageItem[]>([]);
-    const [loadingImages, setLoadingImages] = useState(false);
+    const [generateSelectedIndustry, setGenerateSelectedIndustry] =
+        useState<string>("");
+    const [generateSubIndustries, setGenerateSubIndustries] = useState<
+        SubIndustry[]
+    >([]);
+    const [generateImages, setGenerateImages] = useState<ImageItem[]>([]);
+    const [generateLoadingImages, setGenerateLoadingImages] = useState(false);
+    const [generateSelectedSubIndustry, setGenerateSelectedSubIndustry] =
+        useState<string | null>(null);
+    const [generatePendingSubIndustry, setGeneratePendingSubIndustry] =
+        useState<string | null>(null);
+
+    const [libraryShowSubIndustries, setLibraryShowSubIndustries] =
+        useState(false);
+    const [librarySelectedIndustry, setLibrarySelectedIndustry] =
+        useState<string>("");
+    const [librarySubIndustries, setLibrarySubIndustries] = useState<
+        SubIndustry[]
+    >([]);
+    const [librarySelectedSubIndustry, setLibrarySelectedSubIndustry] =
+        useState<string | null>(null);
+    const [libraryImages, setLibraryImages] = useState<ImageItem[]>([]);
+    const [libraryLoadingImages, setLibraryLoadingImages] = useState(false);
+    const [libraryFilterTerm, setLibraryFilterTerm] = useState("");
 
     const [industries, setIndustries] = useState<Industry[]>([]);
     const [loadingIndustries, setLoadingIndustries] = useState(true);
-    const [selectedSubIndustry, setSelectedSubIndustry] = useState<string | null>(null);
-    const [pendingSubIndustry, setPendingSubIndustry] = useState<string | null>(null);
     const [brandDescription, setBrandDescription] = useState<string>("");
     const refreshImages = async () => {
-        setLoadingImages(true);
-        const data = await fetchImages(selectedSubIndustry);
-        setImages(data);
-        setLoadingImages(false);
+        setLibraryLoadingImages(true);
+        const data = await fetchImages(librarySelectedSubIndustry);
+        setLibraryImages(data);
+        setLibraryLoadingImages(false);
     };
     useEffect(() => {
-        const loadImages = async () => {
-            setLoadingImages(true);
-            const data = await fetchImages(selectedSubIndustry);
-            setImages(data);
-            setLoadingImages(false);
+        const loadGenerateImages = async () => {
+            setGenerateLoadingImages(true);
+            const data = await fetchImages(generateSelectedSubIndustry);
+            setGenerateImages(data);
+            setGenerateLoadingImages(false);
         };
-        loadImages();
-    }, [selectedSubIndustry]);
-    // store selected industry id or name
-    const [filterTerm, setFilterTerm] = useState(""); // store search input
+        loadGenerateImages();
+    }, [generateSelectedSubIndustry]);
+
+    useEffect(() => {
+        const loadLibraryImages = async () => {
+            setLibraryLoadingImages(true);
+            const data = await fetchImages(librarySelectedSubIndustry);
+            setLibraryImages(data);
+            setLibraryLoadingImages(false);
+        };
+        loadLibraryImages();
+    }, [librarySelectedSubIndustry]);
+
     // Filter images locally based on search input
-    const filteredImages = images.filter((img) => {
-        if (!filterTerm) return true;
+    const libraryFilteredImages = libraryImages.filter((img) => {
+        if (!libraryFilterTerm) return true;
         return (
-            img.name?.toLowerCase().includes(filterTerm.toLowerCase()) ||
-            img.title?.toLowerCase().includes(filterTerm.toLowerCase())
+            img.name?.toLowerCase().includes(libraryFilterTerm.toLowerCase()) ||
+            img.title?.toLowerCase().includes(libraryFilterTerm.toLowerCase())
         );
     });
     const isGenerateReady =
-        !!selectedIndustry &&
-        !!pendingSubIndustry &&
+        !!generateSelectedIndustry &&
+        !!generatePendingSubIndustry &&
         brandDescription.trim().length >= 50;
     // REPLACE WITH:
     useEffect(() => {
@@ -270,19 +296,19 @@ export default function LandingPage() {
                             </div>
 
                             <select
-                                value={selectedIndustry}
+                                value={generateSelectedIndustry}
                                 // REPLACE WITH:
                                 onChange={(e) => {
                                     const id = e.target.value;
-                                    setSelectedIndustry(id);
-                                    setSelectedSubIndustry(null); // 👈 reset sub-industry selection
-                                    setPendingSubIndustry(null);
-                                    setImages([]); // 👈 clear images until new sub-industry is picked
+                                    setGenerateSelectedIndustry(id);
+                                    setGenerateSelectedSubIndustry(null);
+                                    setGeneratePendingSubIndustry(null);
+                                    setGenerateImages([]);
                                     const selected = industries.find(
                                         (ind: Industry) =>
                                             String(ind.id) === String(id),
                                     );
-                                    setSubIndustries(
+                                    setGenerateSubIndustries(
                                         selected?.subIndustries || [],
                                     );
                                 }}
@@ -304,20 +330,20 @@ export default function LandingPage() {
                             </select>
 
                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-                                {subIndustries.length === 0 ? (
+                                {generateSubIndustries.length === 0 ? (
                                     <p className="text-sm text-slate-400 col-span-full text-center py-10 font-medium">
                                         Select an industry to see sub-categories
                                     </p>
                                 ) : (
-                                    subIndustries.map((sub, i) => {
+                                    generateSubIndustries.map((sub, i) => {
                                         const isActive =
-                                            pendingSubIndustry ===
+                                            generatePendingSubIndustry ===
                                             String(sub.id);
                                         return (
                                             <div
                                                 key={sub.id || i}
                                                 onClick={() => {
-                                                    setPendingSubIndustry(String(sub.id));
+                                                    setGeneratePendingSubIndustry(String(sub.id));
                                                     
                                                 }}
                                                 className={`group cursor-pointer relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-5 border transition-all duration-300
@@ -393,16 +419,10 @@ export default function LandingPage() {
                             <button 
                                 disabled={!isGenerateReady}
                                 onClick={async () => {
-                                    if (isGenerateReady && pendingSubIndustry) {
-                                        setSelectedSubIndustry(pendingSubIndustry); // Set the selected sub-industry to trigger useEffect for fetching images
+                                    if (isGenerateReady && generatePendingSubIndustry) {
+                                        setGenerateSelectedSubIndustry(generatePendingSubIndustry);
                                         // Redirect first for faster UX
                                         scrollToSectionInOneSecond("gcontent");
-
-                                        // Fetch images for the selected sub-industry
-                                        setLoadingImages(true);
-                                        const data = await fetchImages(pendingSubIndustry);
-                                        setImages(data);
-                                        setLoadingImages(false);
                                     }
                                 }}
                                 className={`w-full py-3 sm:py-4 rounded-2xl text-white text-base sm:text-lg font-black tracking-tight transition-all active:scale-95 shadow-xl uppercase ${
@@ -458,17 +478,17 @@ export default function LandingPage() {
 
                         {/* Templates Grid */}
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
-                            {loadingImages ? (
+                            {generateLoadingImages ? (
                                 <p className="col-span-full text-center text-gray-400 py-12">
                                     Loading templates... (may take up to 60s on
                                     first load)
                                 </p>
-                            ) : filteredImages.length === 0 ? (
+                            ) : generateImages.length === 0 ? (
                                 <p className="col-span-full text-center text-gray-400 py-12">
                                     No images found
                                 </p>
                             ) : (
-                                filteredImages.slice(0, 8).map((img, index) => (
+                                generateImages.slice(0, 8).map((img, index) => (
                                     <div
                                         key={img.id || index}
                                         className="relative group aspect-square rounded-xl overflow-hidden bg-gray-50"
@@ -501,7 +521,7 @@ export default function LandingPage() {
                         </div>
 
                         {/* Load more button if needed */}
-                        {filteredImages.length > 8 && (
+                        {generateImages.length > 8 && (
                             <div className="flex justify-center mt-8">
                                 <button className="px-6 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-full hover:bg-gray-800 transition-colors duration-200 shadow-md">
                                     Load more templates
@@ -1640,31 +1660,30 @@ export default function LandingPage() {
                                     type="text"
                                     placeholder="Search templates"
                                     className="w-full px-4 py-2 rounded-xl bg-white text-gray-800 placeholder-gray-400 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
-                                    value={filterTerm}
+                                    value={libraryFilterTerm}
                                     onChange={(e) =>
-                                        setFilterTerm(e.target.value)
+                                        setLibraryFilterTerm(e.target.value)
                                     }
                                 />
 
                                 
 
                             <select
-                                value={selectedIndustry}
+                                value={librarySelectedIndustry}
                                 // REPLACE WITH:
                                 onChange={(e) => {
                                     const id = e.target.value;
-                                    setSelectedIndustry(id);
-                                    setSelectedSubIndustry(null); // 👈 reset sub-industry selection
-                                    setPendingSubIndustry(null); // 👈 reset pending sub-industry
-                                    setImages([]); // 👈 clear images until new sub-industry is picked
+                                    setLibrarySelectedIndustry(id);
+                                    setLibrarySelectedSubIndustry(null);
+                                    setLibraryImages([]);
                                     const selected = industries.find(
                                         (ind: Industry) =>
                                             String(ind.id) === String(id),
                                     );
-                                    setSubIndustries(
+                                    setLibrarySubIndustries(
                                         selected?.subIndustries || [],
                                     );
-                                    setShowSubIndustries(true); // 👈 show sub-industry modal
+                                    setLibraryShowSubIndustries(true);
                                 }}
                                 className="w-full sm:w-auto px-4 py-2 rounded-xl bg-white text-gray-800 border border-gray-300 focus:outline-none text-sm"
                             >
@@ -1687,13 +1706,13 @@ export default function LandingPage() {
 
                                 
 
-                                {showSubIndustries && (
+                                {libraryShowSubIndustries && (
                                     <div className="fixed inset-0 flex justify-center items-center z-50 bg-black/20 backdrop-blur-sm">
                                         <div className="relative bg-white rounded-2xl shadow-2xl border border-slate-200 p-6 sm:p-8 w-full max-w-2xl mx-4">
                                             
                                             {/* Close button */}
                                             <button 
-                                                onClick={() => setShowSubIndustries(false)} 
+                                                onClick={() => setLibraryShowSubIndustries(false)} 
                                                 className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 transition-colors"
                                             >
                                                 ✕
@@ -1704,19 +1723,19 @@ export default function LandingPage() {
                                             </h3>
 
                                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-                                                {subIndustries.length === 0 ? (
+                                                {librarySubIndustries.length === 0 ? (
                                                     <p className="text-sm text-slate-400 col-span-full text-center py-10 font-medium">
                                                         Select an industry to see sub-categories
                                                     </p>
                                                 ) : (
-                                                    subIndustries.map((sub, i) => {
-                                                        const isActive = pendingSubIndustry === String(sub.id);
+                                                    librarySubIndustries.map((sub, i) => {
+                                                        const isActive = librarySelectedSubIndustry === String(sub.id);
                                                         return (
                                                             <div
                                                                 key={sub.id || i}
                                                                 onClick={() => {
-                                                                    setPendingSubIndustry(String(sub.id));
-                                                                    setShowSubIndustries(false);
+                                                                    setLibrarySelectedSubIndustry(String(sub.id));
+                                                                    setLibraryShowSubIndustries(false);
                                                                 }}
                                                                 className={`group cursor-pointer relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-5 border transition-all duration-300 z-10
                                                                     ${
@@ -1755,7 +1774,7 @@ export default function LandingPage() {
                                     className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-gray-300 text-gray-700 text-sm hover:bg-gray-100 hover:shadow-sm transition-all"
                                 >
                                     <RefreshCcw
-                                        className={`w-4 h-4 text-gray-500 ${loadingImages ? "animate-spin" : ""}`}
+                                        className={`w-4 h-4 text-gray-500 ${libraryLoadingImages ? "animate-spin" : ""}`}
                                     />
                                     Refresh
                                 </button>
@@ -1764,17 +1783,17 @@ export default function LandingPage() {
 
                         {/* Templates Grid */}
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-8 gap-4">
-                            {loadingImages ? (
+                            {libraryLoadingImages ? (
                                 <p className="col-span-full text-center text-gray-400 py-12">
                                     Loading templates... (may take up to 60s on
                                     first load)
                                 </p>
-                            ) : filteredImages.length === 0 ? (
+                            ) : libraryFilteredImages.length === 0 ? (
                                 <p className="col-span-full text-center text-gray-400 py-12">
                                     No images found
                                 </p>
                             ) : (
-                                filteredImages.slice(0, 8).map((img, index) => (
+                                libraryFilteredImages.slice(0, 8).map((img, index) => (
                                     <div
                                         key={img.id || index}
                                         className="relative w-full h-48 rounded-xl overflow-hidden"
