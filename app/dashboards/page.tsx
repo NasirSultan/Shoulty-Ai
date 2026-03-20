@@ -1,1479 +1,603 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-import { Sparkles, StarIcon } from "lucide-react";
-import {
-    HomeIcon,
-    SparklesIcon,
-    CalendarIcon,
-    PhotoIcon,
-    SwatchIcon,
-    ShareIcon,
-    CreditCardIcon,
-    Cog6ToothIcon,
-    BellIcon,
-    UserCircleIcon,
-    BoltIcon,
-    ChartBarIcon,
-    CursorArrowRaysIcon,
-    ArrowTrendingUpIcon,
-    ClockIcon,
-    ArrowUpTrayIcon, PencilIcon, EyeIcon, TrashIcon, PlusIcon,
-    MagnifyingGlassIcon,
-    FunnelIcon,
-    GlobeAltIcon,
-    CheckIcon,
-    LockClosedIcon,
-    UserIcon,
-    EnvelopeIcon, LinkIcon,
+import { useRef, useState } from "react";
+import Sidebar from "./Sidebar";
+import AdminHeader from "./AdminHeader";
 
-} from "@heroicons/react/24/outline";
-import {
-    FaYoutube,
-    FaFacebook,
-    FaLinkedin,
-    FaTwitter,
-    FaCheckCircle,
-    FaCheck,
-    FaInstagram,
-    FaFacebookF,
-    FaSyncAlt,
-} from "react-icons/fa";
+// ── Types ──────────────────────────────────────────────────────────────────
+interface Post {
+  img: string;
+  name: string;
+  plat: string;
+  platC: string;
+  date: string;
+  time: string;
+  reach: string;
+  eng: string;
+  status: "scheduled" | "draft" | "published";
+}
 
-const menuItems = [
-    { name: "Dashboard", icon: HomeIcon },
-    { name: "Generate Content", icon: SparklesIcon },
-    { name: "Content Calendar", icon: CalendarIcon },
-    { name: "Image & Reel Library", icon: PhotoIcon },
-    { name: "Brand Settings", icon: SwatchIcon },
-    { name: "Social Accounts", icon: ShareIcon },
-    { name: "Subscription & Billing", icon: CreditCardIcon },
-    { name: "Settings", icon: Cog6ToothIcon },
+interface Idea {
+  icon: string;
+  bg: string;
+  title: string;
+  sub: string;
+  score: number;
+  sc: string;
+  sb: string;
+}
+
+interface Tag {
+  name: string;
+  pct: number;
+}
+
+interface WFStep {
+  c: string;
+  tc: string;
+  dot: string;
+  title: string;
+  sub: string;
+}
+
+interface TeamMember {
+  av: string;
+  bg: string;
+  name: string;
+  action: string;
+  time: string;
+  status: string;
+}
+
+// ── Data ───────────────────────────────────────────────────────────────────
+const posts: Post[] = [
+  { img: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=80&q=60", name: "3 viral growth hacks that tripled our reach", plat: "Instagram", platC: "#E1306C", date: "Today", time: "7:30 PM", reach: "82K", eng: "11.3%", status: "scheduled" },
+  { img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=80&q=60", name: "New menu drop — truffle risotto is here", plat: "Facebook", platC: "#1877F2", date: "Mar 9", time: "12:00 PM", reach: "28K", eng: "6.8%", status: "scheduled" },
+  { img: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=80&q=60", name: "30-day transformation: Meet Alex", plat: "LinkedIn", platC: "#0A66C2", date: "Mar 10", time: "9:00 AM", reach: "45K", eng: "8.4%", status: "draft" },
+  { img: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=80&q=60", name: "Just listed — 4-bed Victorian in prime location", plat: "Instagram", platC: "#E1306C", date: "Mar 11", time: "8:00 AM", reach: "19K", eng: "5.7%", status: "scheduled" },
+  { img: "https://images.unsplash.com/photo-1607083206968-13611e3d76db?w=80&q=60", name: "✨ Happy Diwali from our entire team", plat: "Multi-platform", platC: "#F59E0B", date: "Mar 12", time: "8:00 AM", reach: "67K", eng: "9.2%", status: "published" },
 ];
 
+const ideas: Idea[] = [
+  { icon: "🔥", bg: "#FEF2F2", title: "Behind-the-scenes reel", sub: "High virality potential · Est. 12% eng", score: 94, sc: "#EF4444", sb: "#FEF2F2" },
+  { icon: "💡", bg: "#FFFBEB", title: "Industry myth-busting thread", sub: "Educational · Best for LinkedIn & Twitter", score: 88, sc: "#F59E0B", sb: "#FFFBEB" },
+  { icon: "📊", bg: "#EFF6FF", title: "Market update carousel", sub: "High saves · Peak: Wednesday 9 AM", score: 82, sc: "#3B82F6", sb: "#EFF6FF" },
+  { icon: "✨", bg: "#ECFDF5", title: "Customer transformation story", sub: "Trust builder · Works all platforms", score: 79, sc: "#10B981", sb: "#ECFDF5" },
+  { icon: "🎯", bg: "#EEEEFF", title: "Poll: What content do you want?", sub: "Quick engagement boost · Stories", score: 71, sc: "#5B5BD6", sb: "#EEEEFF" },
+];
+
+const tags: Tag[] = [
+  { name: "#GrowthHacks", pct: 92 },
+  { name: "#ContentStrategy", pct: 78 },
+  { name: "#AIMarketing", pct: 85 },
+  { name: "#SocialMedia2026", pct: 70 },
+  { name: "#DigitalMarketing", pct: 65 },
+];
+
+const wfSteps: WFStep[] = [
+  { c: "#ECFDF5", tc: "#10B981", dot: "✓", title: "Content Brief Created", sub: "AI generated 5 post ideas" },
+  { c: "#EEEEFF", tc: "#5B5BD6", dot: "2", title: "Caption Writing", sub: "In progress · 3 of 5 done" },
+  { c: "#FFFBEB", tc: "#F59E0B", dot: "3", title: "Design & Visuals", sub: "Pending approval" },
+  { c: "#F0F1F8", tc: "#9496B5", dot: "4", title: "Schedule & Publish", sub: "Not started" },
+];
+
+const team: TeamMember[] = [
+  { av: "AM", bg: "#5B5BD6", name: "Alex Morgan", action: "Scheduled 3 posts", time: "2m ago", status: "#10B981" },
+  { av: "SR", bg: "#E1306C", name: "Sam Rivera", action: "Edited brand settings", time: "18m ago", status: "#10B981" },
+  { av: "KL", bg: "#F59E0B", name: "Kim Lee", action: "Added new hashtag set", time: "1h ago", status: "#F59E0B" },
+  { av: "JP", bg: "#06B6D4", name: "Jordan Park", action: "Reviewed analytics", time: "3h ago", status: "#9496B5" },
+];
+
+const captions: Record<string, string[]> = {
+  ig: ["New drop just hit different 🔥 Our latest collection is giving everything — swipe to see the full range. Link in bio to shop before it's gone. ✨", "Stop scrolling — this one's for you 👀 3 content hacks that literally doubled our engagement in 30 days. Save this. You'll need it."],
+  li: ["Excited to share that after 18 months of building in public, we've crossed 100K users organically. Zero paid acquisition. Here's the full breakdown of what worked and what didn't 🧵", "The most underrated skill in 2026? Clear written communication. I've reviewed 200+ job applications this year. The gap is enormous. Here's how to fix it in 30 days."],
+  tw: ["hot take: the brands winning on social in 2026 aren't posting more. they're posting with more intention. less content, more craft.", "thread: everything we got wrong in year 1 (and what saved us in year 2) 🧵👇"],
+  fb: ["We've been getting this question every week: 'How do you consistently create content without burning out?' We sat down and mapped out our entire content system. Here's the full breakdown 👇", "BIG NEWS: After months of work, our new product is finally here. We're so proud of what the team built. Here's what it does and why we think it'll change the game for you ⬇️"],
+  tk: ["POV: you finally figured out the algorithm 👀 #contentcreator #socialmediatips #fyp", "Come with me to plan a month of content in 2 hours ✨ this system changed everything for me #contentplanning #smallbusiness"],
+};
+
+const hashtagMap: Record<string, string[]> = {
+  ig: ["#ContentCreator", "#SocialMediaTips", "#GrowthHacks", "#MarketingStrategy", "#InstagramGrowth", "#DigitalMarketing"],
+  li: ["#LinkedIn", "#CareerGrowth", "#Leadership", "#Marketing", "#BuildInPublic", "#Startup"],
+  tw: ["#Marketing", "#GrowthHacking", "#ContentStrategy", "#SocialMedia", "#DigitalMarketing"],
+  fb: ["#SmallBusiness", "#Marketing", "#ContentMarketing", "#FacebookMarketing", "#BusinessTips"],
+  tk: ["#ContentCreator", "#TikTokMarketing", "#FYP", "#SocialMediaTips", "#BusinessTok"],
+};
+
+const platColors: Record<string, string> = {
+  ig: "#E1306C", li: "#0A66C2", tw: "#1DA1F2", fb: "#1877F2", tk: "#111",
+};
+
+const platLabels: Record<string, string> = {
+  ig: "Instagram", li: "LinkedIn", tw: "Twitter", fb: "Facebook", tk: "TikTok",
+};
+
+// ── Toast Hook ─────────────────────────────────────────────────────────────
+function useToast() {
+  const [toast, setToast] = useState({ visible: false, msg: "" });
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const show = (msg: string) => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    setToast({ visible: true, msg });
+    timerRef.current = setTimeout(() => setToast({ visible: false, msg: "" }), 2800);
+  };
+  return { toast, show };
+}
+
+// ── Mini Calendar ──────────────────────────────────────────────────────────
+function MiniCalendar() {
+  const days = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+  const hasPosts = [3, 5, 8, 10, 12, 14, 17, 19, 21, 24, 26, 28];
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 2, marginTop: 8 }}>
+      {days.map((d) => (
+        <div key={d} style={{ fontSize: 10, fontWeight: 700, textAlign: "center", color: "#C8CADF", padding: "4px 0", textTransform: "uppercase" }}>{d}</div>
+      ))}
+      {[26, 27, 28, 29, 30].map((n) => (
+        <div key={`prev-${n}`} style={{ aspectRatio: "1", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11.5, borderRadius: 6, color: "#C8CADF" }}>{n}</div>
+      ))}
+      {Array.from({ length: 31 }, (_, i) => i + 1).map((i) => {
+        const isToday = i === 8;
+        const hasPost = hasPosts.includes(i);
+        return (
+          <div
+            key={i}
+            style={{
+              aspectRatio: "1", display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 11.5, borderRadius: isToday ? 8 : 6, cursor: "pointer", position: "relative",
+              background: isToday ? "#5B5BD6" : undefined,
+              color: isToday ? "#fff" : "#9496B5",
+              fontWeight: isToday ? 700 : 400,
+            }}
+          >
+            {i}
+            {hasPost && (
+              <span style={{
+                position: "absolute", bottom: 2, left: "50%", transform: "translateX(-50%)",
+                width: 4, height: 4, borderRadius: "50%",
+                background: isToday ? "#fff" : "#10B981",
+              }} />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── Dashboard Page ─────────────────────────────────────────────────────────
 export default function DashboardPage() {
-    const [activeTab, setActiveTab] = useState("Dashboard");
-    const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
-    return (
-        <div className="flex min-h-screen bg-gray-50 font-arial">
+  const [sidebarSlim, setSidebarSlim] = useState(false);
+  const [activeTab, setActiveTab] = useState("Overview");
+  const [activePlat, setActivePlat] = useState("ig");
+  const [generating, setGenerating] = useState(false);
+  const [caption, setCaption] = useState("");
+  const [tags2, setTags2] = useState<string[]>([]);
+  const { toast, show: showToast } = useToast();
 
-            {/* Sidebar */}
-            <aside className="w-64 bg-white border-r px-6 py-6">
-                <Image
-                    src="/images/logo.png"
-                    alt="Logo"
-                    width={140}
-                    height={60}
-                    className="mb-8"
-                />
+  const generateCaption = () => {
+    setCaption("");
+    setTags2([]);
+    setGenerating(true);
+    setTimeout(() => {
+      const caps = captions[activePlat] || captions.ig;
+      setCaption(caps[Math.floor(Math.random() * caps.length)]);
+      setTags2(hashtagMap[activePlat] || hashtagMap.ig);
+      setGenerating(false);
+    }, 1400);
+  };
 
-                <nav className="space-y-2">
-                    {menuItems.map(({ name, icon: Icon }) => (
-                        <button
-                            key={name}
-                            onClick={() => setActiveTab(name)}
-                            className={`w-full flex items-center gap-3 px-2 py-1 rounded-xl text-left transition
-                            ${activeTab === name
-                                    ? "bg-black text-white"
-                                    : "text-black hover:bg-gray-100"
-                                }`}
-                        >
-                            <Icon className="w-5 h-5" />
-                            {name}
-                        </button>
-                    ))}
-                </nav>
-            </aside>
-            <div className="flex-1 flex flex-col bg-gray-50">
-                <header className="bg-white border-b w-full">
-                    <div className="flex justify-between items-center px-6 py-4">
+  const copyCaption = () => {
+    navigator.clipboard?.writeText(caption).catch(() => {});
+    showToast("📋 Caption copied to clipboard!");
+  };
 
-                        {/* Left */}
-                        <div>
-                            <h1 className="text-2xl text-black font-arial">
-                                My Workspace
-                            </h1>
-                            <p className="text-gray-500 font-arial">
-                                Premium Plan
-                            </p>
-                        </div>
+  const tabs = ["Overview", "Posts", "Analytics", "Automation", "Team"];
 
-                        {/* Right */}
-                        <div className="flex items-center gap-3">
+  return (
+    <>
+      {/* Global Styles */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13.5px; background: #F5F6FA; color: #0D0E1A; overflow: hidden; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #E4E5EF; border-radius: 4px; }
+        @keyframes gradMove { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        @keyframes shimmer { 0%{background-position:-600px 0} 100%{background-position:600px 0} }
+        @keyframes cardIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
+        .skel-line {
+          height: 12px; border-radius: 6px; margin-bottom: 8px;
+          background: linear-gradient(90deg,#F0F1F8 0%,#ECEDF5 50%,#F0F1F8 100%);
+          background-size: 600px; animation: shimmer 1.5s infinite;
+        }
+        .ai-banner-anim {
+          background: linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4338ca 70%,#6d28d9 100%);
+          background-size: 200% 200%; animation: gradMove 6s ease infinite;
+        }
+        .row-actions { opacity: 0; transition: opacity .13s; display: flex; gap: 5px; }
+        tr:hover .row-actions { opacity: 1; }
+        tr:hover td { background: #F0F1F8; }
+        .sb-item-hover:hover { background: #1E1F2E; color: #F1F2FF; }
+        .tb-icon-hover:hover { background: #F0F1F8; color: #0D0E1A; }
+        .row-btn-hover:hover { background: #EEEEFF; border-color: #5B5BD6; color: #5B5BD6; }
+      `}</style>
 
-                            {[
-                                { icon: FaYoutube, color: "text-red-600" },
-                                { icon: FaInstagram, color: "text-pink-600" },
-                                { icon: FaFacebook, color: "text-blue-600" },
-                                { icon: FaLinkedin, color: "text-blue-700" },
-                                { icon: FaTwitter, color: "text-sky-500" },
-                            ].map(({ icon: Icon, color }, i) => (
-                                <div
-                                    key={i}
-                                    className="w-9 h-9 bg-white border rounded-full flex items-center justify-center"
-                                >
-                                    <Icon className={`w-4 h-4 ${color}`} />
-                                </div>
-                            ))}
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-                            <div className="w-9 h-9 bg-white border rounded-full flex items-center justify-center">
-                                <BellIcon className="w-5 h-5 text-gray-700" />
-                            </div>
+      {/* Shell: Sidebar + Main side by side */}
+      <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
 
-                            <div className="w-9 h-9 bg-black rounded-full flex items-center justify-center">
-                                <span className="text-white text-sm font-arial">FA</span>
-                            </div>
+        {/* ── Sidebar (separate component) ── */}
+        <Sidebar slim={sidebarSlim} onToggle={() => setSidebarSlim((s) => !s)} />
 
-                        </div>
+        {/* ── Main Content ── */}
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0, background: "#F5F6FA" }}>
+
+          {/* Topbar */}
+          <AdminHeader
+            pageTitle="Dashboard"
+            onToggle={() => setSidebarSlim((s) => !s)}
+            searchPlaceholder="Search posts, analytics…"
+            actionButton={
+              <button
+                onClick={() => showToast("✦ Opening Post Composer…")}
+                style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 7, background: "#5B5BD6", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(91,91,214,.28)" }}
+              >
+                <i className="fa-solid fa-plus" style={{ fontSize: 11 }} /> New Post
+              </button>
+            }
+          />
+
+          {/* Tab Bar */}
+          <div style={{ display: "flex", alignItems: "center", padding: "0 22px", background: "#fff", borderBottom: "1px solid #E4E5EF", flexShrink: 0 }}>
+            {tabs.map((t) => (
+              <div
+                key={t}
+                onClick={() => setActiveTab(t)}
+                style={{
+                  padding: "14px 18px", fontSize: 13,
+                  fontWeight: activeTab === t ? 700 : 600,
+                  color: activeTab === t ? "#5B5BD6" : "#9496B5",
+                  cursor: "pointer", position: "relative", whiteSpace: "nowrap",
+                }}
+              >
+                {t}
+                {t === "Posts" && (
+                  <span style={{ marginLeft: 6, padding: "1px 6px", borderRadius: 10, fontSize: 10.5, fontWeight: 700, background: activeTab === t ? "#EEEEFF" : "#F0F1F8", color: activeTab === t ? "#5B5BD6" : "#9496B5" }}>68</span>
+                )}
+                {activeTab === t && (
+                  <span style={{ position: "absolute", bottom: -1, left: 0, right: 0, height: 2, background: "#5B5BD6", borderRadius: "2px 2px 0 0" }} />
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Scrollable Content */}
+          <div style={{ flex: 1, overflowY: "auto", padding: "20px 22px" }}>
+
+            {/* KPI Cards */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14, marginBottom: 18 }}>
+              {[
+                { icon: "fa-solid fa-users", iconBg: "#EEEEFF", iconC: "#5B5BD6", val: "147.2K", lbl: "Total Followers", delta: "+12.4%", up: true },
+                { icon: "fa-solid fa-chart-line", iconBg: "#ECFDF5", iconC: "#10B981", val: "8.7%", lbl: "Avg Engagement", delta: "+2.1%", up: true },
+                { icon: "fa-solid fa-calendar-check", iconBg: "#FFFBEB", iconC: "#F59E0B", val: "68", lbl: "Posts This Month", delta: "+8", up: true },
+                { icon: "fa-solid fa-eye", iconBg: "#FDF2F8", iconC: "#EC4899", val: "2.1M", lbl: "Total Reach", delta: "+18.3%", up: true },
+              ].map((k, i) => (
+                <div key={i} style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: "16px 18px", boxShadow: "0 1px 4px rgba(13,14,26,.07)", animation: `cardIn .3s ease ${i * 0.05 + 0.05}s both` }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 10 }}>
+                    <div style={{ width: 36, height: 36, borderRadius: 10, background: k.iconBg, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <i className={k.icon} style={{ color: k.iconC }} />
                     </div>
-                </header>
-
-                {/* Main Content */}
-                <main className="flex-1 bg-white">
-
-                    {activeTab === "Dashboard" && (
-                        <div className="p-6 bg-gray-50">
-
-                            {/* Header */}
-                            <div className="p-6 bg-gray-50">
-
-
-
-                                {/* Welcome */}
-                                <div className="mb-6">
-                                    <h2 className="text-xl">Welcome back! 👋</h2>
-                                    <p className="text-gray-500">
-                                        Here's what happening with your content
-                                    </p>
-                                </div>
-
-                                {/* Stats Cards */}
-                                <div className="grid grid-cols-4 gap-4 mb-6">
-                                    {[
-                                        {
-                                            icon: ChartBarIcon,
-                                            value: "365",
-                                            text: "Posts Generated",
-                                            iconColor: "text-blue-600",
-                                        },
-                                        {
-                                            icon: CalendarIcon,
-                                            value: "31",
-                                            text: "Scheduled This Month",
-                                            iconColor: "text-violet-600",
-                                        },
-                                        {
-                                            icon: ShareIcon,
-                                            value: "4",
-                                            text: "Platforms Connected",
-                                            iconColor: "text-green-600",
-                                        },
-                                        {
-                                            icon: ClockIcon,
-                                            value: "2h 15m",
-                                            text: "Next Post Time",
-                                            iconColor: "text-red-600",
-                                        },
-                                    ].map(({ icon: Icon, value, text, iconColor }) => (
-                                        <div
-                                            key={text}
-                                            className="bg-white p-5 rounded-xl shadow"
-                                        >
-                                            {/* Icon */}
-                                            <div className="w-10 h-10 bg-gray-100 rounded-md flex items-center justify-center mb-3">
-                                                <Icon className={`w-5 h-5 ${iconColor}`} />
-                                            </div>
-
-                                            {/* Value — NOT bold */}
-                                            <h3 className="text text-[#000000] font-normal">
-                                                {value}
-                                            </h3>
-
-                                            {/* Description — NOT bold */}
-                                            <p className="text-gray-500 text-sm font-normal">
-                                                {text}
-                                            </p>
-                                        </div>
-                                    ))}
-                                </div>
-
-
-                                {/* Automation Card */}
-                                <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl p-6 flex justify-between items-center mb-8">
-                                    <div className="flex items-center gap-4">
-                                        <BoltIcon className="w-8 h-8" />
-                                        <div>
-                                            <p className="">Automation Status: ON</p>
-                                            <p className="text-sm opacity-90">
-                                                AI content is being auto-generated and scheduled
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center gap-2">
-                                        <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                                        Active
-                                    </div>
-                                </div>
-
-                                {/* Bottom Section */}
-                                <div className="grid grid-cols-3 gap-6">
-
-                                    {/* Left Side */}
-                                    <div className="col-span-2">
-                                        <h3 className="mb-4">Quick Actions</h3>
-
-                                        <div className="grid grid-cols-3 gap-4 mb-4">
-                                            {[
-                                                {
-                                                    title: "View Calendar",
-                                                    text: "See your content schedule",
-                                                    icon: CalendarIcon,
-                                                    color: "text-blue-600",
-                                                },
-                                                {
-                                                    title: "Generate New Content",
-                                                    text: "Create more posts",
-                                                    icon: SparklesIcon,
-                                                    color: "text-violet-600",
-                                                },
-                                                {
-                                                    title: "Connect Social Accounts",
-                                                    text: "Add more platforms",
-                                                    icon: ShareIcon,
-                                                    color: "text-green-600",
-                                                },
-                                            ].map(({ title, text, icon: Icon, color }) => (
-                                                <div
-                                                    key={title}
-                                                    className="bg-white p-4 rounded-xl shadow"
-                                                >
-                                                    {/* Icon with gray background */}
-                                                    <div className="w-10 h-10 bg-gray-100 rounded-md flex items-center justify-center mb-3">
-                                                        <Icon className={`w-5 h-5 ${color}`} />
-                                                    </div>
-
-                                                    <h4 className="text-black font-normal">
-                                                        {title}
-                                                    </h4>
-
-                                                    <p className="text-sm text-gray-500 font-normal">
-                                                        {text}
-                                                    </p>
-                                                </div>
-                                            ))}
-                                        </div>
-
-                                        {/* Performance Overview */}
-                                        <div className="bg-white p-6 rounded-xl shadow">
-                                            <div className="flex justify-between mb-4">
-                                                <h4 className="">Performance Overview</h4>
-                                                <input
-                                                    className="border rounded-lg px-3 py-1 text-sm"
-                                                    placeholder="Last 7 days"
-                                                />
-                                            </div>
-
-                                            <div className="grid grid-cols-3 text-left">
-                                                <div>
-                                                    {/* Icon + Title */}
-                                                    <div className="flex items-start justify-start gap-2 mb-1">
-                                                        <ArrowTrendingUpIcon className="w-5 h-5 text-gray-600" />
-                                                        <p className="text-gray-500">Engagement Rate</p>
-                                                    </div>
-
-                                                    <p className="">+24.5%</p>
-                                                    <p className="text-green-500 text-sm">12% from last week</p>
-                                                </div>
-
-                                                <div>
-                                                    {/* Icon + Title */}
-                                                    <div className="flex items-start justify-start gap-2 mb-1">
-                                                        <ChartBarIcon className="w-5 h-5 text-gray-600" />
-                                                        <p className="text-gray-500">Total Reach</p>
-                                                    </div>
-
-                                                    <p className="">45.2K</p>
-                                                    <p className="text-green-500 text-sm">8% from last week</p>
-                                                </div>
-
-                                                <div>
-                                                    {/* Icon + Title */}
-                                                    <div className="flex items-start justify-start gap-2 mb-1">
-                                                        <CursorArrowRaysIcon className="w-5 h-5 text-gray-600" />
-                                                        <p className="text-gray-500">Posts Published</p>
-                                                    </div>
-
-                                                    <p className="">21</p>
-                                                    <p className="text-gray-500 text-sm">On schedule</p>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-                                    {/* Right Side */}
-                                    <div>
-                                        <h3 className="mb-4">Recent Activity</h3>
-
-                                        <div className="bg-white p-4 rounded-xl shadow mb-4 space-y-3">
-                                            {[
-                                                ["green", "Content generated for January 2025", "2 mins ago"],
-                                                ["green", "Posted to Instagram", "1 hour ago"],
-                                                ["red", "Edited caption for Dec 15 post", "3 hours ago"],
-                                                ["green", "Connected LinkedIn account", "1 day ago"],
-                                            ].map(([color, title, time]) => (
-                                                <div key={title} className="flex gap-3">
-                                                    <span className={`w-3 h-3 rounded-full mt-1 bg-${color}-500`} />
-                                                    <div>
-                                                        <p className="text-sm">{title}</p>
-                                                        <p className="text-xs text-gray-500">{time}</p>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                        <div className="bg-white p-4 rounded-xl shadow">
-                                            <h4 className="mb-3">Upcoming posts</h4>
-                                            {[1, 2, 3].map((i) => (
-                                                <div key={i} className="border rounded-lg p-3 mb-2 flex flex-col gap-1">
-
-                                                    {/* Title with image */}
-                                                    <div className="flex items-center gap-2">
-                                                        <img
-                                                            src="images/holiday1.jpg" // replace with your image path
-                                                            alt="Holiday"
-                                                            className="w-5 h-5"
-                                                        />
-                                                        <p className="font-medium">Holiday Special</p>
-                                                    </div>
-
-                                                    {/* Time with image */}
-                                                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                                                        <p>Tomorrow 10:00 AM</p>
-                                                    </div>
-
-                                                </div>
-                                            ))}
-                                        </div>
-
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {activeTab === "Generate Content" && (
-                        <div className="p-6 bg-gray-50">
-                            {/* Page Title */}
-                            <div className="mb-6">
-                                <h2 className="text-xl">Generate Content</h2>
-                                <p className="text-gray-500">
-                                    Create a full year of AI-powered social media content
-                                </p>
-                            </div>
-
-                            {/* Main Card */}
-                            <div className="bg-white rounded-xl shadow p-6 mb-6 ml-12">
-
-                                {/* Industry Selection */}
-                                <h3 className="mb-4">Select Your Industry</h3>
-
-                                <div className="grid grid-cols-4 gap-4 mb-6">
-                                    {[
-                                        { emoji: "🧘‍♀️", label: "Health & Wellness" },
-                                        { emoji: "🍔", label: "Food & Beverage" },
-                                        { emoji: "👗", label: "Fashion & Apparel" },
-                                        { emoji: "🏠", label: "Real Estate" },
-                                        { emoji: "🏋️‍♂️", label: "Fitness & Gym" },
-                                        { emoji: "💇‍♀️", label: "Beauty & Salon" },
-                                        { emoji: "🎓", label: "Education & Training" },
-                                        { emoji: "🏦", label: "Finance & Banking" },
-                                    ].map(({ emoji, label }) => (
-                                        <div
-                                            key={label}
-                                            className="border rounded-xl p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50"
-                                        >
-                                            <div>
-                                                <div className="text-2xl mb-1">{emoji}</div>
-                                                <p className="text-sm text-gray-700">{label}</p>
-                                            </div>
-                                            <span className="text-gray-400">⌄</span>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                {/* Upload Logo */}
-                                <label className="block mb-2 text-sm">
-                                    Upload Your Logo (Optional)
-                                </label>
-
-                                <div className="border-2 rounded-xl p-8 mb-6 bg-gray-50 flex flex-col items-center justify-center">
-                                    <ArrowUpTrayIcon className="w-10 h-10 text-gray-400 mb-2" />
-
-                                    <p className="text-sm text-gray-700 text-center">
-                                        Click to upload or drag and drop
-                                    </p>
-
-                                    <p className="text-xs text-gray-500 text-center">
-                                        PNG, JPG up to 10MB
-                                    </p>
-                                </div>
-
-
-                                {/* Business Description */}
-                                <label className="block mb-2 text-sm">
-                                    Describe Your Business
-                                </label>
-
-                                <textarea
-                                    rows={5}
-                                    placeholder="I'm an architect specializing in modern residential design, Generate 365 Instagram posts, reels, and festival creativity. I'm a fitness trainer focused on..."
-                                    className="w-full border rounded-xl p-4 text-sm focus:outline-none mb-6"
-                                />
-
-                                {/* Generate Button (Disabled Style) */}
-                                <button
-                                    disabled
-                                    className="w-full h-12 bg-gray-300 text-white rounded-xl flex items-center justify-center gap-2 cursor-not-allowed"
-                                >
-                                    <BoltIcon className="w-5 h-5" />
-                                    Generate 365 Days of Content
-                                </button>
-
-                            </div>
-
-                            {/* What Happens Next */}
-                            <div className="bg-blue-50 rounded-xl p-6 ml-12">
-                                <h3 className="mb-4">What happens next?</h3>
-
-                                <ul className="space-y-3">
-                                    {[
-                                        "AI generates 365 unique posts tailored to your industry",
-                                        "All content is auto-branded with your logo, phone, and website",
-                                        "Posts are automatically scheduled throughout the year",
-                                        "You can edit any post individually without affecting others",
-                                    ].map((text) => (
-                                        <li key={text} className="flex items-start gap-3">
-                                            <span className="text-blue-600 mt-1">✔</span>
-                                            <p className="text-sm text-gray-700">{text}</p>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-
-                        </div>
-                    )}
-                    {activeTab === "Content Calendar" && (
-                        <div className="p-6 bg-gray-50">
-
-                            {/* Page Header */}
-                            <div className="flex justify-between items-center mb-6">
-                                {/* Left */}
-                                <div>
-                                    <h2 className="text-xl">Content Calendar</h2>
-                                    <p className="text-gray-500">
-                                        Manage your auto-scheduled content
-                                    </p>
-                                </div>
-
-                                {/* Right Controls */}
-                                <div className="flex items-center gap-3">
-                                    {/* View Tabs */}
-                                    <div className="flex border rounded-lg overflow-hidden">
-                                        {["14-day", "monthly", "365-day"].map((tab) => (
-                                            <button
-                                                key={tab}
-                                                className={`px-4 py-2 text-sm ${tab === "14-day"
-                                                    ? "bg-black text-white"
-                                                    : "bg-white text-gray-600"
-                                                    }`}
-                                            >
-                                                {tab}
-                                            </button>
-                                        ))}
-                                    </div>
-
-                                    {/* Schedule Button */}
-                                    <button className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg">
-                                        <CalendarIcon className="w-5 h-5" />
-                                        Schedule New
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Calendar Card */}
-                            <div className="bg-white shadow p-6">
-
-                                {/* Month Header */}
-                                <div className="flex justify-between items-center mb-6">
-                                    <h3>December 2024</h3>
-
-                                    <div className="flex items-center gap-3 text-gray-600">
-                                        <button>
-                                            ‹
-                                        </button>
-                                        <span>Today</span>
-                                        <button>
-                                            ›
-                                        </button>
-                                    </div>
-                                </div>
-                                {/* Calendar Grid */}
-                                <div className="grid grid-cols-4 gap-4">
-
-                                    {[...Array(12)].map((_, i) => (
-                                        <div
-                                            key={i}
-                                            className="bg-white p-3 rounded-xl shadow-lg hover:shadow-xl transition-shadow"
-                                        >
-
-                                            {/* Date */}
-                                            <p className="text-sm text-gray-600 mb-1">
-                                                Sunday - {28 + i}
-                                            </p>
-
-                                            {/* Time + Platforms */}
-                                            <div className="flex justify-between items-center mb-2">
-                                                <span className="text-sm text-gray-700">
-                                                    08:00 PM
-                                                </span>
-
-                                                <div className="flex gap-2">
-                                                    <FaFacebook className="text-blue-600 w-4 h-4" />
-                                                    <FaInstagram className="text-pink-600 w-4 h-4" />
-                                                    <FaTwitter className="text-sky-500 w-4 h-4" />
-                                                </div>
-                                            </div>
-
-                                            {/* Description */}
-                                            <p className="text-sm text-gray-600 mb-3">
-                                                Guess the next hotspot in town 😊 We can't wait to see you ...
-                                            </p>
-
-                                            {/* Video Placeholder */}
-                                            <div className="relative h-28 mb-3 overflow-hidden rounded-lg">
-                                                {/* Image */}
-                                                <img
-                                                    src="images/coffee.jpg"
-                                                    alt="Post preview"
-                                                    className="w-full h-full object-cover"
-                                                />
-
-                                                {/* Overlay */}
-                                                <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                                                    <span className="w-12 h-12 flex items-center justify-center bg-white/50 rounded-full">
-                                                        <span className="text-white text-xl">▶</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            {/* Actions */}
-                                            <div className="flex justify-center gap-6 text-gray-400">
-                                                <PencilIcon className="w-5 h-5 cursor-pointer hover:text-black transition" />
-                                                <EyeIcon className="w-5 h-5 cursor-pointer hover:text-black transition" />
-                                                <TrashIcon className="w-5 h-5 cursor-pointer hover:text-red-500 transition" />
-                                            </div>
-
-                                        </div>
-                                    ))}
-
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                    {activeTab === "Image & Reel Library" && (
-                        <div className="p-6 bg-gray-50">
-
-                            {/* Title + Action */}
-                            <div className="flex justify-between items-center mb-6">
-                                <div>
-                                    <h2 className="text-xl">Image & Reel Library</h2>
-                                    <p className="text-gray-500">
-                                        Browse and manage your content templates
-                                    </p>
-                                </div>
-
-                                <button className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-xl">
-                                    <PlusIcon className="w-4 h-4" />
-                                    Upload Custom
-                                </button>
-                            </div>
-
-                            {/* Library Card */}
-                            <div className="bg-white rounded-xl shadow-lg p-5">
-
-                                {/* Top Controls */}
-                                <div className="flex justify-between items-center mb-6">
-
-                                    {/* Tabs */}
-                                    <div className="flex gap-6">
-                                        {["Images", "Reels", "Festivals & Occasions"].map((tab, i) => (
-                                            <span
-                                                key={tab}
-                                                className={`cursor-pointer pb-1 ${i === 0
-                                                    ? "text-black border-b-2 border-black"
-                                                    : "text-gray-400"
-                                                    }`}
-                                            >
-                                                {tab}
-                                            </span>
-                                        ))}
-                                    </div>
-
-                                    {/* Search + Filter */}
-                                    <div className="flex gap-3">
-                                        <div className="relative">
-                                            <MagnifyingGlassIcon className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                                            <input
-                                                placeholder="Search library..."
-                                                className="pl-9 pr-3 py-2 border rounded-lg text-sm"
-                                            />
-                                        </div>
-
-                                        <button className="flex items-center gap-2 border px-4 py-2 rounded-lg bg-white">
-                                            <FunnelIcon className="w-4 h-4 text-black" />
-                                            Filters
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {/* Cards Grid */}
-                                <div className="grid grid-cols-6 gap-4">
-                                    {Array.from({ length: 24 }).map((_, i) => {
-                                        const badges = ["Motivation", "Product", "Tutorial", "Festival"];
-                                        const badge = badges[i % badges.length];
-
-                                        return (
-                                            <div
-                                                key={i}
-                                                className="
-                    relative
-                    h-64
-                    rounded-xl
-                    overflow-hidden
-                    shadow-xl
-                    bg-gray-200
-                "
-                                            >
-                                                {/* Image */}
-                                                <img
-                                                    src="images/motivation.jpg"
-                                                    alt="Post preview"
-                                                    className="w-full h-full object-cover"
-                                                />
-
-                                                {/* Overlay (optional – gives better contrast) */}
-                                                <div className="absolute inset-0 bg-black/10" />
-
-                                                {/* Badge */}
-                                                <span
-                                                    className="
-                        absolute
-                        top-3
-                        left-3
-                        bg-white
-                        text-gray-600
-                        text-xs
-                        px-2
-                        py-1
-                        rounded-md
-                        shadow
-                    "
-                                                >
-                                                    {badge}
-                                                </span>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-
-                            </div>
-                        </div>
-                    )}
-
-                    {activeTab === "Brand Settings" && (
-                        <div className="p-6 bg-gray-50">
-
-                            {/* Page Title */}
-                            <div className="mb-6">
-                                <h2 className="text-xl">Brand Overlay Settings</h2>
-                                <p className="text-gray-500">
-                                    Customize how your logo and contact info appear on posts
-                                </p>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-6">
-
-                                {/* LEFT SIDE */}
-                                <div className="space-y-6">
-
-                                    {/* Live Preview Card */}
-                                    <div className="bg-white p-4 shadow-xl">
-
-                                        <p className="text-sm text-gray-600 mb-3">Live Preview</p>
-
-                                        {/* Image Preview */}
-                                        <div className="relative h-96 bg-gray-200 overflow-hidden rounded-xl">
-
-                                            {/* Image */}
-                                            <img
-                                                src="images/sport.jpg" // replace with your image path
-                                                alt="Template Preview"
-                                                className="w-full h-full object-cover"
-                                            />
-
-                                            {/* AI Badge */}
-                                            <div className="absolute top-3 left-3 bg-white p-2 rounded-md shadow flex items-center gap-1">
-                                                <Sparkles className="w-4 h-4 text-purple-600" />
-                                            </div>
-
-                                            {/* Contact Info */}
-                                            <div className="absolute bottom-3 right-3 bg-white px-3 py-2 text-xs text-gray-600 shadow rounded-md">
-                                                <p>+1 (555) 123-4567</p>
-                                                <p>www.yourcompany.com</p>
-                                            </div>
-                                        </div>
-                                        {/* Info Text */}
-                                        <p className="mt-4 text-sm text-violet-600 bg-gray-100 border border-gray-300 p-3">
-                                            This overlay will be automatically applied to all generated posts
-                                        </p>
-                                    </div>
-
-                                    {/* States */}
-                                    <div>
-                                        <h3 className="mb-2">States</h3>
-                                        <div className="border p-4 text-sm text-gray-700 whitespace-pre-line">
-                                            Fresh brews. Cozy vibes. Good food, great conversations, and your daily
-                                            dose of happiness ☕️✨ Whether it’s your morning coffee or an evening
-                                            catch-up, we’ve got the perfect spot waiting for you. 📍 Visit us today 💛
-                                            Sip. Relax. Repeat.
-                                            <br />
-                                            <span className="text-blue-600">
-                                                #CafeVibes #CoffeeLovers #CafeTime #GoodCoffeeGoodMood #LocalCafe
-                                                #CoffeeBreak #CafeLife
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                {/* RIGHT SIDE */}
-                                <div className="space-y-6">
-
-                                    {/* Logo Card */}
-                                    <div className="bg-white p-5 shadow-xl">
-
-                                        <div className="flex items-center gap-2 mb-3">
-                                            <ArrowUpTrayIcon className="w-5 h-5" />
-                                            <h3>Logo</h3>
-                                        </div>
-
-                                        {/* Upload Box */}
-                                        <div className="border h-40 flex flex-col items-center justify-center mb-4 bg-gray-50">
-                                            <ArrowUpTrayIcon className="w-8 h-8 text-gray-400 mb-2" />
-                                            <p className="text-sm">Upload your logo</p>
-                                            <p className="text-xs text-gray-500">
-                                                PNG, JPG or SVG (max 5MB)
-                                            </p>
-                                        </div>
-
-                                        {/* Logo Position */}
-                                        <p className="mb-2">Logo Position</p>
-                                        <div className="grid grid-cols-2 gap-3 mb-4">
-                                            {["Top Left", "Top Right", "Bottom Left", "Bottom Right"].map(pos => (
-                                                <button
-                                                    key={pos}
-                                                    className="border px-3 py-2 text-sm hover:border-purple-500"
-                                                >
-                                                    {pos}
-                                                </button>
-                                            ))}
-                                        </div>
-
-                                        {/* Logo Size */}
-                                        <p>Logo Size:</p>
-                                        <p className="text-sm mb-2">64px</p>
-                                        <div className="h-2 bg-gray-200">
-                                            <div className="h-2 bg-black-500 w-1/2" />
-                                        </div>
-                                    </div>
-
-                                    {/* Image Overlay Text */}
-                                    <div className="bg-white p-5 shadow-xl">
-                                        <h3 className="mb-2">Image Overlay Text</h3>
-
-                                        <textarea
-                                            className="w-full border p-3 text-sm mb-4"
-                                            rows={4}
-                                            placeholder="Fresh brews, Cozy vibes, Good food, great conversations and your daily dose of happiness ☕️✨ Whether it's your morning."
-                                        />
-
-                                        <h4 className="mb-2">Contact Information</h4>
-
-                                        <label className="text-sm block mb-1">Phone Number</label>
-                                        <input
-                                            className="w-full border p-2 text-sm"
-                                            placeholder="+1 (555) 123-4567"
-                                        />
-                                    </div>
-
-                                    {/* Brand Colors */}
-                                    <div className="bg-white p-5 shadow-xl">
-                                        <div className="flex items-center gap-2 mb-4">
-                                            <SwatchIcon className="w-5 h-5" />
-                                            <h3>Brand Colors</h3>
-                                        </div>
-
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <label className="text-sm block mb-1">Primary Color</label>
-                                                <div className="flex gap-2">
-                                                    <div className="w-8 h-8 bg-purple-500" />
-                                                    <input
-                                                        className="border p-2 text-sm flex-1"
-                                                        placeholder="#8B5CF6"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <label className="text-sm block mb-1">Secondary Color</label>
-                                                <div className="flex gap-2">
-                                                    <div className="w-8 h-8 bg-pink-500" />
-                                                    <input
-                                                        className="border p-2 text-sm flex-1"
-                                                        placeholder="#EC4899"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {/* Social Time */}
-                                    <div className="space-y-3">
-                                        {[
-                                            { icon: FaFacebook, color: "text-blue-600" },
-                                            { icon: FaTwitter, color: "text-sky-500" },
-                                            { icon: FaLinkedin, color: "text-blue-700" },
-                                            { icon: FaYoutube, color: "text-red-600" },
-                                            { icon: FaInstagram, color: "text-pink-500" },
-                                        ].map(({ icon: Icon, color }, i) => (
-                                            <div key={i} className="flex items-center gap-3">
-                                                <Icon className={`w-5 h-5 ${color}`} />
-
-                                                <div className="flex bg-gray-200 rounded overflow-hidden">
-                                                    <span className="bg-black text-white px-2">8</span>
-                                                    <span className="bg-black text-white px-2">30</span>
-                                                    <span className="px-2 text-black">pm</span>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-
-
-                                    {/* Overlay Settings */}
-                                    <div className="bg-white p-5 shadow-xl">
-                                        <h3 className="mb-2">Overlay Settings</h3>
-                                        <p>Opacity:</p>
-                                        <p className="text-sm mb-2">90%</p>
-                                        <div className="h-2 bg-gray-200">
-                                            <div className="h-2 bg-black w-[90%]" />
-                                        </div>
-                                    </div>
-
-                                    {/* Save Button */}
-                                    <button className="w-full bg-[#000000] text-white py-3">
-                                        Save Brand Settings
-                                    </button>
-
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                    {activeTab === "Social Accounts" && (
-                        <div className="space-y-6 pl-8 pr-8 pt-3">
-
-                            {/* Title */}
-                            <div>
-                                <h2 className="text-xl text-gray-900">
-                                    Social Accounts
-                                </h2>
-                                <p className="text-gray-500 text-sm">
-                                    Connect your social media accounts to enable auto-posting
-                                </p>
-                            </div>
-
-                            {/* Why Connect Card */}
-                            <div className="bg-blue-50 border border-blue-100 rounded-xl p-5">
-                                <div className="flex items-start gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
-                                        <FaCheckCircle className="text-white w-5 h-5" />
-                                    </div>
-
-                                    <div>
-                                        <h4 className=" text-gray-900 mb-2">
-                                            Why connect your accounts?
-                                        </h4>
-
-                                        <ul className="space-y-2 text-sm text-gray-700">
-                                            <li className="flex gap-2 items-start">
-                                                <FaCheck className="text-blue-600 mt-1" />
-                                                Auto-publish content directly to your platforms
-                                            </li>
-                                            <li className="flex gap-2 items-start">
-                                                <FaCheck className="text-blue-600 mt-1" />
-                                                Schedule posts to go live at optimal times
-                                            </li>
-                                            <li className="flex gap-2 items-start">
-                                                <FaCheck className="text-blue-600 mt-1" />
-                                                Track performance and engagement metrics
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Instagram Card */}
-                            <div className="bg-white rounded-xl border p-5 space-y-4">
-                                <div className="flex justify-between items-start">
-                                    <div className="flex gap-4">
-                                        <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center mt-2">
-                                            <FaInstagram className="text-pink-500 w-6 h-6" />
-                                        </div>
-
-                                        <div>
-                                            <div className="flex items-center gap-2">
-                                                <h4 className=" text-gray-900">
-                                                    Instagram
-                                                </h4>
-                                                <span className="flex items-center gap-1 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
-                                                    <FaCheckCircle className="w-3 h-3" />
-                                                    Connected
-                                                </span>
-                                            </div>
-
-                                            <p className="text-sm text-gray-600">@yourbusiness</p>
-                                            <p className="text-xs text-gray-400">
-                                                Last synced: 2 mins ago
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex gap-2">
-                                        <button className="flex items-center gap-1 px-3 py-1.5 text-sm border rounded-lg bg-white text-black">
-
-                                            Refresh
-                                        </button>
-                                        <button className="px-3 py-1.5 text-sm border border-red-500 text-red-500 rounded-lg bg-white">
-                                            Disconnect
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <hr />
-
-                                <div className="grid grid-cols-4 text-center">
-                                    <div>
-                                        <p className="">142</p>
-                                        <p className="text-xs text-gray-500">Posts Published</p>
-                                    </div>
-                                    <div>
-                                        <p className="">24.5k</p>
-                                        <p className="text-xs text-gray-500">Total Reach</p>
-                                    </div>
-                                    <div>
-                                        <p className="">8.2%</p>
-                                        <p className="text-xs text-gray-500">Engagement</p>
-                                    </div>
-                                    <div>
-                                        <p className="">1.2K</p>
-                                        <p className="text-xs text-gray-500">New Followers</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Facebook Card */}
-                            <div className="bg-white rounded-xl border p-5 space-y-4">
-                                <div className="flex justify-between items-start">
-                                    <div className="flex gap-4">
-                                        <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mt-2">
-                                            <FaFacebookF className="text-blue-600 w-6 h-6" />
-                                        </div>
-
-                                        <div>
-                                            <div className="flex items-center gap-2">
-                                                <h4 className=" text-gray-900">
-                                                    Facebook
-                                                </h4>
-                                                <span className="flex items-center gap-1 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
-                                                    <FaCheckCircle className="w-3 h-3" />
-                                                    Connected
-                                                </span>
-                                            </div>
-
-                                            <p className="text-sm text-gray-600">
-                                                Your Business Page
-                                            </p>
-                                            <p className="text-xs text-gray-400">
-                                                Last synced: 5 mins ago
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex gap-2">
-                                        <button className="flex items-center gap-1 px-3 py-1.5 text-sm border rounded-lg bg-white text-black">
-
-                                            Refresh
-                                        </button>
-                                        <button className="px-3 py-1.5 text-sm border border-red-500 text-red-500 rounded-lg bg-white">
-                                            Disconnect
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <hr />
-
-                                <div className="grid grid-cols-4 text-center">
-                                    <div>
-                                        <p className="">142</p>
-                                        <p className="text-xs text-gray-500">Posts Published</p>
-                                    </div>
-                                    <div>
-                                        <p className="">24.5k</p>
-                                        <p className="text-xs text-gray-500">Total Reach</p>
-                                    </div>
-                                    <div>
-                                        <p className="">8.2%</p>
-                                        <p className="text-xs text-gray-500">Engagement</p>
-                                    </div>
-                                    <div>
-                                        <p className="">1.2K</p>
-                                        <p className="text-xs text-gray-500">New Followers</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    )}
-                    {activeTab === "Subscription & Billing" && (
-                        <div className="p-10 bg-gray-50">
-
-                            {/* Title */}
-                            <div className="text-center mb-10">
-                                <h2 className="text-3xl">
-                                    Subscription & Billing
-                                </h2>
-                                <p className="text-gray-500 mt-2">
-                                    Manage your plan and payment information
-                                </p>
-                            </div>
-
-                            {/* Current Plan Card */}
-                            <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-8 text-white shadow-xl mb-12 flex justify-between items-center">
-
-                                {/* Left Content */}
-                                <div className="space-y-3">
-                                    <div className="flex items-center gap-3">
-                                        <StarIcon className="w-6 h-6 text-white" />
-                                        <h3 className="text-xl font-medium">
-                                            Current Plan: Professional
-                                        </h3>
-                                    </div>
-
-                                    <p className="text-white/80 text-sm">
-                                        Your subscription renews on December 15, 2025
-                                    </p>
-
-                                    <div className="flex gap-12 mt-4">
-                                        <div>
-                                            <p className="text-sm text-white/80">
-                                                Posts this month
-                                            </p>
-                                            <p className="text-2xl">
-                                                127
-                                            </p>
-                                        </div>
-
-                                        <div>
-                                            <p className="text-sm text-white/80">
-                                                Connected accounts
-                                            </p>
-                                            <p className="text-2xl">
-                                                3
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Right Button */}
-                                <button className="bg-white text-purple-600 px-6 py-3 rounded-xl font-medium shadow">
-                                    Manage Billing
-                                </button>
-                            </div>
-
-                            {/* Toggle */}
-                            <div className="flex items-center justify-between bg-gray-100 rounded-full px-4 py-2 max-w-xs mx-auto mb-12">
-                                <div
-                                    className="relative w-36 h-10 bg-white rounded-full shadow-inner cursor-pointer"
-                                    onClick={() =>
-                                        setBillingCycle(billingCycle === "monthly" ? "yearly" : "monthly")
-                                    }
-                                >
-                                    <div
-                                        className={`absolute top-1 left-1 w-16 h-8 bg-white rounded-full shadow transition-transform flex items-center justify-center text-black font-medium text-sm ${billingCycle === "yearly" ? "translate-x-16" : ""
-                                            }`}
-                                    >
-                                        {billingCycle === "monthly" ? "Monthly" : "Yearly"}
-                                    </div>
-                                </div>
-
-                                <span className="ml-4 px-3 py-1 text-green-700 text-sm font-semibold bg-green-100 rounded-full">
-                                    Save 20%
-                                </span>
-                            </div>
-
-                            {/* Pricing Cards */}
-                            <div className="grid md:grid-cols-2 gap-10">
-
-                                {/* Starter Plan */}
-                                <div className="bg-white border border-gray-200 rounded-3xl p-10 text-left shadow-sm">
-
-                                    <h3 className="text-2xl mb-1">Starter</h3>
-                                    <p className="text-gray-500 mb-6">
-                                        For Individual & Freelancer
-                                    </p>
-
-                                    <div className="mb-6">
-                                        <div className="text-4xl">
-                                            ₹899
-                                            <span className="text-base text-gray-500">/month</span>
-                                        </div>
-                                        <div className="text-sm text-gray-500">
-                                            $11 USD / month
-                                        </div>
-                                    </div>
-
-                                    <div className="flex justify-center mb-8">
-                                        <Link
-                                            href="/signup"
-                                            className="w-full px-8 py-3 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white text-center"
-                                        >
-                                            Get Started
-                                        </Link>
-                                    </div>
-
-                                    <ul className="space-y-4">
-                                        {[
-                                            "365 AI-generated posts",
-                                            "Images, reels & festivals",
-                                            "Auto scheduling",
-                                            "Basic branding",
-                                        ].map((item) => (
-                                            <li key={item} className="flex items-center gap-3 text-gray-700">
-                                                <span className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center text-white text-xs">
-                                                    ✓
-                                                </span>
-                                                {item}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                                {/* Growth Plan */}
-                                <div className="relative bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl p-10 text-left shadow-xl">
-
-                                    <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                                        <span className="px-4 py-1 rounded-full bg-yellow-400 text-black text-xs">
-                                            Most Popular
-                                        </span>
-                                    </div>
-
-                                    <h3 className="text-2xl text-white mb-1">
-                                        Growth
-                                    </h3>
-                                    <p className="text-white/80 mb-6">
-                                        For Small Business
-                                    </p>
-
-                                    <div className="mb-6">
-                                        <div className="text-4xl text-white">
-                                            ₹1,499
-                                            <span className="text-base text-white/80">/month</span>
-                                        </div>
-                                        <div className="text-sm text-white/80">
-                                            $18 USD / month
-                                        </div>
-                                    </div>
-
-                                    <div className="flex justify-center mb-8">
-                                        <Link
-                                            href="/signup"
-                                            className="w-full px-8 py-3 rounded-full bg-white text-blue-600 text-center"
-                                        >
-                                            Get Started
-                                        </Link>
-                                    </div>
-
-                                    <ul className="space-y-4">
-                                        {[
-                                            "Unlimited content generation",
-                                            "Advanced branding",
-                                            "Multi-platform scheduling",
-                                            "Priority support",
-                                        ].map((item) => (
-                                            <li key={item} className="flex items-center gap-3 text-white">
-                                                <span className="w-5 h-5 rounded-full bg-yellow-400 flex items-center justify-center text-black text-xs">
-                                                    ✓
-                                                </span>
-                                                {item}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                            </div>
-                        </div>
-                    )}
-                    {activeTab === "Settings" && (
-                        <div className="p-6 bg-gray-50 space-y-8">
-
-                            {/* Page Title */}
-                            <div>
-                                <h2 className="text-2xl text-black">Account Settings</h2>
-                                <p className="text-gray-500">
-                                    Manage your profile and connected social accounts
-                                </p>
-                            </div>
-
-                            {/* Profile Information */}
-                            <div className="bg-white rounded-xl shadow p-6">
-                                <div className="flex items-center gap-2 mb-6">
-                                    <UserIcon className="w-5 h-5 text-black" />
-                                    <h3 className="text-lg">Profile Information</h3>
-                                </div>
-
-                                {/* Profile Photo */}
-                                <div className="flex items-center gap-6 mb-6">
-                                    <div className="w-20 h-20 bg-black rounded-full flex items-center justify-center text-white text-xl">
-                                        JD
-                                    </div>
-                                    <div>
-                                        <button className="px-4 py-2 border rounded-lg bg-white text-black">
-                                            Change Photo
-                                        </button>
-                                        <p className="text-xs text-gray-500 mt-1">
-                                            JPG, PNG or GIF Max 5MB
-                                        </p>
-                                    </div>
-                                </div>
-
-                                {/* Inputs */}
-                                <div className="grid grid-cols-2 gap-6 mb-4">
-                                    <div>
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <UserIcon className="w-4 h-4" />
-                                            <label>Full Name</label>
-                                        </div>
-                                        <input
-                                            placeholder="John Doe"
-                                            className="w-full border rounded-lg px-3 py-2"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <EnvelopeIcon className="w-4 h-4" />
-                                            <label>Email Address</label>
-                                        </div>
-                                        <input
-                                            placeholder="john@example.com"
-                                            className="w-full border rounded-lg px-3 py-2"
-                                        />
-                                    </div>
-                                </div>
-
-                                <button className="bg-black text-white px-6 py-2 rounded-lg">
-                                    Save Changes
-                                </button>
-                            </div>
-
-                            {/* Password & Security */}
-                            <div className="bg-white rounded-xl shadow p-6">
-                                <div className="flex items-center gap-2 mb-6">
-                                    <LockClosedIcon className="w-5 h-5" />
-                                    <h3 className="text-lg">Password & Security</h3>
-                                </div>
-
-                                <div className="mb-4">
-                                    <label>Current Password</label>
-                                    <input
-                                        type="password"
-                                        placeholder="••••••••"
-                                        className="w-full border rounded-lg px-3 py-2 mt-1"
-                                    />
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-6 mb-4">
-                                    <div>
-                                        <label>New Password</label>
-                                        <input
-                                            type="password"
-                                            placeholder="••••••••"
-                                            className="w-full border rounded-lg px-3 py-2 mt-1"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label>Confirm Password</label>
-                                        <input
-                                            type="password"
-                                            placeholder="••••••••"
-                                            className="w-full border rounded-lg px-3 py-2 mt-1"
-                                        />
-                                    </div>
-                                </div>
-
-                                <button className="bg-black text-white px-6 py-2 rounded-lg">
-                                    Update Password
-                                </button>
-                            </div>
-                            {/* Connected Social Accounts */}
-                            <div className="bg-white rounded-xl shadow p-6 space-y-4">
-
-                                <div className="flex items-center gap-2 mb-4">
-                                    <GlobeAltIcon className="w-5 h-5 text-black" />
-                                    <h3 className="text-lg">Connected Social Accounts</h3>
-                                </div>
-
-                                {[
-                                    { name: "Instagram", icon: FaInstagram },
-                                    { name: "Facebook", icon: FaFacebook },
-                                    { name: "LinkedIn", icon: FaLinkedin },
-                                    { name: "YouTube", icon: FaYoutube },
-                                ].map(({ name, icon: Icon }) => (
-                                    <div
-                                        key={name}
-                                        className="flex justify-between items-center border rounded-lg p-4"
-                                    >
-                                        {/* Left */}
-                                        <div className="flex items-center gap-3">
-                                            <Icon className="w-5 h-5 text-black" />
-                                            <div>
-                                                <p className="text-black">{name}</p>
-                                                <p className="text-sm text-gray-500">@yourcompany</p>
-                                            </div>
-                                        </div>
-
-                                        {/* Right */}
-                                        <div className="flex gap-3">
-                                            <span className="flex items-center gap-1 text-green-600">
-                                                <CheckIcon className="w-4 h-4" />
-                                                Connected
-                                            </span>
-                                            <button className="border border-red-500 text-red-500 px-3 py-1 rounded-lg">
-                                                Disconnect
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
-
-                                {/* Twitter */}
-                                <div className="flex justify-between items-center border rounded-lg p-4">
-                                    <div className="flex items-center gap-3">
-                                        <FaTwitter className="w-5 h-5 text-black" />
-                                        <div>
-                                            <p className="text-black">X (Twitter)</p>
-                                            <p className="text-sm text-gray-500">@yourcompany</p>
-                                        </div>
-                                    </div>
-
-                                    <button className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg">
-                                        <LinkIcon className="w-4 h-4" />
-                                        Connect
-                                    </button>
-                                </div>
-
-                                {/* Info Box */}
-                                <div className="bg-blue-50 text-blue-600 p-4 rounded-lg text-sm">
-                                    Connect all your social accounts to enable cross-platform posting and scheduling
-                                </div>
-
-                            </div>
-                            {/* Notifications */}
-                            <div className="bg-white rounded-xl shadow p-6 space-y-4">
-                                <div className="flex items-center gap-2 mb-4">
-                                    <BellIcon className="w-5 h-5" />
-                                    <h3 className="text-lg">Notification Preference</h3>
-                                </div>
-
-                                {[
-                                    {
-                                        title: "Email Notification",
-                                        text: "Receive updates via email",
-                                        on: true,
-                                    },
-                                    {
-                                        title: "Push Notification",
-                                        text: "Get notified in your browser",
-                                        on: false,
-                                    },
-                                    {
-                                        title: "Weekly Summary",
-                                        text: "Get weekly performance reports",
-                                        on: false,
-                                    },
-                                ].map(({ title, text, on }) => (
-                                    <div
-                                        key={title}
-                                        className="flex justify-between items-center bg-gray-100 rounded-lg p-4"
-                                    >
-                                        {/* Text */}
-                                        <div>
-                                            <p className="font-medium">{title}</p>
-                                            <p className="text-sm text-gray-500">{text}</p>
-                                        </div>
-
-                                        {/* Toggle */}
-                                        <div
-                                            className={`w-12 h-6 flex items-center rounded-full px-1 transition-colors duration-300 ${on ? "bg-blue-500" : "bg-gray-400"
-                                                }`}
-                                        >
-                                            <div
-                                                className={`w-4 h-4 bg-white rounded-full shadow transform transition-transform duration-300 ${on ? "translate-x-6" : "translate-x-0"
-                                                    }`}
-                                            />
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Danger Zone */}
-                            <div className="border border-red-200 rounded-xl p-6 bg-white">
-                                <h2 className="text-red-600 mb-2 text-2xl">Danger Zone</h2>
-
-                                {/* Highlighted danger content */}
-                                <div className="flex justify-between items-center bg-red-50 p-4 rounded-lg">
-                                    <div>
-                                        <p className="text-black font-medium">Delete Account</p>
-                                        <p className="text-sm text-gray-500">
-                                            Permanently delete your account and all data
-                                        </p>
-                                    </div>
-
-                                    <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
-                                        Delete
-                                    </button>
-                                </div>
-                            </div>
-
-
-                        </div>
-                    )}
-
-                </main>
+                    <div style={{ display: "flex", alignItems: "center", gap: 3, padding: "3px 7px", borderRadius: 20, background: k.up ? "#ECFDF5" : "#FEF2F2", color: k.up ? "#10B981" : "#EF4444", fontSize: 11.5, fontWeight: 700, fontFamily: "JetBrains Mono,monospace" }}>
+                      <i className={`fa-solid fa-arrow-${k.up ? "up" : "down"}`} style={{ fontSize: 9 }} />{k.delta}
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 26, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.5px", lineHeight: 1 }}>{k.val}</div>
+                  <div style={{ fontSize: 12.5, color: "#9496B5", marginTop: 4, fontWeight: 500 }}>{k.lbl}</div>
+                </div>
+              ))}
             </div>
-        </div>
-    );
+
+            {/* AI Banner */}
+            <div className="ai-banner-anim" style={{ borderRadius: 14, padding: "16px 20px", marginBottom: 18, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, boxShadow: "0 4px 20px rgba(91,91,214,.3)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                <div style={{ width: 42, height: 42, borderRadius: 12, background: "rgba(255,255,255,.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>✦</div>
+                <div>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", fontFamily: "Sora,sans-serif", marginBottom: 3 }}>Shoutly AI Insight — Your best time to post is TODAY at 7:30 PM</div>
+                  <div style={{ fontSize: 12.5, color: "rgba(255,255,255,.65)" }}>Based on your audience activity patterns across Instagram & LinkedIn · Predicted +34% higher engagement vs your avg</div>
+                </div>
+              </div>
+              <button onClick={() => showToast("✦ Opening full AI insights…")} style={{ padding: "9px 18px", borderRadius: 7, background: "rgba(255,255,255,.15)", border: "1px solid rgba(255,255,255,.2)", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", fontFamily: "Sora,sans-serif", flexShrink: 0 }}>View Details →</button>
+            </div>
+
+            {/* Charts + AI Generator */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 18 }}>
+              {/* Engagement Chart Placeholder */}
+              <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.2px" }}>Engagement Overview</div>
+                    <div style={{ fontSize: 12, color: "#9496B5", marginTop: 2 }}>Cross-platform performance · Last 30 days</div>
+                  </div>
+                  <div style={{ display: "flex", gap: 4 }}>
+                    {["7D", "30D", "90D"].map((ct, i) => (
+                      <div key={ct} style={{ padding: "4px 10px", borderRadius: 20, fontSize: 11.5, fontWeight: 700, cursor: "pointer", background: i === 0 ? "#EEEEFF" : undefined, color: i === 0 ? "#5B5BD6" : "#9496B5" }}>{ct}</div>
+                    ))}
+                  </div>
+                </div>
+                <div style={{ position: "relative" }}>
+                  <div style={{ position: "absolute", top: -4, right: 0, padding: "2px 8px", borderRadius: 20, background: "#ECFDF5", border: "1px solid rgba(16,185,129,.2)", color: "#10B981", fontSize: 11, fontWeight: 700 }}>↑ +208% vs last month</div>
+                  <div style={{ height: 160, background: "#F0F1F8", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", color: "#9496B5", fontSize: 12 }}>📊 Chart renders here (Chart.js)</div>
+                </div>
+              </div>
+
+              {/* AI Post Generator */}
+              <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
+                <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 2 }}>AI Post Generator</div>
+                <div style={{ fontSize: 12, color: "#9496B5", marginBottom: 14 }}>Generate captions with a single click ✦</div>
+                <div style={{ display: "flex", gap: 5, marginBottom: 14, flexWrap: "wrap" }}>
+                  {Object.entries(platLabels).map(([key, label]) => {
+                    const active = activePlat === key;
+                    return (
+                      <div
+                        key={key}
+                        onClick={() => { setActivePlat(key); setCaption(""); setTags2([]); }}
+                        style={{ display: "flex", alignItems: "center", gap: 5, padding: "5px 11px", borderRadius: 20, border: `1.5px solid ${active ? platColors[key] : "#E4E5EF"}`, fontSize: 12, fontWeight: 700, cursor: "pointer", background: active ? platColors[key] : "#fff", color: active ? "#fff" : "#4B4D6B" }}
+                      >
+                        <div style={{ width: 7, height: 7, borderRadius: "50%", background: active ? "rgba(255,255,255,.4)" : platColors[key] }} />
+                        {label}
+                      </div>
+                    );
+                  })}
+                </div>
+                <textarea
+                  placeholder="Describe your post topic… e.g. 'new product launch, summer vibe, call to action'"
+                  style={{ width: "100%", padding: "11px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#F0F1F8", color: "#0D0E1A", fontSize: 13.5, outline: "none", resize: "none", height: 70, fontFamily: "inherit", lineHeight: 1.6 }}
+                />
+                {generating && (
+                  <div style={{ marginBottom: 12 }}>
+                    <div className="skel-line" style={{ width: "100%" }} />
+                    <div className="skel-line" style={{ width: "85%" }} />
+                    <div className="skel-line" style={{ width: "70%" }} />
+                  </div>
+                )}
+                {caption && !generating && (
+                  <div style={{ background: "linear-gradient(135deg,#EEEEFF,rgba(236,233,255,.5))", border: "1px solid rgba(91,91,214,.2)", borderRadius: 7, padding: "12px 14px", fontSize: 13.5, color: "#0D0E1A", lineHeight: 1.7, marginBottom: 12 }}>
+                    {caption}
+                  </div>
+                )}
+                {tags2.length > 0 && !generating && (
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 12 }}>
+                    {tags2.map((t) => (
+                      <span key={t} style={{ padding: "3px 9px", borderRadius: 6, background: "#EEEEFF", border: "1px solid #E0E0FA", color: "#5B5BD6", fontSize: 11.5, fontWeight: 600, fontFamily: "JetBrains Mono,monospace", cursor: "pointer" }}>{t}</span>
+                    ))}
+                  </div>
+                )}
+                <div style={{ display: "flex", gap: 7 }}>
+                  <button onClick={generateCaption} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "7px 13px", borderRadius: 7, background: "#5B5BD6", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: "pointer", border: "none" }}>
+                    <i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 11 }} /> Generate
+                  </button>
+                  {caption && !generating && (
+                    <>
+                      <button onClick={generateCaption} style={{ display: "flex", alignItems: "center", gap: 5, padding: "7px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#fff", color: "#4B4D6B", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
+                        <i className="fa-solid fa-rotate-right" style={{ fontSize: 11 }} /> Regen
+                      </button>
+                      <button onClick={copyCaption} style={{ display: "flex", alignItems: "center", gap: 5, padding: "7px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#fff", color: "#4B4D6B", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
+                        <i className="fa-regular fa-copy" style={{ fontSize: 11 }} /> Copy
+                      </button>
+                      <button onClick={() => showToast("📅 Added to calendar!")} style={{ display: "flex", alignItems: "center", gap: 5, padding: "7px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#fff", color: "#4B4D6B", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
+                        <i className="fa-solid fa-calendar-plus" style={{ fontSize: 11 }} /> Schedule
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Scheduled Posts Table */}
+            <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, boxShadow: "0 1px 4px rgba(13,14,26,.07)", marginBottom: 18 }}>
+              <div style={{ padding: "16px 18px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif" }}>Scheduled Posts</div>
+                  <div style={{ fontSize: 12, color: "#9496B5" }}>Upcoming content across all platforms</div>
+                </div>
+                <button onClick={() => showToast("Opening full post manager…")} style={{ display: "flex", alignItems: "center", gap: 5, padding: "7px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#fff", color: "#4B4D6B", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
+                  View all <i className="fa-solid fa-arrow-right" style={{ fontSize: 11 }} />
+                </button>
+              </div>
+              <div style={{ padding: "10px 0" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                  <thead>
+                    <tr>
+                      {["Post", "Scheduled", "Est. Reach", "Status", "Actions"].map((h, i) => (
+                        <th key={h} style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: "#9496B5", padding: "8px 12px", textAlign: "left", borderBottom: "1px solid #E4E5EF", paddingLeft: i === 0 ? 18 : 12, paddingRight: i === 4 ? 18 : 12 }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {posts.map((p, i) => {
+                      const statusStyles: Record<string, { bg: string; color: string; icon: string }> = {
+                        scheduled: { bg: "#EFF6FF", color: "#3B82F6", icon: "🕐" },
+                        draft: { bg: "#FFFBEB", color: "#F59E0B", icon: "✏️" },
+                        published: { bg: "#ECFDF5", color: "#10B981", icon: "✅" },
+                      };
+                      const ss = statusStyles[p.status];
+                      return (
+                        <tr key={i}>
+                          <td style={{ padding: "10px 12px 10px 18px", borderBottom: "1px solid #ECEDF5", verticalAlign: "middle" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                              <img src={p.img} alt="" style={{ width: 44, height: 44, borderRadius: 7, objectFit: "cover", display: "block" }} />
+                              <div style={{ minWidth: 0 }}>
+                                <div style={{ fontSize: 13, fontWeight: 600, color: "#0D0E1A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 200 }}>{p.name}</div>
+                                <div style={{ fontSize: 11.5, color: "#9496B5", display: "flex", alignItems: "center", gap: 4, marginTop: 2 }}>
+                                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: p.platC }} />{p.plat}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td style={{ padding: "10px 12px", borderBottom: "1px solid #ECEDF5", verticalAlign: "middle" }}>
+                            <div style={{ fontSize: 12.5, fontWeight: 600, color: "#0D0E1A", fontFamily: "JetBrains Mono,monospace" }}>{p.time}</div>
+                            <div style={{ fontSize: 11.5, color: "#9496B5" }}>{p.date}</div>
+                          </td>
+                          <td style={{ padding: "10px 12px", borderBottom: "1px solid #ECEDF5", verticalAlign: "middle" }}>
+                            <div style={{ fontSize: 13, fontWeight: 700, color: "#0D0E1A", fontFamily: "JetBrains Mono,monospace" }}>{p.reach}</div>
+                            <div style={{ fontSize: 11, color: "#9496B5", fontFamily: "JetBrains Mono,monospace" }}>{p.eng} eng</div>
+                          </td>
+                          <td style={{ padding: "10px 12px", borderBottom: "1px solid #ECEDF5", verticalAlign: "middle" }}>
+                            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 9px", borderRadius: 20, fontSize: 11.5, fontWeight: 700, background: ss.bg, color: ss.color }}>
+                              {ss.icon} {p.status.charAt(0).toUpperCase() + p.status.slice(1)}
+                            </span>
+                          </td>
+                          <td style={{ padding: "10px 18px 10px 12px", borderBottom: "1px solid #ECEDF5", verticalAlign: "middle" }}>
+                            <div className="row-actions">
+                              <div className="row-btn-hover" onClick={() => showToast("Opening editor…")} style={{ width: 28, height: 28, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", color: "#9496B5", fontSize: 12, cursor: "pointer", border: "1px solid #E4E5EF" }}>
+                                <i className="fa-solid fa-pen" style={{ fontSize: 11 }} />
+                              </div>
+                              <div className="row-btn-hover" onClick={() => showToast("More options…")} style={{ width: 28, height: 28, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", color: "#9496B5", fontSize: 12, cursor: "pointer", border: "1px solid #E4E5EF" }}>
+                                <i className="fa-solid fa-ellipsis" style={{ fontSize: 11 }} />
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Bottom Grid */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 2fr 1fr", gap: 14, marginBottom: 18 }}>
+
+              {/* Mini Calendar */}
+              <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
+                <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 2 }}>Content Calendar</div>
+                <div style={{ fontSize: 12, color: "#9496B5", marginBottom: 8 }}>March 2026</div>
+                <MiniCalendar />
+              </div>
+
+              {/* AI Ideas */}
+              <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif" }}>AI Content Ideas</div>
+                  <span style={{ fontSize: 11, color: "#5B5BD6", fontWeight: 700, cursor: "pointer" }}>Refresh ↺</span>
+                </div>
+                {ideas.map((d, i) => (
+                  <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "9px 0", borderBottom: i < ideas.length - 1 ? "1px solid #ECEDF5" : undefined }}>
+                    <div style={{ width: 30, height: 30, borderRadius: 8, background: d.sb, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, flexShrink: 0 }}>{d.icon}</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: "#0D0E1A", marginBottom: 2 }}>{d.title}</div>
+                      <div style={{ fontSize: 11.5, color: "#9496B5" }}>{d.sub}</div>
+                    </div>
+                    <div style={{ marginLeft: "auto", padding: "2px 8px", borderRadius: 20, fontSize: 11, fontWeight: 800, background: d.sb, color: d.sc, flexShrink: 0, fontFamily: "JetBrains Mono,monospace" }}>{d.score}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Trending + Workflow */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 14 }}>Trending Hashtags</div>
+                  {tags.map((t, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0", borderBottom: i < tags.length - 1 ? "1px solid #ECEDF5" : undefined }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: "#5B5BD6", fontFamily: "JetBrains Mono,monospace" }}>{t.name}</div>
+                      <div style={{ flex: 1, margin: "0 12px", height: 4, background: "#E4E5EF", borderRadius: 2, overflow: "hidden" }}>
+                        <div style={{ height: "100%", borderRadius: 2, background: "linear-gradient(90deg,#5B5BD6,#7C3AED)", width: `${t.pct}%` }} />
+                      </div>
+                      <div style={{ fontSize: 11.5, fontWeight: 700, color: "#10B981", fontFamily: "JetBrains Mono,monospace" }}>+{t.pct}%</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 8 }}>Active Workflow</div>
+                  {wfSteps.map((s, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 0", position: "relative" }}>
+                      {i < wfSteps.length - 1 && <span style={{ position: "absolute", left: 13, top: 32, bottom: -8, width: 1.5, background: "#ECEDF5" }} />}
+                      <div style={{ width: 26, height: 26, borderRadius: "50%", flexShrink: 0, background: s.c, color: s.tc, fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center" }}>{s.dot}</div>
+                      <div>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: "#0D0E1A" }}>{s.title}</div>
+                        <div style={{ fontSize: 11.5, color: "#9496B5", marginTop: 1 }}>{s.sub}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Team + Top Post */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 8 }}>Team Activity</div>
+                  {team.map((t, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: i < team.length - 1 ? "1px solid #ECEDF5" : undefined }}>
+                      <div style={{ position: "relative" }}>
+                        <div style={{ width: 32, height: 32, borderRadius: 9, background: t.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, color: "#fff" }}>{t.av}</div>
+                        <div style={{ position: "absolute", bottom: -1, right: -1, width: 9, height: 9, borderRadius: "50%", background: t.status, border: "1.5px solid #fff" }} />
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: "#0D0E1A" }}>{t.name}</div>
+                        <div style={{ fontSize: 11.5, color: "#9496B5" }}>{t.action}</div>
+                      </div>
+                      <div style={{ fontSize: 11, color: "#C8CADF", whiteSpace: "nowrap", fontFamily: "JetBrains Mono,monospace" }}>{t.time}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 12 }}>Top Performing Post</div>
+                  <div style={{ borderRadius: 7, overflow: "hidden", background: "linear-gradient(135deg,#1e1b4b,#4338ca)", padding: 14 }}>
+                    <div style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "3px 9px", borderRadius: 20, background: "rgba(255,255,255,.15)", color: "rgba(255,255,255,.85)", fontSize: 11, fontWeight: 700, marginBottom: 8, fontFamily: "Sora,sans-serif" }}>🔥 #1 This Month</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,.9)", lineHeight: 1.5 }}>3 viral social media growth hacks that tripled our reach in 30 days…</div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 10 }}>
+                      {[["82K", "Reach"], ["11.3%", "Engagement"], ["3.1K", "Saves"], ["940", "Shares"]].map(([v, l]) => (
+                        <div key={l} style={{ background: "rgba(255,255,255,.1)", borderRadius: 8, padding: 8, border: "1px solid rgba(255,255,255,.1)" }}>
+                          <div style={{ fontSize: 14, fontWeight: 800, color: "#fff", fontFamily: "Sora,sans-serif" }}>{v}</div>
+                          <div style={{ fontSize: 10.5, color: "rgba(255,255,255,.55)" }}>{l}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Platform Icons */}
+            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", padding: "8px 0" }}>
+              {[
+                { cls: "fa-brands fa-instagram", color: "#E1306C" },
+                { cls: "fa-brands fa-facebook", color: "#1877F2" },
+                { cls: "fa-brands fa-linkedin", color: "#0A66C2" },
+                { cls: "fa-brands fa-x-twitter", color: "#000" },
+                { cls: "fa-brands fa-threads", color: "#000" },
+                { cls: "fa-brands fa-tiktok", color: "#111" },
+                { cls: "fa-brands fa-youtube", color: "#FF0000" },
+              ].map((ic, i) => (
+                <i key={i} className={ic.cls} style={{ color: ic.color, fontSize: 16 }} />
+              ))}
+            </div>
+
+          </div>{/* /content */}
+        </div>{/* /main */}
+      </div>{/* /shell */}
+
+      {/* Toast */}
+      <div style={{
+        position: "fixed", bottom: 22, right: 22, zIndex: 9999,
+        display: "flex", alignItems: "center", gap: 9,
+        padding: "11px 16px", borderRadius: 10,
+        background: "#0D0E1A", color: "#fff", fontSize: 13, fontWeight: 600,
+        boxShadow: "0 12px 32px rgba(13,14,26,.10)",
+        fontFamily: "Sora,sans-serif",
+        opacity: toast.visible ? 1 : 0,
+        transform: toast.visible ? "translateY(0)" : "translateY(8px)",
+        transition: "all .3s cubic-bezier(.4,0,.2,1)",
+        pointerEvents: "none",
+      }}>
+        <div style={{ width: 20, height: 20, borderRadius: "50%", background: "rgba(16,185,129,.2)", color: "#10B981", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10 }}>✓</div>
+        {toast.msg}
+      </div>
+    </>
+  );
 }

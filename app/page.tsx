@@ -177,6 +177,7 @@ export default function LandingPage() {
     const [industries, setIndustries] = useState<Industry[]>([]);
     const [loadingIndustries, setLoadingIndustries] = useState(true);
     const [brandDescription, setBrandDescription] = useState<string>("");
+    const [selectedContent, setSelectedContent] = useState<"photos" | "reels" | null>(null);
     const refreshImages = async () => {
         setLibraryLoadingImages(true);
         const data = await fetchImages(librarySelectedSubIndustry);
@@ -402,10 +403,24 @@ export default function LandingPage() {
                             {/* ... rest of the buttons and CTA ... */}
 
                             <div className="flex flex-col sm:flex-row gap-3 mb-8">
-                                <button className="px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 text-xs sm:text-sm font-bold hover:border-orange-500 hover:text-orange-500 transition-all">
+                                <button
+                                    onClick={() => setSelectedContent(selectedContent === "photos" ? null : "photos")}
+                                    className={`px-4 py-2 rounded-lg border text-xs sm:text-sm font-bold transition-all ${
+                                        selectedContent === "photos"
+                                            ? "bg-orange-500 border-orange-500 text-white"
+                                            : "bg-white border-slate-200 text-slate-700 hover:border-orange-500 hover:text-orange-500"
+                                    }`}
+                                >
                                     Create Photos
                                 </button>
-                                <button className="px-4 py-2 bg-white rounded-lg border border-slate-200 text-slate-700 text-xs sm:text-sm font-bold hover:border-orange-500 hover:text-orange-500 transition-all">
+                                <button
+                                    onClick={() => setSelectedContent(selectedContent === "reels" ? null : "reels")}
+                                    className={`px-4 py-2 rounded-lg border text-xs sm:text-sm font-bold transition-all ${
+                                        selectedContent === "reels"
+                                            ? "bg-orange-500 border-orange-500 text-white"
+                                            : "bg-white border-slate-200 text-slate-700 hover:border-orange-500 hover:text-orange-500"
+                                    }`}
+                                >
                                     Create Reels
                                 </button>
                             </div>

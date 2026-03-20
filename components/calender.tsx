@@ -196,7 +196,8 @@ const SocialMediaCalendar = () => {
   });
 
   // Shuffle entire content objects together every 3s — day number never changes
-  const [shuffledContents, setShuffledContents] = useState(() => shuffleArray(baseContents));
+  // Initialize with unshuffled baseContents so server and client render identically (avoids hydration mismatch)
+  const [shuffledContents, setShuffledContents] = useState(baseContents);
   const [fadeKey, setFadeKey] = useState(0);
 
   useEffect(() => {

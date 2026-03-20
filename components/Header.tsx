@@ -102,6 +102,15 @@ export default function Header() {
         return pathname === path;
     };
 
+    if (
+        pathname === "/dashboard" ||
+        pathname.startsWith("/dashboard/") ||
+        pathname === "/dashboards" ||
+        pathname.startsWith("/dashboards/")
+    ) {
+        return null;
+    }
+
     return (
         <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b">
         <div className="relative bg-white font-arial py-10 text-gray-900 dark:text-white selection:text-white overflow-hidden">
