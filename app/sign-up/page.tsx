@@ -5,7 +5,23 @@ import Image from "next/image";
 import Link from "next/link";
 import { UserIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
-import { googleLogin } from "@/api/authApi";
+
+type GoogleProfile = {
+    email?: string;
+    name?: string;
+};
+
+const decodeGoogleProfile = (credential: string): GoogleProfile | null => {
+    try {
+        const payload = credential.split(".")[1];
+        if (!payload) return null;
+        const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
+        const decoded = atob(normalized);
+        return JSON.parse(decoded) as GoogleProfile;
+    } catch {
+        return null;
+    }
+};
 
 export default function CreateAccountPage() {
     const router = useRouter();
@@ -15,11 +31,40 @@ export default function CreateAccountPage() {
     const [error, setError] = useState("");
 
     const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
+        setError("");
+        if (!credentialResponse.credential) {
+            setError("Google sign-up failed. Missing credential.");
+            return;
+        }
+
         try {
-            const { user } = await googleLogin(credentialResponse.credential!);
-            localStorage.setItem("shoutly_user", JSON.stringify(user));
-            window.dispatchEvent(new Event("auth-changed"));
-            router.push("/account-setup");
+            const profile = decodeGoogleProfile(credentialResponse.credential);
+            const googleEmail = profile?.email;
+            const googleName = profile?.name || "Google User";
+
+            if (!googleEmail) {
+                setError("Unable to read Google account email. Please try again.");
+                return;
+            }
+
+            const response = await fetch("https://ai-shoutly-backend.onrender.com/api/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: googleName,
+                    email: googleEmail,
+                    role: "USER",
+                }),
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                setError(data.message || "Unable to send OTP for Google sign-up.");
+                return;
+            }
+
+            alert(`OTP sent to ${data.email || googleEmail}`);
+            router.push(`/verification?email=${encodeURIComponent(googleEmail)}&source=google`);
         } catch (err) {
             console.error("Google sign-up failed:", err);
             setError("Google sign-up failed. Please try again.");

@@ -1,10 +1,18 @@
 "use client";
 
+import { Suspense } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const email = searchParams.get("email") || "your email";
+    const source = searchParams.get("source");
+
+    const handleVerifyContinue = () => {
+        router.push(source === "google" ? "/account-setup" : "/create-password");
+    };
 
     return (
         <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4">
@@ -37,7 +45,7 @@ export default function VerifyEmailPage() {
                     className="text-center text-gray-600 mb-6"
                     style={{ fontFamily: "Arial", fontWeight: 400 }}
                 >
-                    We sent a code to <span style={{ fontFamily: "Arial", fontWeight: 500 }}>pradipadkari@gmail.com</span>
+                    We sent a code to <span style={{ fontFamily: "Arial", fontWeight: 500 }}>{email}</span>
                 </p>
 
                 {/* Verification Code */}
@@ -59,7 +67,7 @@ export default function VerifyEmailPage() {
 
                 {/* Button */}
                 <button
-                    onClick={() => router.push("/create-password")}
+                    onClick={handleVerifyContinue}
                     className="w-full h-12 bg-[#000000] text-white rounded-xl hover:opacity-90 transition mb-4"
                     style={{ fontFamily: "Arial", fontWeight: 400 }}
                 >
@@ -77,5 +85,13 @@ export default function VerifyEmailPage() {
 
             </div>
         </div>
+    );
+}
+
+export default function VerifyEmailPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-white" />}>
+            <VerifyEmailContent />
+        </Suspense>
     );
 }
