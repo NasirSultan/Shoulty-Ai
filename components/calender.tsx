@@ -226,9 +226,9 @@ const SocialMediaCalendar = () => {
         }
       `}</style>
       <header className="mb-8">
-        <h1 className="text-2xl sm:text-3xl md:text-5xl text-center text-black mb-3 sm:mb-4">
-          Social Media Calendar Example
-        </h1>
+        <h2 className="text-2xl sm:text-3xl md:text-5xl text-center text-black mb-3 sm:mb-4">
+          Social Media Calendar Preview
+        </h2>
         <p className="text-center text-gray-600 text-sm sm:text-base max-w-2xl mx-auto mb-10 sm:mb-16 px-2">
           A sample monthly content plan showing how posts, reels, and campaigns
           can be scheduled for consistent growth.
@@ -273,7 +273,7 @@ const SocialMediaCalendar = () => {
             {/* Image from local folder */}
             <img
               src={item.image}
-              alt={`Day ${item.day}`}
+              alt={`AI-generated social media post preview for day ${item.day}`}
               className="w-full h-24 object-cover rounded-md mb-2 bg-gray-100"
               loading="lazy"
             />

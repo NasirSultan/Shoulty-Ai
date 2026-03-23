@@ -77,7 +77,14 @@ const Footer = () => {
           <div className="flex items-center gap-2 mb-4">
             <div className="relative w-28 h-10 sm:w-40 sm:h-14">
               <a href="/">
-                <Image src="/images/logo2.png" alt="Logo" fill className="object-contain" />
+                <Image
+                  src="/images/logo2.png"
+                  alt="Shoutly AI logo"
+                  width={160}
+                  height={56}
+                  sizes="(max-width: 640px) 112px, 160px"
+                  className="w-28 h-10 sm:w-40 sm:h-14 object-contain"
+                />
               </a>
             </div>
           </div>

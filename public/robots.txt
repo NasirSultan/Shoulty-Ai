@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
+Sitemap: https://shoutlyai.com/sitemap.xml
 Sitemap: https://www.shoutlyai.com/sitemap.xml

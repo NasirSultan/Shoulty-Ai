@@ -122,9 +122,12 @@ export default function Header() {
                         <a href="/">
                             <Image
                                 src="/images/logo.png"
-                                alt="Logo"
-                                fill
-                                className="object-contain"
+                                alt="Shoutly AI logo"
+                                width={160}
+                                height={56}
+                                sizes="(max-width: 640px) 112px, 160px"
+                                priority
+                                className="w-28 h-10 sm:w-40 sm:h-14 object-contain"
                             />
                         </a>
                     </div>
@@ -204,12 +207,16 @@ export default function Header() {
                                     className="flex items-center gap-2 focus:outline-none"
                                 >
                                     {user.picture ? (
-                                        <Image
+                                        <img
                                             src={user.picture}
                                             alt="Profile"
                                             width={36}
                                             height={36}
+                                            loading="lazy"
                                             className="rounded-full border border-gray-200 object-cover"
+                                            onError={(e) => {
+                                                e.currentTarget.style.display = "none";
+                                            }}
                                         />
                                     ) : (
                                         <div className="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center text-sm font-bold">

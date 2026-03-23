@@ -1,5 +1,6 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { SparklesIcon } from "@heroicons/react/24/outline";
 import { RefreshCcw } from "lucide-react";
 import PricingSection from "@/components/PricingSection";
@@ -107,21 +108,7 @@ export default function LandingPage() {
 
         return words[index].substring(0, subIndex);
     }
-    const videoRef = useRef<HTMLVideoElement | null>(null);
-    const [isPlaying, setIsPlaying] = useState(false);
-
-    const toggleVideo = () => {
-        const video = videoRef.current;
-        if (!video) return;
-
-        if (video.paused) {
-            video.play();
-            setIsPlaying(true);
-        } else {
-            video.pause();
-            setIsPlaying(false);
-        }
-    };
+    const [showDemoVideo, setShowDemoVideo] = useState(false);
     const scrollToSectionInOneSecond = (sectionId: string) => {
         const target = document.getElementById(sectionId);
         if (!target) return;
@@ -232,6 +219,46 @@ export default function LandingPage() {
     ];
 
     const animatedPlaceholder = useTypingEffect(placeholderOptions);
+
+    const GeneratingState = ({
+        title,
+        subtitle,
+        columns,
+    }: {
+        title: string;
+        subtitle: string;
+        columns: string;
+    }) => (
+        <div className="col-span-full rounded-2xl border border-orange-200 bg-gradient-to-br from-orange-50 via-amber-50 to-white p-6 sm:p-8">
+            <div className="flex items-center justify-center gap-3 text-orange-600">
+                <SparklesIcon className="h-5 w-5 animate-pulse" />
+                <p className="text-sm sm:text-base font-bold uppercase tracking-wide">
+                    {title}
+                </p>
+                <span className="inline-flex gap-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-orange-500 animate-bounce [animation-delay:0ms]" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-orange-500 animate-bounce [animation-delay:120ms]" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-orange-500 animate-bounce [animation-delay:240ms]" />
+                </span>
+            </div>
+            <p className="mt-2 text-center text-xs sm:text-sm text-slate-500">
+                {subtitle}
+            </p>
+
+            <div className={`mt-6 grid ${columns} gap-3 sm:gap-4`}>
+                {[...Array(8)].map((_, idx) => (
+                    <div
+                        key={idx}
+                        className="relative overflow-hidden rounded-xl bg-slate-100"
+                    >
+                        <div className="aspect-square sm:aspect-[4/5] animate-pulse bg-slate-200" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/70 to-transparent animate-pulse" />
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+
     return (
         <div className="relative bg-white dark:bg-gray-950 font-arial min-h-screen text-gray-900 dark:text-white selection:text-white overflow-hidden">
             {/* GLOBAL FLOATING AI + SOCIAL MEDIA BUBBLES */}
@@ -269,12 +296,12 @@ export default function LandingPage() {
                     </div>
 
                     {/* Title - Applied Brand Font Weight & Tracking */}
-                    <div className="text-3xl sm:text-4xl md:text-6xl text-center mb-3 sm:mb-4 font-black tracking-tighter text-slate-900">
+                    <h1 className="text-3xl sm:text-4xl md:text-6xl text-center mb-3 sm:mb-4 font-black tracking-tighter text-slate-900">
                         Generate Your{" "}
                         <span className="bg-gradient-to-r from-orange-500 to-red-600 bg-clip-text text-transparent">
                             Year of Content
                         </span>
-                    </div>
+                    </h1>
 
                     {/* Subtitle */}
                     <div className="text-center text-slate-500 text-sm sm:text-base max-w-2xl mx-auto mb-10 sm:mb-16 px-2 font-medium">
@@ -494,10 +521,11 @@ export default function LandingPage() {
                         {/* Templates Grid */}
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
                             {generateLoadingImages ? (
-                                <p className="col-span-full text-center text-gray-400 py-12">
-                                    Loading templates... (may take up to 60s on
-                                    first load)
-                                </p>
+                                <GeneratingState
+                                    title="Generating your templates"
+                                    subtitle="AI is building image ideas from your selected industry. This can take up to 60 seconds on first load."
+                                    columns="grid-cols-2 sm:grid-cols-3 md:grid-cols-4"
+                                />
                             ) : generateImages.length === 0 ? (
                                 <p className="col-span-full text-center text-gray-400 py-12">
                                     No images found
@@ -508,16 +536,14 @@ export default function LandingPage() {
                                         key={img.id || index}
                                         className="relative group aspect-square rounded-xl overflow-hidden bg-gray-50"
                                     >
-                                        {/* Lazy loading image with low-quality placeholder */}
                                         <img
-                                            src={img.file || img.url}
-                                            alt={img.name || "Template"}
+                                            src={img.file || img.url || "/images/img1.jpeg"}
+                                            alt={img.name || "AI-generated content template"}
                                             loading="lazy"
                                             decoding="async"
                                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                             onError={(e) => {
-                                                e.currentTarget.src =
-                                                    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23f3f4f6'/%3E%3Ctext x='8' y='25' font-family='Arial' font-size='14' fill='%239ca3af'%3E📷%3C/text%3E%3C/svg%3E";
+                                                e.currentTarget.src = "/images/img1.jpeg";
                                             }}
                                         />
                                         <span className="absolute bottom-2 left-2 text-white bg-black/60 backdrop-blur-sm px-2 py-1 text-xs rounded-md font-medium">
@@ -1799,10 +1825,11 @@ export default function LandingPage() {
                         {/* Templates Grid */}
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-8 gap-4">
                             {libraryLoadingImages ? (
-                                <p className="col-span-full text-center text-gray-400 py-12">
-                                    Loading templates... (may take up to 60s on
-                                    first load)
-                                </p>
+                                <GeneratingState
+                                    title="Generating template library"
+                                    subtitle="Fetching and preparing fresh assets for your selected category."
+                                    columns="grid-cols-2 sm:grid-cols-3 md:grid-cols-8"
+                                />
                             ) : libraryFilteredImages.length === 0 ? (
                                 <p className="col-span-full text-center text-gray-400 py-12">
                                     No images found
@@ -1814,9 +1841,14 @@ export default function LandingPage() {
                                         className="relative w-full h-48 rounded-xl overflow-hidden"
                                     >
                                         <img
-                                            src={img.file || img.url}
-                                            alt={img.name || "Template"}
+                                            src={img.file || img.url || "/images/img1.jpeg"}
+                                            alt={img.name || "Template library image"}
+                                            loading="lazy"
+                                            decoding="async"
                                             className="w-full h-full object-cover rounded-xl sm:rounded-2xl"
+                                            onError={(e) => {
+                                                e.currentTarget.src = "/images/img1.jpeg";
+                                            }}
                                         />
                                         <span className="absolute bottom-2 left-2 text-white bg-black/50 px-2 py-1 text-xs rounded">
                                             {img.name}
@@ -1875,18 +1907,29 @@ export default function LandingPage() {
                     {/* Video Section */}
                     <div className="relative max-w-4xl mx-auto mb-14 sm:mb-20">
                         <div className="relative aspect-video rounded-2xl sm:rounded-3xl overflow-hidden border border-gray-200 shadow-xl bg-black group">
-                            <video
-                                ref={videoRef}
-                                className="w-full h-full object-cover cursor-pointer"
-                                src="videos/video.mp4"
-                                onClick={toggleVideo}
-                            />
-
-                            {!isPlaying && (
+                            {showDemoVideo ? (
+                                <video
+                                    className="w-full h-full object-cover"
+                                    src="videos/video.mp4"
+                                    preload="metadata"
+                                    controls
+                                    autoPlay
+                                    playsInline
+                                />
+                            ) : (
                                 <button
-                                    onClick={toggleVideo}
+                                    onClick={() => setShowDemoVideo(true)}
+                                    aria-label="Play Shoutly AI demo video"
                                     className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm"
                                 >
+                                    <Image
+                                        src="/images/img1.jpeg"
+                                        alt="Watch Shoutly AI demo"
+                                        fill
+                                        sizes="100vw"
+                                        loading="lazy"
+                                        className="object-cover"
+                                    />
                                     <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-white text-black flex items-center justify-center text-xl sm:text-2xl shadow-xl">
                                         ▶
                                     </div>
