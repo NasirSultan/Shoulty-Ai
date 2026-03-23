@@ -1,6 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
+import React, { useRef, useState, useEffect } from "react";
 import { SparklesIcon } from "@heroicons/react/24/outline";
 import { RefreshCcw } from "lucide-react";
 import PricingSection from "@/components/PricingSection";
@@ -108,7 +107,21 @@ export default function LandingPage() {
 
         return words[index].substring(0, subIndex);
     }
-    const [showDemoVideo, setShowDemoVideo] = useState(false);
+    const videoRef = useRef<HTMLVideoElement | null>(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    const toggleVideo = () => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        if (video.paused) {
+            video.play();
+            setIsPlaying(true);
+        } else {
+            video.pause();
+            setIsPlaying(false);
+        }
+    };
     const scrollToSectionInOneSecond = (sectionId: string) => {
         const target = document.getElementById(sectionId);
         if (!target) return;
@@ -160,33 +173,69 @@ export default function LandingPage() {
     const [libraryImages, setLibraryImages] = useState<ImageItem[]>([]);
     const [libraryLoadingImages, setLibraryLoadingImages] = useState(false);
     const [libraryFilterTerm, setLibraryFilterTerm] = useState("");
+    const imageCacheRef = React.useRef<Record<string, ImageItem[]>>({});
 
     const [industries, setIndustries] = useState<Industry[]>([]);
     const [loadingIndustries, setLoadingIndustries] = useState(true);
     const [brandDescription, setBrandDescription] = useState<string>("");
     const [selectedContent, setSelectedContent] = useState<"photos" | "reels" | null>(null);
+    const getImageCacheKey = (
+        type: "generate" | "library",
+        subIndustry: string | null,
+    ) => `${type}:${subIndustry || "__all__"}`;
+
+    const getImagesWithCache = async (
+        type: "generate" | "library",
+        subIndustry: string | null,
+        setImages: React.Dispatch<React.SetStateAction<ImageItem[]>>,
+        setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+        forceRefresh = false,
+    ) => {
+        const cacheKey = getImageCacheKey(type, subIndustry);
+        const cached = imageCacheRef.current[cacheKey];
+
+        if (!forceRefresh && cached) {
+            setImages(cached);
+            setLoading(false);
+            return;
+        }
+
+        setLoading(true);
+        const data = await fetchImages(subIndustry);
+        imageCacheRef.current[cacheKey] = data;
+        setImages(data);
+        setLoading(false);
+    };
+
     const refreshImages = async () => {
-        setLibraryLoadingImages(true);
-        const data = await fetchImages(librarySelectedSubIndustry);
-        setLibraryImages(data);
-        setLibraryLoadingImages(false);
+        await getImagesWithCache(
+            "library",
+            librarySelectedSubIndustry,
+            setLibraryImages,
+            setLibraryLoadingImages,
+            true,
+        );
     };
     useEffect(() => {
         const loadGenerateImages = async () => {
-            setGenerateLoadingImages(true);
-            const data = await fetchImages(generateSelectedSubIndustry);
-            setGenerateImages(data);
-            setGenerateLoadingImages(false);
+            await getImagesWithCache(
+                "generate",
+                generateSelectedSubIndustry,
+                setGenerateImages,
+                setGenerateLoadingImages,
+            );
         };
         loadGenerateImages();
     }, [generateSelectedSubIndustry]);
 
     useEffect(() => {
         const loadLibraryImages = async () => {
-            setLibraryLoadingImages(true);
-            const data = await fetchImages(librarySelectedSubIndustry);
-            setLibraryImages(data);
-            setLibraryLoadingImages(false);
+            await getImagesWithCache(
+                "library",
+                librarySelectedSubIndustry,
+                setLibraryImages,
+                setLibraryLoadingImages,
+            );
         };
         loadLibraryImages();
     }, [librarySelectedSubIndustry]);
@@ -202,6 +251,7 @@ export default function LandingPage() {
     const isGenerateReady =
         !!generateSelectedIndustry &&
         !!generatePendingSubIndustry &&
+        !!selectedContent &&
         brandDescription.trim().length >= 50;
     // REPLACE WITH:
     useEffect(() => {
@@ -219,46 +269,6 @@ export default function LandingPage() {
     ];
 
     const animatedPlaceholder = useTypingEffect(placeholderOptions);
-
-    const GeneratingState = ({
-        title,
-        subtitle,
-        columns,
-    }: {
-        title: string;
-        subtitle: string;
-        columns: string;
-    }) => (
-        <div className="col-span-full rounded-2xl border border-orange-200 bg-gradient-to-br from-orange-50 via-amber-50 to-white p-6 sm:p-8">
-            <div className="flex items-center justify-center gap-3 text-orange-600">
-                <SparklesIcon className="h-5 w-5 animate-pulse" />
-                <p className="text-sm sm:text-base font-bold uppercase tracking-wide">
-                    {title}
-                </p>
-                <span className="inline-flex gap-1">
-                    <span className="h-1.5 w-1.5 rounded-full bg-orange-500 animate-bounce [animation-delay:0ms]" />
-                    <span className="h-1.5 w-1.5 rounded-full bg-orange-500 animate-bounce [animation-delay:120ms]" />
-                    <span className="h-1.5 w-1.5 rounded-full bg-orange-500 animate-bounce [animation-delay:240ms]" />
-                </span>
-            </div>
-            <p className="mt-2 text-center text-xs sm:text-sm text-slate-500">
-                {subtitle}
-            </p>
-
-            <div className={`mt-6 grid ${columns} gap-3 sm:gap-4`}>
-                {[...Array(8)].map((_, idx) => (
-                    <div
-                        key={idx}
-                        className="relative overflow-hidden rounded-xl bg-slate-100"
-                    >
-                        <div className="aspect-square sm:aspect-[4/5] animate-pulse bg-slate-200" />
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/70 to-transparent animate-pulse" />
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-
     return (
         <div className="relative bg-white dark:bg-gray-950 font-arial min-h-screen text-gray-900 dark:text-white selection:text-white overflow-hidden">
             {/* GLOBAL FLOATING AI + SOCIAL MEDIA BUBBLES */}
@@ -296,12 +306,12 @@ export default function LandingPage() {
                     </div>
 
                     {/* Title - Applied Brand Font Weight & Tracking */}
-                    <h1 className="text-3xl sm:text-4xl md:text-6xl text-center mb-3 sm:mb-4 font-black tracking-tighter text-slate-900">
+                    <div className="text-3xl sm:text-4xl md:text-6xl text-center mb-3 sm:mb-4 font-black tracking-tighter text-slate-900">
                         Generate Your{" "}
                         <span className="bg-gradient-to-r from-orange-500 to-red-600 bg-clip-text text-transparent">
                             Year of Content
                         </span>
-                    </h1>
+                    </div>
 
                     {/* Subtitle */}
                     <div className="text-center text-slate-500 text-sm sm:text-base max-w-2xl mx-auto mb-10 sm:mb-16 px-2 font-medium">
@@ -331,7 +341,6 @@ export default function LandingPage() {
                                     setGenerateSelectedIndustry(id);
                                     setGenerateSelectedSubIndustry(null);
                                     setGeneratePendingSubIndustry(null);
-                                    setGenerateImages([]);
                                     const selected = industries.find(
                                         (ind: Industry) =>
                                             String(ind.id) === String(id),
@@ -451,6 +460,14 @@ export default function LandingPage() {
                                     Create Reels
                                 </button>
                             </div>
+                            {!selectedContent && (
+                                <div className="mb-6 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-amber-800">
+                                    <span className="mt-0.5 inline-block h-2 w-2 flex-shrink-0 rounded-full bg-amber-500" />
+                                    <p className="text-xs sm:text-sm font-semibold leading-5">
+                                        Select <span className="font-extrabold">Create Photos</span> or <span className="font-extrabold">Create Reels</span> to enable Generate.
+                                    </p>
+                                </div>
+                            )}
 
                             <p className="text-center text-xs sm:text-sm text-slate-900 mb-8 font-medium">
                                 No credit card required • 2-min setup <br />
@@ -499,20 +516,28 @@ export default function LandingPage() {
                             {/* Tabs */}
                             <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                                 {[
-                                    "Images",
-                                    "Reels",
-                                    "Festivals & Occasions",
-                                ].map((tab, i) => (
+                                    { label: "Create Photos", value: "photos" },
+                                    { label: "Create Reels", value: "reels" },
+                                ].map((tab) => (
                                     <button
-                                        key={i}
+                                        key={tab.value}
+                                        onClick={() =>
+                                            setSelectedContent(
+                                                selectedContent === tab.value
+                                                    ? null
+                                                    : (tab.value as
+                                                          | "photos"
+                                                          | "reels"),
+                                            )
+                                        }
                                         className={`whitespace-nowrap px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200
                                             ${
-                                                i === 0
+                                                selectedContent === tab.value
                                                     ? "bg-black text-white shadow-md"
                                                     : "bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100"
                                             }`}
                                     >
-                                        {tab}
+                                        {tab.label}
                                     </button>
                                 ))}
                             </div>
@@ -521,11 +546,10 @@ export default function LandingPage() {
                         {/* Templates Grid */}
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
                             {generateLoadingImages ? (
-                                <GeneratingState
-                                    title="Generating your templates"
-                                    subtitle="AI is building image ideas from your selected industry. This can take up to 60 seconds on first load."
-                                    columns="grid-cols-2 sm:grid-cols-3 md:grid-cols-4"
-                                />
+                                <p className="col-span-full text-center text-gray-400 py-12">
+                                    Loading templates... (may take up to 60s on
+                                    first load)
+                                </p>
                             ) : generateImages.length === 0 ? (
                                 <p className="col-span-full text-center text-gray-400 py-12">
                                     No images found
@@ -536,14 +560,16 @@ export default function LandingPage() {
                                         key={img.id || index}
                                         className="relative group aspect-square rounded-xl overflow-hidden bg-gray-50"
                                     >
+                                        {/* Lazy loading image with low-quality placeholder */}
                                         <img
-                                            src={img.file || img.url || "/images/img1.jpeg"}
-                                            alt={img.name || "AI-generated content template"}
+                                            src={img.file || img.url}
+                                            alt={img.name || "Template"}
                                             loading="lazy"
                                             decoding="async"
                                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                             onError={(e) => {
-                                                e.currentTarget.src = "/images/img1.jpeg";
+                                                e.currentTarget.src =
+                                                    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23f3f4f6'/%3E%3Ctext x='8' y='25' font-family='Arial' font-size='14' fill='%239ca3af'%3E📷%3C/text%3E%3C/svg%3E";
                                             }}
                                         />
                                         <span className="absolute bottom-2 left-2 text-white bg-black/60 backdrop-blur-sm px-2 py-1 text-xs rounded-md font-medium">
@@ -1677,20 +1703,28 @@ export default function LandingPage() {
                             {/* Tabs */}
                             <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                                 {[
-                                    "Images",
-                                    "Reels",
-                                    "Festivals & Occasions",
-                                ].map((tab, i) => (
+                                    { label: "Create Photos", value: "photos" },
+                                    { label: "Create Reels", value: "reels" },
+                                ].map((tab) => (
                                     <button
-                                        key={i}
+                                        key={tab.value}
+                                        onClick={() =>
+                                            setSelectedContent(
+                                                selectedContent === tab.value
+                                                    ? null
+                                                    : (tab.value as
+                                                          | "photos"
+                                                          | "reels"),
+                                            )
+                                        }
                                         className={`whitespace-nowrap px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition
                     ${
-                        i === 0
+                        selectedContent === tab.value
                             ? "bg-black text-white shadow-lg"
                             : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
                     }`}
                                     >
-                                        {tab}
+                                        {tab.label}
                                     </button>
                                 ))}
                             </div>
@@ -1716,7 +1750,6 @@ export default function LandingPage() {
                                     const id = e.target.value;
                                     setLibrarySelectedIndustry(id);
                                     setLibrarySelectedSubIndustry(null);
-                                    setLibraryImages([]);
                                     const selected = industries.find(
                                         (ind: Industry) =>
                                             String(ind.id) === String(id),
@@ -1825,11 +1858,10 @@ export default function LandingPage() {
                         {/* Templates Grid */}
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-8 gap-4">
                             {libraryLoadingImages ? (
-                                <GeneratingState
-                                    title="Generating template library"
-                                    subtitle="Fetching and preparing fresh assets for your selected category."
-                                    columns="grid-cols-2 sm:grid-cols-3 md:grid-cols-8"
-                                />
+                                <p className="col-span-full text-center text-gray-400 py-12">
+                                    Loading templates... (may take up to 60s on
+                                    first load)
+                                </p>
                             ) : libraryFilteredImages.length === 0 ? (
                                 <p className="col-span-full text-center text-gray-400 py-12">
                                     No images found
@@ -1841,14 +1873,9 @@ export default function LandingPage() {
                                         className="relative w-full h-48 rounded-xl overflow-hidden"
                                     >
                                         <img
-                                            src={img.file || img.url || "/images/img1.jpeg"}
-                                            alt={img.name || "Template library image"}
-                                            loading="lazy"
-                                            decoding="async"
+                                            src={img.file || img.url}
+                                            alt={img.name || "Template"}
                                             className="w-full h-full object-cover rounded-xl sm:rounded-2xl"
-                                            onError={(e) => {
-                                                e.currentTarget.src = "/images/img1.jpeg";
-                                            }}
                                         />
                                         <span className="absolute bottom-2 left-2 text-white bg-black/50 px-2 py-1 text-xs rounded">
                                             {img.name}
@@ -1907,29 +1934,18 @@ export default function LandingPage() {
                     {/* Video Section */}
                     <div className="relative max-w-4xl mx-auto mb-14 sm:mb-20">
                         <div className="relative aspect-video rounded-2xl sm:rounded-3xl overflow-hidden border border-gray-200 shadow-xl bg-black group">
-                            {showDemoVideo ? (
-                                <video
-                                    className="w-full h-full object-cover"
-                                    src="videos/video.mp4"
-                                    preload="metadata"
-                                    controls
-                                    autoPlay
-                                    playsInline
-                                />
-                            ) : (
+                            <video
+                                ref={videoRef}
+                                className="w-full h-full object-cover cursor-pointer"
+                                src="videos/video.mp4"
+                                onClick={toggleVideo}
+                            />
+
+                            {!isPlaying && (
                                 <button
-                                    onClick={() => setShowDemoVideo(true)}
-                                    aria-label="Play Shoutly AI demo video"
+                                    onClick={toggleVideo}
                                     className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm"
                                 >
-                                    <Image
-                                        src="/images/img1.jpeg"
-                                        alt="Watch Shoutly AI demo"
-                                        fill
-                                        sizes="100vw"
-                                        loading="lazy"
-                                        className="object-cover"
-                                    />
                                     <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-white text-black flex items-center justify-center text-xl sm:text-2xl shadow-xl">
                                         ▶
                                     </div>

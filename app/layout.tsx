@@ -7,20 +7,45 @@ import Providers from "./providers";
 
 const siteUrl = "https://shoutlyai.com";
 
-const softwareApplicationSchema = {
+const seoSchemaGraph = {
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: "Shoutly AI",
-    applicationCategory: "BusinessApplication",
-    operatingSystem: "Web",
-    url: siteUrl,
-    description:
-        "AI-powered social media automation. Generate 365 days of posts, reels, and captions in minutes.",
-    offers: {
-        "@type": "Offer",
-        price: "29",
-        priceCurrency: "USD",
-    },
+    "@graph": [
+        {
+            "@type": "Organization",
+            "@id": `${siteUrl}/#organization`,
+            name: "Shoutly AI",
+            url: siteUrl,
+            logo: {
+                "@type": "ImageObject",
+                url: `${siteUrl}/images/logo.png`,
+            },
+        },
+        {
+            "@type": "WebSite",
+            "@id": `${siteUrl}/#website`,
+            url: siteUrl,
+            name: "Shoutly AI",
+            publisher: {
+                "@id": `${siteUrl}/#organization`,
+            },
+            inLanguage: "en",
+        },
+        {
+            "@type": "SoftwareApplication",
+            "@id": `${siteUrl}/#software`,
+            name: "Shoutly AI",
+            applicationCategory: "BusinessApplication",
+            operatingSystem: "Web",
+            url: siteUrl,
+            description:
+                "AI-powered social media automation. Generate 365 days of posts, reels, and captions in minutes.",
+            offers: {
+                "@type": "Offer",
+                price: "29",
+                priceCurrency: "USD",
+            },
+        },
+    ],
 };
 
 const geistSans = Geist({
@@ -51,7 +76,7 @@ export const metadata: Metadata = {
         "AI caption generator",
     ],
     alternates: {
-        canonical: "/",
+        canonical: "./",
     },
     openGraph: {
         title: "Shoutly AI - One Prompt, 365 Days of Content",
@@ -79,6 +104,13 @@ export const metadata: Metadata = {
     robots: {
         index: true,
         follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            "max-video-preview": -1,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+        },
     },
     verification: {
         google: "fHEJxSycq3bjrigwO3r8q9hvq-wfbMISHi8lGqeR4fA",
@@ -99,7 +131,7 @@ export default function RootLayout({
                 <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{
-                        __html: JSON.stringify(softwareApplicationSchema),
+                        __html: JSON.stringify(seoSchemaGraph),
                     }}
                 />
                 <Providers>

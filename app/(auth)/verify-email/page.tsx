@@ -2,7 +2,12 @@ import OTPForm from "@/components/auth/OTPForm";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Verify Email | Shoutly.ai",
+    title: "Verify Email",
+    description: "Verify your email to activate and secure your Shoutly AI account.",
+    robots: {
+        index: false,
+        follow: false,
+    },
 };
 
 export default function VerifyEmail() {
