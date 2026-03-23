@@ -1,5 +1,6 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
+import Link from "next/link";
 import { SparklesIcon } from "@heroicons/react/24/outline";
 import { RefreshCcw } from "lucide-react";
 import PricingSection from "@/components/PricingSection";
@@ -306,18 +307,33 @@ export default function LandingPage() {
                     </div>
 
                     {/* Title - Applied Brand Font Weight & Tracking */}
-                    <div className="text-3xl sm:text-4xl md:text-6xl text-center mb-3 sm:mb-4 font-black tracking-tighter text-slate-900">
+                    <h1 className="text-3xl sm:text-4xl md:text-6xl text-center mb-3 sm:mb-4 font-black tracking-tighter text-slate-900">
                         Generate Your{" "}
                         <span className="bg-gradient-to-r from-orange-500 to-red-600 bg-clip-text text-transparent">
                             Year of Content
                         </span>
-                    </div>
+                    </h1>
 
                     {/* Subtitle */}
-                    <div className="text-center text-slate-500 text-sm sm:text-base max-w-2xl mx-auto mb-10 sm:mb-16 px-2 font-medium">
+                    <p className="text-center text-slate-500 text-sm sm:text-base max-w-2xl mx-auto mb-3 px-2 font-medium">
                         One prompt, 365 days of posts. Including local festivals
                         & events.
-                    </div>
+                    </p>
+
+                    <p className="text-center text-slate-600 text-sm sm:text-base max-w-4xl mx-auto mb-10 sm:mb-16 px-2 leading-relaxed">
+                        Shoutly AI is a social media automation and AI content generator that helps you build a complete social media calendar with branded posts, reels, captions, and hashtags in minutes.
+                        <Link href="/case-studies" className="mx-1 text-slate-900 underline underline-offset-2 hover:text-orange-600">
+                            Case Studies
+                        </Link>
+                        <span>•</span>
+                        <Link href="/pricing" className="mx-1 text-slate-900 underline underline-offset-2 hover:text-orange-600">
+                            Pricing
+                        </Link>
+                        <span>•</span>
+                        <Link href="/help-center" className="ml-1 text-slate-900 underline underline-offset-2 hover:text-orange-600">
+                            Help Center
+                        </Link>
+                    </p>
 
                     {/* Cards Row */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
@@ -563,7 +579,7 @@ export default function LandingPage() {
                                         {/* Lazy loading image with low-quality placeholder */}
                                         <img
                                             src={img.file || img.url}
-                                            alt={img.name || "Template"}
+                                            alt={`${img.name || img.title || "AI social media content"} template preview for ${generateSelectedIndustry || "business"}`}
                                             loading="lazy"
                                             decoding="async"
                                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
@@ -1866,7 +1882,7 @@ export default function LandingPage() {
                                     >
                                         <img
                                             src={img.file || img.url}
-                                            alt={img.name || "Template"}
+                                            alt={`${img.name || img.title || "Social media content"} library template preview for ${librarySelectedIndustry || "your industry"}`}
                                             className="w-full h-full object-cover rounded-xl sm:rounded-2xl"
                                         />
                                         <span className="absolute bottom-2 left-2 text-white bg-black/50 px-2 py-1 text-xs rounded">
