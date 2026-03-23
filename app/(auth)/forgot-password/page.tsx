@@ -3,20 +3,40 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { EnvelopeIcon } from "@heroicons/react/24/outline";
+import { sendResetOtp } from "@/api/authApi";
 
 export default function ForgotPasswordPage() {
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    const [info, setInfo] = useState("");
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
+        setError("");
+        setInfo("");
+
+        if (!email.trim()) {
+            setError("Please enter your registered email.");
+            return;
+        }
+
         setLoading(true);
 
-        setTimeout(() => {
-            router.push("/verify-email?type=reset");
-        }, 1000);
+        try {
+            await sendResetOtp(email.trim());
+            setInfo("OTP sent successfully.");
+            router.push(`/verify-email?type=reset&email=${encodeURIComponent(email.trim())}`);
+        } catch (err: any) {
+            setError(
+                err?.response?.data?.message ||
+                    "Failed to send OTP. Please try again.",
+            );
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -50,7 +70,7 @@ export default function ForgotPasswordPage() {
                     className="text-center text-gray-600 mb-6"
                     style={{ fontFamily: "Arial", fontWeight: 400 }}
                 >
-                    Enter your email for the verification processes will send 4 digits code to your email.
+                    Enter your registered email. We will send a 6-digit OTP to reset your password.
                 </p>
 
                 {/* Email Label */}
@@ -75,9 +95,21 @@ export default function ForgotPasswordPage() {
                     />
                 </div>
 
+                {error && (
+                    <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                        {error}
+                    </div>
+                )}
+
+                {info && (
+                    <div className="mb-4 rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-700">
+                        {info}
+                    </div>
+                )}
+
                 {/* Continue Button */}
                 <button
-                    type="submit"
+                    type="button"
                     onClick={handleSubmit}
                     disabled={loading}
                     className="w-full h-12 bg-[#000000] text-white rounded-xl hover:opacity-90 transition"
@@ -85,6 +117,13 @@ export default function ForgotPasswordPage() {
                 >
                     {loading ? "Processing..." : "Continue"}
                 </button>
+
+                <p className="mt-5 text-center text-sm text-gray-600" style={{ fontFamily: "Arial", fontWeight: 400 }}>
+                    Remembered your password?{" "}
+                    <Link href="/sign-in" className="text-black hover:underline font-semibold">
+                        Back to Sign In
+                    </Link>
+                </p>
 
             </div>
         </div>

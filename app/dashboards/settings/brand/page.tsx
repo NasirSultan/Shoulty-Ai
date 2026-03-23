@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Sidebar from "../../Sidebar";
 import AdminHeader from "../../AdminHeader";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 type PosKey = "tl" | "tr" | "bl" | "br";
@@ -130,9 +131,35 @@ export default function BrandOverlayPage() {
   const [brandName, setBrandName] = useState("Your Brand");
   const [phone, setPhone] = useState("+91 98765 43210");
   const [overlayText, setOverlayText] = useState("yourbrand.com");
+  const { user } = useUserProfile();
   const [applyPlatforms, setApplyPlatforms] = useState<Record<string, boolean>>(
     Object.fromEntries(APPLY_PLATFORMS.map(p => [p.name, p.defaultOn]))
   );
+
+  useEffect(() => {
+    if (!user) return;
+
+    const backendBrandName = typeof user.brandName === "string" ? user.brandName.trim() : "";
+    const backendPhone = typeof user.phone === "string" ? user.phone.trim() : "";
+    const backendWebsite = typeof user.website === "string" ? user.website.trim() : "";
+    const backendLogoRaw =
+      (typeof user["brandLogo"] === "string" && user["brandLogo"]) ||
+      (typeof user.profilePicture === "string" && user.profilePicture) ||
+      "";
+
+    if (backendBrandName) setBrandName(backendBrandName);
+    if (backendPhone) setPhone(backendPhone);
+    if (backendWebsite) setOverlayText(backendWebsite);
+
+    if (backendLogoRaw) {
+      setS((prev) => ({
+        ...prev,
+        logoUrl: backendLogoRaw,
+        logoName: prev.logoName || "Brand Logo",
+        logoSize: prev.logoSize || "From profile",
+      }));
+    }
+  }, [user]);
 
   const mark = () => setDirty(true);
   const updS = (patch: Partial<OverlayState>) => { setS(s => ({ ...s, ...patch })); mark(); };

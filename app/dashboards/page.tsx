@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import Sidebar from "./Sidebar";
 import AdminHeader from "./AdminHeader";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface Post {
@@ -174,6 +175,7 @@ export default function DashboardPage() {
   const [caption, setCaption] = useState("");
   const [tags2, setTags2] = useState<string[]>([]);
   const { toast, show: showToast } = useToast();
+  const { user, initials } = useUserProfile();
 
   const generateCaption = () => {
     setCaption("");
@@ -241,6 +243,8 @@ export default function DashboardPage() {
             pageTitle="Dashboard"
             onToggle={() => setSidebarSlim((s) => !s)}
             searchPlaceholder="Search posts, analytics…"
+            userName={user?.name}
+            userInitials={initials}
             actionButton={
               <button
                 onClick={() => showToast("✦ Opening Post Composer…")}
@@ -277,6 +281,21 @@ export default function DashboardPage() {
 
           {/* Scrollable Content */}
           <div style={{ flex: 1, overflowY: "auto", padding: "20px 22px" }}>
+
+            {/* Welcome greeting */}
+            <div style={{ marginBottom: 18 }}>
+              <div style={{ fontSize: 20, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.3px" }}>
+                Welcome back{user?.name ? `, ${user.name.split(" ")[0]}` : ""} 👋
+              </div>
+              {user?.brandName && (
+                <div style={{ fontSize: 13, color: "#9496B5", marginTop: 3 }}>
+                  Managing <strong style={{ color: "#5B5BD6" }}>{user.brandName}</strong>
+                  {user.connectedSocials && user.connectedSocials.length > 0 && (
+                    <> · {user.connectedSocials.length} platform{user.connectedSocials.length > 1 ? "s" : ""} connected</>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* KPI Cards */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14, marginBottom: 18 }}>

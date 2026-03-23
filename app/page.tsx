@@ -587,14 +587,6 @@ export default function LandingPage() {
                             )}
                         </div>
 
-                        {/* Load more button if needed */}
-                        {generateImages.length > 8 && (
-                            <div className="flex justify-center mt-8">
-                                <button className="px-6 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-full hover:bg-gray-800 transition-colors duration-200 shadow-md">
-                                    Load more templates
-                                </button>
-                            </div>
-                        )}
                     </div>
                 </div>
             </section>

@@ -1,34 +1,65 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
+import { resetPassword } from "@/api/authApi";
 
 
 export default function NewPasswordPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
     const [formData, setFormData] = useState({
         password: "",
         confirmPassword: "",
     });
 
+    const email = searchParams.get("email") || "";
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
 
-        setTimeout(() => {
+        setError("");
+
+        if (!email) {
+            setError("Email is missing. Please restart the reset flow.");
+            return;
+        }
+
+        if (formData.password.length < 8) {
+            setError("Password must be at least 8 characters.");
+            return;
+        }
+
+        if (formData.password !== formData.confirmPassword) {
+            setError("Passwords do not match.");
+            return;
+        }
+
+        setLoading(true);
+        try {
+            await resetPassword(email, formData.password);
             router.push("/success?type=reset");
-        }, 1000);
+        } catch (err: any) {
+            setError(
+                err?.response?.data?.message ||
+                    "Failed to reset password. Please try again.",
+            );
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -125,6 +156,12 @@ export default function NewPasswordPage() {
                         </div>
                     </div>
 
+                    {error && (
+                        <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                            {error}
+                        </div>
+                    )}
+
                     {/* Submit Button */}
                     <button
                         type="submit"
@@ -138,6 +175,15 @@ export default function NewPasswordPage() {
                     >
                         {loading ? "Updating..." : "Update Password"}
                     </button>
+
+                    <p
+                        className="mt-4 text-center text-sm text-gray-600"
+                        style={{ fontFamily: "Arial", fontWeight: 400 }}
+                    >
+                        <Link href="/sign-in" className="text-black hover:underline font-semibold">
+                            Back to Sign In
+                        </Link>
+                    </p>
 
                 </form>
             </div>

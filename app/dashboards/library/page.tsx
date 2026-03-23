@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import Sidebar from "../Sidebar";
 import AdminHeader from "../AdminHeader";
 import { saveDashboardCalendarPost } from "../calendarSync";
+import { fetchImages, fetchIndustries } from "@/api/homeApi";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 type ContentType = "image" | "reel" | "carousel" | "festival";
@@ -861,6 +863,30 @@ export default function LibraryPage() {
   const [loading, setLoading] = useState(false);
   const [compCard, setCompCard] = useState<LibCard | null>(null);
   const { toast, show: showToast } = useToast();
+  const { user, initials } = useUserProfile();
+
+  // Build cards from backend images (with fallback to static pool)
+  const buildCardsFromApi = (apiImages: { url?: string; imageUrl?: string; id?: string | number }[], k: string): LibCard[] => {
+    const caps = CAPS[k] || CAPS.startup;
+    const tags = TAGS_MAP[k] || TAGS_MAP.startup;
+    const cats = INDUSTRY_CATS[k] || INDUSTRY_CATS.startup;
+    const times = BEST_TIMES[k] || BEST_TIMES.default;
+    return apiImages.map((img, i) => {
+      const bt = times[i % times.length];
+      return {
+        id: i,
+        type: TYPES[i % TYPES.length],
+        cat: cats[i % cats.length],
+        cap: caps[i % caps.length],
+        tags: tags.slice(0, 6),
+        plats: PLAT_SETS[i % PLAT_SETS.length],
+        img: img.url || img.imageUrl || (IMGS[k] || IMGS.startup)[i % 30],
+        bestTime: `${bt.t} ${bt.tz}`,
+        eng: ENG_VALS[i % ENG_VALS.length],
+        k,
+      };
+    });
+  };
 
   const applyFilter = (cards: LibCard[], type: FilterType, sortMode: SortType) => {
     let result = type === "all" ? cards : cards.filter(c => c.type === type);
@@ -869,14 +895,20 @@ export default function LibraryPage() {
     setFiltered(result);
   };
 
-  const loadLibrary = (k: string) => {
+  const loadLibrary = async (k: string) => {
     setLoading(true);
-    setTimeout(() => {
+    try {
+      const apiImages = (await fetchImages(k)) as { url?: string; imageUrl?: string; id?: string | number }[];
+      const cards = apiImages?.length > 0 ? buildCardsFromApi(apiImages, k) : buildCards(k);
+      setAllCards(cards);
+      applyFilter(cards, filterType, sort);
+    } catch {
       const cards = buildCards(k);
       setAllCards(cards);
       applyFilter(cards, filterType, sort);
+    } finally {
       setLoading(false);
-    }, 650);
+    }
   };
 
   const selectIndustry = (k: string) => {
@@ -894,6 +926,25 @@ export default function LibraryPage() {
     setIndustry(k);
     loadLibrary(k);
   };
+
+  useEffect(() => {
+    // Try preloading a relevant industry from backend taxonomy
+    fetchIndustries()
+      .then((inds: { name?: string }[]) => {
+        if (!inds || inds.length === 0) return;
+        const firstName = (inds[0].name || "startup").toLowerCase();
+        const normalized = Object.keys(IMGS).find((key) => firstName.includes(key)) || "startup";
+        setIndustry(normalized);
+        setSearchInput(normalized.replace(/-/g, " "));
+        loadLibrary(normalized);
+      })
+      .catch(() => {
+        setIndustry("startup");
+        setSearchInput("startup");
+        loadLibrary("startup");
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggleFav = (id: number) => {
     setFavs(prev => {
@@ -954,6 +1005,8 @@ export default function LibraryPage() {
             searchValue={searchInput}
             onSearchChange={setSearchInput}
             searchPlaceholder="Search…"
+            userName={user?.name}
+            userInitials={initials}
             actionButton={
               <button onClick={() => showToast("Opening post composer…")} style={{ display:"flex",alignItems:"center",gap:6,padding:"8px 16px",borderRadius:7,background:"#5B5BD6",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",border:"none",fontFamily:"Sora,sans-serif",boxShadow:"0 4px 20px rgba(91,91,214,.28)" }}>
                 <i className="fa-solid fa-plus" style={{ fontSize:11 }} /> New Post

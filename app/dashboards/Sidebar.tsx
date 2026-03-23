@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 interface SidebarProps {
   slim: boolean;
@@ -78,6 +79,10 @@ const navItems = [
 export default function Sidebar({ slim, onToggle, activePath = "/dashboard" }: SidebarProps) {
   const pathname = usePathname();
   const currentPath = pathname || activePath;
+  const { user, initials } = useUserProfile();
+
+  const sidebarUserName = user?.name || "User";
+  const sidebarUserSubline = [user?.role, user?.brandName].filter(Boolean).join(" · ") || "Shoutly Member";
 
   return (
     <>
@@ -258,7 +263,7 @@ export default function Sidebar({ slim, onToggle, activePath = "/dashboard" }: S
                 color: "#fff",
               }}
             >
-              JD
+              {initials}
             </div>
 
             {!slim && (
@@ -273,9 +278,9 @@ export default function Sidebar({ slim, onToggle, activePath = "/dashboard" }: S
                     textOverflow: "ellipsis",
                   }}
                 >
-                  Jane Doe
+                  {sidebarUserName}
                 </div>
-                <div style={{ fontSize: 11, color: "#5A5C7A" }}>Premium · Brand A</div>
+                <div style={{ fontSize: 11, color: "#5A5C7A" }}>{sidebarUserSubline}</div>
               </div>
             )}
 

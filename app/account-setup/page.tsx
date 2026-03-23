@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import {
     Upload,
     ImageIcon,
@@ -15,11 +16,122 @@ import {
     Twitter,
     Youtube
 } from "lucide-react";
+import {
+    clearPendingAuthFlow,
+    getPendingAuthFlow,
+    isProfileComplete,
+    setUserProfile,
+} from "@/api/authApi";
 
-export default function BrandSetupPage() {
+function BrandSetupPageContent() {
     const [step, setStep] = useState<1 | 2 | 3>(1);
     const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
+    const [brandName, setBrandName] = useState("");
+    const [website, setWebsite] = useState("");
+    const [phone, setPhone] = useState("");
+    const [brandLogo, setBrandLogo] = useState<File | null>(null);
+    const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState("");
+    const [resolvedEmail, setResolvedEmail] = useState("");
     const router = useRouter();
+    const searchParams = useSearchParams();
+
+    useEffect(() => {
+        const queryEmail = searchParams.get("email");
+        const pendingFlow = getPendingAuthFlow();
+        const pendingEmail = pendingFlow?.email || "";
+
+        let storedUserEmail = "";
+        if (typeof window !== "undefined") {
+            try {
+                const rawUser = localStorage.getItem("shoutly_user");
+                if (rawUser) {
+                    const parsedUser = JSON.parse(rawUser) as { email?: string };
+                    storedUserEmail = parsedUser.email || "";
+                }
+            } catch {
+                storedUserEmail = "";
+            }
+        }
+
+        setResolvedEmail(queryEmail || pendingEmail || storedUserEmail || "");
+    }, [searchParams]);
+
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+
+        try {
+            const rawUser = localStorage.getItem("shoutly_user");
+            if (!rawUser) return;
+
+            const parsedUser = JSON.parse(rawUser) as any;
+            if (isProfileComplete(parsedUser)) {
+                router.replace("/dashboards");
+            }
+        } catch {
+            // ignore invalid local user payload
+        }
+    }, [router]);
+
+    const connectedSocialMap: Record<string, string> = {
+        Instagram: "INSTAGRAM",
+        Facebook: "FACEBOOK",
+        LinkedIn: "LINKEDIN",
+        "X (Twitter)": "TWITTER",
+        YouTube: "YOUTUBE",
+    };
+
+    const handleBrandSetupContinue = () => {
+        if (!resolvedEmail) {
+            setError("Missing signup email. Please start the flow again.");
+            return;
+        }
+
+        if (!brandName.trim() || !website.trim()) {
+            setError("Brand name and website are required.");
+            return;
+        }
+
+        setError("");
+        setStep(3);
+    };
+
+    const handleCompleteSetup = async () => {
+        if (!resolvedEmail) {
+            setError("Missing signup email. Please start the flow again.");
+            return;
+        }
+
+        try {
+            setSubmitting(true);
+            setError("");
+            const response = await setUserProfile({
+                email: resolvedEmail,
+                brandName: brandName.trim(),
+                website: website.trim(),
+                phone: phone.trim(),
+                connectedSocials: selectedAccounts.map(
+                    (account) => connectedSocialMap[account],
+                ),
+                brandLogo,
+            });
+
+            if (typeof window !== "undefined") {
+                localStorage.setItem("shoutly_user", JSON.stringify(response));
+                window.dispatchEvent(new Event("auth-changed"));
+            }
+
+            clearPendingAuthFlow();
+            router.push("/dashboards");
+        } catch (err: any) {
+            setError(
+                err?.response?.data?.message ||
+                    "Failed to update profile. Please try again.",
+            );
+        } finally {
+            setSubmitting(false);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4">
@@ -81,6 +193,17 @@ export default function BrandSetupPage() {
                         </p>
 
                         <div className="border-2 border-gray-300 rounded-xl p-6 text-center mb-6 cursor-pointer hover:border-black transition">
+                            <input
+                                type="file"
+                                accept="image/png,image/jpeg,image/jpg,image/svg+xml"
+                                className="hidden"
+                                id="brand-logo-upload"
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0] || null;
+                                    setBrandLogo(file);
+                                }}
+                            />
+                            <label htmlFor="brand-logo-upload" className="block cursor-pointer">
                             <Upload className="mx-auto mb-2 text-gray-500" size={28} />
                             <p className="text-sm text-gray-700 font-arial">
                                 Click to upload or drag and drop
@@ -88,6 +211,12 @@ export default function BrandSetupPage() {
                             <p className="text-xs text-gray-500 mt-1 font-arial">
                                 PNG, JPG or SVG (max. 5MB)
                             </p>
+                            {brandLogo && (
+                                <p className="mt-3 text-sm text-black font-arial">
+                                    Selected: {brandLogo.name}
+                                </p>
+                            )}
+                            </label>
                         </div>
 
                         <div className="mb-4">
@@ -98,7 +227,9 @@ export default function BrandSetupPage() {
                             <input
                                 type="text"
                                 placeholder="Brand name add..."
-                                className="w-full py-3 px-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black font-arial"
+                                value={brandName}
+                                onChange={(e) => setBrandName(e.target.value)}
+                                className="w-full py-3 px-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black font-arial text-gray-900 bg-white"
                             />
                         </div>
 
@@ -110,7 +241,9 @@ export default function BrandSetupPage() {
                             <input
                                 type="url"
                                 placeholder="https://yourcompany.com"
-                                className="w-full py-3 px-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black font-arial"
+                                value={website}
+                                onChange={(e) => setWebsite(e.target.value)}
+                                className="w-full py-3 px-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black font-arial text-gray-900 bg-white"
                             />
                         </div>
 
@@ -122,12 +255,20 @@ export default function BrandSetupPage() {
                             <input
                                 type="tel"
                                 placeholder="+1 (555) 123-4567"
-                                className="w-full py-3 px-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black font-arial"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                className="w-full py-3 px-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black font-arial text-gray-900 bg-white"
                             />
                         </div>
 
+                        {error && (
+                            <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 font-arial">
+                                {error}
+                            </div>
+                        )}
+
                         <button
-                            onClick={() => setStep(3)}
+                            onClick={handleBrandSetupContinue}
                             className="w-full h-12 bg-[#000000] text-white rounded-xl hover:opacity-90 transition font-arial"
                         >
                             Continue
@@ -258,21 +399,28 @@ export default function BrandSetupPage() {
                             </p>
                         </div>
 
+                        {error && (
+                            <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 font-arial">
+                                {error}
+                            </div>
+                        )}
+
 
                         {/* Buttons */}
                         <div className="flex gap-3">
                             <button
-                                onClick={() => setStep(2)}
+                                onClick={() => setStep(1)}
                                 className="flex-1 h-12 bg-white border border-gray-300 text-black rounded-xl hover:bg-gray-50 transition font-arial"
                             >
                                 Back
                             </button>
 
                             <button
-                                onClick={() => router.push("/dashboards")}
+                                onClick={handleCompleteSetup}
+                                disabled={submitting}
                                 className="flex-1 h-12 bg-[#000000] text-white rounded-xl hover:opacity-90 transition font-arial"
                             >
-                                Complete Setup
+                                {submitting ? "Saving..." : "Complete Setup"}
                             </button>
                         </div>
                     </>
@@ -281,5 +429,13 @@ export default function BrandSetupPage() {
 
             </div>
         </div>
+    );
+}
+
+export default function BrandSetupPage() {
+    return (
+        <Suspense fallback={null}>
+            <BrandSetupPageContent />
+        </Suspense>
     );
 }

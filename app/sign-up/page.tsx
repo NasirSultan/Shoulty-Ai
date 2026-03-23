@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { UserIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
+import { registerUser, savePendingAuthFlow } from "@/api/authApi";
 
 type GoogleProfile = {
     email?: string;
@@ -30,6 +31,15 @@ export default function CreateAccountPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
+    const showRegisterError = (message?: string) => {
+        if (message === "Email already exists") {
+            setError("An account with this email already exists. Please sign in instead.");
+            return;
+        }
+
+        setError(message || "Failed to register. Please try again.");
+    };
+
     const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
         setError("");
         if (!credentialResponse.credential) {
@@ -47,27 +57,20 @@ export default function CreateAccountPage() {
                 return;
             }
 
-            const response = await fetch("https://ai-shoutly-backend.onrender.com/api/auth/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    name: googleName,
-                    email: googleEmail,
-                    role: "USER",
-                }),
+            const data = await registerUser({
+                name: googleName,
+                email: googleEmail,
+                role: "USER",
             });
 
-            const data = await response.json();
-            if (!response.ok) {
-                setError(data.message || "Unable to send OTP for Google sign-up.");
-                return;
-            }
-
-            alert(`OTP sent to ${data.email || googleEmail}`);
+            savePendingAuthFlow({
+                name: googleName,
+                email: googleEmail,
+                source: "google",
+            });
             router.push(`/verification?email=${encodeURIComponent(googleEmail)}&source=google`);
-        } catch (err) {
-            console.error("Google sign-up failed:", err);
-            setError("Google sign-up failed. Please try again.");
+        } catch (err: any) {
+            showRegisterError(err?.response?.data?.message);
         }
     };
 
@@ -79,30 +82,20 @@ export default function CreateAccountPage() {
         }
         setLoading(true);
         try {
-            const response = await fetch("https://ai-shoutly-backend.onrender.com/api/auth/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    name,
-                    email,
-                    role: "USER"
-                }),
+            const data = await registerUser({
+                name,
+                email,
+                role: "USER",
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                setError(data.message || "Something went wrong");
-                setLoading(false);
-                return;
-            }
-
-            // Success: OTP sent
-            alert(`OTP sent to ${data.email}`);
+            savePendingAuthFlow({
+                name,
+                email,
+                source: "email",
+            });
             router.push("/verification?email=" + encodeURIComponent(email));
-        } catch (err) {
-            console.error(err);
-            setError("Failed to register. Please try again.");
+        } catch (err: any) {
+            showRegisterError(err?.response?.data?.message);
         } finally {
             setLoading(false);
         }
@@ -179,7 +172,11 @@ export default function CreateAccountPage() {
                     />
                 </div>
 
-                {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+                {error && (
+                    <div className="mb-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                        {error}
+                    </div>
+                )}
 
                 <button
                     onClick={handleRegister}

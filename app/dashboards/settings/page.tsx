@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Sidebar from '../Sidebar'; // Import the sidebar component
 import AdminHeader from '../AdminHeader';
+import { useUserProfile } from '@/hooks/useUserProfile';
 
 // --- Types ---
 interface SocialAccount {
@@ -75,10 +76,10 @@ const SettingsPage: React.FC = () => {
   });
   const [activeSection, setActiveSection] = useState<string>('profile');
   const [profileData, setProfileData] = useState({
-    fullName: 'Jordan Davis',
-    displayName: 'jordandavis',
-    email: 'jordan@brandco.io',
-    jobTitle: 'Head of Marketing',
+    fullName: '',
+    displayName: '',
+    email: '',
+    jobTitle: '',
     timezone: 'America/New_York (EST, UTC-5)',
     language: 'English (US)',
   });
@@ -98,6 +99,30 @@ const SettingsPage: React.FC = () => {
     scores: true,
   });
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('light');
+
+  // Load real user profile
+  const { user, initials } = useUserProfile();
+
+  useEffect(() => {
+    if (!user) return;
+    setProfileData((prev) => ({
+      ...prev,
+      fullName: user.name || prev.fullName,
+      displayName: user.name ? user.name.toLowerCase().replace(/\s+/g, '') : prev.displayName,
+      email: user.email || prev.email,
+    }));
+
+    // Mark platforms as connected based on real connectedSocials from backend
+    if (user.connectedSocials && user.connectedSocials.length > 0) {
+      const connected = new Set(user.connectedSocials.map((s: string) => s.toLowerCase()));
+      setSocials((prev) =>
+        prev.map((plat) => ({
+          ...plat,
+          status: connected.has(plat.id) ? 'connected' : plat.status === 'connected' ? 'disconnected' : plat.status,
+        }))
+      );
+    }
+  }, [user]);
 
   // Refs for modal
   const modalRef = useRef<HTMLDivElement>(null);
@@ -199,10 +224,10 @@ const SettingsPage: React.FC = () => {
 
   const discardAll = () => {
     setProfileData({
-      fullName: 'Jordan Davis',
-      displayName: 'jordandavis',
-      email: 'jordan@brandco.io',
-      jobTitle: 'Head of Marketing',
+      fullName: user?.name || '',
+      displayName: user?.name ? user.name.toLowerCase().replace(/\s+/g, '') : '',
+      email: user?.email || '',
+      jobTitle: '',
       timezone: 'America/New_York (EST, UTC-5)',
       language: 'English (US)',
     });
@@ -632,6 +657,8 @@ const SettingsPage: React.FC = () => {
           pageTitle="Account Settings"
           onToggle={() => setSidebarSlim((s) => !s)}
           searchPlaceholder="Search settings…"
+          userName={user?.name}
+          userInitials={initials}
           actionButton={
             <button
               onClick={saveAll}

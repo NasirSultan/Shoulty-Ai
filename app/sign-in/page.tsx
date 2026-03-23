@@ -7,24 +7,68 @@ import { Suspense } from "react";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import { useState } from "react";
-import { emailLogin, googleLogin } from "@/api/authApi";
+import { emailLogin, fetchProfile, googleLogin, isProfileComplete } from "@/api/authApi";
 
 function SignInAccountContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const googleError = searchParams.get("error");
+    const nextPath = searchParams.get("next");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [formError, setFormError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const getSafeNextPath = () => {
+        if (!nextPath || !nextPath.startsWith("/")) return null;
+        if (nextPath.startsWith("//")) return null;
+        return nextPath;
+    };
+
+    const resolveAndPersistUser = async (fallbackUser: any) => {
+        try {
+            const profileResp = await fetchProfile();
+            const profileUser =
+                (profileResp as { user?: any })?.user ||
+                profileResp;
+
+            if (profileUser && typeof profileUser === "object") {
+                const merged = { ...fallbackUser, ...profileUser };
+                localStorage.setItem("shoutly_user", JSON.stringify(merged));
+                return merged;
+            }
+        } catch {
+            // Fallback to login response user
+        }
+
+        localStorage.setItem("shoutly_user", JSON.stringify(fallbackUser));
+        return fallbackUser;
+    };
+
+    const routeAfterLogin = (user: any) => {
+        const safeNext = getSafeNextPath();
+        if (safeNext) {
+            router.push(safeNext);
+            return;
+        }
+
+        if (isProfileComplete(user)) {
+            router.push("/dashboards");
+            return;
+        }
+
+        const userEmail =
+            typeof user?.email === "string" ? user.email : "";
+        router.push(userEmail ? `/account-setup?email=${encodeURIComponent(userEmail)}` : "/account-setup");
+    };
+
     const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
         try {
             const { user } = await googleLogin(credentialResponse.credential!);
-            localStorage.setItem("shoutly_user", JSON.stringify(user));
+            const finalUser = await resolveAndPersistUser(user);
             window.dispatchEvent(new Event("auth-changed"));
-            console.log("Logged in as:", user.name);
-            router.push("/account-setup");
+            console.log("Logged in as:", finalUser?.name || user?.name);
+            routeAfterLogin(finalUser);
         } catch (err) {
             console.error("Google login failed:", err);
             setFormError("Google login failed. Please try again.");
@@ -53,9 +97,9 @@ function SignInAccountContent() {
         try {
             setIsSubmitting(true);
             const { user } = await emailLogin(email.trim(), password);
-            localStorage.setItem("shoutly_user", JSON.stringify(user));
+            const finalUser = await resolveAndPersistUser(user);
             window.dispatchEvent(new Event("auth-changed"));
-            router.push("/account-setup");
+            routeAfterLogin(finalUser);
         } catch (err: any) {
             const message =
                 err?.response?.data?.message ||

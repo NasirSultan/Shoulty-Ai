@@ -19,6 +19,10 @@ interface AdminHeaderProps {
   extra?: React.ReactNode;
   /** Button or element shown at the far right (e.g. "New Post", "Export PDF") */
   actionButton?: React.ReactNode;
+  /** Real user's display name (shown in header) */
+  userName?: string;
+  /** Real user's initials (shown in avatar) */
+  userInitials?: string;
 }
 
 export default function AdminHeader({
@@ -30,6 +34,8 @@ export default function AdminHeader({
   searchPlaceholder = "Search…",
   extra,
   actionButton,
+  userName,
+  userInitials,
 }: AdminHeaderProps) {
   return (
     <div
@@ -156,40 +162,6 @@ export default function AdminHeader({
         }}
       >
         <i className="fa-regular fa-circle-question" style={{ fontSize: 14 }} />
-      </div>
-
-      {/* Divider */}
-      <div style={{ width: 1, height: 20, background: "#E4E5EF", flexShrink: 0 }} />
-
-      {/* User */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 7,
-          padding: "4px 8px 4px 4px",
-          borderRadius: 7,
-          cursor: "pointer",
-        }}
-      >
-        <div
-          style={{
-            width: 28,
-            height: 28,
-            borderRadius: 7,
-            background: "linear-gradient(135deg,#5B5BD6,#EC4899)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 11,
-            fontWeight: 800,
-            color: "#fff",
-          }}
-        >
-          JD
-        </div>
-        <span style={{ fontSize: 13, fontWeight: 600 }}>Jane Doe</span>
-        <i className="fa-solid fa-chevron-down" style={{ fontSize: 10, color: "#9496B5", marginLeft: 3 }} />
       </div>
 
       {/* Action button */}

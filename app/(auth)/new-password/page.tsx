@@ -1,5 +1,6 @@
 import NewPasswordForm from "@/components/auth/NewPasswordForm";
 import { Metadata } from "next";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
     title: "Set New Password",
@@ -11,6 +12,10 @@ export const metadata: Metadata = {
 };
 
 export default function NewPassword() {
-    return <NewPasswordForm />;
+    return (
+        <Suspense fallback={null}>
+            <NewPasswordForm />
+        </Suspense>
+    );
 }
 

@@ -1,14 +1,54 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { getPendingAuthFlow, setAccountPassword } from "@/api/authApi";
 
-export default function CreatePasswordPage() {
+function CreatePasswordContent() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState("");
+
+    const pendingFlow = getPendingAuthFlow();
+    const email = searchParams.get("email") || pendingFlow?.email || "";
+
+    const handleCreatePassword = async () => {
+        if (!email) {
+            setError("Missing email context. Please start signup again.");
+            return;
+        }
+
+        if (password.length < 8) {
+            setError("Password must be at least 8 characters.");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setError("Passwords do not match.");
+            return;
+        }
+
+        try {
+            setSubmitting(true);
+            setError("");
+            await setAccountPassword(email, password);
+            router.push(`/account-setup?email=${encodeURIComponent(email)}`);
+        } catch (err: any) {
+            setError(
+                err?.response?.data?.message ||
+                    "Failed to set password. Please try again.",
+            );
+        } finally {
+            setSubmitting(false);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4">
@@ -52,6 +92,8 @@ export default function CreatePasswordPage() {
                     <input
                         type={showPassword ? "text" : "password"}
                         placeholder="8 symbols at least"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         className="w-full px-4 py-3 border font-arial border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black pr-12 text-black"
                     />
                     <button
@@ -75,6 +117,8 @@ export default function CreatePasswordPage() {
                     <input
                         type={showConfirmPassword ? "text" : "password"}
                         placeholder="8 symbols at least"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
                         className="w-full px-4 py-3 border font-arial border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black pr-12 text-black"
                     />
                     <button
@@ -90,15 +134,30 @@ export default function CreatePasswordPage() {
                     </button>
                 </div>
 
+                {error && (
+                    <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                        {error}
+                    </div>
+                )}
+
                 {/* Button */}
                 <button
-                    onClick={() => router.push("/password-success")}
+                    onClick={handleCreatePassword}
+                    disabled={submitting}
                     className="w-full h-12 bg-[#000000] text-white rounded-xl hover:opacity-90 transition"
                 >
-                    CREATE PASSWORD
+                    {submitting ? "CREATING PASSWORD..." : "CREATE PASSWORD"}
                 </button>
 
             </div>
         </div>
+    );
+}
+
+export default function CreatePasswordPage() {
+    return (
+        <Suspense fallback={null}>
+            <CreatePasswordContent />
+        </Suspense>
     );
 }

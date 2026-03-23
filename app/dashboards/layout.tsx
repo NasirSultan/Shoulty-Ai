@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import DashboardsAuthGuard from "./DashboardsAuthGuard";
 
 export const metadata: Metadata = {
   robots: {
@@ -9,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function DashboardsLayout({ children }: { children: ReactNode }) {
-  return <>{children}</>;
+  return <DashboardsAuthGuard>{children}</DashboardsAuthGuard>;
 }
