@@ -5,6 +5,10 @@ import Sidebar from "../Sidebar";
 import AdminHeader from "../AdminHeader";
 import { saveDashboardCalendarPost } from "../calendarSync";
 import { fetchImages, fetchIndustries } from "@/api/homeApi";
+import {
+  resolveGeneratorProfileFields,
+  streamGeneratePosts,
+} from "@/api/postGeneratorApi";
 import { useUserProfile } from "@/hooks/useUserProfile";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -501,10 +505,12 @@ function useToast() {
 }
 
 // ── Composer Modal ─────────────────────────────────────────────────────────
-function ComposerModal({ card, onClose, showToast }: {
+function ComposerModal({ card, onClose, showToast, industryId, subIndustryId }: {
   card: LibCard | null;
   onClose: () => void;
   showToast: (msg: string, type?: string) => void;
+  industryId: string;
+  subIndustryId: string;
 }) {
   const [tab, setTab] = useState<"instant" | "schedule">("instant");
   const [caption, setCaption] = useState("");
@@ -570,10 +576,48 @@ function ComposerModal({ card, onClose, showToast }: {
     if (v && tags.length < 10) { setTags(prev => [...prev, "#" + v]); setTagInput(""); }
   };
 
-  const doAiRewrite = () => {
-    setAiLoading(true); setAiResult("");
-    const caps = CAPS[card.k] || CAPS.startup;
-    setTimeout(() => { setAiResult(caps[Math.floor(Math.random() * caps.length)]); setAiLoading(false); }, 1400);
+  const doAiRewrite = async () => {
+    if (!industryId || !subIndustryId) {
+      showToast("Select industry/sub-industry before rewrite", "red");
+      return;
+    }
+
+    setAiLoading(true);
+    setAiResult("");
+    let received = false;
+
+    try {
+      await streamGeneratePosts(
+        {
+          industryId,
+          subIndustryId,
+          prompt: `Rewrite this post for higher engagement: ${caption}`,
+        },
+        {
+          onChunk: (chunk) => {
+            const text = chunk.post?.text?.trim();
+            if (!text) return;
+            if (received && chunk.post?.source !== "LLM") return;
+
+            setAiResult(text);
+            if (!received || chunk.post?.source === "LLM") {
+              received = true;
+              setAiLoading(false);
+            }
+          },
+          onDone: () => {
+            if (!received) {
+              showToast("No rewrite received from stream", "red");
+            }
+            setAiLoading(false);
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Library rewrite stream failed:", error);
+      setAiLoading(false);
+      showToast("Rewrite failed from API", "red");
+    }
   };
 
   const postNow = () => {
@@ -862,8 +906,13 @@ export default function LibraryPage() {
   const [favs, setFavs] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(false);
   const [compCard, setCompCard] = useState<LibCard | null>(null);
+  const [generatorIdsByKey, setGeneratorIdsByKey] = useState<
+    Record<string, { industryId: string; subIndustryId: string }>
+  >({});
   const { toast, show: showToast } = useToast();
   const { user, initials } = useUserProfile();
+  const { industryId: profileIndustryId, subIndustryId: profileSubIndustryId } =
+    resolveGeneratorProfileFields((user ?? null) as Record<string, unknown> | null);
 
   // Build cards from backend images (with fallback to static pool)
   const buildCardsFromApi = (apiImages: { url?: string; imageUrl?: string; id?: string | number }[], k: string): LibCard[] => {
@@ -930,8 +979,19 @@ export default function LibraryPage() {
   useEffect(() => {
     // Try preloading a relevant industry from backend taxonomy
     fetchIndustries()
-      .then((inds: { name?: string }[]) => {
+      .then((inds: { id?: string | number; name?: string; subIndustries?: { id?: string | number }[] }[]) => {
         if (!inds || inds.length === 0) return;
+        const nextMap: Record<string, { industryId: string; subIndustryId: string }> = {};
+        inds.forEach((ind) => {
+          const key = Object.keys(IMGS).find((k) => (ind.name || "").toLowerCase().includes(k));
+          const industryId = ind.id != null ? String(ind.id) : "";
+          const subIndustryId = ind.subIndustries?.[0]?.id != null ? String(ind.subIndustries[0].id) : "";
+          if (key && industryId && subIndustryId) {
+            nextMap[key] = { industryId, subIndustryId };
+          }
+        });
+        setGeneratorIdsByKey(nextMap);
+
         const firstName = (inds[0].name || "startup").toLowerCase();
         const normalized = Object.keys(IMGS).find((key) => firstName.includes(key)) || "startup";
         setIndustry(normalized);
@@ -1115,7 +1175,13 @@ export default function LibraryPage() {
       </div>
 
       {/* Composer Modal */}
-      <ComposerModal card={compCard} onClose={() => setCompCard(null)} showToast={showToast} />
+      <ComposerModal
+        card={compCard}
+        onClose={() => setCompCard(null)}
+        showToast={showToast}
+        industryId={generatorIdsByKey[industry]?.industryId || profileIndustryId || ""}
+        subIndustryId={generatorIdsByKey[industry]?.subIndustryId || profileSubIndustryId || ""}
+      />
 
       {/* Toast */}
       <div style={{ position:"fixed",bottom:22,right:22,zIndex:9999,display:"flex",alignItems:"center",gap:9,padding:"11px 16px",borderRadius:10,background:"#0D0E1A",color:"#fff",fontSize:13,fontWeight:600,boxShadow:"0 12px 32px rgba(13,14,26,.10)",fontFamily:"Sora,sans-serif",opacity:toast.visible?1:0,transform:toast.visible?"translateY(0)":"translateY(8px)",transition:"all .3s cubic-bezier(.4,0,.2,1)",pointerEvents:"none" }}>

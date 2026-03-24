@@ -57,8 +57,44 @@ export function useUserProfile() {
                     (data as { user?: UserProfile })?.user ??
                     (data as UserProfile);
                 if (fresh && typeof fresh === "object") {
-                    localStorage.setItem("shoutly_user", JSON.stringify(fresh));
-                    setUser(fresh as UserProfile);
+                    let merged = fresh as UserProfile;
+                    try {
+                        const rawLocal = localStorage.getItem("shoutly_user");
+                        const cached = rawLocal
+                            ? (JSON.parse(rawLocal) as Record<string, unknown>)
+                            : null;
+
+                        const freshIndustry =
+                            (merged as Record<string, unknown>).industryId ??
+                            (merged as Record<string, unknown>).industry_id ??
+                            (merged as Record<string, unknown>).selectedIndustryId;
+                        const freshSubIndustry =
+                            (merged as Record<string, unknown>).subIndustryId ??
+                            (merged as Record<string, unknown>).sub_industry_id ??
+                            (merged as Record<string, unknown>).selectedSubIndustryId;
+
+                        if (cached && (!freshIndustry || !freshSubIndustry)) {
+                            merged = {
+                                ...(cached as UserProfile),
+                                ...merged,
+                                industryId:
+                                    (freshIndustry as string | undefined) ||
+                                    (cached.industryId as string | undefined) ||
+                                    (cached.industry_id as string | undefined) ||
+                                    (cached.selectedIndustryId as string | undefined),
+                                subIndustryId:
+                                    (freshSubIndustry as string | undefined) ||
+                                    (cached.subIndustryId as string | undefined) ||
+                                    (cached.sub_industry_id as string | undefined) ||
+                                    (cached.selectedSubIndustryId as string | undefined),
+                            };
+                        }
+                    } catch {
+                        // ignore merge fallback errors
+                    }
+
+                    localStorage.setItem("shoutly_user", JSON.stringify(merged));
+                    setUser(merged);
                 }
             })
             .catch(() => {

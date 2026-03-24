@@ -4,6 +4,10 @@ import { useRef, useState } from "react";
 import Sidebar from "./Sidebar";
 import AdminHeader from "./AdminHeader";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import {
+  resolveGeneratorProfileFields,
+  streamGeneratePosts,
+} from "@/api/postGeneratorApi";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface Post {
@@ -172,21 +176,68 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("Overview");
   const [activePlat, setActivePlat] = useState("ig");
   const [generating, setGenerating] = useState(false);
+  const [promptInput, setPromptInput] = useState("");
   const [caption, setCaption] = useState("");
   const [tags2, setTags2] = useState<string[]>([]);
   const { toast, show: showToast } = useToast();
   const { user, initials } = useUserProfile();
 
-  const generateCaption = () => {
+  const generateCaption = async () => {
+    const { industryId, subIndustryId } = resolveGeneratorProfileFields(
+      (user ?? null) as Record<string, unknown> | null
+    );
+
+    if (!industryId || !subIndustryId) {
+      showToast("Set your industry and sub-industry in profile first.");
+      return;
+    }
+
+    const prompt = promptInput.trim();
+    if (!prompt) {
+      showToast("Add a prompt before generating.");
+      return;
+    }
+
     setCaption("");
     setTags2([]);
     setGenerating(true);
-    setTimeout(() => {
-      const caps = captions[activePlat] || captions.ig;
-      setCaption(caps[Math.floor(Math.random() * caps.length)]);
-      setTags2(hashtagMap[activePlat] || hashtagMap.ig);
+    let applied = false;
+
+    try {
+      await streamGeneratePosts(
+        {
+          industryId,
+          subIndustryId,
+          prompt,
+        },
+        {
+          onChunk: (chunk) => {
+            const text = chunk.post?.text?.trim();
+            if (!text) return;
+            if (applied && chunk.post?.source !== "LLM") return;
+
+            setCaption(text);
+            setTags2(chunk.post?.hashtags || []);
+
+            // Prefer LLM output when it arrives, but allow DB output as fallback.
+            if (!applied || chunk.post?.source === "LLM") {
+              applied = true;
+              setGenerating(false);
+            }
+          },
+          onDone: () => {
+            if (!applied) {
+              showToast("No generated post received from stream.");
+            }
+            setGenerating(false);
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Dashboard generate stream failed:", error);
       setGenerating(false);
-    }, 1400);
+      showToast("Failed to generate caption from API.");
+    }
   };
 
   const copyCaption = () => {
@@ -374,6 +425,8 @@ export default function DashboardPage() {
                 </div>
                 <textarea
                   placeholder="Describe your post topic… e.g. 'new product launch, summer vibe, call to action'"
+                  value={promptInput}
+                  onChange={(e) => setPromptInput(e.target.value)}
                   style={{ width: "100%", padding: "11px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#F0F1F8", color: "#0D0E1A", fontSize: 13.5, outline: "none", resize: "none", height: 70, fontFamily: "inherit", lineHeight: 1.6 }}
                 />
                 {generating && (

@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Sidebar from '../Sidebar'; // Import the sidebar component
 import AdminHeader from '../AdminHeader';
 import { useUserProfile } from '@/hooks/useUserProfile';
+import { fetchIndustries } from '@/api/homeApi';
+import { setUserProfile } from '@/api/authApi';
 
 // --- Types ---
 interface SocialAccount {
@@ -32,6 +34,17 @@ interface NotifState {
   };
 }
 
+interface SubIndustryOption {
+  id: string | number;
+  name: string;
+}
+
+interface IndustryOption {
+  id: string | number;
+  name: string;
+  subIndustries: SubIndustryOption[];
+}
+
 // --- Data ---
 const SOCIALS: SocialAccount[] = [
   { id: 'instagram', name: 'Instagram', icon: 'fa-brands fa-instagram', grad: 'linear-gradient(135deg,#F58529,#DD2A7B,#8134AF)', barClr: '#E1306C', handle: '@brandco.official', followers: '48.2K', posts: '892', eng: '4.8%', status: 'connected', sync: '2 min ago' },
@@ -56,10 +69,62 @@ const NOTIFS: NotificationItem[] = [
 
 // --- Utility Functions ---
 const showToast = (msg: string, type: 'default' | 'green' | 'red' | 'brand' | 'amber' = 'default') => {
-  // This is a simplified toast implementation for React.
-  // In a real app, you'd use a toast library or a more robust context.
-  const event = new CustomEvent('show-toast', { detail: { msg, type } });
-  window.dispatchEvent(event);
+  const icons: Record<string, string> = { default: '🔔', green: '✅', red: '🗑️', brand: '✦', amber: '⚠️' };
+  let stack = document.getElementById('toast-stack');
+  if (!stack) {
+    stack = document.createElement('div');
+    stack.id = 'toast-stack';
+    document.body.appendChild(stack);
+  }
+
+  // Keep toast stack above all page layers and below the top header area.
+  stack.style.position = 'fixed';
+  stack.style.top = '84px';
+  stack.style.right = '18px';
+  stack.style.zIndex = '99999';
+  stack.style.display = 'flex';
+  stack.style.flexDirection = 'column';
+  stack.style.gap = '8px';
+
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span style="font-size:15px;flex-shrink:0">${icons[type] || '🔔'}</span><span style="flex:1;font-weight:800;letter-spacing:.1px">${msg}</span><span class="t-x" onclick="this.parentElement.remove()">✕</span>`;
+  stack.appendChild(el);
+  setTimeout(() => {
+    el.style.transition = 'all .3s';
+    el.style.opacity = '0';
+    el.style.transform = 'translateX(110%)';
+    setTimeout(() => el.remove(), 300);
+  }, 4000);
+};
+
+const SOCIAL_ID_TO_BACKEND: Record<string, string> = {
+  instagram: 'INSTAGRAM',
+  facebook: 'FACEBOOK',
+  linkedin: 'LINKEDIN',
+  twitter: 'TWITTER',
+  youtube: 'YOUTUBE',
+};
+
+const ALLOWED_CONNECTED_SOCIALS = new Set([
+  'INSTAGRAM',
+  'FACEBOOK',
+  'LINKEDIN',
+  'TWITTER',
+  'YOUTUBE',
+]);
+
+const pickStringField = (
+  obj: Record<string, unknown> | null | undefined,
+  keys: string[]
+): string => {
+  if (!obj) return '';
+  for (const key of keys) {
+    const value = obj[key];
+    if (typeof value === 'string' && value.trim()) return value.trim();
+    if (typeof value === 'number') return String(value);
+  }
+  return '';
 };
 
 // --- Main Component ---
@@ -80,9 +145,12 @@ const SettingsPage: React.FC = () => {
     displayName: '',
     email: '',
     jobTitle: '',
+    industryId: '',
+    subIndustryId: '',
     timezone: 'America/New_York (EST, UTC-5)',
     language: 'English (US)',
   });
+  const [industries, setIndustries] = useState<IndustryOption[]>([]);
   const [passwordFields, setPasswordFields] = useState({
     current: '',
     new: '',
@@ -99,9 +167,45 @@ const SettingsPage: React.FC = () => {
     scores: true,
   });
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('light');
+  const [avatarUrl, setAvatarUrl] = useState('');
 
   // Load real user profile
   const { user, initials } = useUserProfile();
+  const profileUserId = pickStringField(
+    (user ?? null) as Record<string, unknown> | null,
+    ['id', '_id', 'userId']
+  );
+  const profileRole =
+    (typeof (user as Record<string, unknown> | null)?.role === 'string'
+      ? ((user as Record<string, unknown>).role as string)
+      : 'Member') || 'Member';
+  const profilePlan =
+    (typeof (user as Record<string, unknown> | null)?.plan === 'string'
+      ? ((user as Record<string, unknown>).plan as string)
+      : 'Business Plan') || 'Business Plan';
+  const profileName = profileData.fullName || user?.name || 'User';
+  const profileInitials = (profileName
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() || '')
+    .join('')) || initials || 'U';
+
+  const selectedIndustry = industries.find(
+    (ind) => String(ind.id) === String(profileData.industryId)
+  );
+  const subIndustryOptions = selectedIndustry?.subIndustries || [];
+
+  useEffect(() => {
+    fetchIndustries()
+      .then((data) => {
+        setIndustries((data || []) as IndustryOption[]);
+      })
+      .catch(() => {
+        setIndustries([]);
+      });
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -110,6 +214,8 @@ const SettingsPage: React.FC = () => {
       fullName: user.name || prev.fullName,
       displayName: user.name ? user.name.toLowerCase().replace(/\s+/g, '') : prev.displayName,
       email: user.email || prev.email,
+      industryId: pickStringField((user as Record<string, unknown>), ['industryId', 'industry_id', 'selectedIndustryId']) || prev.industryId,
+      subIndustryId: pickStringField((user as Record<string, unknown>), ['subIndustryId', 'sub_industry_id', 'selectedSubIndustryId']) || prev.subIndustryId,
     }));
 
     // Mark platforms as connected based on real connectedSocials from backend
@@ -122,11 +228,18 @@ const SettingsPage: React.FC = () => {
         }))
       );
     }
+
+    const backendAvatar =
+      typeof (user as Record<string, unknown>).profilePicture === 'string'
+        ? ((user as Record<string, unknown>).profilePicture as string)
+        : '';
+    setAvatarUrl(backendAvatar || '');
   }, [user]);
 
   // Refs for modal
   const modalRef = useRef<HTMLDivElement>(null);
   const modalContentRef = useRef<HTMLDivElement>(null);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   // --- Handlers ---
   const handleProfileChange = (field: keyof typeof profileData, value: string) => {
@@ -214,7 +327,196 @@ const SettingsPage: React.FC = () => {
     revokeSession('sess-win', 'Windows PC');
   };
 
-  const saveSection = (name: string) => {
+  const handleAvatarUpload = async (file: File) => {
+    try {
+      const raw = localStorage.getItem('shoutly_user');
+      const existing = raw ? (JSON.parse(raw) as Record<string, unknown>) : {};
+      const connectedSocialsFromUi = socials
+        .filter((s) => s.status === 'connected')
+        .map((s) => SOCIAL_ID_TO_BACKEND[s.id])
+        .filter((s): s is string => Boolean(s) && ALLOWED_CONNECTED_SOCIALS.has(s));
+      const connectedSocialsFromStore = Array.isArray(existing.connectedSocials)
+        ? (existing.connectedSocials as unknown[])
+            .map((s) => (typeof s === 'string' ? s.toUpperCase() : ''))
+            .filter((s) => Boolean(s) && ALLOWED_CONNECTED_SOCIALS.has(s))
+        : [];
+      const connectedSocials = Array.from(
+        new Set([...connectedSocialsFromUi, ...connectedSocialsFromStore])
+      );
+
+      const emailToSave =
+        profileData.email ||
+        (typeof existing.email === 'string' ? existing.email : '');
+      if (!emailToSave) {
+        showToast('Email is missing for avatar update', 'red');
+        return;
+      }
+
+      const brandName =
+        (typeof existing.brandName === 'string' && existing.brandName.trim())
+          ? existing.brandName.trim()
+          : 'Shoutly User';
+      const website =
+        (typeof existing.website === 'string' && existing.website.trim())
+          ? existing.website.trim()
+          : 'https://shoutlyai.com';
+      const phone = typeof existing.phone === 'string' ? existing.phone : '';
+
+      const backendResponse = await setUserProfile({
+        email: emailToSave,
+        brandName,
+        website,
+        phone,
+        connectedSocials,
+        industryId: profileData.industryId,
+        subIndustryId: profileData.subIndustryId,
+        brandLogo: file,
+      });
+
+      const backendUser =
+        (backendResponse && typeof backendResponse === 'object' && 'user' in (backendResponse as Record<string, unknown>))
+          ? ((backendResponse as { user?: Record<string, unknown> }).user || {})
+          : ((backendResponse as Record<string, unknown>) || {});
+
+      const merged = {
+        ...existing,
+        ...backendUser,
+        profilePicture:
+          (typeof backendUser.profilePicture === 'string' && backendUser.profilePicture) ||
+          URL.createObjectURL(file),
+      };
+
+      localStorage.setItem('shoutly_user', JSON.stringify(merged));
+      window.dispatchEvent(new Event('auth-changed'));
+      setAvatarUrl(String(merged.profilePicture || ''));
+      showToast('Profile photo updated!', 'green');
+    } catch (error: unknown) {
+      const errObj = error as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
+      showToast(errObj?.response?.data?.message || errObj?.message || 'Failed to update profile photo', 'red');
+    }
+  };
+
+  const handleRemoveAvatar = () => {
+    try {
+      const raw = localStorage.getItem('shoutly_user');
+      const existing = raw ? (JSON.parse(raw) as Record<string, unknown>) : {};
+      const merged = {
+        ...existing,
+        profilePicture: '',
+      };
+      localStorage.setItem('shoutly_user', JSON.stringify(merged));
+      window.dispatchEvent(new Event('auth-changed'));
+      setAvatarUrl('');
+      showToast('Profile photo removed', 'brand');
+    } catch {
+      showToast('Failed to remove profile photo', 'red');
+    }
+  };
+
+  const saveSection = async (name: string) => {
+    if (name === 'Profile') {
+      if (!profileData.industryId || !profileData.subIndustryId) {
+        showToast('Select industry and sub-industry first', 'red');
+        return;
+      }
+
+      try {
+        const raw = localStorage.getItem('shoutly_user');
+        const existing = raw ? (JSON.parse(raw) as Record<string, unknown>) : {};
+
+        const connectedSocialsFromUi = socials
+          .filter((s) => s.status === 'connected')
+          .map((s) => SOCIAL_ID_TO_BACKEND[s.id])
+          .filter((s): s is string => Boolean(s) && ALLOWED_CONNECTED_SOCIALS.has(s));
+        const connectedSocialsFromStore = Array.isArray(existing.connectedSocials)
+          ? (existing.connectedSocials as unknown[])
+              .map((s) => (typeof s === 'string' ? s.toUpperCase() : ''))
+              .filter((s) => Boolean(s) && ALLOWED_CONNECTED_SOCIALS.has(s))
+          : [];
+        const connectedSocials = Array.from(
+          new Set([...connectedSocialsFromUi, ...connectedSocialsFromStore])
+        );
+
+        const emailToSave =
+          profileData.email ||
+          (typeof existing.email === 'string' ? existing.email : '');
+
+        if (!emailToSave) {
+          showToast('Email is missing for profile update', 'red');
+          return;
+        }
+
+        const brandName =
+          (typeof existing.brandName === 'string' && existing.brandName.trim())
+            ? existing.brandName.trim()
+            : 'Shoutly User';
+        const website =
+          (typeof existing.website === 'string' && existing.website.trim())
+            ? existing.website.trim()
+            : 'https://shoutlyai.com';
+        const phone =
+          typeof existing.phone === 'string'
+            ? existing.phone
+            : '';
+
+        let backendResponse: unknown;
+        try {
+          backendResponse = await setUserProfile({
+            email: emailToSave,
+            brandName,
+            website,
+            phone,
+            connectedSocials,
+            industryId: profileData.industryId,
+            subIndustryId: profileData.subIndustryId,
+          });
+        } catch {
+          // Fallback for backends that don't accept the new optional fields yet.
+          backendResponse = await setUserProfile({
+            email: emailToSave,
+            brandName,
+            website,
+            phone,
+            connectedSocials,
+          });
+        }
+
+        const backendUser =
+          (backendResponse && typeof backendResponse === 'object' && 'user' in (backendResponse as Record<string, unknown>))
+            ? ((backendResponse as { user?: Record<string, unknown> }).user || {})
+            : ((backendResponse as Record<string, unknown>) || {});
+
+        const merged = {
+          ...existing,
+          ...backendUser,
+          id: pickStringField(existing, ['id', '_id', 'userId']) || profileUserId,
+          name: profileData.fullName,
+          email: profileData.email,
+          displayName: profileData.displayName,
+          jobTitle: profileData.jobTitle,
+          timezone: profileData.timezone,
+          language: profileData.language,
+          industryId: profileData.industryId,
+          subIndustryId: profileData.subIndustryId,
+        };
+        localStorage.setItem('shoutly_user', JSON.stringify(merged));
+        window.dispatchEvent(new Event('auth-changed'));
+      } catch (error: unknown) {
+        const errObj = error as {
+          response?: { data?: { message?: string } };
+          message?: string;
+        };
+        const msg =
+          errObj?.response?.data?.message ||
+          errObj?.message ||
+          'Failed to save profile to backend';
+        showToast(msg, 'red');
+        return;
+      }
+    }
     showToast(`${name} settings saved!`, 'green');
   };
 
@@ -228,6 +530,8 @@ const SettingsPage: React.FC = () => {
       displayName: user?.name ? user.name.toLowerCase().replace(/\s+/g, '') : '',
       email: user?.email || '',
       jobTitle: '',
+      industryId: pickStringField((user ?? null) as Record<string, unknown> | null, ['industryId', 'industry_id', 'selectedIndustryId']),
+      subIndustryId: pickStringField((user ?? null) as Record<string, unknown> | null, ['subIndustryId', 'sub_industry_id', 'selectedSubIndustryId']),
       timezone: 'America/New_York (EST, UTC-5)',
       language: 'English (US)',
     });
@@ -492,9 +796,6 @@ const SettingsPage: React.FC = () => {
 
   // --- Event Listeners for Custom Events ---
   useEffect(() => {
-    const handleShowToast = (e: CustomEvent) => {
-      showToast(e.detail.msg, e.detail.type);
-    };
     const handleCloseModal = () => closeModal();
     const handleDoConnect = (e: CustomEvent) => doConnect(e.detail.id, e.detail.name);
     const handleDoDisconnect = (e: CustomEvent) => doDisconnect(e.detail.id, e.detail.name);
@@ -513,7 +814,6 @@ const SettingsPage: React.FC = () => {
     const handleCheckDel = (e: CustomEvent) => checkDelInput(e.detail.value);
     const handleDoDelete = () => doDelete();
 
-    window.addEventListener('show-toast', handleShowToast as EventListener);
     window.addEventListener('close-modal', handleCloseModal);
     window.addEventListener('do-connect', handleDoConnect as EventListener);
     window.addEventListener('do-disconnect', handleDoDisconnect as EventListener);
@@ -530,7 +830,6 @@ const SettingsPage: React.FC = () => {
     window.addEventListener('do-delete', handleDoDelete);
 
     return () => {
-      window.removeEventListener('show-toast', handleShowToast as EventListener);
       window.removeEventListener('close-modal', handleCloseModal);
       window.removeEventListener('do-connect', handleDoConnect as EventListener);
       window.removeEventListener('do-disconnect', handleDoDisconnect as EventListener);
@@ -641,9 +940,13 @@ const SettingsPage: React.FC = () => {
         #modal-bg { position:fixed; inset:0; background:rgba(11,12,26,.45); backdrop-filter:blur(2px); display:none; align-items:center; justify-content:center; z-index:70; }
         #modal-bg.open { display:flex; }
         .mbox { width:min(560px, 92vw); max-height:90vh; overflow:auto; border-radius:14px; background:#fff; border:1px solid var(--bdr); box-shadow:0 20px 60px rgba(11,12,26,.25); }
-        #toast-stack { position:fixed; top:18px; right:18px; z-index:80; display:flex; flex-direction:column; gap:8px; }
-        .toast { min-width:260px; max-width:360px; display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:10px; background:#fff; border:1px solid var(--bdr); box-shadow:0 8px 26px rgba(11,12,26,.12); }
-        .toast .t-x { cursor:pointer; color:var(--t4); font-weight:700; }
+        #toast-stack { position:fixed; top:84px; right:18px; z-index:99999; display:flex; flex-direction:column; gap:8px; }
+        .toast { min-width:260px; max-width:360px; display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:10px; background:#fff; border:1px solid var(--bdr); box-shadow:0 8px 26px rgba(11,12,26,.18); color:var(--t1); font-size:13px; font-weight:700; line-height:1.35; }
+        .toast.green { background:#ECFDF5; border-color:rgba(16,185,129,.4); color:#065F46; }
+        .toast.red { background:#FEF2F2; border-color:rgba(239,68,68,.38); color:#991B1B; }
+        .toast.brand { background:#EEF2FF; border-color:rgba(91,91,214,.35); color:#3730A3; }
+        .toast.amber { background:#FFF7ED; border-color:rgba(245,158,11,.42); color:#92400E; }
+        .toast .t-x { cursor:pointer; color:inherit; font-weight:900; opacity:.75; }
         @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(16,185,129,.35)} 70%{box-shadow:0 0 0 10px rgba(16,185,129,0)} 100%{box-shadow:0 0 0 0 rgba(16,185,129,0)} }
         @media (max-width: 1024px) { .settings-wrap { grid-template-columns:1fr; } .settings-nav { position:static; } .form-row { grid-template-columns:1fr; } }
       `}</style>
@@ -714,16 +1017,34 @@ const SettingsPage: React.FC = () => {
                 </div>
                 <div className="sec-body">
                   <div className="ava-row">
-                    <div className="ava-big" onClick={openAvatarModal}>
-                      JD
+                    <input
+                      ref={avatarInputRef}
+                      type="file"
+                      accept="image/png,image/jpeg,image/jpg,image/webp"
+                      style={{ display: 'none' }}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleAvatarUpload(file);
+                      }}
+                    />
+                    <div className="ava-big" onClick={() => avatarInputRef.current?.click()}>
+                      {avatarUrl ? (
+                        <img
+                          src={avatarUrl}
+                          alt={profileName}
+                          style={{ width: '100%', height: '100%', borderRadius: 14, objectFit: 'cover' }}
+                        />
+                      ) : (
+                        profileInitials
+                      )}
                       <div className="ava-overlay"><i className="fa-solid fa-camera"></i></div>
                     </div>
                     <div>
-                      <div className="ava-name">Jordan Davis</div>
-                      <div className="ava-role">Admin · Business Plan · Member since Jan 2025</div>
+                      <div className="ava-name">{profileName}</div>
+                      <div className="ava-role">{profileRole} · {profilePlan} · Member</div>
                       <div className="ava-btns">
-                        <button className="ava-btn up" onClick={openAvatarModal}><i className="fa-solid fa-upload" style={{ fontSize: '10px' }}></i> Upload Photo</button>
-                        <button className="ava-btn rm" onClick={() => showToast('Profile photo removed', 'brand')}><i className="fa-solid fa-trash" style={{ fontSize: '10px' }}></i> Remove</button>
+                        <button className="ava-btn up" onClick={() => avatarInputRef.current?.click()}><i className="fa-solid fa-upload" style={{ fontSize: '10px' }}></i> Upload Photo</button>
+                        <button className="ava-btn rm" onClick={handleRemoveAvatar}><i className="fa-solid fa-trash" style={{ fontSize: '10px' }}></i> Remove</button>
                       </div>
                     </div>
                   </div>
@@ -758,6 +1079,50 @@ const SettingsPage: React.FC = () => {
                     </div>
                   </div>
                   <div className="form-row">
+                    <div><div className="fr-lbl">User ID</div><div className="fr-sub">Used by post scheduling APIs</div></div>
+                    <div className="fr-ctrl">
+                      <input className="field" type="text" value={profileUserId || 'Unavailable'} readOnly />
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div><div className="fr-lbl">Industry</div><div className="fr-sub">Required for AI post generation</div></div>
+                    <div className="fr-ctrl">
+                      <select
+                        className="field"
+                        value={profileData.industryId}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setProfileData((prev) => ({
+                            ...prev,
+                            industryId: value,
+                            subIndustryId: '',
+                          }));
+                        }}
+                      >
+                        <option value="">Select industry</option>
+                        {industries.map((ind) => (
+                          <option key={String(ind.id)} value={String(ind.id)}>{ind.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div><div className="fr-lbl">Sub-industry</div><div className="fr-sub">Required for API post generation context</div></div>
+                    <div className="fr-ctrl">
+                      <select
+                        className="field"
+                        value={profileData.subIndustryId}
+                        onChange={(e) => handleProfileChange('subIndustryId', e.target.value)}
+                        disabled={!profileData.industryId || subIndustryOptions.length === 0}
+                      >
+                        <option value="">Select sub-industry</option>
+                        {subIndustryOptions.map((sub) => (
+                          <option key={String(sub.id)} value={String(sub.id)}>{sub.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="form-row">
                     <div><div className="fr-lbl">Timezone</div><div className="fr-sub">For scheduling posts at the right local time</div></div>
                     <div className="fr-ctrl">
                       <select className="field" value={profileData.timezone} onChange={(e) => handleProfileChange('timezone', e.target.value)}>
@@ -775,7 +1140,7 @@ const SettingsPage: React.FC = () => {
                     <div><div className="fr-lbl">Language</div><div className="fr-sub">Interface language preference</div></div>
                     <div className="fr-ctrl">
                       <select className="field" value={profileData.language} onChange={(e) => handleProfileChange('language', e.target.value)}>
-                        <option selected>English (US)</option>
+                        <option value="English (US)">English (US)</option>
                         <option>English (UK)</option>
                         <option>Español</option>
                         <option>Français</option>
@@ -944,8 +1309,8 @@ const SettingsPage: React.FC = () => {
                   <div className="form-row">
                     <div><div className="fr-lbl">Sidebar Density</div><div className="fr-sub">How compact the sidebar navigation appears</div></div>
                     <div className="fr-ctrl">
-                      <select className="field" onChange={() => showToast('Density updated', 'brand')}>
-                        <option selected>Comfortable</option><option>Compact</option><option>Spacious</option>
+                      <select className="field" defaultValue="Comfortable" onChange={() => showToast('Density updated', 'brand')}>
+                        <option>Comfortable</option><option>Compact</option><option>Spacious</option>
                       </select>
                     </div>
                   </div>
@@ -1009,35 +1374,8 @@ const SettingsPage: React.FC = () => {
       {/* Toast Container */}
       <div id="toast-stack"></div>
 
-      {/* Toast Listener */}
-      <ToastListener />
     </>
   );
-};
-
-// Toast Listener Component
-const ToastListener: React.FC = () => {
-  useEffect(() => {
-    const handleShowToast = (e: CustomEvent) => {
-      const { msg, type } = e.detail;
-      const icons: Record<string, string> = { default: '🔔', green: '✅', red: '🗑️', brand: '✦', amber: '⚠️' };
-      const stack = document.getElementById('toast-stack');
-      if (!stack) return;
-      const el = document.createElement('div');
-      el.className = `toast ${type}`;
-      el.innerHTML = `<span style="font-size:15px;flex-shrink:0">${icons[type] || '🔔'}</span><span style="flex:1">${msg}</span><span class="t-x" onclick="this.parentElement.remove()">✕</span>`;
-      stack.appendChild(el);
-      setTimeout(() => {
-        el.style.transition = 'all .3s';
-        el.style.opacity = '0';
-        el.style.transform = 'translateX(110%)';
-        setTimeout(() => el.remove(), 300);
-      }, 4000);
-    };
-    window.addEventListener('show-toast', handleShowToast as EventListener);
-    return () => window.removeEventListener('show-toast', handleShowToast as EventListener);
-  }, []);
-  return null;
 };
 
 export default SettingsPage;

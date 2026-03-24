@@ -5,6 +5,8 @@ export const SHOUTLY_API_BASE_URL = "https://backend.shoutlyai.com";
 export const API_ENDPOINTS = {
     displayImages: `${API_BASE_URL}/api/display-images`,
     industries: `${API_BASE_URL}/api/industries/with-subindustries`,
+    postGeneratorGenerate: `${API_BASE_URL}/api/post-generator/generate`,
+    postGeneratorGenerateAndSave: `${API_BASE_URL}/api/post-generator/generate-and-save`,
     register: `${API_BASE_URL}/api/auth/register`,
     verifyOtp: `${API_BASE_URL}/api/auth/verify-otp`,
     setPassword: `${API_BASE_URL}/api/auth/set-password`,

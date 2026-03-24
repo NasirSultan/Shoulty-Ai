@@ -101,6 +101,8 @@ export const setUserProfile = async (payload: {
     website: string;
     phone?: string;
     connectedSocials: string[];
+    industryId?: string;
+    subIndustryId?: string;
     brandLogo?: File | null;
 }) => {
     const formData = new FormData();
@@ -111,6 +113,12 @@ export const setUserProfile = async (payload: {
     payload.connectedSocials.forEach((social) => {
         formData.append("connectedSocials", social);
     });
+    if (payload.industryId) {
+        formData.append("industryId", payload.industryId);
+    }
+    if (payload.subIndustryId) {
+        formData.append("subIndustryId", payload.subIndustryId);
+    }
     if (payload.brandLogo) {
         formData.append("brandLogo", payload.brandLogo);
     }

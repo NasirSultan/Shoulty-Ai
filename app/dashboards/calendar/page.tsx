@@ -7,6 +7,12 @@ import {
   DASHBOARD_CALENDAR_EVENT,
   readDashboardCalendarPosts,
 } from "../calendarSync";
+import {
+  resolveGeneratorProfileFields,
+  streamGenerateAndSavePosts,
+  streamGeneratePosts,
+} from "@/api/postGeneratorApi";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 type Status = "scheduled" | "draft" | "published";
@@ -71,6 +77,108 @@ const STOCK_IMAGES = [
   "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=75",
   "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=600&q=75",
 ];
+
+const TOPIC_IMAGE_MAP: Record<string, string[]> = {
+  food: [
+    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=75",
+    "https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=600&q=75",
+    "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=75",
+    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=75",
+    "https://images.unsplash.com/photo-1493770348161-369560ae357d?w=600&q=75",
+    "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&q=75",
+  ],
+  fitness: [
+    "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&q=75",
+    "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=600&q=75",
+    "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=75",
+    "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&q=75",
+    "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=600&q=75",
+  ],
+  business: [
+    "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=75",
+    "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&q=75",
+    "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600&q=75",
+    "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=75",
+    "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=75",
+    "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&q=75",
+  ],
+  realestate: [
+    "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=75",
+    "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=75",
+    "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=600&q=75",
+    "https://images.unsplash.com/photo-1464082354059-27db6ce50048?w=600&q=75",
+  ],
+  tech: [
+    "https://images.unsplash.com/photo-1607083206968-13611e3d76db?w=600&q=75",
+    "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=75",
+    "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&q=75",
+    "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&q=75",
+    "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=600&q=75",
+  ],
+  fashion: [
+    "https://images.unsplash.com/photo-1445205170230-053b83016050?w=600&q=75",
+    "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&q=75",
+    "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&q=75",
+    "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&q=75",
+  ],
+  travel: [
+    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=75",
+    "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600&q=75",
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=75",
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=75",
+  ],
+};
+
+const KEYWORD_TO_TOPIC: Record<string, string> = {
+  food:"food",restaurant:"food",kitchen:"food",cook:"food",eat:"food",menu:"food",chef:"food",
+  pizza:"food",salad:"food",meal:"food",dinner:"food",lunch:"food",recipe:"food",burger:"food",
+  gym:"fitness",fitness:"fitness",workout:"fitness",exercise:"fitness",transform:"fitness",
+  training:"fitness",muscle:"fitness",athlete:"fitness",run:"fitness",lifting:"fitness",
+  growth:"business",strategy:"business",brand:"business",marketing:"business",reach:"business",
+  content:"business",revenue:"business",business:"business",organic:"business",startup:"business",
+  founder:"business",entrepreneur:"business",hack:"business",follower:"business",analytics:"business",
+  ads:"business",thread:"business",users:"business",community:"business",
+  house:"realestate",home:"realestate",property:"realestate",listed:"realestate",bedroom:"realestate",
+  victorian:"realestate",estate:"realestate",listing:"realestate",mortgage:"realestate",
+  ai:"tech",tool:"tech",tech:"tech",digital:"tech",software:"tech",app:"tech",data:"tech",
+  automation:"tech",algorithm:"tech",model:"tech",
+  collection:"fashion",fashion:"fashion",summer:"fashion",drop:"fashion",style:"fashion",outfit:"fashion",
+  wear:"fashion",clothing:"fashion",pieces:"fashion",look:"fashion",
+  travel:"travel",adventure:"travel",wanderlust:"travel",beach:"travel",explore:"travel",trip:"travel",
+  destination:"travel",vacation:"travel",island:"travel",
+};
+
+function pickRelevantImage(caption: string, currentImg: string): string {
+  const words = caption.toLowerCase().split(/\W+/);
+  const topicCounts: Record<string, number> = {};
+  for (const word of words) {
+    const topic = KEYWORD_TO_TOPIC[word];
+    if (topic) topicCounts[topic] = (topicCounts[topic] || 0) + 1;
+  }
+  const topTopic = Object.entries(topicCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
+  const pool = topTopic && TOPIC_IMAGE_MAP[topTopic] ? TOPIC_IMAGE_MAP[topTopic] : STOCK_IMAGES;
+  const choices = pool.filter(i => i !== currentImg);
+  return choices.length > 0 ? choices[Math.floor(Math.random() * choices.length)] : pool[0];
+}
+
+function detectTopicFromCaption(caption: string): string | null {
+  const words = caption.toLowerCase().split(/\W+/);
+  const topicCounts: Record<string, number> = {};
+  for (const word of words) {
+    const topic = KEYWORD_TO_TOPIC[word];
+    if (topic) topicCounts[topic] = (topicCounts[topic] || 0) + 1;
+  }
+  return Object.entries(topicCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || null;
+}
+
+function detectTopicFromImageUrl(imageUrl: string): string | null {
+  if (!imageUrl) return null;
+  const normalized = imageUrl.split("?")[0];
+  for (const [topic, urls] of Object.entries(TOPIC_IMAGE_MAP)) {
+    if (urls.some((url) => normalized.includes(url.split("?")[0]))) return topic;
+  }
+  return null;
+}
 const CAPTIONS_POOL = [
   "3 growth hacks that tripled our organic reach in 30 days — no paid ads, just strategy 🚀",
   "Behind the kitchen at 9 PM — this is what building a brand looks like 🔥",
@@ -92,6 +200,15 @@ const HASHTAG_POOLS = [
   ["#Fashion","#OOTD","#StyleInspo","#NewCollection","#SustainableFashion"],
   ["#Travel","#HiddenGems","#Wanderlust","#TravelPhotography","#Adventure"],
 ];
+const TOPIC_HASHTAG_MAP: Record<string, string[]> = {
+  business: ["#GrowthHacking", "#ContentStrategy", "#DigitalMarketing", "#SocialMedia", "#BuildInPublic"],
+  food: ["#FoodPhotography", "#RestaurantLife", "#NewMenu", "#FoodieLife", "#ChefLife"],
+  fitness: ["#FitnessMotivation", "#GymLife", "#WorkoutOfTheDay", "#HealthyLifestyle", "#FitFam"],
+  realestate: ["#RealEstate", "#JustListed", "#DreamHome", "#PropertyForSale", "#HomeBuying"],
+  tech: ["#TechStartup", "#AItools", "#Automation", "#DigitalStrategy", "#Innovation"],
+  fashion: ["#Fashion", "#OOTD", "#StyleInspo", "#NewCollection", "#SustainableFashion"],
+  travel: ["#Travel", "#HiddenGems", "#Wanderlust", "#TravelPhotography", "#Adventure"],
+};
 const TIMES_POOL: TimeSlot[][] = [
   [{ t:"7:45 AM",e:"9.2%",best:true},{t:"12:00 PM",e:"6.1%",best:false},{t:"6:30 PM",e:"10.4%",best:true},{t:"9:00 PM",e:"7.8%",best:false}],
   [{ t:"8:30 AM",e:"8.8%",best:true},{t:"1:00 PM",e:"7.4%",best:false},{t:"7:00 PM",e:"9.6%",best:true},{t:"10:00 PM",e:"6.3%",best:false}],
@@ -133,6 +250,23 @@ const sameDay = (a: Date, b: Date) =>
 const fmt = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 const toIso = (d: Date) =>
   d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+
+function buildRelevantHashtags(caption: string, imageUrl?: string): string[] {
+  const topic = detectTopicFromCaption(caption) || detectTopicFromImageUrl(imageUrl || "") || "business";
+  const topicTags = TOPIC_HASHTAG_MAP[topic] || TOPIC_HASHTAG_MAP.business;
+  const dynamicTags = Array.from(
+    new Set(
+      caption
+        .split(/\W+/)
+        .map((word) => word.trim())
+        .filter((word) => word.length >= 4)
+        .filter((word) => !KEYWORD_TO_TOPIC[word.toLowerCase()])
+        .slice(0, 2)
+        .map((word) => `#${word.charAt(0).toUpperCase()}${word.slice(1)}`)
+    )
+  );
+  return [...dynamicTags, ...topicTags].slice(0, 5);
+}
 
 function seedPosts(baseDate: Date): Post[] {
   const posts: Post[] = [];
@@ -282,7 +416,7 @@ interface ModalState {
   initDate: Date | null;
 }
 
-function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate, showToast }: {
+function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate, showToast, user }: {
   state: ModalState;
   posts: Post[];
   today: Date;
@@ -291,6 +425,7 @@ function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate
   onDelete: (id: number) => void;
   onDuplicate: (id: number) => void;
   showToast: (msg: string, type: string) => void;
+  user: Record<string, unknown> | null | undefined;
 }) {
   const p = state.postId ? posts.find(x => x.id === state.postId) : null;
   const [caption, setCaption] = useState("");
@@ -307,6 +442,22 @@ function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate
   const [aiResult, setAiResult] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [aiIdx, setAiIdx] = useState(0);
+  const imgInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImgUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    setImg(url);
+    showToast("🖼️ Image updated!", "green");
+    e.target.value = "";
+  };
+
+  const browseStockImg = () => {
+    const next = pickRelevantImage(caption, img);
+    setImg(next);
+    showToast("✦ Relevant image loaded", "brand");
+  };
 
   useEffect(() => {
     if (!state.open) return;
@@ -325,9 +476,118 @@ function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate
 
   const togglePlat = (pl: PlatKey) => setSelPlats(prev => prev.includes(pl) ? prev.filter(x => x !== pl) : [...prev, pl]);
 
-  const doAiRewrite = () => {
+  const doAiRewrite = async () => {
     setAiLoading(true); setAiResult("");
-    setTimeout(() => { setAiResult(AI_CAPTIONS_REWRITE[aiIdx % AI_CAPTIONS_REWRITE.length]); setAiIdx(i => i + 1); setAiLoading(false); }, 1100);
+
+    // Smart local rewrite based on the current caption — always relevant
+    const localRewrite = (): string => {
+      if (!caption.trim()) return AI_CAPTIONS_REWRITE[aiIdx % AI_CAPTIONS_REWRITE.length];
+      const hooks = [
+        "Here's what nobody tells you 👇",
+        "Stop scrolling. This matters 👀",
+        "Real talk:",
+        "This changed everything for us ⬇️",
+        "Worth sharing:",
+      ];
+      const ctas = [
+        "💬 What's your take? Drop it below.",
+        "❤️ Save this for later.",
+        "🔗 Tag someone who needs this.",
+        "📌 Share with your team.",
+        "🚀 Follow for more like this.",
+      ];
+      const hook = hooks[aiIdx % hooks.length];
+      const cta = ctas[(aiIdx + 1) % ctas.length];
+      return `${hook}\n\n${caption.trim()}\n\n${cta}`;
+    };
+
+    const { industryId, subIndustryId } = resolveGeneratorProfileFields(user as Record<string, unknown>);
+    if (!industryId || !subIndustryId) {
+      // No profile industry — use smart local rewrite
+      setTimeout(() => {
+        const fallback = localRewrite();
+        setAiResult(fallback);
+        setAiIdx(i => i + 1);
+        setAiLoading(false);
+        showToast("✦ AI caption generated", "brand");
+      }, 700);
+      return;
+    }
+
+    // Prefer detected topic from selected image, fallback to caption keyword topic.
+    const imageTopic = detectTopicFromImageUrl(img) || detectTopicFromCaption(caption);
+    const prompt = [
+      "You are an expert social media copywriter.",
+      caption
+        ? `Rewrite this caption while preserving the core message: "${caption}"`
+        : "Generate an engaging social media caption.",
+      imageTopic
+        ? `The selected image topic is: ${imageTopic}.`
+        : "Use the selected image as visual context.",
+      "The output must match the image context and must not introduce unrelated topics.",
+      "Tone: bold, modern, brand-safe. Include a strong hook and a clear CTA.",
+      "Keep it under 280 characters.",
+    ].filter(Boolean).join(" ");
+
+    const attemptStreamRewrite = async (): Promise<string | null> => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 35000);
+      let accumulated = "";
+      try {
+        await streamGeneratePosts(
+          { industryId, subIndustryId, prompt },
+          {
+            onChunk: (chunk) => {
+              const text = chunk.post?.text;
+              if (text) {
+                accumulated = text;
+                setAiResult(text);
+              }
+            },
+            signal: controller.signal,
+          }
+        );
+      } finally {
+        clearTimeout(timeoutId);
+      }
+      return accumulated.trim() || null;
+    };
+
+    let generatedCaption: string | null = null;
+    try {
+      generatedCaption = await attemptStreamRewrite();
+    } catch (firstError) {
+      console.warn("AI rewrite first attempt failed:", firstError);
+    }
+
+    if (!generatedCaption) {
+      try {
+        // Retry once to handle cold-start/network blips.
+        generatedCaption = await attemptStreamRewrite();
+      } catch (retryError) {
+        console.warn("AI rewrite retry failed:", retryError);
+      }
+    }
+
+    try {
+      if (generatedCaption) {
+        showToast("✦ AI caption generated", "brand");
+      } else {
+        const fallback = localRewrite();
+        setAiResult(fallback);
+        showToast("⚠ AI unavailable. Applied local AI rewrite.", "amber");
+      }
+    } finally {
+      setAiIdx(i => i + 1);
+      setAiLoading(false);
+    }
+  };
+
+  const applyCaptionWithRelatedTags = (nextCaption: string) => {
+    setCaption(nextCaption);
+    if (nextCaption.trim()) {
+      setTags(buildRelevantHashtags(nextCaption, img));
+    }
   };
 
   const onTagKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -364,8 +624,31 @@ function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate
         <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
           {/* Left panel */}
           <div style={{ width: 240, flexShrink: 0, background: "#F0F1F9", borderRight: "1px solid #E2E4F0", display: "flex", flexDirection: "column" }}>
-            <div style={{ flex: 1, overflow: "hidden", position: "relative", minHeight: 160 }}>
+            <div
+              style={{ flex: 1, overflow: "hidden", position: "relative", minHeight: 160, cursor: "pointer" }}
+              onClick={() => imgInputRef.current?.click()}
+              title="Click to change image"
+            >
               <img src={img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              <div style={{ position: "absolute", inset: 0, background: "rgba(11,12,26,.38)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, opacity: 0, transition: "opacity .18s" }}
+                onMouseEnter={e => ((e.currentTarget as HTMLElement).style.opacity = "1")}
+                onMouseLeave={e => ((e.currentTarget as HTMLElement).style.opacity = "0")}
+              >
+                <i className="fa-solid fa-camera" style={{ color: "#fff", fontSize: 20 }} />
+                <span style={{ color: "#fff", fontSize: 11.5, fontWeight: 700, fontFamily: "Sora,sans-serif" }}>Change Image</span>
+              </div>
+              <input ref={imgInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleImgUpload} />
+            </div>
+            {/* Image action buttons */}
+            <div style={{ display: "flex", gap: 6, padding: "8px 10px", borderTop: "1px solid #E2E4F0" }}>
+              <button onClick={e => { e.stopPropagation(); imgInputRef.current?.click(); }}
+                style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "6px 8px", borderRadius: 7, border: "1px solid #E2E4F0", background: "#fff", color: "#3D3F60", fontSize: 11.5, fontWeight: 700, cursor: "pointer" }}>
+                <i className="fa-solid fa-upload" style={{ fontSize: 10 }} /> Upload
+              </button>
+              <button onClick={e => { e.stopPropagation(); browseStockImg(); }}
+                style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "6px 8px", borderRadius: 7, border: "1px solid #DDDDFB", background: "#EEEEFF", color: "#5B5BD6", fontSize: 11.5, fontWeight: 700, cursor: "pointer" }}>
+                <i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 10 }} /> Generate Another
+              </button>
             </div>
             {/* Platforms */}
             <div style={{ padding: "10px 12px", borderTop: "1px solid #E2E4F0" }}>
@@ -424,16 +707,16 @@ function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate
             <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 12px", borderRadius: 7, background: "linear-gradient(135deg,#EEEEFF,rgba(238,238,255,.45))", border: "1px solid #DDDDFB" }}>
               <i className="fa-solid fa-wand-magic-sparkles" style={{ color: "#5B5BD6", fontSize: 14, flexShrink: 0 }} />
               <div style={{ flex: 1, fontSize: 12.5, color: "#3D3F60" }}><strong style={{ color: "#5B5BD6" }}>AI Rewrite</strong> — Optimise caption for your brand</div>
-              <button onClick={doAiRewrite} style={{ display: "flex", alignItems: "center", gap: 5, padding: "6px 13px", borderRadius: 7, background: "#5B5BD6", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", flexShrink: 0 }}>
-                <i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 10 }} /> Rewrite
+              <button onClick={doAiRewrite} disabled={aiLoading} style={{ display: "flex", alignItems: "center", gap: 5, padding: "6px 13px", borderRadius: 7, background: aiLoading ? "#BFC1D9" : "#5B5BD6", color: "#fff", fontSize: 12, fontWeight: 700, cursor: aiLoading ? "not-allowed" : "pointer", border: "none", fontFamily: "Sora,sans-serif", flexShrink: 0 }}>
+                <i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 10 }} /> {aiLoading ? "Generating..." : "Rewrite"}
               </button>
             </div>
             {(aiLoading || aiResult) && (
               <div style={{ background: "#EEEEFF", border: "1px solid #DDDDFB", borderRadius: 7, padding: "10px 12px", fontSize: 13.5, color: "#0B0C1A", lineHeight: 1.7 }}>
-                {aiLoading ? "Generating caption…" : aiResult}
-                {!aiLoading && (
+                {aiLoading ? "Generating caption with AI..." : aiResult}
+                {!aiLoading && !!aiResult && (
                   <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
-                    {[{ label: "✓ Use This", action: () => { setCaption(aiResult); setAiResult(""); showToast("✦ Caption applied!", "brand"); } },
+                    {[{ label: "✓ Use This", action: () => { applyCaptionWithRelatedTags(aiResult); setAiResult(""); showToast("✦ Caption applied!", "brand"); } },
                       { label: "↺ Again", action: doAiRewrite },
                       { label: "✕", action: () => setAiResult("") }
                     ].map(btn => (
@@ -446,7 +729,7 @@ function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate
             {/* Caption */}
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: "#8486AB", fontFamily: "Sora,sans-serif", marginBottom: 6 }}>Caption</div>
-              <textarea value={caption} onChange={e => setCaption(e.target.value)} placeholder="Write your caption here…"
+              <textarea value={caption} onChange={e => applyCaptionWithRelatedTags(e.target.value)} placeholder="Write your caption here…"
                 style={{ width: "100%", padding: "10px 12px", borderRadius: 7, border: "1px solid #E2E4F0", background: "#F0F1F9", color: "#0B0C1A", fontSize: 13.5, outline: "none", resize: "none", minHeight: 80, fontFamily: "inherit", lineHeight: 1.6 }} />
               <div style={{ textAlign: "right", fontSize: 11, color: "#BFC1D9", fontFamily: "JetBrains Mono,monospace", marginTop: 3 }}>{caption.length} / 2200</div>
             </div>
@@ -454,7 +737,7 @@ function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: "#8486AB", fontFamily: "Sora,sans-serif", marginBottom: 6, display: "flex", alignItems: "center" }}>
                 Hashtags
-                <span onClick={() => { setTags(rnd(HASHTAG_POOLS)); showToast("✦ AI hashtags added!", "brand"); }} style={{ marginLeft: "auto", fontSize: 11, color: "#5B5BD6", fontWeight: 700, cursor: "pointer", textTransform: "none", letterSpacing: 0 }}>✦ AI Suggest</span>
+                <span onClick={() => { setTags(buildRelevantHashtags(caption, img)); showToast("✦ Related hashtags added!", "brand"); }} style={{ marginLeft: "auto", fontSize: 11, color: "#5B5BD6", fontWeight: 700, cursor: "pointer", textTransform: "none", letterSpacing: 0 }}>✦ Refresh</span>
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 5, padding: "8px 10px", borderRadius: 7, border: "1px solid #E2E4F0", background: "#F0F1F9", minHeight: 44 }}>
                 {tags.map((t, i) => (
@@ -531,21 +814,27 @@ function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate
 }
 
 // ── AI Generate Modal ──────────────────────────────────────────────────────
-function GenModal({ open, onDone }: { open: boolean; onDone: () => void }) {
-  const [pct, setPct] = useState(0);
-  const [stepIdx, setStepIdx] = useState(-1);
-  const steps = ["Analysing brand settings","Finding trending topics","Generating captions","Selecting best images","Calculating optimal times","Scheduling to calendar"];
-  useEffect(() => {
-    if (!open) { setPct(0); setStepIdx(-1); return; }
-    let p = 0;
-    const iv = setInterval(() => {
-      p += rndInt(2, 7); if (p > 100) p = 100;
-      setPct(p);
-      setStepIdx(Math.min(steps.length - 1, Math.floor((p / 100) * steps.length)));
-      if (p >= 100) { clearInterval(iv); setTimeout(onDone, 500); }
-    }, 80);
-    return () => clearInterval(iv);
-  }, [open]);
+function GenModal({
+  open,
+  pct,
+  generatedCount,
+  statusText,
+}: {
+  open: boolean;
+  pct: number;
+  generatedCount: number;
+  statusText: string;
+}) {
+  const steps = [
+    "Connecting to post stream",
+    "Receiving DB and LLM posts",
+    "Updating dashboard calendar",
+    "Saving scheduled content",
+  ];
+  const stepIdx = Math.min(
+    steps.length - 1,
+    Math.max(0, Math.floor((pct / 100) * steps.length))
+  );
 
   if (!open) return null;
   return (
@@ -553,11 +842,12 @@ function GenModal({ open, onDone }: { open: boolean; onDone: () => void }) {
       <div style={{ background: "#fff", borderRadius: 18, padding: "32px 38px", width: 380, textAlign: "center", boxShadow: "0 32px 80px rgba(11,12,26,.2)" }}>
         <div style={{ width: 72, height: 72, borderRadius: 20, background: "linear-gradient(135deg,#5B5BD6,#7C3AED)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 32, margin: "0 auto 16px", boxShadow: "0 4px 20px rgba(91,91,214,.32)" }}>✦</div>
         <div style={{ fontSize: 20, fontWeight: 800, color: "#0B0C1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.3px", marginBottom: 4 }}>AI Generating Posts</div>
-        <div style={{ fontSize: 13, color: "#8486AB", lineHeight: 1.6, marginBottom: 20 }}>Analysing brand, industry and trending topics to create high-performing content.</div>
+        <div style={{ fontSize: 13, color: "#8486AB", lineHeight: 1.6, marginBottom: 20 }}>Streaming posts from backend and inserting them as they arrive.</div>
         <div style={{ background: "#F0F1F9", borderRadius: 6, height: 8, overflow: "hidden", marginBottom: 8 }}>
           <div style={{ height: "100%", background: "linear-gradient(90deg,#5B5BD6,#7C3AED)", width: pct + "%", borderRadius: 6, transition: "width .4s ease" }} />
         </div>
-        <div style={{ fontSize: 12, color: "#8486AB", fontFamily: "JetBrains Mono,monospace", marginBottom: 16 }}>{pct}%</div>
+        <div style={{ fontSize: 12, color: "#8486AB", fontFamily: "JetBrains Mono,monospace", marginBottom: 8 }}>{pct}% · {generatedCount}/7 posts</div>
+        <div style={{ fontSize: 12, color: "#5B5BD6", marginBottom: 14 }}>{statusText}</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 8, textAlign: "left" }}>
           {steps.map((s, i) => (
             <div key={s} style={{ display: "flex", alignItems: "center", gap: 9, fontSize: 12.5, color: i < stepIdx ? "#10B981" : i === stepIdx ? "#5B5BD6" : "#8486AB", fontWeight: i === stepIdx ? 700 : 400 }}>
@@ -766,7 +1056,12 @@ export default function CalendarPage() {
   const [rpTab, setRpTab] = useState<RpTab>("accounts");
   const [modal, setModal] = useState<ModalState>({ open: false, postId: null, initDate: null });
   const [genOpen, setGenOpen] = useState(false);
+  const [genProgress, setGenProgress] = useState(0);
+  const [genCount, setGenCount] = useState(0);
+  const [genStatus, setGenStatus] = useState("Preparing stream...");
+  const [genInFlight, setGenInFlight] = useState(false);
   const { toast, show: showToast } = useToast();
+  const { user } = useUserProfile();
 
   const filtered = posts.filter(p => {
     if (platFilter !== "all" && !p.plats.includes(platFilter)) return false;
@@ -822,16 +1117,88 @@ export default function CalendarPage() {
     }, 1400);
   };
 
-  const onGenDone = () => {
-    setGenOpen(false);
-    const newPosts: Post[] = [];
-    for (let i = 0; i < 14; i++) {
-      const d = new Date(today.getTime() + rndInt(7, 60) * 86400000);
-      newPosts.push({ id: nextId + i, date: d, caption: rnd(CAPTIONS_POOL), hashtags: rnd(HASHTAG_POOLS), plats: rnd(PLAT_COMBOS), type: rnd(TYPE_POOL), timeStr: rnd(["7:45 AM","6:30 PM","12:00 PM","9:00 PM"]), timesOptions: rnd(TIMES_POOL), img: rnd(STOCK_IMAGES), score: rndInt(68, 96), status: "scheduled", reach: rndInt(15, 110) * 1000, engRate: "9.2%", isAI: true });
+  const startAiGeneration = async () => {
+    if (genInFlight) return;
+
+    const { userId, industryId, subIndustryId } = resolveGeneratorProfileFields(
+      (user ?? null) as Record<string, unknown> | null
+    );
+
+    if (!userId || !industryId || !subIndustryId) {
+      showToast("Add user, industry and sub-industry in profile first.", "red");
+      return;
     }
-    setPosts(prev => [...prev, ...newPosts]);
-    setNextId(n => n + 14);
-    showToast("✦ 14 AI posts generated & scheduled!", "green");
+
+    const scheduleAt = new Date(today);
+    scheduleAt.setDate(scheduleAt.getDate() + 1);
+    scheduleAt.setHours(9, 0, 0, 0);
+
+    let startId = nextId;
+    let received = 0;
+
+    setGenOpen(true);
+    setGenInFlight(true);
+    setGenProgress(5);
+    setGenCount(0);
+    setGenStatus("Connected. Waiting for chunks...");
+
+    try {
+      await streamGenerateAndSavePosts(
+        {
+          userId,
+          industryId,
+          subIndustryId,
+          prompt: "Generate 7 high-performing social media posts for calendar scheduling.",
+          postTime: scheduleAt.toISOString(),
+        },
+        {
+          onChunk: (chunk) => {
+            received += 1;
+            const postDate = new Date(scheduleAt);
+            postDate.setDate(postDate.getDate() + Math.max(0, chunk.index));
+
+            const localPost: Post = {
+              id: startId + received,
+              date: postDate,
+              caption: chunk.post?.text || rnd(CAPTIONS_POOL),
+              hashtags:
+                chunk.post?.hashtags && chunk.post.hashtags.length
+                  ? chunk.post.hashtags
+                  : rnd(HASHTAG_POOLS),
+              plats: rnd(PLAT_COMBOS),
+              type: "image",
+              timeStr: "9:00 AM",
+              timesOptions: rnd(TIMES_POOL),
+              img: chunk.post?.image?.imageUrl || rnd(STOCK_IMAGES),
+              score: chunk.post?.source === "LLM" ? rndInt(82, 96) : rndInt(70, 88),
+              status: "scheduled",
+              reach: rndInt(15, 110) * 1000,
+              engRate: chunk.post?.source === "LLM" ? "9.4%" : "8.3%",
+              isAI: true,
+            };
+
+            setPosts((prev) => [...prev, localPost]);
+            setGenCount(received);
+            setGenProgress(Math.min(95, Math.round((received / 7) * 100)));
+            setGenStatus(`Received post ${received}/7 from ${chunk.post?.source || "stream"}`);
+          },
+          onDone: () => {
+            setGenProgress(100);
+            setGenStatus("Stream complete.");
+          },
+        }
+      );
+
+      setNextId(startId + Math.max(received, 1) + 1);
+      showToast(`✦ ${received} AI posts generated & scheduled!`, "green");
+    } catch (error) {
+      console.error("Calendar generate-and-save stream failed:", error);
+      showToast("Failed to stream generated posts.", "red");
+      setGenStatus("Generation failed.");
+    } finally {
+      setGenInFlight(false);
+      setTimeout(() => setGenOpen(false), 600);
+    }
   };
 
   // ── Calendar renderers ───────────────────────────────────────────────────
@@ -1005,7 +1372,7 @@ export default function CalendarPage() {
                 })}
               </div>
               <div style={{ width: 1, height: 24, background: "#E2E4F0", flexShrink: 0 }} />
-              <button onClick={() => setGenOpen(true)} style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 18px", borderRadius: 8, background: "linear-gradient(135deg,#5B5BD6,#7C3AED)", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(91,91,214,.32)", whiteSpace: "nowrap", flexShrink: 0 }}>
+              <button onClick={startAiGeneration} style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 18px", borderRadius: 8, background: "linear-gradient(135deg,#5B5BD6,#7C3AED)", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(91,91,214,.32)", whiteSpace: "nowrap", flexShrink: 0 }}>
                 <i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 12 }} /> AI Generate
               </button>
             </div>
@@ -1051,7 +1418,7 @@ export default function CalendarPage() {
                       <div style={{ fontSize: 13.5, fontWeight: 800, color: "#fff", fontFamily: "Sora,sans-serif" }}>AI Content Pipeline — Rolling Generation</div>
                       <div style={{ fontSize: 11.5, color: "rgba(255,255,255,.6)", marginTop: 2 }}>New posts auto-generated every 7 days · Brand voice · Best times</div>
                     </div>
-                    <button onClick={() => setGenOpen(true)} style={{ padding: "7px 14px", borderRadius: 7, background: "rgba(255,255,255,.15)", border: "1px solid rgba(255,255,255,.22)", color: "rgba(255,255,255,.9)", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Sora,sans-serif" }}>+ Generate More</button>
+                    <button onClick={startAiGeneration} style={{ padding: "7px 14px", borderRadius: 7, background: "rgba(255,255,255,.15)", border: "1px solid rgba(255,255,255,.22)", color: "rgba(255,255,255,.9)", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Sora,sans-serif" }}>+ Generate More</button>
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", position: "sticky", top: 66, zIndex: 9, background: "#fff", borderBottom: "2px solid #E2E4F0" }}>
                     {DAY_NAMES.map((n, i) => <div key={n} style={{ padding: 8, textAlign: "center", fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: i===0||i===6?"#BFC1D9":"#8486AB", borderRight: "1px solid #ECEDF8" }}>{n}</div>)}
@@ -1068,10 +1435,10 @@ export default function CalendarPage() {
       </div>
 
       {/* Edit Modal */}
-      <EditModal state={modal} posts={posts} today={today} onClose={closeModal} onSave={savePost} onDelete={deletePost} onDuplicate={dupPost} showToast={showToast} />
+      <EditModal state={modal} posts={posts} today={today} onClose={closeModal} onSave={savePost} onDelete={deletePost} onDuplicate={dupPost} showToast={showToast} user={user} />
 
       {/* AI Generate Modal */}
-      <GenModal open={genOpen} onDone={onGenDone} />
+      <GenModal open={genOpen} pct={genProgress} generatedCount={genCount} statusText={genStatus} />
 
       {/* Toast */}
       <div style={{
