@@ -1,5 +1,7 @@
 export const runtime = "nodejs";
 
+const UPSTREAM_URL = "https://ai-shoutly-backend.onrender.com/api/generator/posts";
+
 export async function POST(request: Request) {
     let rawBody = "";
     try {
@@ -11,12 +13,9 @@ export async function POST(request: Request) {
         });
     }
 
-    const url = new URL(request.url);
-    const proxyUrl = `${url.origin}/api/proxy/stream-posts-save`;
-
     let upstream: Response;
     try {
-        upstream = await fetch(proxyUrl, {
+        upstream = await fetch(UPSTREAM_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -26,7 +25,7 @@ export async function POST(request: Request) {
             cache: "no-store",
         });
     } catch (err) {
-        const message = err instanceof Error ? err.message : "Failed to reach proxy.";
+        const message = err instanceof Error ? err.message : "Failed to reach upstream.";
         return new Response(JSON.stringify({ message }), {
             status: 502,
             headers: { "Content-Type": "application/json" },
@@ -35,7 +34,7 @@ export async function POST(request: Request) {
 
     if (!upstream.ok) {
         const text = await upstream.text().catch(() => "");
-        return new Response(text || `Proxy error ${upstream.status}`, {
+        return new Response(text || `Upstream error ${upstream.status}`, {
             status: upstream.status,
             headers: { "Content-Type": "text/plain" },
         });

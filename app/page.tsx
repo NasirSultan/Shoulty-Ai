@@ -165,6 +165,7 @@ export default function LandingPage() {
     >([]);
     const [generateImages, setGenerateImages] = useState<ImageItem[]>([]);
     const [generateLoadingImages, setGenerateLoadingImages] = useState(false);
+    const [previewStockImages, setPreviewStockImages] = useState<ImageItem[]>([]);
     const [streamedPosts, setStreamedPosts] = useState<GeneratedPost[]>([]);
     const [streamLoading, setStreamLoading] = useState(false);
     const [streamError, setStreamError] = useState<string | null>(null);
@@ -198,6 +199,11 @@ export default function LandingPage() {
         type: "generate" | "library",
         subIndustry: string | null,
     ) => `${type}:${subIndustry || "__all__"}`;
+    const getPreviewImageIdentity = (img: ImageItem, index: number) =>
+        img.id?.toString() ||
+        img.file ||
+        img.url ||
+        `${img.name || img.title || "preview"}-${index}`;
 
     const getImagesWithCache = async (
         type: "generate" | "library",
@@ -263,6 +269,72 @@ export default function LandingPage() {
             img.title?.toLowerCase().includes(libraryFilterTerm.toLowerCase())
         );
     });
+    useEffect(() => {
+        const seen = new Set<string>();
+        const uniqueImages = generateImages.filter((img, index) => {
+            const identity = getPreviewImageIdentity(img, index);
+
+            if (seen.has(identity)) return false;
+            seen.add(identity);
+            return true;
+        });
+
+        if (!uniqueImages.length) {
+            setPreviewStockImages([]);
+            return;
+        }
+
+        const fallbackShuffle = [...uniqueImages];
+        for (let i = fallbackShuffle.length - 1; i > 0; i -= 1) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [fallbackShuffle[i], fallbackShuffle[j]] = [fallbackShuffle[j], fallbackShuffle[i]];
+        }
+
+        if (typeof window === "undefined") {
+            setPreviewStockImages(fallbackShuffle.slice(0, 8));
+            return;
+        }
+
+        const storageKey = `preview-stock-order:${generateSelectedSubIndustry || "__all__"}`;
+        const byIdentity = new Map(
+            uniqueImages.map((img, index) => [getPreviewImageIdentity(img, index), img]),
+        );
+
+        let ordered: ImageItem[] = [];
+        try {
+            const stored = window.sessionStorage.getItem(storageKey);
+            const storedIds = stored ? (JSON.parse(stored) as string[]) : [];
+            ordered = storedIds
+                .map((id) => byIdentity.get(id))
+                .filter((img): img is ImageItem => Boolean(img));
+        } catch {
+            ordered = [];
+        }
+
+        const usedIds = new Set(
+            ordered.map((img, index) => getPreviewImageIdentity(img, index)),
+        );
+        const remaining = fallbackShuffle.filter(
+            (img, index) => !usedIds.has(getPreviewImageIdentity(img, index)),
+        );
+        const nextImages = [...ordered, ...remaining].slice(0, 8);
+
+        try {
+            window.sessionStorage.setItem(
+                storageKey,
+                JSON.stringify(
+                    nextImages.map((img, index) => getPreviewImageIdentity(img, index)),
+                ),
+            );
+        } catch {
+            // Ignore session storage failures and still use in-memory order.
+        }
+
+        setPreviewStockImages(nextImages);
+    }, [generateImages, generateSelectedSubIndustry]);
+
+    const previewPrimaryStockImages = previewStockImages.slice(0, 4);
+    const previewSecondaryStockImages = previewStockImages.slice(4, 8);
     const isGenerateReady =
         !!generateSelectedIndustry &&
         !!generatePendingSubIndustry &&
@@ -420,7 +492,7 @@ export default function LandingPage() {
             setStreamError(null);
         } else {
             const fallbackPrompt = brandDescription.trim() || "Generate social media post ideas for a business";
-            const fallbackFromStock = generateImages
+            const fallbackFromStock = previewStockImages
                 .map((img) => img.file || img.url || "")
                 .filter(Boolean)
                 .slice(0, 4)
@@ -773,7 +845,7 @@ export default function LandingPage() {
 
                                         // Before stream starts: show stock placeholders (use different images than row 2)
                                         if (!streamLoading && streamedPosts.length === 0) {
-                                            const fallback = generateImages[i + 4] || generateImages[i];
+                                            const fallback = previewSecondaryStockImages[i];
                                             if (!fallback) {
                                                 return (
                                                     <div
@@ -866,12 +938,12 @@ export default function LandingPage() {
                                                 className="aspect-square rounded-xl bg-gray-100 animate-pulse"
                                             />
                                         ))
-                                    ) : generateImages.slice(0, 4).length === 0 ? (
+                                    ) : previewPrimaryStockImages.length === 0 ? (
                                         <p className="col-span-full text-center text-gray-400 py-10">
                                             No stock templates found
                                         </p>
                                     ) : (
-                                        generateImages.slice(0, 4).map((img, index) => (
+                                        previewPrimaryStockImages.map((img, index) => (
                                             <div
                                                 key={img.id || `r2-stock-${index}`}
                                                 className="relative group aspect-square rounded-xl overflow-hidden bg-gray-50 cursor-pointer hover:ring-2 hover:ring-orange-500 transition-all"
