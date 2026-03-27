@@ -40,7 +40,6 @@ export async function POST(request: Request) {
         });
     }
 
-    // Pass the SSE stream straight through to the browser
     return new Response(upstream.body, {
         status: 200,
         headers: {

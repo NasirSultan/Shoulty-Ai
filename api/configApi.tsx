@@ -1,12 +1,20 @@
 // api/configApi.tsx
 export const API_BASE_URL = "https://ai-shoutly-backend.onrender.com";
 export const SHOUTLY_API_BASE_URL = "https://backend.shoutlyai.com";
+export const POST_GENERATOR_API_BASE_URL =
+    "https://ai-shoutly-backend.onrender.com/api/generator/posts";
+export const TEXT_GENERATOR_API_BASE_URL =
+    "http://localhost:5000/api/generator/texts";
 
 export const API_ENDPOINTS = {
     displayImages: `${API_BASE_URL}/api/display-images`,
     industries: `${API_BASE_URL}/api/industries/with-subindustries`,
-    postGeneratorGenerate: `/api/proxy/stream-posts`,
-    postGeneratorGenerateAndSave: `${API_BASE_URL}/api/post-generator/generate-and-save`,
+    // Frontend uses local routes that proxy to documented upstream generator endpoints.
+    postGeneratorGenerate: `/api/post-generator/generate`,
+    postGeneratorGenerateAndSave: `/api/post-generator/generate-and-save`,
+    postGeneratorGenerateDirect: `${POST_GENERATOR_API_BASE_URL}`,
+    postGeneratorGenerateAndSaveDirect: `${POST_GENERATOR_API_BASE_URL}`,
+    textGeneratorGenerate: `${TEXT_GENERATOR_API_BASE_URL}/texts`,
     register: `${API_BASE_URL}/api/auth/register`,
     verifyOtp: `${API_BASE_URL}/api/auth/verify-otp`,
     setPassword: `${API_BASE_URL}/api/auth/set-password`,
