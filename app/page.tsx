@@ -261,6 +261,10 @@ export default function LandingPage() {
         loadLibraryImages();
     }, [librarySelectedSubIndustry]);
 
+    useEffect(() => {
+        window.alert("under construvtion");
+    }, []);
+
     // Filter images locally based on search input
     const libraryFilteredImages = libraryImages.filter((img) => {
         if (!libraryFilterTerm) return true;
@@ -803,8 +807,8 @@ export default function LandingPage() {
                             {/* Tabs */}
                             <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                                 {[
-                                    { label: "Create Photos", value: "photos" },
-                                    { label: "Create Reels", value: "reels" },
+                                    { label: "Photos", value: "photos" },
+                                    { label: "Reels", value: "reels" },
                                 ].map((tab) => (
                                     <button
                                         key={tab.value}
@@ -2084,8 +2088,8 @@ export default function LandingPage() {
                             {/* Tabs */}
                             <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                                 {[
-                                    { label: "Create Photos", value: "photos" },
-                                    { label: "Create Reels", value: "reels" },
+                                    { label: "Photos", value: "photos" },
+                                    { label: "Reels", value: "reels" },
                                 ].map((tab) => (
                                     <button
                                         key={tab.value}
