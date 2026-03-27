@@ -262,7 +262,7 @@ export default function LandingPage() {
     }, [librarySelectedSubIndustry]);
 
     useEffect(() => {
-        window.alert("under construvtion");
+        window.alert("Constrution");
     }, []);
 
     // Filter images locally based on search input
