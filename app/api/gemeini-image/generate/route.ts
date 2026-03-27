@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const OPENAI_IMAGE_URL = "https://api.openai.com/v1/images/generations";
 const UPSTREAM_CANDIDATES = [
   "https://ai-shoutly-backend.onrender.com/api/gemeini-image/generate",
   "https://ai-shoutly-backend.onrender.com/api/gemini-image/generate",
@@ -10,6 +11,13 @@ const UPSTREAM_CANDIDATES = [
 ];
 
 let lastUpstreamImageUrl = "";
+
+const isPlaceholderOpenAiKey = (value: string) =>
+  !value ||
+  value.includes("your-openai-api-key") ||
+  value.includes("your-openai-api-key-here") ||
+  value.includes("your-ope") ||
+  value.startsWith("sk-your");
 
 const extractImageUrl = (data: any): string => {
   const first = Array.isArray(data?.images) ? data.images[0] : null;
@@ -50,6 +58,7 @@ const pickFromDisplayImages = (data: any): string => {
 
 export async function POST(request: NextRequest) {
   try {
+    const openAiKey = process.env.OPENAI_API_KEY?.trim() || "";
     const rawBody = await request.text();
     let body: any = null;
     try {
@@ -65,6 +74,57 @@ export async function POST(request: NextRequest) {
 
     if (!prompt) {
       return NextResponse.json({ message: "Prompt is required." }, { status: 400 });
+    }
+
+    if (!isPlaceholderOpenAiKey(openAiKey)) {
+      try {
+        const upstreamResponse = await fetch(OPENAI_IMAGE_URL, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${openAiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "gpt-image-1",
+            prompt,
+            n: 1,
+            size: "1024x1024",
+          }),
+          cache: "no-store",
+        });
+
+        const upstreamText = await upstreamResponse.text();
+        let upstreamData: any = null;
+        try {
+          upstreamData = upstreamText ? JSON.parse(upstreamText) : null;
+        } catch {
+          upstreamData = null;
+        }
+
+        if (upstreamResponse.ok) {
+          const firstImage = Array.isArray(upstreamData?.data)
+            ? upstreamData.data[0]
+            : null;
+
+          const imageUrl =
+            (typeof firstImage?.url === "string" && firstImage.url.trim()) ||
+            (typeof firstImage?.b64_json === "string" && firstImage.b64_json.trim()
+              ? `data:image/png;base64,${firstImage.b64_json.trim()}`
+              : "");
+
+          if (imageUrl) {
+            return NextResponse.json(
+              {
+                imageUrl,
+                source: "openai-generate",
+              },
+              { status: 200 },
+            );
+          }
+        }
+      } catch {
+        // Fall through to backend/display-image candidates.
+      }
     }
 
     const errors: string[] = [];
