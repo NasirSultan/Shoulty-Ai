@@ -261,9 +261,6 @@ export default function LandingPage() {
         loadLibraryImages();
     }, [librarySelectedSubIndustry]);
 
-    useEffect(() => {
-        window.alert("Constrution");
-    }, []);
 
     // Filter images locally based on search input
     const libraryFilteredImages = libraryImages.filter((img) => {
