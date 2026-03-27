@@ -5,7 +5,7 @@ import Sidebar from '../Sidebar'; // Import the sidebar component
 import AdminHeader from '../AdminHeader';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { fetchIndustries } from '@/api/homeApi';
-import { setUserProfile } from '@/api/authApi';
+import { fetchProfile, setAccountPassword, setUserProfile } from '@/api/authApi';
 
 // --- Types ---
 interface SocialAccount {
@@ -416,7 +416,47 @@ const SettingsPage: React.FC = () => {
     }
   };
 
-  const saveSection = async (name: string) => {
+  const refreshProfileFromBackend = async () => {
+    try {
+      const fresh = await fetchProfile();
+      const backendUser =
+        (fresh && typeof fresh === 'object' && 'user' in (fresh as Record<string, unknown>))
+          ? ((fresh as { user?: Record<string, unknown> }).user || {})
+          : ((fresh as Record<string, unknown>) || {});
+
+      const raw = localStorage.getItem('shoutly_user');
+      const existing = raw ? (JSON.parse(raw) as Record<string, unknown>) : {};
+      const merged = { ...existing, ...backendUser };
+      localStorage.setItem('shoutly_user', JSON.stringify(merged));
+      window.dispatchEvent(new Event('auth-changed'));
+
+      setProfileData((prev) => ({
+        ...prev,
+        fullName:
+          pickStringField(merged, ['name']) ||
+          pickStringField(existing, ['name']) ||
+          prev.fullName,
+        displayName:
+          pickStringField(merged, ['name'])
+            ? pickStringField(merged, ['name']).toLowerCase().replace(/\s+/g, '')
+            : prev.displayName,
+        email:
+          pickStringField(merged, ['email']) ||
+          pickStringField(existing, ['email']) ||
+          prev.email,
+        industryId:
+          pickStringField(merged, ['industryId', 'industry_id', 'selectedIndustryId']) ||
+          prev.industryId,
+        subIndustryId:
+          pickStringField(merged, ['subIndustryId', 'sub_industry_id', 'selectedSubIndustryId']) ||
+          prev.subIndustryId,
+      }));
+    } catch {
+      // Keep current UI state if backend refresh fails.
+    }
+  };
+
+  const saveSection = async (name: string, options?: { silentSuccess?: boolean }) => {
     if (name === 'Profile') {
       if (!profileData.industryId || !profileData.subIndustryId) {
         showToast('Select industry and sub-industry first', 'red');
@@ -462,27 +502,15 @@ const SettingsPage: React.FC = () => {
             ? existing.phone
             : '';
 
-        let backendResponse: unknown;
-        try {
-          backendResponse = await setUserProfile({
-            email: emailToSave,
-            brandName,
-            website,
-            phone,
-            connectedSocials,
-            industryId: profileData.industryId,
-            subIndustryId: profileData.subIndustryId,
-          });
-        } catch {
-          // Fallback for backends that don't accept the new optional fields yet.
-          backendResponse = await setUserProfile({
-            email: emailToSave,
-            brandName,
-            website,
-            phone,
-            connectedSocials,
-          });
-        }
+        const backendResponse = await setUserProfile({
+          email: emailToSave,
+          brandName,
+          website,
+          phone,
+          connectedSocials,
+          industryId: profileData.industryId,
+          subIndustryId: profileData.subIndustryId,
+        });
 
         const backendUser =
           (backendResponse && typeof backendResponse === 'object' && 'user' in (backendResponse as Record<string, unknown>))
@@ -504,6 +532,7 @@ const SettingsPage: React.FC = () => {
         };
         localStorage.setItem('shoutly_user', JSON.stringify(merged));
         window.dispatchEvent(new Event('auth-changed'));
+        await refreshProfileFromBackend();
       } catch (error: unknown) {
         const errObj = error as {
           response?: { data?: { message?: string } };
@@ -517,10 +546,68 @@ const SettingsPage: React.FC = () => {
         return;
       }
     }
-    showToast(`${name} settings saved!`, 'green');
+
+    if (name === 'Password') {
+      if (!passwordFields.current.trim()) {
+        showToast('Enter current password', 'red');
+        return;
+      }
+      if (!passwordFields.new || passwordFields.new.length < 8) {
+        showToast('New password must be at least 8 characters', 'red');
+        return;
+      }
+      if (passwordFields.new !== passwordFields.confirm) {
+        showToast('New password and confirmation do not match', 'red');
+        return;
+      }
+
+      try {
+        const raw = localStorage.getItem('shoutly_user');
+        const existing = raw ? (JSON.parse(raw) as Record<string, unknown>) : {};
+        const emailToSave =
+          profileData.email ||
+          (typeof existing.email === 'string' ? existing.email : '');
+
+        if (!emailToSave) {
+          showToast('Email is missing for password update', 'red');
+          return;
+        }
+
+        await setAccountPassword(emailToSave, passwordFields.new);
+        setPasswordFields({ current: '', new: '', confirm: '' });
+        setPasswordStrength({ score: 0, label: '', color: '' });
+        setPasswordMatch({ match: true, hint: '' });
+      } catch (error: unknown) {
+        const errObj = error as {
+          response?: { data?: { message?: string } };
+          message?: string;
+        };
+        const msg =
+          errObj?.response?.data?.message ||
+          errObj?.message ||
+          'Failed to update password in backend';
+        showToast(msg, 'red');
+        return;
+      }
+    }
+
+    if (!options?.silentSuccess) {
+      showToast(`${name} settings saved!`, 'green');
+    }
   };
 
-  const saveAll = () => {
+  const saveAll = async () => {
+    await saveSection('Profile', { silentSuccess: true });
+
+    const shouldSavePassword =
+      Boolean(passwordFields.current.trim()) ||
+      Boolean(passwordFields.new.trim()) ||
+      Boolean(passwordFields.confirm.trim());
+
+    if (shouldSavePassword) {
+      await saveSection('Password', { silentSuccess: true });
+    }
+
     showToast('All settings saved!', 'green');
   };
 

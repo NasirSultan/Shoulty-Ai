@@ -30,6 +30,18 @@ export interface GeneratePostsRequest {
   prompt: string;
 }
 
+export interface PromptOnlyImagesRequest {
+  prompt: string;
+  count?: number;
+  aspectRatio?: "1:1" | "16:9" | "9:16";
+}
+
+export interface PromptOnlyImage {
+  id: string;
+  url: string;
+  title: string;
+}
+
 export interface GenerateAndSavePostsRequest extends GeneratePostsRequest {
   userId: string;
   postTime: string;
@@ -40,6 +52,36 @@ interface StreamCallbacks<TChunk> {
   onDone?: () => void;
   signal?: AbortSignal;
 }
+
+const parseErrorMessage = (text: string, status: number): string => {
+  if (!text) {
+    return status >= 500
+      ? "Post generator is temporarily unavailable. Please try again in a moment."
+      : `Post generator request failed (${status}).`;
+  }
+
+  try {
+    const parsed = JSON.parse(text) as {
+      message?: string;
+      error?: { message?: string } | string;
+    };
+
+    const nestedError =
+      typeof parsed?.error === "string"
+        ? parsed.error
+        : parsed?.error?.message;
+    const message = parsed?.message || nestedError;
+    if (message && typeof message === "string") return message;
+  } catch {
+    // Ignore JSON parse failure and use raw text fallback.
+  }
+
+  if (/upstream error\s*503/i.test(text) || status >= 500) {
+    return "Post generator is temporarily unavailable. Please try again in a moment.";
+  }
+
+  return text;
+};
 
 const parseSseEventData = (rawEvent: string): string | null => {
   const dataLines = rawEvent
@@ -57,19 +99,29 @@ const streamPostGenerator = async <TChunk>(
   body: object,
   callbacks: StreamCallbacks<TChunk>
 ) => {
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "text/event-stream",
-    },
-    body: JSON.stringify(body),
-    signal: callbacks.signal,
-  });
+  const doRequest = () =>
+    fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "text/event-stream",
+      },
+      body: JSON.stringify(body),
+      signal: callbacks.signal,
+    });
+
+  let response = await doRequest();
 
   if (!response.ok) {
-    const errText = await response.text().catch(() => "");
-    throw new Error(errText || `Post generator request failed (${response.status})`);
+    if (response.status === 503) {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      response = await doRequest();
+    }
+
+    if (!response.ok) {
+      const errText = await response.text().catch(() => "");
+      throw new Error(parseErrorMessage(errText, response.status));
+    }
   }
 
   if (!response.body) {
@@ -151,6 +203,30 @@ export const streamGenerateAndSavePosts = async (
     request,
     callbacks
   );
+};
+
+export const generatePromptOnlyImages = async (
+  request: PromptOnlyImagesRequest
+): Promise<PromptOnlyImage[]> => {
+  const response = await fetch("/api/prompt-images", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify(request),
+  });
+
+  if (!response.ok) {
+    const message = await response.text().catch(() => "");
+    console.warn(
+      message || `Prompt image generation failed (${response.status}); falling back to stock images.`
+    );
+    return [];
+  }
+
+  const data = await response.json();
+  return Array.isArray(data?.images) ? data.images : [];
 };
 
 const getStringByKeys = (

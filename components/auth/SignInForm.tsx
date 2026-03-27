@@ -7,7 +7,7 @@ import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import ShoutlyLogo from "../common/ShoutlyLogo";
 import AuthBackground from "./AuthBackground";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
-import { googleLogin } from "@/api/authApi";
+import { emailLogin, googleLogin } from "@/api/authApi";
 
 export default function SignInForm() {
     const router = useRouter();
@@ -28,8 +28,8 @@ export default function SignInForm() {
         try {
             const { user } = await googleLogin(credentialResponse.credential!);
             localStorage.setItem("shoutly_user", JSON.stringify(user));
-            console.log("Logged in as:", user.name);
-            router.push("/dashboard");
+            window.dispatchEvent(new Event("auth-changed"));
+            router.push("/dashboards");
         } catch (err) {
             setError("Google sign-in failed. Please try again.");
             console.error("Google login failed:", err);
@@ -48,8 +48,10 @@ export default function SignInForm() {
         }
 
         try {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            router.push("/dashboard");
+            const { user } = await emailLogin(formData.email.trim(), formData.password);
+            localStorage.setItem("shoutly_user", JSON.stringify(user));
+            window.dispatchEvent(new Event("auth-changed"));
+            router.push("/dashboards");
         } catch (err) {
             setError("Invalid email or password");
             setLoading(false);

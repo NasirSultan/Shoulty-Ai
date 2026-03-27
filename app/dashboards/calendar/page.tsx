@@ -6,7 +6,15 @@ import AdminHeader from "../AdminHeader";
 import {
   DASHBOARD_CALENDAR_EVENT,
   readDashboardCalendarPosts,
+  removeDashboardCalendarPost,
+  saveDashboardCalendarPost,
+  writeDashboardCalendarPosts,
 } from "../calendarSync";
+import {
+  deleteCalendarPostFromBackend,
+  fetchCalendarPostsFromBackend,
+  upsertCalendarPostToBackend,
+} from "@/api/calendarPostsApi";
 import {
   resolveGeneratorProfileFields,
   streamGenerateAndSavePosts,
@@ -128,6 +136,128 @@ const TOPIC_IMAGE_MAP: Record<string, string[]> = {
     "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=75",
   ],
 };
+
+// Maps common industry identifier keywords → topic key for the image pool
+const INDUSTRY_TO_TOPIC: Record<string, string> = {
+  food: "food", restaurant: "food", beverage: "food", catering: "food", culinary: "food",
+  fitness: "fitness", gym: "fitness", health: "fitness", wellness: "fitness", sport: "fitness", training: "fitness",
+  technology: "tech", tech: "tech", software: "tech", saas: "tech", ai: "tech", digital: "tech", developer: "tech",
+  fashion: "fashion", apparel: "fashion", clothing: "fashion", style: "fashion", boutique: "fashion",
+  realestate: "realestate", real_estate: "realestate", property: "realestate", realtor: "realestate", housing: "realestate",
+  travel: "travel", tourism: "travel", adventure: "travel", hospitality: "travel", hotel: "travel",
+};
+
+// 7 distinct content angles — ensures each generated post has a unique theme
+const GENERATION_ANGLES = [
+  "Share a surprising quick-win tip",
+  "Behind-the-scenes story or moment",
+  "Before & after transformation",
+  "Myth-busting: what people get wrong",
+  "Top 3 tools or resources you recommend",
+  "Client or customer success story",
+  "Upcoming trend to watch in the industry",
+];
+
+// 7 unique angle-based captions per industry topic
+const LOCAL_CAPTIONS_BY_TOPIC: Record<string, string[]> = {
+  food: [
+    "Quick-win tip: batch-prep your sauces on Sunday and save 2 hours every week 🦪",
+    "Behind the scenes at 6 AM — here’s what opening the kitchen actually looks like 👨‍🍳",
+    "From bland to brand: how we overhauled our menu and doubled covers in 30 days ✨",
+    "Myth busted: you do NOT need a Michelin-trained chef to run a profitable food business 🔥",
+    "3 kitchen tools we can’t live without (and one we threw in the bin) 🔪",
+    "A guest drove 2 hours just for our signature dish — here’s their message 🙏",
+    "The biggest food trend coming this summer — are you ready? 🚀",
+  ],
+  fitness: [
+    "One quick win: swap your rest day scroll for a 10-min walk — your recovery will thank you 💪",
+    "6 AM behind the scenes — what a PT’s morning routine really looks like 🌅",
+    "12-week transformation: -18 lbs, +confidence, zero fad diets 💪",
+    "Myth: you need to go to the gym every day to see results. Hard disagree. Here’s why 🔥",
+    "Top 3 apps our trainers actually use (and 1 we deleted) ✅",
+    "Client message that made our whole team tear up — this is why we do it ❤️",
+    "The biggest fitness trend for 2026 that most gyms are ignoring 🚀",
+  ],
+  tech: [
+    "Quick win: automate your daily standup summary with 1 free tool — here’s how 🤖",
+    "Behind the scenes: what a product sprint actually looks like for a 5-person team 💻",
+    "Before vs after: switching to async comms cut our meeting load by 40% ✨",
+    "Myth: AI will replace your dev team. Here’s the nuanced truth nobody wants to say 🔥",
+    "3 tools our engineering team ships faster with every week ✅",
+    "Our early user told us the product saved their business. This is their story 🙏",
+    "The next big shift in SaaS UX — and how to get ahead of it 🚀",
+  ],
+  fashion: [
+    "One styling tip that instantly elevates any outfit — save this 📌",
+    "Behind the scenes of our new collection shoot — the chaos you never see 📸",
+    "Before vs after styling: the same person, 2 outfits, completely different energy ✨",
+    "Myth: sustainable fashion is always expensive. We’re proving that wrong 📋",
+    "3 wardrobe staples every capsule wardrobe needs (stylist-approved) ✅",
+    "A customer wore our piece to her job interview — and got the role 🌟",
+    "The fashion movement reshaping how we dress in 2026 🚀",
+  ],
+  realestate: [
+    "Quick win for buyers: get pre-approved before viewing — you’ll negotiate from a stronger position 🏠",
+    "Behind the scenes: what happens between offer accepted and keys in hand 🔑",
+    "Before vs after: this renovation added £42K to the listing value in 6 weeks ✨",
+    "Myth: you need a 20% deposit to buy property. Here’s what most people don’t know 🔥",
+    "3 online tools every first-time buyer should bookmark ✅",
+    "First-time buyer just got the keys — here’s the message they sent us 🙏",
+    "The neighbourhood everyone’s moving to in 2026 — and why 🚀",
+  ],
+  travel: [
+    "Quick win: book Tuesday flights — data shows average 18% cheaper than Fridays ✈️",
+    "Behind the scenes: how we plan a press trip for 12 journalists in 48 hours 📝",
+    "Before vs after: this itinerary overhaul made a 2-week trip feel like a month ✨",
+    "Myth: solo travel is lonely. Here’s what it’s actually like 🌍",
+    "3 packing hacks that fit a week into carry-on only 🧳",
+    "A traveller wrote to us from our recommended spot — read what happened 🙏",
+    "The destination that’s about to blow up in 2026 — visit before everyone else does 🚀",
+  ],
+  business: [
+    "Quick win: repurpose one long post into 5 short-form clips this week 📊",
+    "Behind the scenes: how we run a content calendar for 7 platforms solo 📝",
+    "Before vs after: posting consistently for 30 days tripled our inbound leads ✨",
+    "Myth: you need a huge following to generate revenue. Disproved 🔥",
+    "3 free tools that run our social media on autopilot ✅",
+    "A follower DMed us after 6 months — this is what happened to their brand 🙏",
+    "The content format dominating feeds in 2026 — and how to use it now 🚀",
+  ],
+};
+
+function resolveTopicFromIndustry(industryId: string, subIndustryId?: string): string {
+  const norm = (v: string) => v.toLowerCase().replace(/[-_\s]/g, "");
+  for (const input of [subIndustryId ?? "", industryId]) {
+    const n = norm(input);
+    for (const [key, topic] of Object.entries(INDUSTRY_TO_TOPIC)) {
+      const nk = norm(key);
+      if (n.includes(nk) || nk.includes(n)) return topic;
+    }
+  }
+  return "business";
+}
+
+function pickNonRepeatingImagePool(count: number, topic: string): string[] {
+  const topicPool = TOPIC_IMAGE_MAP[topic] || [];
+  const allAvailable = Array.from(
+    new Set([...topicPool, ...STOCK_IMAGES, ...Object.values(TOPIC_IMAGE_MAP).flat()])
+  );
+  const shuffledTopic = [...topicPool].sort(() => Math.random() - 0.5);
+  const seen = new Set<string>();
+  const result: string[] = [];
+  for (const img of shuffledTopic) {
+    if (!seen.has(img)) { seen.add(img); result.push(img); }
+    if (result.length === count) break;
+  }
+  if (result.length < count) {
+    const shuffledAll = [...allAvailable].sort(() => Math.random() - 0.5);
+    for (const img of shuffledAll) {
+      if (!seen.has(img)) { seen.add(img); result.push(img); }
+      if (result.length === count) break;
+    }
+  }
+  return result;
+}
 
 const KEYWORD_TO_TOPIC: Record<string, string> = {
   food:"food",restaurant:"food",kitchen:"food",cook:"food",eat:"food",menu:"food",chef:"food",
@@ -442,6 +572,15 @@ function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate
   const [aiResult, setAiResult] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [aiIdx, setAiIdx] = useState(0);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [imageSuccessMessage, setImageSuccessMessage] = useState("");
+  const [showCaptionPromptPopup, setShowCaptionPromptPopup] = useState(false);
+  const [showImagePreviewPopup, setShowImagePreviewPopup] = useState(false);
+  const [imageZoom, setImageZoom] = useState(1);
+  const [imagePan, setImagePan] = useState({ x: 0, y: 0 });
+  const [isPanningImage, setIsPanningImage] = useState(false);
+  const panStartRef = useRef({ x: 0, y: 0 });
+  const panOriginRef = useRef({ x: 0, y: 0 });
   const imgInputRef = useRef<HTMLInputElement>(null);
 
   const handleImgUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -453,10 +592,75 @@ function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate
     e.target.value = "";
   };
 
-  const browseStockImg = () => {
-    const next = pickRelevantImage(caption, img);
-    setImg(next);
-    showToast("✦ Relevant image loaded", "brand");
+  const browseStockImg = async () => {
+    const prompt = caption.trim();
+    if (!prompt) {
+      setShowCaptionPromptPopup(true);
+      setImageSuccessMessage("");
+      return;
+    }
+
+    setIsGeneratingImage(true);
+    setImageSuccessMessage("");
+
+    try {
+      const response = await fetch("/api/gemeini-image/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ prompt }),
+      });
+
+      if (!response.ok) {
+        const text = await response.text().catch(() => "");
+        let parsed: any = null;
+        try {
+          parsed = text ? JSON.parse(text) : null;
+        } catch {
+          parsed = null;
+        }
+
+        throw new Error(
+          parsed?.message ||
+            text ||
+            `Image generation failed (${response.status}).`
+        );
+      }
+
+      const data = (await response.json()) as
+        | {
+            imageUrl?: string;
+            url?: string;
+            image?: { imageUrl?: string; url?: string };
+            data?: { imageUrl?: string; url?: string };
+          }
+        | undefined;
+
+      const nextImage =
+        data?.imageUrl ||
+        data?.url ||
+        data?.image?.imageUrl ||
+        data?.image?.url ||
+        data?.data?.imageUrl ||
+        data?.data?.url;
+
+      if (!nextImage) {
+        throw new Error("No image URL returned from image generation API.");
+      }
+
+      setImg(nextImage);
+      setImageSuccessMessage("Image generated successfully.");
+      showToast("✦ Image generated successfully", "green");
+    } catch (error) {
+      showToast(
+        error instanceof Error ? error.message : "Could not generate image.",
+        "red"
+      );
+    } finally {
+      setIsGeneratingImage(false);
+    }
   };
 
   useEffect(() => {
@@ -471,8 +675,55 @@ function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate
       const t = rnd(TIMES_POOL); setTimesOpts(t); setSelTime(t.find(x => x.best)?.t || t[0].t);
       setScore(rndInt(62, 94)); setImg(rnd(STOCK_IMAGES));
     }
-    setAiResult(""); setAiLoading(false);
+    setAiResult(""); setAiLoading(false); setImageSuccessMessage(""); setShowCaptionPromptPopup(false); setShowImagePreviewPopup(false);
+    setImageZoom(1); setImagePan({ x: 0, y: 0 }); setIsPanningImage(false);
   }, [state.open, state.postId]);
+
+  const clampZoom = (value: number) => Math.min(4, Math.max(1, value));
+
+  const zoomInImage = () => {
+    setImageZoom((prev) => clampZoom(prev + 0.25));
+  };
+
+  const zoomOutImage = () => {
+    setImageZoom((prev) => {
+      const next = clampZoom(prev - 0.25);
+      if (next === 1) {
+        setImagePan({ x: 0, y: 0 });
+      }
+      return next;
+    });
+  };
+
+  const resetImageView = () => {
+    setImageZoom(1);
+    setImagePan({ x: 0, y: 0 });
+    setIsPanningImage(false);
+  };
+
+  const onPreviewMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (imageZoom <= 1) return;
+    event.preventDefault();
+    setIsPanningImage(true);
+    panStartRef.current = { x: event.clientX, y: event.clientY };
+    panOriginRef.current = { ...imagePan };
+  };
+
+  const onPreviewMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (!isPanningImage || imageZoom <= 1) return;
+    event.preventDefault();
+    const dx = event.clientX - panStartRef.current.x;
+    const dy = event.clientY - panStartRef.current.y;
+    setImagePan({
+      x: panOriginRef.current.x + dx,
+      y: panOriginRef.current.y + dy,
+    });
+  };
+
+  const stopImagePanning = () => {
+    if (!isPanningImage) return;
+    setIsPanningImage(false);
+  };
 
   const togglePlat = (pl: PlatKey) => setSelPlats(prev => prev.includes(pl) ? prev.filter(x => x !== pl) : [...prev, pl]);
 
@@ -626,16 +877,16 @@ function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate
           <div style={{ width: 240, flexShrink: 0, background: "#F0F1F9", borderRight: "1px solid #E2E4F0", display: "flex", flexDirection: "column" }}>
             <div
               style={{ flex: 1, overflow: "hidden", position: "relative", minHeight: 160, cursor: "pointer" }}
-              onClick={() => imgInputRef.current?.click()}
-              title="Click to change image"
+              onClick={() => setShowImagePreviewPopup(true)}
+              title="Click to preview image"
             >
               <img src={img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               <div style={{ position: "absolute", inset: 0, background: "rgba(11,12,26,.38)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, opacity: 0, transition: "opacity .18s" }}
                 onMouseEnter={e => ((e.currentTarget as HTMLElement).style.opacity = "1")}
                 onMouseLeave={e => ((e.currentTarget as HTMLElement).style.opacity = "0")}
               >
-                <i className="fa-solid fa-camera" style={{ color: "#fff", fontSize: 20 }} />
-                <span style={{ color: "#fff", fontSize: 11.5, fontWeight: 700, fontFamily: "Sora,sans-serif" }}>Change Image</span>
+                <i className="fa-solid fa-expand" style={{ color: "#fff", fontSize: 20 }} />
+                <span style={{ color: "#fff", fontSize: 11.5, fontWeight: 700, fontFamily: "Sora,sans-serif" }}>Preview Image</span>
               </div>
               <input ref={imgInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleImgUpload} />
             </div>
@@ -645,9 +896,9 @@ function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate
                 style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "6px 8px", borderRadius: 7, border: "1px solid #E2E4F0", background: "#fff", color: "#3D3F60", fontSize: 11.5, fontWeight: 700, cursor: "pointer" }}>
                 <i className="fa-solid fa-upload" style={{ fontSize: 10 }} /> Upload
               </button>
-              <button onClick={e => { e.stopPropagation(); browseStockImg(); }}
-                style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "6px 8px", borderRadius: 7, border: "1px solid #DDDDFB", background: "#EEEEFF", color: "#5B5BD6", fontSize: 11.5, fontWeight: 700, cursor: "pointer" }}>
-                <i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 10 }} /> Generate Another
+              <button onClick={e => { e.stopPropagation(); void browseStockImg(); }} disabled={isGeneratingImage}
+                style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "6px 8px", borderRadius: 7, border: "1px solid #DDDDFB", background: "#EEEEFF", color: "#5B5BD6", fontSize: 11.5, fontWeight: 700, cursor: isGeneratingImage ? "not-allowed" : "pointer", opacity: isGeneratingImage ? .6 : 1 }}>
+                <i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 10 }} /> {isGeneratingImage ? "Generating..." : "Generate Another"}
               </button>
             </div>
             {/* Platforms */}
@@ -733,6 +984,11 @@ function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate
                 style={{ width: "100%", padding: "10px 12px", borderRadius: 7, border: "1px solid #E2E4F0", background: "#F0F1F9", color: "#0B0C1A", fontSize: 13.5, outline: "none", resize: "none", minHeight: 80, fontFamily: "inherit", lineHeight: 1.6 }} />
               <div style={{ textAlign: "right", fontSize: 11, color: "#BFC1D9", fontFamily: "JetBrains Mono,monospace", marginTop: 3 }}>{caption.length} / 2200</div>
             </div>
+            {imageSuccessMessage && (
+              <div style={{ fontSize: 12.5, color: "#10B981", fontWeight: 700 }}>
+                {imageSuccessMessage}
+              </div>
+            )}
             {/* Hashtags */}
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: "#8486AB", fontFamily: "Sora,sans-serif", marginBottom: 6, display: "flex", alignItems: "center" }}>
@@ -809,6 +1065,106 @@ function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate
           </div>
         </div>
       </div>
+      {showImagePreviewPopup && (
+        <div
+          style={{ position: "absolute", inset: 0, zIndex: 710, background: "rgba(11,12,26,.6)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}
+          onClick={(event) => {
+            if (event.target === event.currentTarget) {
+              setShowImagePreviewPopup(false);
+              resetImageView();
+            }
+          }}
+        >
+          <div style={{ width: "100%", maxWidth: 980, maxHeight: "88vh", background: "#fff", borderRadius: 12, border: "1px solid #E2E4F0", boxShadow: "0 24px 60px rgba(11,12,26,.28)", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", borderBottom: "1px solid #E2E4F0", gap: 10 }}>
+              <div style={{ fontSize: 13.5, fontWeight: 800, color: "#0B0C1A", fontFamily: "Sora,sans-serif" }}>Image Preview</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <button
+                  onClick={zoomOutImage}
+                  disabled={imageZoom <= 1}
+                  style={{ minWidth: 34, height: 30, borderRadius: 7, border: "1px solid #E2E4F0", background: "#fff", color: "#3D3F60", cursor: imageZoom <= 1 ? "not-allowed" : "pointer", opacity: imageZoom <= 1 ? 0.45 : 1 }}
+                  aria-label="Zoom out"
+                >
+                  <i className="fa-solid fa-magnifying-glass-minus" />
+                </button>
+                <button
+                  onClick={zoomInImage}
+                  disabled={imageZoom >= 4}
+                  style={{ minWidth: 34, height: 30, borderRadius: 7, border: "1px solid #E2E4F0", background: "#fff", color: "#3D3F60", cursor: imageZoom >= 4 ? "not-allowed" : "pointer", opacity: imageZoom >= 4 ? 0.45 : 1 }}
+                  aria-label="Zoom in"
+                >
+                  <i className="fa-solid fa-magnifying-glass-plus" />
+                </button>
+                <button
+                  onClick={resetImageView}
+                  style={{ height: 30, borderRadius: 7, border: "1px solid #E2E4F0", background: "#fff", color: "#3D3F60", cursor: "pointer", fontSize: 12, fontWeight: 700, padding: "0 10px" }}
+                >
+                  Reset
+                </button>
+                <div style={{ minWidth: 56, textAlign: "center", fontSize: 11.5, fontWeight: 700, color: "#5B5BD6", fontFamily: "JetBrains Mono,monospace" }}>
+                  {Math.round(imageZoom * 100)}%
+                </div>
+                <button
+                  onClick={() => { setShowImagePreviewPopup(false); resetImageView(); }}
+                  style={{ width: 28, height: 28, borderRadius: 7, border: "1px solid #E2E4F0", background: "#fff", color: "#8486AB", cursor: "pointer" }}
+                  aria-label="Close image preview"
+                >
+                  <i className="fa-solid fa-xmark" />
+                </button>
+              </div>
+            </div>
+            <div
+              style={{ padding: 14, background: "#F0F1F9", flex: 1, display: "flex", alignItems: "center", justifyContent: "center", minHeight: 320, overflow: "hidden", cursor: imageZoom > 1 ? (isPanningImage ? "grabbing" : "grab") : "default" }}
+              onMouseDown={onPreviewMouseDown}
+              onMouseMove={onPreviewMouseMove}
+              onMouseUp={stopImagePanning}
+              onMouseLeave={stopImagePanning}
+            >
+              <img
+                src={img}
+                alt="Post preview"
+                draggable={false}
+                style={{
+                  width: "100%",
+                  maxWidth: "100%",
+                  maxHeight: "calc(88vh - 90px)",
+                  objectFit: "contain",
+                  borderRadius: 10,
+                  border: "1px solid #E2E4F0",
+                  background: "#fff",
+                  userSelect: "none",
+                  transform: `translate(${imagePan.x}px, ${imagePan.y}px) scale(${imageZoom})`,
+                  transformOrigin: "center center",
+                  transition: isPanningImage ? "none" : "transform .15s ease",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+      {showCaptionPromptPopup && (
+        <div
+          style={{ position: "absolute", inset: 0, zIndex: 700, background: "rgba(11,12,26,.35)", display: "flex", alignItems: "center", justifyContent: "center" }}
+          onClick={(event) => {
+            if (event.target === event.currentTarget) {
+              setShowCaptionPromptPopup(false);
+            }
+          }}
+        >
+          <div style={{ width: "100%", maxWidth: 360, background: "#fff", borderRadius: 12, border: "1px solid #E2E4F0", padding: "16px 18px", boxShadow: "0 20px 50px rgba(11,12,26,.2)" }}>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "#0B0C1A", fontFamily: "Sora,sans-serif" }}>Caption Required</div>
+            <div style={{ marginTop: 8, fontSize: 13, color: "#3D3F60", lineHeight: 1.6 }}>Add a caption first so we can generate an image from it.</div>
+            <div style={{ marginTop: 14, display: "flex", justifyContent: "flex-end" }}>
+              <button
+                onClick={() => setShowCaptionPromptPopup(false)}
+                style={{ padding: "7px 14px", borderRadius: 7, border: "none", background: "#5B5BD6", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "Sora,sans-serif" }}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1021,13 +1377,39 @@ export default function CalendarPage() {
   }, []);
 
   useEffect(() => {
-    const seeded = seedPosts(startOfDay(new Date()));
     const imported = readDashboardCalendarPosts() as Post[];
-    setPosts([...seeded, ...imported]);
+    setPosts(imported);
     if (imported.length) {
       setNextId(Math.max(10000, ...imported.map((post) => post.id + 1)));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const hydrateFromBackend = async () => {
+      try {
+        const remote = (await fetchCalendarPostsFromBackend()) as Post[];
+        if (!remote.length) return;
+
+        setPosts((prev) => {
+          const byId = new Map<number, Post>();
+          prev.forEach((post) => byId.set(post.id, post));
+          remote.forEach((post) => byId.set(post.id, { ...post, date: new Date(post.date) } as Post));
+
+          const merged = Array.from(byId.values()).sort(
+            (a, b) => a.date.getTime() - b.date.getTime()
+          );
+          writeDashboardCalendarPosts(merged);
+          return merged;
+        });
+
+        setNextId((prev) => Math.max(prev, ...remote.map((post) => post.id + 1)));
+      } catch (error) {
+        console.warn("Failed to fetch backend calendar posts:", error);
+      }
+    };
+
+    void hydrateFromBackend();
   }, []);
   useEffect(() => {
     const syncImported = () => mergeImportedPosts(readDashboardCalendarPosts() as Post[]);
@@ -1090,21 +1472,87 @@ export default function CalendarPage() {
 
   const savePost = (data: PostUpsert) => {
     if (data.id) {
-      setPosts(prev => prev.map(p => p.id === data.id ? { ...p, ...data } as Post : p));
+      setPosts(prev => {
+        const updated = prev.map(p => p.id === data.id ? { ...p, ...data } as Post : p);
+        const saved = updated.find((item) => item.id === data.id);
+        if (saved) {
+          saveDashboardCalendarPost(saved);
+          void upsertCalendarPostToBackend(saved);
+        }
+        return updated;
+      });
       showToast("✅ Post updated!", "green");
     } else {
-      const newPost: Post = { id: nextId, date: data.date || today, caption: data.caption || rnd(CAPTIONS_POOL), hashtags: data.hashtags || rnd(HASHTAG_POOLS), plats: data.plats || ["ig"], type: data.type || "image", timeStr: data.timeStr || "9:00 AM", timesOptions: data.timesOptions || rnd(TIMES_POOL), img: data.img || rnd(STOCK_IMAGES), score: data.score || rndInt(65, 93), status: data.status || "scheduled", reach: rndInt(10, 80) * 1000, engRate: "8.5%", isAI: false };
+      const defaultTimes = TIMES_POOL[0];
+      const newPost: Post = {
+        id: nextId,
+        date: data.date || today,
+        caption: data.caption || "",
+        hashtags: data.hashtags || [],
+        plats: data.plats || ["ig"],
+        type: data.type || "image",
+        timeStr: data.timeStr || defaultTimes[0].t,
+        timesOptions: data.timesOptions || defaultTimes,
+        img: data.img || "",
+        score: data.score || 80,
+        status: data.status || "scheduled",
+        reach: data.reach || 0,
+        engRate: data.engRate || "8.5%",
+        isAI: data.isAI || false,
+      };
       setPosts(prev => [...prev, newPost]);
+      saveDashboardCalendarPost(newPost);
+      void upsertCalendarPostToBackend(newPost);
       setNextId(n => n + 1);
       showToast("✅ Post scheduled!", "green");
     }
     closeModal();
   };
 
-  const deletePost = (id: number) => { setPosts(prev => prev.filter(p => p.id !== id)); showToast("🗑️ Post deleted", "red"); };
+  const deletePost = (id: number) => {
+    setPosts(prev => prev.filter(p => p.id !== id));
+    removeDashboardCalendarPost(id);
+    void deleteCalendarPostFromBackend(id);
+    showToast("🗑️ Post deleted", "red");
+  };
   const dupPost = (id: number) => {
     const p = posts.find(x => x.id === id);
     if (p) { const d = new Date(p.date); d.setDate(d.getDate() + 1); setPosts(prev => [...prev, { ...p, id: nextId, status: "draft", date: d }]); setNextId(n => n + 1); showToast("📋 Duplicated", "brand"); }
+  };
+
+  const generatePostsLocally = (
+    ind: string,
+    subInd: string,
+    count: number,
+    scheduleAt: Date,
+    baseId: number,
+    images: string[]
+  ): Post[] => {
+    const topic = resolveTopicFromIndustry(ind, subInd);
+    const topicTags = TOPIC_HASHTAG_MAP[topic] || TOPIC_HASHTAG_MAP.business;
+    const captions = LOCAL_CAPTIONS_BY_TOPIC[topic] || LOCAL_CAPTIONS_BY_TOPIC.business;
+    const posts: Post[] = [];
+    for (let i = 0; i < count; i++) {
+      const postDate = new Date(scheduleAt);
+      postDate.setDate(postDate.getDate() + i);
+      posts.push({
+        id: baseId + i + 1,
+        date: postDate,
+        caption: captions[i % captions.length],
+        hashtags: [...topicTags, `#${ind}`, `#${subInd}`].slice(0, 5),
+        plats: rnd(PLAT_COMBOS),
+        type: "image",
+        timeStr: "9:00 AM",
+        timesOptions: rnd(TIMES_POOL),
+        img: images[i] ?? STOCK_IMAGES[i % STOCK_IMAGES.length],
+        score: rndInt(72, 94),
+        status: "scheduled",
+        reach: rndInt(15, 110) * 1000,
+        engRate: "8.5%",
+        isAI: true,
+      });
+    }
+    return posts;
   };
 
   const addIdeaPost = (idea: typeof IDEAS_LIST[0]) => {
@@ -1133,6 +1581,15 @@ export default function CalendarPage() {
     scheduleAt.setDate(scheduleAt.getDate() + 1);
     scheduleAt.setHours(9, 0, 0, 0);
 
+    // Pre-allocate 7 unique images from the industry-relevant pool — prevents any repeats
+    const imageTopic = resolveTopicFromIndustry(industryId, subIndustryId);
+    const preAllocatedImages = pickNonRepeatingImagePool(7, imageTopic);
+    const usedImgs = new Set<string>();
+
+    // Build 7 distinct content-angle prompts derived from the user's industry
+    const anglesText = GENERATION_ANGLES.map((a, i) => `${i + 1}. ${a}`).join("; ");
+    const industryPrompt = `Generate 7 unique high-performing social media posts for the ${subIndustryId} space within the ${industryId} industry. Each post must cover a different content angle in this exact order: ${anglesText}. Make every post distinct, engaging, and platform-optimised.`;
+
     let startId = nextId;
     let received = 0;
 
@@ -1148,19 +1605,31 @@ export default function CalendarPage() {
           userId,
           industryId,
           subIndustryId,
-          prompt: "Generate 7 high-performing social media posts for calendar scheduling.",
+          prompt: industryPrompt,
           postTime: scheduleAt.toISOString(),
         },
         {
           onChunk: (chunk) => {
             received += 1;
+            const slotIndex = received - 1;
             const postDate = new Date(scheduleAt);
             postDate.setDate(postDate.getDate() + Math.max(0, chunk.index));
+
+            // Use backend image only if it's non-empty and not already used in this batch
+            const backendImg = chunk.post?.image?.imageUrl ?? "";
+            let assignedImg: string;
+            if (backendImg && !usedImgs.has(backendImg)) {
+              assignedImg = backendImg;
+            } else {
+              // Use pre-allocated slot — guaranteed unique within the batch
+              assignedImg = preAllocatedImages[slotIndex] ?? preAllocatedImages[0];
+            }
+            usedImgs.add(assignedImg);
 
             const localPost: Post = {
               id: startId + received,
               date: postDate,
-              caption: chunk.post?.text || rnd(CAPTIONS_POOL),
+              caption: chunk.post?.text || CAPTIONS_POOL[slotIndex % CAPTIONS_POOL.length],
               hashtags:
                 chunk.post?.hashtags && chunk.post.hashtags.length
                   ? chunk.post.hashtags
@@ -1169,7 +1638,7 @@ export default function CalendarPage() {
               type: "image",
               timeStr: "9:00 AM",
               timesOptions: rnd(TIMES_POOL),
-              img: chunk.post?.image?.imageUrl || rnd(STOCK_IMAGES),
+              img: assignedImg,
               score: chunk.post?.source === "LLM" ? rndInt(82, 96) : rndInt(70, 88),
               status: "scheduled",
               reach: rndInt(15, 110) * 1000,
@@ -1192,12 +1661,45 @@ export default function CalendarPage() {
       setNextId(startId + Math.max(received, 1) + 1);
       showToast(`✦ ${received} AI posts generated & scheduled!`, "green");
     } catch (error) {
-      console.error("Calendar generate-and-save stream failed:", error);
-      showToast("Failed to stream generated posts.", "red");
-      setGenStatus("Generation failed.");
+      const isNetworkError =
+        error instanceof TypeError &&
+        (error.message === "Failed to fetch" || error.message.includes("NetworkError") || error.message.includes("network"));
+      console.warn("Calendar generate-and-save stream failed:", error);
+
+      if (received === 0) {
+        // Backend unreachable — generate all 7 posts locally using industry context
+        setGenStatus("Backend unavailable. Generating locally...");
+        const fallbackPosts = generatePostsLocally(
+          industryId, subIndustryId, 7, scheduleAt, startId, preAllocatedImages
+        );
+        fallbackPosts.forEach((p, i) => {
+          // Animate posts appearing one-by-one with a small delay
+          setTimeout(() => {
+            setPosts((prev) => [...prev, p]);
+            saveDashboardCalendarPost(p);
+            void upsertCalendarPostToBackend(p);
+            setGenCount(i + 1);
+            setGenProgress(Math.round(((i + 1) / 7) * 100));
+            setGenStatus(`Generated post ${i + 1}/7`);
+          }, i * 160);
+        });
+        setNextId(startId + 8);
+        setTimeout(() => {
+          setGenProgress(100);
+          setGenStatus("Done.");
+        }, 7 * 160 + 100);
+        showToast(
+          isNetworkError
+            ? "✦ Backend offline — 7 posts generated locally!"
+            : "✦ 7 posts generated (fallback mode)!",
+          "brand"
+        );
+      } else {
+        showToast(`✦ ${received} posts saved. Backend closed early.`, "amber");
+      }
     } finally {
       setGenInFlight(false);
-      setTimeout(() => setGenOpen(false), 600);
+      setTimeout(() => setGenOpen(false), 1300);
     }
   };
 

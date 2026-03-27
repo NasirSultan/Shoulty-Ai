@@ -59,16 +59,28 @@ export function readDashboardCalendarPosts(): DashboardCalendarPost[] {
   }
 }
 
+export function writeDashboardCalendarPosts(posts: DashboardCalendarPost[]) {
+  if (!isBrowser) return;
+
+  window.localStorage.setItem(
+    DASHBOARD_CALENDAR_STORAGE_KEY,
+    JSON.stringify(posts.map(serializePost)),
+  );
+  window.dispatchEvent(new CustomEvent(DASHBOARD_CALENDAR_EVENT));
+}
+
 export function saveDashboardCalendarPost(post: DashboardCalendarPost) {
   if (!isBrowser) return;
 
   const existing = readDashboardCalendarPosts();
   const filtered = existing.filter((item) => item.id !== post.id);
   const next = [...filtered, post].sort((a, b) => a.date.getTime() - b.date.getTime());
+  writeDashboardCalendarPosts(next);
+}
 
-  window.localStorage.setItem(
-    DASHBOARD_CALENDAR_STORAGE_KEY,
-    JSON.stringify(next.map(serializePost)),
-  );
-  window.dispatchEvent(new CustomEvent(DASHBOARD_CALENDAR_EVENT));
+export function removeDashboardCalendarPost(id: number) {
+  if (!isBrowser) return;
+  const existing = readDashboardCalendarPosts();
+  const next = existing.filter((item) => item.id !== id);
+  writeDashboardCalendarPosts(next);
 }

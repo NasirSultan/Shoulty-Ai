@@ -1,0 +1,49 @@
+{
+  "posts": [
+    {
+      "id": 1774508150403,
+      "date": "2026-03-26T00:00:00.000Z",
+      "caption": "Step into The Pookie Cafe and discover a world where every bite is a celebration of flavor and artistry. Our delectable pastries and freshly baked goods are meticulously prepared, offering an unparalleled treat for your senses. Join us for an exquisite experience that sweetens your day, one perfect pookie at a time.",
+      "hashtags": [
+        "#Startup",
+        "#Entrepreneurship",
+        "#VentureCapital",
+        "#Founder",
+        "#TechStartup"
+      ],
+      "plats": [
+        "ig"
+      ],
+      "type": "image",
+      "timeStr": "5:45 PM",
+      "timesOptions": [
+        {
+          "t": "9:00 AM",
+          "e": "7.6%",
+          "best": false
+        },
+        {
+          "t": "12:30 PM",
+          "e": "8.2%",
+          "best": true
+        },
+        {
+          "t": "5:45 PM",
+          "e": "9.8%",
+          "best": true
+        },
+        {
+          "t": "8:30 PM",
+          "e": "7.1%",
+          "best": false
+        }
+      ],
+      "img": "https://i.ibb.co/HpNBwj8r/511d6e9fce21.png",
+      "score": 92,
+      "status": "published",
+      "reach": 0,
+      "engRate": "8.2%",
+      "isAI": true
+    }
+  ]
+}

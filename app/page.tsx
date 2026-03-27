@@ -6,6 +6,11 @@ import { RefreshCcw } from "lucide-react";
 import PricingSection from "@/components/PricingSection";
 import Calender from "@/components/calender";
 import { fetchImages, fetchIndustries } from "@/api/homeApi";
+import {
+    streamGeneratePosts,
+    GeneratedPost,
+} from "@/api/postGeneratorApi";
+import PostPopup from "@/components/PostPopup";
 
 import {
     FaFacebookF,
@@ -46,6 +51,8 @@ interface Industry {
     name: string;
     subIndustries: SubIndustry[];
 }
+
+const MIN_BRAND_DESCRIPTION_CHARS = 10;
 
 export default function LandingPage() {
     const icons = [
@@ -157,6 +164,11 @@ export default function LandingPage() {
     >([]);
     const [generateImages, setGenerateImages] = useState<ImageItem[]>([]);
     const [generateLoadingImages, setGenerateLoadingImages] = useState(false);
+    const [streamedPosts, setStreamedPosts] = useState<GeneratedPost[]>([]);
+    const [streamLoading, setStreamLoading] = useState(false);
+    const [streamError, setStreamError] = useState<string | null>(null);
+    const [selectedPreviewPost, setSelectedPreviewPost] = useState<{ imageUrl: string; caption?: string } | null>(null);
+    const streamAbortRef = useRef<AbortController | null>(null);
     const [generateSelectedSubIndustry, setGenerateSelectedSubIndustry] =
         useState<string | null>(null);
     const [generatePendingSubIndustry, setGeneratePendingSubIndustry] =
@@ -180,6 +192,7 @@ export default function LandingPage() {
     const [loadingIndustries, setLoadingIndustries] = useState(true);
     const [brandDescription, setBrandDescription] = useState<string>("");
     const [selectedContent, setSelectedContent] = useState<"photos" | "reels" | null>(null);
+    const [generateValidationError, setGenerateValidationError] = useState<string | null>(null);
     const getImageCacheKey = (
         type: "generate" | "library",
         subIndustry: string | null,
@@ -253,7 +266,153 @@ export default function LandingPage() {
         !!generateSelectedIndustry &&
         !!generatePendingSubIndustry &&
         !!selectedContent &&
-        brandDescription.trim().length >= 50;
+        brandDescription.trim().length >= MIN_BRAND_DESCRIPTION_CHARS;
+
+    const getGenerateMissingFields = () => {
+        const missing: string[] = [];
+
+        if (!generateSelectedIndustry) missing.push("industry");
+        if (!generatePendingSubIndustry) missing.push("sub-industry");
+        if (!selectedContent) missing.push("content type (Create Photos or Create Reels)");
+        if (brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS) {
+            missing.push(`brand description (minimum ${MIN_BRAND_DESCRIPTION_CHARS} characters)`);
+        }
+
+        return missing;
+    };
+
+    const handleGenerateClick = async () => {
+        const fallbackIndustry = generateSelectedIndustry || (industries[0] ? String(industries[0].id) : "");
+        const selectedIndustryObj = industries.find(
+            (industry: Industry) => String(industry.id) === String(fallbackIndustry),
+        );
+        const fallbackSubIndustry =
+            generatePendingSubIndustry ||
+            (selectedIndustryObj?.subIndustries?.[0]
+                ? String(selectedIndustryObj.subIndustries[0].id)
+                : "");
+
+        const missing = getGenerateMissingFields();
+
+        if (missing.length > 0) {
+            let filteredMissing = [...missing];
+            if (fallbackIndustry) {
+                filteredMissing = filteredMissing.filter(
+                    (field) => field !== "industry",
+                );
+            }
+            if (fallbackSubIndustry) {
+                filteredMissing = filteredMissing.filter(
+                    (field) => field !== "sub-industry",
+                );
+            }
+            if (filteredMissing.length > 0) {
+                setGenerateValidationError(`Please select/fill: ${filteredMissing.join(", ")}.`);
+                return;
+            }
+        }
+
+        setGenerateValidationError(null);
+
+        if (!fallbackIndustry || !fallbackSubIndustry) {
+            setGenerateValidationError("Please select/fill: industry, sub-industry.");
+            return;
+        }
+
+        if (!selectedContent) {
+            setSelectedContent("photos");
+        }
+
+        setGenerateSelectedIndustry(fallbackIndustry);
+        setGenerateSubIndustries(selectedIndustryObj?.subIndustries || []);
+        setGeneratePendingSubIndustry(fallbackSubIndustry);
+        setGenerateSelectedSubIndustry(fallbackSubIndustry);
+        scrollToSectionInOneSecond("gcontent");
+        await generateStreamPreview(fallbackIndustry, fallbackSubIndustry);
+    };
+
+    const generateStreamPreview = async (
+        industryIdOverride?: string,
+        subIndustryIdOverride?: string,
+    ) => {
+        console.log("[Stream] Starting dual-stream preview generation...");
+        const effectiveIndustryId = industryIdOverride || generateSelectedIndustry;
+        const effectiveSubIndustryId = subIndustryIdOverride || generatePendingSubIndustry;
+        if (!effectiveIndustryId || !effectiveSubIndustryId) return;
+
+        if (streamAbortRef.current) {
+            streamAbortRef.current.abort();
+        }
+        const controller = new AbortController();
+        streamAbortRef.current = controller;
+
+        setStreamLoading(true);
+        setStreamedPosts([]);
+        setStreamError(null);
+
+        const requestBody = {
+            industryId: String(effectiveIndustryId),
+            subIndustryId: String(effectiveSubIndustryId),
+            prompt: brandDescription.trim(),
+        };
+
+        // Collect LLM (AI) posts only across 2 parallel streams.
+        // Each stream yields 2 LLM posts (~seconds) so together = 4 AI images fast.
+        const collectedAI: GeneratedPost[] = [];
+        let completedStreams = 0;
+
+        const handleChunk = (chunk: { post: GeneratedPost }) => {
+            // Only collect LLM (AI) posts — skip DB posts
+            if (chunk.post?.source !== "LLM") {
+                console.log("[Stream] Skipping DB post, waiting for LLM...");
+                return;
+            }
+            
+            collectedAI.push(chunk.post);
+            console.log(`[Stream] AI post collected (${collectedAI.length}/4): hasImage=${!!chunk.post?.image?.imageUrl}`);
+            setStreamedPosts([...collectedAI]);
+            
+            if (collectedAI.length >= 4) {
+                console.log("[Stream] Got 4 AI posts, aborting both streams");
+                controller.abort();
+            }
+        };
+
+        const handleStreamDone = () => {
+            completedStreams++;
+            console.log(`[Stream] Stream done (${completedStreams}/2), AI posts so far: ${collectedAI.length}`);
+            if (completedStreams >= 2) {
+                console.log(`[Stream] Both streams done. Final AI posts: ${collectedAI.length}`);
+                setStreamLoading(false);
+            }
+        };
+
+        const runStream = async () => {
+            console.log("[Stream] Starting stream...");
+            try {
+                await streamGeneratePosts(requestBody, {
+                    onChunk: handleChunk,
+                    onDone: handleStreamDone,
+                    signal: controller.signal,
+                });
+            } catch (error: unknown) {
+                if (error instanceof Error && error.name === "AbortError") {
+                    console.log("[Stream] Stream aborted (intentional)");
+                    handleStreamDone();
+                    return;
+                }
+                const msg = error instanceof Error ? error.message : "Stream error.";
+                console.error("[Stream] Stream error:", msg);
+                setStreamError(msg);
+                completedStreams++;
+                if (completedStreams >= 2) setStreamLoading(false);
+            }
+        };
+
+        await Promise.allSettled([runStream(), runStream()]);
+        console.log(`[Stream] All settled. Final AI posts: ${collectedAI.length}`);
+        setStreamLoading(false);
+    };
     // REPLACE WITH:
     useEffect(() => {
         const loadIndustries = async () => {
@@ -443,13 +602,13 @@ export default function LandingPage() {
                             <textarea
                                 value={brandDescription}
                                 onChange={(e) => setBrandDescription(e.target.value)}
-                                minLength={50}
+                                minLength={MIN_BRAND_DESCRIPTION_CHARS}
                                 className="w-full min-h-[140px] sm:min-h-[180px] p-4 bg-white rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none text-sm sm:text-base mb-4 font-medium text-slate-700 shadow-inner"
                                 placeholder={animatedPlaceholder}
                             />
 
                             <p className="text-xs sm:text-sm mb-6 text-slate-500 font-medium">
-                                Minimum 50 characters required ({brandDescription.trim().length}/50)
+                                Minimum {MIN_BRAND_DESCRIPTION_CHARS} characters required ({brandDescription.trim().length}/{MIN_BRAND_DESCRIPTION_CHARS})
                             </p>
 
                             {/* ... rest of the buttons and CTA ... */}
@@ -476,15 +635,6 @@ export default function LandingPage() {
                                     Create Reels
                                 </button>
                             </div>
-                            {!selectedContent && (
-                                <div className="mb-6 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-amber-800">
-                                    <span className="mt-0.5 inline-block h-2 w-2 flex-shrink-0 rounded-full bg-amber-500" />
-                                    <p className="text-xs sm:text-sm font-semibold leading-5">
-                                        Select <span className="font-extrabold">Create Photos</span> or <span className="font-extrabold">Create Reels</span> to enable Generate.
-                                    </p>
-                                </div>
-                            )}
-
                             <p className="text-center text-xs sm:text-sm text-slate-900 mb-8 font-medium">
                                 No credit card required • 2-min setup <br />
                                 100+ founders already automating
@@ -492,22 +642,20 @@ export default function LandingPage() {
 
                             {/* Power CTA Button - Changed to Brand Black/Orange */}
                             <button 
-                                disabled={!isGenerateReady}
-                                onClick={async () => {
-                                    if (isGenerateReady && generatePendingSubIndustry) {
-                                        setGenerateSelectedSubIndustry(generatePendingSubIndustry);
-                                        // Redirect first for faster UX
-                                        scrollToSectionInOneSecond("gcontent");
-                                    }
-                                }}
+                                onClick={handleGenerateClick}
                                 className={`w-full py-3 sm:py-4 rounded-2xl text-white text-base sm:text-lg font-black tracking-tight transition-all active:scale-95 shadow-xl uppercase ${
                                     isGenerateReady
                                         ? "bg-gradient-to-r from-orange-500 to-red-600 hover:brightness-110 cursor-pointer"
-                                        : "bg-gray-400 cursor-not-allowed opacity-60"
+                                        : "bg-slate-500 hover:bg-slate-600 cursor-pointer"
                                 }`}
                             >
                                 Generate 365 Days of Content
                             </button>
+                            {generateValidationError && (
+                                <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-700">
+                                    {generateValidationError}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -559,48 +707,150 @@ export default function LandingPage() {
                             </div>
                         </div>
 
-                        {/* Templates Grid */}
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
-                            {generateLoadingImages ? (
-                                <p className="col-span-full text-center text-gray-400 py-12">
-                                    Loading templates... (may take up to 60s on
-                                    first load)
-                                </p>
-                            ) : generateImages.length === 0 ? (
-                                <p className="col-span-full text-center text-gray-400 py-12">
-                                    No images found
-                                </p>
-                            ) : (
-                                generateImages.slice(0, 8).map((img, index) => (
-                                    <div
-                                        key={img.id || index}
-                                        className="relative group aspect-square rounded-xl overflow-hidden bg-gray-50"
-                                    >
-                                        {/* Lazy loading image with low-quality placeholder */}
-                                        <img
-                                            src={img.file || img.url}
-                                            alt={`${img.name || img.title || "AI social media content"} template preview for ${generateSelectedIndustry || "business"}`}
-                                            loading="lazy"
-                                            decoding="async"
-                                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                            onError={(e) => {
-                                                e.currentTarget.src =
-                                                    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23f3f4f6'/%3E%3Ctext x='8' y='25' font-family='Arial' font-size='14' fill='%239ca3af'%3E📷%3C/text%3E%3C/svg%3E";
-                                            }}
-                                        />
-                                        <span className="absolute bottom-2 left-2 text-white bg-black/60 backdrop-blur-sm px-2 py-1 text-xs rounded-md font-medium">
-                                            {img.name}
-                                        </span>
-
-                                        {/* Quick view overlay - only on hover */}
-                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                                            <button className="bg-white text-black px-3 py-1.5 rounded-lg text-xs font-medium shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-200">
-                                                Quick view
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))
+                        <div className="space-y-8">
+                            {streamError && (
+                                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 font-medium">
+                                    Stream error: {streamError}
+                                </div>
                             )}
+                            {/* Row 1 — first 4 streamed posts (arrival order) */}
+                            <div>
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                                    {Array.from({ length: 4 }).map((_, i) => {
+                                        const post = streamedPosts[i];
+                                        const imageUrl = post?.image?.imageUrl;
+
+                                        // Before stream starts: show stock placeholders (use different images than row 2)
+                                        if (!streamLoading && streamedPosts.length === 0) {
+                                            const fallback = generateImages[i + 4] || generateImages[i];
+                                            if (!fallback) {
+                                                return (
+                                                    <div
+                                                        key={`r1-empty-${i}`}
+                                                        className="aspect-square rounded-xl bg-gray-50"
+                                                    />
+                                                );
+                                            }
+                                            return (
+                                                <div
+                                                    key={fallback.id || `r1-stock-${i}`}
+                                                    className="relative group aspect-square rounded-xl overflow-hidden bg-gray-50 cursor-pointer hover:ring-2 hover:ring-orange-500 transition-all"
+                                                    onClick={() => {
+                                                        const url = fallback.file || fallback.url || "";
+                                                        setSelectedPreviewPost({
+                                                            imageUrl: url,
+                                                            caption: fallback.name || fallback.title || "",
+                                                        });
+                                                    }}
+                                                >
+                                                    <img
+                                                        src={fallback.file || fallback.url}
+                                                        alt={fallback.name || fallback.title || `Stock ${i + 5}`}
+                                                        loading="lazy"
+                                                        decoding="async"
+                                                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                                        onError={(e) => {
+                                                            e.currentTarget.src =
+                                                                "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23f3f4f6'/%3E%3Ctext x='8' y='25' font-family='Arial' font-size='14' fill='%239ca3af'%3EIMG%3C/text%3E%3C/svg%3E";
+                                                        }}
+                                                    />
+                                                    <span className="absolute bottom-2 left-2 text-white bg-black/60 backdrop-blur-sm px-2 py-1 text-xs rounded-md font-medium">
+                                                        {fallback.name || fallback.title || `Stock ${i + 5}`}
+                                                    </span>
+                                                </div>
+                                            );
+                                        }
+
+                                        // Slot not yet filled — pulse skeleton
+                                        if (!imageUrl) {
+                                            return (
+                                                <div
+                                                    key={`r1-loading-${i}`}
+                                                    className="aspect-square rounded-xl bg-gray-100 animate-pulse"
+                                                />
+                                            );
+                                        }
+
+                                        // Post arrived — show image
+                                        return (
+                                            <div
+                                                key={`r1-post-${i}`}
+                                                className="relative group aspect-square rounded-xl overflow-hidden bg-gray-50 cursor-pointer hover:ring-2 hover:ring-orange-500 transition-all"
+                                                onClick={() =>
+                                                    setSelectedPreviewPost({
+                                                        imageUrl,
+                                                        caption: post.text || "",
+                                                    })
+                                                }
+                                            >
+                                                <img
+                                                    src={imageUrl}
+                                                    alt={post.text?.slice(0, 40) || `Post ${i + 1}`}
+                                                    loading="lazy"
+                                                    decoding="async"
+                                                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                                    onError={(e) => {
+                                                        e.currentTarget.src =
+                                                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23f3f4f6'/%3E%3Ctext x='8' y='25' font-family='Arial' font-size='14' fill='%239ca3af'%3EIMG%3C/text%3E%3C/svg%3E";
+                                                    }}
+                                                />
+                                                {post.source && (
+                                                    <span className={`absolute top-2 right-2 px-2 py-0.5 text-xs font-bold rounded-full ${post.source === "LLM" ? "bg-orange-500 text-white" : "bg-black/60 text-white"}`}>
+                                                        {post.source === "LLM" ? "AI" : "Stock"}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* Row 2 — always 4 stock images */}
+                            <div>
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                                    {generateLoadingImages ? (
+                                        Array.from({ length: 4 }).map((_, i) => (
+                                            <div
+                                                key={`r2-loading-${i}`}
+                                                className="aspect-square rounded-xl bg-gray-100 animate-pulse"
+                                            />
+                                        ))
+                                    ) : generateImages.slice(0, 4).length === 0 ? (
+                                        <p className="col-span-full text-center text-gray-400 py-10">
+                                            No stock templates found
+                                        </p>
+                                    ) : (
+                                        generateImages.slice(0, 4).map((img, index) => (
+                                            <div
+                                                key={img.id || `r2-stock-${index}`}
+                                                className="relative group aspect-square rounded-xl overflow-hidden bg-gray-50 cursor-pointer hover:ring-2 hover:ring-orange-500 transition-all"
+                                                onClick={() => {
+                                                    const url = img.file || img.url || "";
+                                                    setSelectedPreviewPost({
+                                                        imageUrl: url,
+                                                        caption: img.name || img.title || "",
+                                                    });
+                                                }}
+                                            >
+                                                <img
+                                                    src={img.file || img.url}
+                                                    alt={img.name || img.title || `Stock ${index + 1}`}
+                                                    loading="lazy"
+                                                    decoding="async"
+                                                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                                    onError={(e) => {
+                                                        e.currentTarget.src =
+                                                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23f3f4f6'/%3E%3Ctext x='8' y='25' font-family='Arial' font-size='14' fill='%239ca3af'%3EIMG%3C/text%3E%3C/svg%3E";
+                                                    }}
+                                                />
+                                                <span className="absolute bottom-2 left-2 text-white bg-black/60 backdrop-blur-sm px-2 py-1 text-xs rounded-md font-medium">
+                                                    {img.name || img.title || `Stock ${index + 1}`}
+                                                </span>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            </div>
                         </div>
 
                     </div>
@@ -1964,6 +2214,16 @@ export default function LandingPage() {
                     {/* Feature Cards */}
                 </div>
             </section>
+
+            {/* Post Modal */}
+            {selectedPreviewPost && (
+                <PostPopup
+                    isOpen={!!selectedPreviewPost}
+                    imageUrl={selectedPreviewPost.imageUrl}
+                    initialCaption={selectedPreviewPost.caption}
+                    onClose={() => setSelectedPreviewPost(null)}
+                />
+            )}
         </div>
     );
 }

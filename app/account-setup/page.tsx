@@ -10,6 +10,8 @@ import {
     Globe,
     Phone,
     Palette,
+    Eye,
+    EyeOff,
     Instagram,
     Facebook,
     Linkedin,
@@ -20,8 +22,10 @@ import {
     clearPendingAuthFlow,
     getPendingAuthFlow,
     isProfileComplete,
+    setAccountPassword,
     setUserProfile,
 } from "@/api/authApi";
+import { useIndustries } from "@/hooks/useIndustries";
 
 function BrandSetupPageContent() {
     const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -30,9 +34,17 @@ function BrandSetupPageContent() {
     const [website, setWebsite] = useState("");
     const [phone, setPhone] = useState("");
     const [brandLogo, setBrandLogo] = useState<File | null>(null);
+    const [brandLogoPreview, setBrandLogoPreview] = useState("");
+    const [selectedIndustry, setSelectedIndustry] = useState("");
+    const [selectedSubIndustry, setSelectedSubIndustry] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState("");
     const [resolvedEmail, setResolvedEmail] = useState("");
+    const { industries, loading: loadingIndustries } = useIndustries();
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -73,6 +85,20 @@ function BrandSetupPageContent() {
         }
     }, [router]);
 
+    useEffect(() => {
+        if (!brandLogo) {
+            setBrandLogoPreview("");
+            return;
+        }
+
+        const objectUrl = URL.createObjectURL(brandLogo);
+        setBrandLogoPreview(objectUrl);
+
+        return () => {
+            URL.revokeObjectURL(objectUrl);
+        };
+    }, [brandLogo]);
+
     const connectedSocialMap: Record<string, string> = {
         Instagram: "INSTAGRAM",
         Facebook: "FACEBOOK",
@@ -92,6 +118,21 @@ function BrandSetupPageContent() {
             return;
         }
 
+        if (!selectedIndustry || !selectedSubIndustry) {
+            setError("Industry and sub-industry are required.");
+            return;
+        }
+
+        if (!password || password.length < 8) {
+            setError("Password must be at least 8 characters.");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setError("Password and confirm password do not match.");
+            return;
+        }
+
         setError("");
         setStep(3);
     };
@@ -105,11 +146,16 @@ function BrandSetupPageContent() {
         try {
             setSubmitting(true);
             setError("");
+
+            await setAccountPassword(resolvedEmail, password);
+
             const response = await setUserProfile({
                 email: resolvedEmail,
                 brandName: brandName.trim(),
                 website: website.trim(),
                 phone: phone.trim(),
+                industryId: selectedIndustry,
+                subIndustryId: selectedSubIndustry,
                 connectedSocials: selectedAccounts.map(
                     (account) => connectedSocialMap[account],
                 ),
@@ -204,17 +250,34 @@ function BrandSetupPageContent() {
                                 }}
                             />
                             <label htmlFor="brand-logo-upload" className="block cursor-pointer">
-                            <Upload className="mx-auto mb-2 text-gray-500" size={28} />
-                            <p className="text-sm text-gray-700 font-arial">
-                                Click to upload or drag and drop
-                            </p>
-                            <p className="text-xs text-gray-500 mt-1 font-arial">
-                                PNG, JPG or SVG (max. 5MB)
-                            </p>
-                            {brandLogo && (
-                                <p className="mt-3 text-sm text-black font-arial">
-                                    Selected: {brandLogo.name}
-                                </p>
+                            {brandLogoPreview ? (
+                                <div className="flex flex-col items-center gap-3">
+                                    <div className="relative h-20 w-20 overflow-hidden rounded-lg border border-gray-300">
+                                        <Image
+                                            src={brandLogoPreview}
+                                            alt="Uploaded brand logo"
+                                            fill
+                                            className="object-contain"
+                                            unoptimized
+                                        />
+                                    </div>
+                                    <p className="text-sm text-black font-arial">
+                                        {brandLogo?.name}
+                                    </p>
+                                    <p className="text-xs text-gray-500 font-arial">
+                                        Click to replace logo
+                                    </p>
+                                </div>
+                            ) : (
+                                <>
+                                    <Upload className="mx-auto mb-2 text-gray-500" size={28} />
+                                    <p className="text-sm text-gray-700 font-arial">
+                                        Click to upload or drag and drop
+                                    </p>
+                                    <p className="text-xs text-gray-500 mt-1 font-arial">
+                                        PNG, JPG or SVG (max. 5MB)
+                                    </p>
+                                </>
                             )}
                             </label>
                         </div>
@@ -259,6 +322,100 @@ function BrandSetupPageContent() {
                                 onChange={(e) => setPhone(e.target.value)}
                                 className="w-full py-3 px-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black font-arial text-gray-900 bg-white"
                             />
+                        </div>
+
+                        <div className="mb-4">
+                            <label className="flex items-center gap-2 text-sm text-gray-700 mb-1 font-arial">
+                                Set Password
+                            </label>
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="At least 8 characters"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="w-full py-3 pl-3 pr-11 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black font-arial text-gray-900 bg-white"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword((prev) => !prev)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                    aria-label={showPassword ? "Hide password" : "Show password"}
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="mb-6">
+                            <label className="flex items-center gap-2 text-sm text-gray-700 mb-1 font-arial">
+                                Confirm Password
+                            </label>
+                            <div className="relative">
+                                <input
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    placeholder="Re-enter password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    className="w-full py-3 pl-3 pr-11 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black font-arial text-gray-900 bg-white"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                    aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                                >
+                                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="mb-4">
+                            <label className="flex items-center gap-2 text-sm text-gray-700 mb-1 font-arial">
+                                Industry
+                            </label>
+                            <select
+                                value={selectedIndustry}
+                                onChange={(e) => {
+                                    const nextIndustryId = e.target.value;
+                                    setSelectedIndustry(nextIndustryId);
+                                    setSelectedSubIndustry("");
+                                }}
+                                className="w-full py-3 px-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black font-arial text-gray-900 bg-white"
+                                disabled={loadingIndustries}
+                            >
+                                <option value="">
+                                    {loadingIndustries ? "Loading industries..." : "Select industry"}
+                                </option>
+                                {industries.map((industry) => (
+                                    <option key={String(industry.id)} value={String(industry.id)}>
+                                        {industry.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="mb-6">
+                            <label className="flex items-center gap-2 text-sm text-gray-700 mb-1 font-arial">
+                                Sub-Industry
+                            </label>
+                            <select
+                                value={selectedSubIndustry}
+                                onChange={(e) => setSelectedSubIndustry(e.target.value)}
+                                className="w-full py-3 px-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black font-arial text-gray-900 bg-white"
+                                disabled={!selectedIndustry || loadingIndustries}
+                            >
+                                <option value="">
+                                    {!selectedIndustry
+                                        ? "Select industry first"
+                                        : "Select sub-industry"}
+                                </option>
+                                {(industries.find((industry) => String(industry.id) === selectedIndustry)?.subIndustries || []).map((subIndustry) => (
+                                    <option key={String(subIndustry.id)} value={String(subIndustry.id)}>
+                                        {subIndustry.name}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
 
                         {error && (

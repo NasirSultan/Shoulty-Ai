@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { emailLogin, fetchProfile, googleLogin, isProfileComplete } from "@/api/authApi";
 
 function SignInAccountContent() {
@@ -19,13 +19,22 @@ function SignInAccountContent() {
     const [formError, setFormError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    useEffect(() => {
+        router.prefetch("/dashboards");
+        router.prefetch("/account-setup");
+    }, [router]);
+
     const getSafeNextPath = () => {
         if (!nextPath || !nextPath.startsWith("/")) return null;
         if (nextPath.startsWith("//")) return null;
         return nextPath;
     };
 
-    const resolveAndPersistUser = async (fallbackUser: any) => {
+    const persistUser = (user: any) => {
+        localStorage.setItem("shoutly_user", JSON.stringify(user));
+    };
+
+    const hydrateUserProfileInBackground = async (fallbackUser: any) => {
         try {
             const profileResp = await fetchProfile();
             const profileUser =
@@ -34,15 +43,12 @@ function SignInAccountContent() {
 
             if (profileUser && typeof profileUser === "object") {
                 const merged = { ...fallbackUser, ...profileUser };
-                localStorage.setItem("shoutly_user", JSON.stringify(merged));
-                return merged;
+                persistUser(merged);
+                return;
             }
         } catch {
             // Fallback to login response user
         }
-
-        localStorage.setItem("shoutly_user", JSON.stringify(fallbackUser));
-        return fallbackUser;
     };
 
     const routeAfterLogin = (user: any) => {
@@ -65,10 +71,10 @@ function SignInAccountContent() {
     const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
         try {
             const { user } = await googleLogin(credentialResponse.credential!);
-            const finalUser = await resolveAndPersistUser(user);
+            persistUser(user);
             window.dispatchEvent(new Event("auth-changed"));
-            console.log("Logged in as:", finalUser?.name || user?.name);
-            routeAfterLogin(finalUser);
+            routeAfterLogin(user);
+            void hydrateUserProfileInBackground(user);
         } catch (err) {
             console.error("Google login failed:", err);
             setFormError("Google login failed. Please try again.");
@@ -97,9 +103,10 @@ function SignInAccountContent() {
         try {
             setIsSubmitting(true);
             const { user } = await emailLogin(email.trim(), password);
-            const finalUser = await resolveAndPersistUser(user);
+            persistUser(user);
             window.dispatchEvent(new Event("auth-changed"));
-            routeAfterLogin(finalUser);
+            routeAfterLogin(user);
+            void hydrateUserProfileInBackground(user);
         } catch (err: any) {
             const message =
                 err?.response?.data?.message ||

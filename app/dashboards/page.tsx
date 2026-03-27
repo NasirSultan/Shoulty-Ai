@@ -236,7 +236,11 @@ export default function DashboardPage() {
     } catch (error) {
       console.error("Dashboard generate stream failed:", error);
       setGenerating(false);
-      showToast("Failed to generate caption from API.");
+      showToast(
+        error instanceof Error
+          ? error.message
+          : "Failed to generate caption from API."
+      );
     }
   };
 
