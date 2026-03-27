@@ -4,7 +4,7 @@ export const SHOUTLY_API_BASE_URL = "https://backend.shoutlyai.com";
 export const POST_GENERATOR_API_BASE_URL =
     "https://ai-shoutly-backend.onrender.com/api/generator/posts";
 export const TEXT_GENERATOR_API_BASE_URL =
-    "http://localhost:5000/api/generator/texts";
+    "https://ai-shoutly-backend.onrender.com/api/generator/texts";
 
 export const API_ENDPOINTS = {
     displayImages: `${API_BASE_URL}/api/display-images`,
@@ -14,7 +14,8 @@ export const API_ENDPOINTS = {
     postGeneratorGenerateAndSave: `/api/post-generator/generate-and-save`,
     postGeneratorGenerateDirect: `${POST_GENERATOR_API_BASE_URL}`,
     postGeneratorGenerateAndSaveDirect: `${POST_GENERATOR_API_BASE_URL}`,
-    textGeneratorGenerate: `${TEXT_GENERATOR_API_BASE_URL}/texts`,
+    textGeneratorGenerate: `/api/generator/texts`,
+    textGeneratorGenerateDirect: `${TEXT_GENERATOR_API_BASE_URL}`,
     register: `${API_BASE_URL}/api/auth/register`,
     verifyOtp: `${API_BASE_URL}/api/auth/verify-otp`,
     setPassword: `${API_BASE_URL}/api/auth/set-password`,

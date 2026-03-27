@@ -8,6 +8,7 @@ import Calender from "@/components/calender";
 import { fetchImages, fetchIndustries } from "@/api/homeApi";
 import {
     streamGeneratePosts,
+    generatePromptOnlyImages,
     GeneratedPost,
 } from "@/api/postGeneratorApi";
 import PostPopup from "@/components/PostPopup";
@@ -356,10 +357,11 @@ export default function LandingPage() {
             prompt: brandDescription.trim(),
         };
 
-        // Collect LLM (AI) posts only across 2 parallel streams.
-        // Each stream yields 2 LLM posts (~seconds) so together = 4 AI images fast.
+        // Collect LLM (AI) posts using up to 2 stream attempts.
+        // Running attempts sequentially avoids backend overload from simultaneous requests.
         const collectedAI: GeneratedPost[] = [];
         let completedStreams = 0;
+        let lastStreamError: string | null = null;
 
         const handleChunk = (chunk: { post: GeneratedPost }) => {
             // Only collect LLM (AI) posts — skip DB posts
@@ -387,7 +389,7 @@ export default function LandingPage() {
             }
         };
 
-        const runStream = async () => {
+        const runStream = async (attempt: number) => {
             console.log("[Stream] Starting stream...");
             try {
                 await streamGeneratePosts(requestBody, {
@@ -402,14 +404,63 @@ export default function LandingPage() {
                     return;
                 }
                 const msg = error instanceof Error ? error.message : "Stream error.";
-                console.error("[Stream] Stream error:", msg);
-                setStreamError(msg);
+                lastStreamError = msg;
+                console.warn(`[Stream] Stream warning (attempt ${attempt}):`, msg);
                 completedStreams++;
                 if (completedStreams >= 2) setStreamLoading(false);
             }
         };
 
-        await Promise.allSettled([runStream(), runStream()]);
+        await runStream(1);
+        if (!controller.signal.aborted && collectedAI.length < 4) {
+            await runStream(2);
+        }
+
+        if (collectedAI.length > 0) {
+            setStreamError(null);
+        } else {
+            const fallbackPrompt = brandDescription.trim() || "Generate social media post ideas for a business";
+            const fallbackFromStock = generateImages
+                .map((img) => img.file || img.url || "")
+                .filter(Boolean)
+                .slice(0, 4)
+                .map((imageUrl, idx) => ({
+                    image: { imageUrl },
+                    text: `Try this caption style #${idx + 1}: ${fallbackPrompt.slice(0, 140)}`,
+                    source: "LLM" as const,
+                    index: idx,
+                }));
+
+            let fallbackPosts: GeneratedPost[] = fallbackFromStock;
+
+            if (fallbackPosts.length < 4) {
+                try {
+                    const promptImages = await generatePromptOnlyImages({
+                        prompt: fallbackPrompt,
+                        count: 4,
+                    });
+
+                    fallbackPosts = promptImages
+                        .slice(0, 4)
+                        .map((item, idx) => ({
+                            image: { imageUrl: item.url },
+                            text: `AI caption idea #${idx + 1}: ${fallbackPrompt.slice(0, 140)}`,
+                            source: "LLM" as const,
+                            index: idx,
+                        }));
+                } catch {
+                    // Keep stock fallback if prompt-image fallback fails.
+                }
+            }
+
+            if (fallbackPosts.length > 0) {
+                setStreamedPosts(fallbackPosts);
+                setStreamError(null);
+            } else if (lastStreamError) {
+                setStreamError(lastStreamError);
+            }
+        }
+
         console.log(`[Stream] All settled. Final AI posts: ${collectedAI.length}`);
         setStreamLoading(false);
     };

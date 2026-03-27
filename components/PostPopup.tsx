@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { IconType } from "react-icons";
 import {
   FaFacebookF,
@@ -19,6 +19,7 @@ import {
   saveDashboardCalendarPost,
 } from "@/app/dashboards/calendarSync";
 import { upsertCalendarPostToBackend } from "@/api/calendarPostsApi";
+import { streamGenerateTexts } from "@/api/textGeneratorApi";
 
 type Props = {
   isOpen: boolean;
@@ -87,7 +88,9 @@ export default function PostPopup({ isOpen, imageUrl, initialCaption, onClose, o
   const [image, setImage] = useState(imageUrl);
   const [isSaving, setIsSaving] = useState(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [isRewritingCaption, setIsRewritingCaption] = useState(false);
   const [saveError, setSaveError] = useState("");
+  const [rewriteError, setRewriteError] = useState("");
   const [imageSuccessMessage, setImageSuccessMessage] = useState("");
   const [showCaptionPromptPopup, setShowCaptionPromptPopup] = useState(false);
   const [showValidationPopup, setShowValidationPopup] = useState(false);
@@ -99,6 +102,7 @@ export default function PostPopup({ isOpen, imageUrl, initialCaption, onClose, o
   const panStartRef = useRef({ x: 0, y: 0 });
   const panOriginRef = useRef({ x: 0, y: 0 });
   const successTimerRef = useRef<number | null>(null);
+  const rewriteAbortRef = useRef<AbortController | null>(null);
 
   const score = 92;
 
@@ -153,6 +157,13 @@ export default function PostPopup({ isOpen, imageUrl, initialCaption, onClose, o
     return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
   }, [dateVal]);
 
+  useEffect(() => {
+    return () => {
+      rewriteAbortRef.current?.abort();
+      rewriteAbortRef.current = null;
+    };
+  }, []);
+
   if (!isOpen) return null;
 
   const togglePlatform = (pl: DashboardPlatKey) => {
@@ -187,10 +198,76 @@ export default function PostPopup({ isOpen, imageUrl, initialCaption, onClose, o
     setHashtags(next.length ? next : DEFAULT_HASHTAGS);
   };
 
-  const onRewrite = () => {
-    const base = caption.trim() || "Write a concise high-converting post for this image.";
-    const rewritten = `🔥 ${base}\n\nWhat do you think? Drop your view below and follow for more insights.`;
-    setCaption(rewritten.slice(0, 2200));
+  const onRewrite = async () => {
+    if (isRewritingCaption) return;
+
+    const localRewrite = () => {
+      const base =
+        caption.trim() || "Write a concise high-converting post for this image.";
+      return `🔥 ${base}\n\nWhat do you think? Drop your view below and follow for more insights.`;
+    };
+
+    setRewriteError("");
+    setIsRewritingCaption(true);
+
+    rewriteAbortRef.current?.abort();
+    const controller = new AbortController();
+    rewriteAbortRef.current = controller;
+
+    const prompt = [
+      "Rewrite the following social media caption.",
+      caption.trim()
+        ? `Caption: \"${caption.trim()}\"`
+        : "Create a concise high-converting social caption for a business audience.",
+      "Tone: bold, modern, brand-safe.",
+      "Include one clear CTA.",
+      "Max length: 280 characters.",
+      "Return plain caption text only.",
+    ].join(" ");
+
+    const byIndex = new Map<number, string>();
+
+    try {
+      await streamGenerateTexts(
+        { prompt },
+        {
+          signal: controller.signal,
+          onChunk: (chunk) => {
+            const text = typeof chunk?.text === "string" ? chunk.text.trim() : "";
+            if (!text) return;
+
+            byIndex.set(chunk.index, text);
+            const first = [...byIndex.entries()].sort((a, b) => a[0] - b[0])[0]?.[1];
+            if (first) {
+              setCaption(first.slice(0, 2200));
+            }
+          },
+        }
+      );
+
+      const finalText = [...byIndex.entries()].sort((a, b) => a[0] - b[0])[0]?.[1];
+      if (!finalText) {
+        throw new Error("No caption text received from text generator.");
+      }
+      setCaption(finalText.slice(0, 2200));
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        return;
+      }
+
+      const fallback = localRewrite().slice(0, 2200);
+      setCaption(fallback);
+      setRewriteError(
+        error instanceof Error
+          ? `${error.message} Using fallback rewrite.`
+          : "Rewrite failed. Using fallback rewrite."
+      );
+    } finally {
+      if (rewriteAbortRef.current === controller) {
+        rewriteAbortRef.current = null;
+      }
+      setIsRewritingCaption(false);
+    }
   };
 
   const onUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -417,7 +494,7 @@ export default function PostPopup({ isOpen, imageUrl, initialCaption, onClose, o
 
             <div className="flex items-center justify-between rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2">
               <p className="text-sm text-slate-700"><span className="font-bold text-indigo-700">AI Rewrite</span> - Optimise caption for your brand</p>
-              <button onClick={onRewrite} className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white">Rewrite</button>
+              <button onClick={onRewrite} disabled={isRewritingCaption} className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60">{isRewritingCaption ? "Rewriting..." : "Rewrite"}</button>
             </div>
 
             <div>
@@ -493,6 +570,7 @@ export default function PostPopup({ isOpen, imageUrl, initialCaption, onClose, o
             </div>
 
             {saveError ? <p className="text-sm text-red-600">{saveError}</p> : null}
+            {rewriteError ? <p className="text-sm text-amber-600">{rewriteError}</p> : null}
             {imageSuccessMessage ? (
               <p className="text-sm text-emerald-600">{imageSuccessMessage}</p>
             ) : null}
