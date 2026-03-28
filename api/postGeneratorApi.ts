@@ -53,6 +53,9 @@ interface StreamCallbacks<TChunk> {
   signal?: AbortSignal;
 }
 
+const STREAM_REQUEST_TIMEOUT_MS = 70000;
+const PROMPT_IMAGE_TIMEOUT_MS = 25000;
+
 const parseErrorMessage = (text: string, status: number): string => {
   if (!text) {
     return status >= 500
@@ -99,6 +102,17 @@ const streamPostGenerator = async <TChunk>(
   body: object,
   callbacks: StreamCallbacks<TChunk>
 ) => {
+  const requestController = new AbortController();
+  const timeoutId = setTimeout(() => {
+    requestController.abort();
+  }, STREAM_REQUEST_TIMEOUT_MS);
+
+  const onExternalAbort = () => requestController.abort();
+  if (callbacks.signal) {
+    if (callbacks.signal.aborted) requestController.abort();
+    else callbacks.signal.addEventListener("abort", onExternalAbort, { once: true });
+  }
+
   const doRequest = () =>
     fetch(endpoint, {
       method: "POST",
@@ -107,79 +121,90 @@ const streamPostGenerator = async <TChunk>(
         Accept: "text/event-stream",
       },
       body: JSON.stringify(body),
-      signal: callbacks.signal,
+      signal: requestController.signal,
     });
-
-  let response = await doRequest();
-
-  if (!response.ok) {
-    if (response.status === 503) {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      response = await doRequest();
-    }
+  try {
+    let response = await doRequest();
 
     if (!response.ok) {
-      const errText = await response.text().catch(() => "");
-      throw new Error(parseErrorMessage(errText, response.status));
-    }
-  }
-
-  if (!response.body) {
-    throw new Error("Streaming response body is missing.");
-  }
-
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = "";
-  let doneCalled = false;
-
-  const processRawEvent = (rawEvent: string) => {
-    const dataString = parseSseEventData(rawEvent);
-    if (!dataString) return;
-
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(dataString);
-    } catch {
-      return;
-    }
-
-    if (
-      typeof parsed === "object" &&
-      parsed !== null &&
-      "done" in parsed &&
-      (parsed as { done?: boolean }).done
-    ) {
-      if (!doneCalled) {
-        doneCalled = true;
-        callbacks.onDone?.();
+      if (response.status === 503) {
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        response = await doRequest();
       }
-      return;
+
+      if (!response.ok) {
+        const errText = await response.text().catch(() => "");
+        throw new Error(parseErrorMessage(errText, response.status));
+      }
     }
 
-    callbacks.onChunk(parsed as TChunk);
-  };
-
-  while (true) {
-    const { value, done } = await reader.read();
-    if (done) break;
-
-    buffer += decoder.decode(value, { stream: true });
-
-    let boundaryIdx = buffer.indexOf("\n\n");
-    while (boundaryIdx !== -1) {
-      const rawEvent = buffer.slice(0, boundaryIdx).trim();
-      buffer = buffer.slice(boundaryIdx + 2);
-      if (rawEvent) processRawEvent(rawEvent);
-      boundaryIdx = buffer.indexOf("\n\n");
+    if (!response.body) {
+      throw new Error("Streaming response body is missing.");
     }
-  }
 
-  const tail = buffer.trim();
-  if (tail) processRawEvent(tail);
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    let doneCalled = false;
 
-  if (!doneCalled) {
-    callbacks.onDone?.();
+    const processRawEvent = (rawEvent: string) => {
+      const dataString = parseSseEventData(rawEvent);
+      if (!dataString) return;
+
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(dataString);
+      } catch {
+        return;
+      }
+
+      if (
+        typeof parsed === "object" &&
+        parsed !== null &&
+        "done" in parsed &&
+        (parsed as { done?: boolean }).done
+      ) {
+        if (!doneCalled) {
+          doneCalled = true;
+          callbacks.onDone?.();
+        }
+        return;
+      }
+
+      callbacks.onChunk(parsed as TChunk);
+    };
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+
+      let boundaryIdx = buffer.indexOf("\n\n");
+      while (boundaryIdx !== -1) {
+        const rawEvent = buffer.slice(0, boundaryIdx).trim();
+        buffer = buffer.slice(boundaryIdx + 2);
+        if (rawEvent) processRawEvent(rawEvent);
+        boundaryIdx = buffer.indexOf("\n\n");
+      }
+    }
+
+    const tail = buffer.trim();
+    if (tail) processRawEvent(tail);
+
+    if (!doneCalled) {
+      callbacks.onDone?.();
+    }
+  } catch (error) {
+    if (requestController.signal.aborted) {
+      throw new Error("Post generation timed out. Please try again.");
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
+    if (callbacks.signal) {
+      callbacks.signal.removeEventListener("abort", onExternalAbort);
+    }
   }
 };
 
@@ -208,6 +233,8 @@ export const streamGenerateAndSavePosts = async (
 export const generatePromptOnlyImages = async (
   request: PromptOnlyImagesRequest
 ): Promise<PromptOnlyImage[]> => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), PROMPT_IMAGE_TIMEOUT_MS);
   const response = await fetch("/api/prompt-images", {
     method: "POST",
     headers: {
@@ -215,7 +242,15 @@ export const generatePromptOnlyImages = async (
       Accept: "application/json",
     },
     body: JSON.stringify(request),
-  });
+    signal: controller.signal,
+  }).catch(() => null);
+
+  clearTimeout(timeoutId);
+
+  if (!response) {
+    console.warn("Prompt image generation timed out; falling back to stock images.");
+    return [];
+  }
 
   if (!response.ok) {
     const message = await response.text().catch(() => "");

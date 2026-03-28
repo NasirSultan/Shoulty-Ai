@@ -12,6 +12,18 @@ interface Industry {
     subIndustries?: SubIndustry[];
 }
 
+const API_TIMEOUT_MS = 15000;
+
+const fetchWithTimeout = async (url: string, init?: RequestInit) => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+    try {
+        return await fetch(url, { ...init, signal: controller.signal });
+    } finally {
+        clearTimeout(timeoutId);
+    }
+};
+
 export const fetchImages = async (subIndustryId?: string | null) => {
     try {
         let url = API_ENDPOINTS.displayImages;
@@ -19,7 +31,7 @@ export const fetchImages = async (subIndustryId?: string | null) => {
             url += `?subIndustryId=${subIndustryId}`;
         }
         console.log("📸 Fetching images from:", url);
-        const res = await fetch(url);
+        const res = await fetchWithTimeout(url);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const data = await res.json();
         console.log("📸 Images response:", data);
@@ -40,7 +52,7 @@ export const fetchIndustries = async () => {
     try {
         const url = API_ENDPOINTS.industries;
         console.log("🏢 Fetching industries from:", url);
-        const res = await fetch(url);
+        const res = await fetchWithTimeout(url);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const data = await res.json();
         console.log("🏢 Industries response:", data);
