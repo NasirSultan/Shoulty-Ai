@@ -40,7 +40,55 @@ export async function POST(request: Request) {
         });
     }
 
-    return new Response(upstream.body, {
+    // Create a simple heartbeat wrapper using ReadableStream
+    const originalBody = upstream.body;
+    if (!originalBody) {
+        return new Response("", { status: 500 });
+    }
+
+    const encoder = new TextEncoder();
+    let heartbeatInterval: NodeJS.Timeout | null = null;
+    let hasStarted = false;
+
+    const responseStream = new ReadableStream({
+        start(controller) {
+            // Send immediate heartbeat to prevent gateway timeout
+            controller.enqueue(encoder.encode(": connected\n\n"));
+            hasStarted = true;
+
+            // Send heartbeat every 25 seconds to keep connection alive
+            heartbeatInterval = setInterval(() => {
+                try {
+                    controller.enqueue(encoder.encode(": heartbeat\n\n"));
+                } catch {
+                    // Ignore if stream already closed
+                }
+            }, 25000);
+        },
+        async pull(controller) {
+            try {
+                const reader = originalBody.getReader();
+                const { done, value } = await reader.read();
+
+                if (done) {
+                    if (heartbeatInterval) clearInterval(heartbeatInterval);
+                    controller.close();
+                } else {
+                    controller.enqueue(value);
+                }
+
+                reader.releaseLock();
+            } catch (error) {
+                if (heartbeatInterval) clearInterval(heartbeatInterval);
+                controller.error(error);
+            }
+        },
+        cancel() {
+            if (heartbeatInterval) clearInterval(heartbeatInterval);
+        },
+    });
+
+    return new Response(responseStream, {
         status: 200,
         headers: {
             "Content-Type": "text/event-stream",
