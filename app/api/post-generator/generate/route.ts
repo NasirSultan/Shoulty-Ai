@@ -40,55 +40,51 @@ export async function POST(request: Request) {
         });
     }
 
-    // Create a simple heartbeat wrapper using ReadableStream
     const originalBody = upstream.body;
     if (!originalBody) {
-        return new Response("", { status: 500 });
+        return new Response(JSON.stringify({ message: "Upstream returned an empty stream." }), {
+            status: 502,
+            headers: { "Content-Type": "application/json" },
+        });
     }
 
     const encoder = new TextEncoder();
-    let heartbeatInterval: NodeJS.Timeout | null = null;
-    let hasStarted = false;
+    const { readable, writable } = new TransformStream<Uint8Array, Uint8Array>();
+    const writer = writable.getWriter();
+    const reader = originalBody.getReader();
 
-    const responseStream = new ReadableStream({
-        start(controller) {
-            // Send immediate heartbeat to prevent gateway timeout
-            controller.enqueue(encoder.encode(": connected\n\n"));
-            hasStarted = true;
+    // Write an immediate SSE comment so Amplify does not time out before upstream sends data.
+    await writer.write(encoder.encode(": connected\n\n"));
 
-            // Send heartbeat every 25 seconds to keep connection alive
-            heartbeatInterval = setInterval(() => {
-                try {
-                    controller.enqueue(encoder.encode(": heartbeat\n\n"));
-                } catch {
-                    // Ignore if stream already closed
-                }
-            }, 25000);
-        },
-        async pull(controller) {
-            try {
-                const reader = originalBody.getReader();
+    const heartbeat = setInterval(() => {
+        void writer.write(encoder.encode(": heartbeat\n\n")).catch(() => {
+            // Stream closed, interval cleanup happens in finally.
+        });
+    }, 25000);
+
+    void (async () => {
+        try {
+            while (true) {
                 const { done, value } = await reader.read();
-
-                if (done) {
-                    if (heartbeatInterval) clearInterval(heartbeatInterval);
-                    controller.close();
-                } else {
-                    controller.enqueue(value);
+                if (done) break;
+                if (value) {
+                    await writer.write(value);
                 }
-
-                reader.releaseLock();
-            } catch (error) {
-                if (heartbeatInterval) clearInterval(heartbeatInterval);
-                controller.error(error);
             }
-        },
-        cancel() {
-            if (heartbeatInterval) clearInterval(heartbeatInterval);
-        },
-    });
+        } catch {
+            // Ignore upstream read errors and close stream gracefully.
+        } finally {
+            clearInterval(heartbeat);
+            reader.releaseLock();
+            try {
+                await writer.close();
+            } catch {
+                // Ignore close errors when stream already aborted.
+            }
+        }
+    })();
 
-    return new Response(responseStream, {
+    return new Response(readable, {
         status: 200,
         headers: {
             "Content-Type": "text/event-stream",
