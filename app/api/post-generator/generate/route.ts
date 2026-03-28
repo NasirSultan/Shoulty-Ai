@@ -40,56 +40,7 @@ export async function POST(request: Request) {
         });
     }
 
-    // Wrap the upstream body in a transform stream with immediate heartbeat to prevent gateway timeout
-    const encoder = new TextEncoder();
-    let lastDataTime = Date.now();
-    const HEARTBEAT_INTERVAL = 25000; // 25 seconds
-    const heartbeatInterval = setInterval(() => {
-        controller?.enqueue(encoder.encode(": heartbeat\n\n"));
-        lastDataTime = Date.now();
-    }, HEARTBEAT_INTERVAL);
-
-    let controller: ReadableStreamDefaultController<Uint8Array> | null = null;
-
-    const wrappedStream = new ReadableStream({
-        async start(ctrl) {
-            controller = ctrl;
-            // Send immediate connection confirmation to prevent gateway timeout
-            ctrl.enqueue(encoder.encode(": connected\n\n"));
-            lastDataTime = Date.now();
-        },
-        async pull(ctrl) {
-            if (!upstream.body) return;
-            const reader = upstream.body.getReader();
-            try {
-                const { done, value } = await reader.read();
-                if (done) {
-                    clearInterval(heartbeatInterval);
-                    ctrl.close();
-                } else {
-                    lastDataTime = Date.now();
-                    ctrl.enqueue(value);
-                }
-            } catch (err) {
-                clearInterval(heartbeatInterval);
-                ctrl.error(err);
-            } finally {
-                reader.releaseLock();
-            }
-        },
-    });
-
-    // Ensure heartbeat stops if stream ends prematurely
-    wrappedStream.pipeTo(new WritableStream({
-        close() {
-            clearInterval(heartbeatInterval);
-        },
-        abort() {
-            clearInterval(heartbeatInterval);
-        },
-    })).catch(() => clearInterval(heartbeatInterval));
-
-    return new Response(wrappedStream, {
+    return new Response(upstream.body, {
         status: 200,
         headers: {
             "Content-Type": "text/event-stream",
