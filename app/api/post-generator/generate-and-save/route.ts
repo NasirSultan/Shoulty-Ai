@@ -40,51 +40,7 @@ export async function POST(request: Request) {
         });
     }
 
-    const originalBody = upstream.body;
-    if (!originalBody) {
-        return new Response(JSON.stringify({ message: "Upstream returned an empty stream." }), {
-            status: 502,
-            headers: { "Content-Type": "application/json" },
-        });
-    }
-
-    const encoder = new TextEncoder();
-    const { readable, writable } = new TransformStream<Uint8Array, Uint8Array>();
-    const writer = writable.getWriter();
-    const reader = originalBody.getReader();
-
-    // Write an immediate SSE comment so Amplify does not time out before upstream sends data.
-    await writer.write(encoder.encode(": connected\n\n"));
-
-    const heartbeat = setInterval(() => {
-        void writer.write(encoder.encode(": heartbeat\n\n")).catch(() => {
-            // Stream closed, interval cleanup happens in finally.
-        });
-    }, 25000);
-
-    void (async () => {
-        try {
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                if (value) {
-                    await writer.write(value);
-                }
-            }
-        } catch {
-            // Ignore upstream read errors and close stream gracefully.
-        } finally {
-            clearInterval(heartbeat);
-            reader.releaseLock();
-            try {
-                await writer.close();
-            } catch {
-                // Ignore close errors when stream already aborted.
-            }
-        }
-    })();
-
-    return new Response(readable, {
+    return new Response(upstream.body, {
         status: 200,
         headers: {
             "Content-Type": "text/event-stream",
