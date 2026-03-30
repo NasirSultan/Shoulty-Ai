@@ -97,10 +97,11 @@ const parseSseEventData = (rawEvent: string): string | null => {
 const streamPostGenerator = async <TChunk>(
   endpoint: string,
   body: object,
-  callbacks: StreamCallbacks<TChunk>
+  callbacks: StreamCallbacks<TChunk>,
+  fallbackEndpoint?: string
 ) => {
-  const doRequest = () =>
-    fetch(endpoint, {
+  const doRequest = (url: string) =>
+    fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -110,12 +111,22 @@ const streamPostGenerator = async <TChunk>(
       signal: callbacks.signal,
     });
 
-  let response = await doRequest();
+  let response = await doRequest(endpoint);
 
   if (!response.ok) {
     if (response.status === 503) {
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      response = await doRequest();
+      response = await doRequest(endpoint);
+    } else if (response.status === 504 && fallbackEndpoint) {
+      // Vercel proxy timed out (Render cold start). Retry directly from the
+      // browser against the upstream — no serverless timeout applies here.
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      response = await doRequest(fallbackEndpoint);
+      // One more retry if the upstream itself is still warming up.
+      if (!response.ok && (response.status === 503 || response.status === 504)) {
+        await new Promise((resolve) => setTimeout(resolve, 4000));
+        response = await doRequest(fallbackEndpoint);
+      }
     }
 
     if (!response.ok) {
@@ -190,7 +201,8 @@ export const streamGeneratePosts = async (
   await streamPostGenerator<GeneratedPostChunk>(
     API_ENDPOINTS.postGeneratorGenerate,
     request,
-    callbacks
+    callbacks,
+    API_ENDPOINTS.postGeneratorGenerateDirect
   );
 };
 
@@ -201,7 +213,8 @@ export const streamGenerateAndSavePosts = async (
   await streamPostGenerator<GeneratedSavedPostChunk>(
     API_ENDPOINTS.postGeneratorGenerateAndSave,
     request,
-    callbacks
+    callbacks,
+    API_ENDPOINTS.postGeneratorGenerateAndSaveDirect
   );
 };
 
