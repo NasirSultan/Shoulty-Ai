@@ -3,6 +3,9 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
+  experimental: {
+    proxyTimeout: 60_000,
+  },
   images: {
     unoptimized: process.env.NODE_ENV === "development",
     formats: ["image/avif", "image/webp"],

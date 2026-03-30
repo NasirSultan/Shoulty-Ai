@@ -114,15 +114,22 @@ const streamPostGenerator = async <TChunk>(
   let response = await doRequest(endpoint);
 
   if (!response.ok) {
-    if (response.status === 503) {
+    if (response.status === 503 && fallbackEndpoint) {
+      // Lambda proxy got a 503 from Render — try the direct upstream URL instead.
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      response = await doRequest(fallbackEndpoint);
+      if (!response.ok && (response.status === 503 || response.status === 504)) {
+        await new Promise((resolve) => setTimeout(resolve, 4000));
+        response = await doRequest(fallbackEndpoint);
+      }
+    } else if (response.status === 503) {
+      // No fallback available — simple single retry via the same proxy.
       await new Promise((resolve) => setTimeout(resolve, 1500));
       response = await doRequest(endpoint);
     } else if (response.status === 504 && fallbackEndpoint) {
-      // Vercel proxy timed out (Render cold start). Retry directly from the
-      // browser against the upstream — no serverless timeout applies here.
+      // Lambda timed out (Render cold start). Retry directly from the browser.
       await new Promise((resolve) => setTimeout(resolve, 3000));
       response = await doRequest(fallbackEndpoint);
-      // One more retry if the upstream itself is still warming up.
       if (!response.ok && (response.status === 503 || response.status === 504)) {
         await new Promise((resolve) => setTimeout(resolve, 4000));
         response = await doRequest(fallbackEndpoint);

@@ -7,7 +7,8 @@ export const TEXT_GENERATOR_API_BASE_URL =
     "https://ai-shoutly-backend.onrender.com/api/generator/texts";
 
 export const API_ENDPOINTS = {
-    displayImages: `${API_BASE_URL}/api/display-images`,
+    // Route through a local proxy so subIndustryId requests are server→Render (no CORS).
+    displayImages: `/api/display-images`,
     industries: `${API_BASE_URL}/api/industries/with-subindustries`,
     // Frontend uses local routes that proxy to documented upstream generator endpoints.
     postGeneratorGenerate: `/api/post-generator/generate`,

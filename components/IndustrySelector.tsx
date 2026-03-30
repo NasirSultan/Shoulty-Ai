@@ -1,6 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { fetchIndustries } from "@/api/homeApi";
+import React, { useState } from "react";
 
 interface SubIndustry {
     id: string | number;
