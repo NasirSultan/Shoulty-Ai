@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Sidebar from "../../Sidebar";
 import AdminHeader from "../../AdminHeader";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useSidebarState } from "@/hooks/useSidebarState";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 type PosKey = "tl" | "tr" | "bl" | "br";
@@ -113,7 +114,7 @@ function useToast() {
 
 // ── Main Page ──────────────────────────────────────────────────────────────
 export default function BrandOverlayPage() {
-  const [sidebarSlim, setSidebarSlim] = useState(false);
+  const { sidebarSlim, setSidebarSlim } = useSidebarState();
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [bgImg, setBgImg] = useState(BG_IMAGES[0]);
@@ -249,6 +250,7 @@ export default function BrandOverlayPage() {
           {/* Topbar */}
           <AdminHeader
             pageTitle="Overlay Settings"
+            slim={sidebarSlim}
             onToggle={() => setSidebarSlim((s: boolean) => !s)}
             searchPlaceholder="Search settings…"
             actionButton={

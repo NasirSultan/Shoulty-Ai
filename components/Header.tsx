@@ -235,11 +235,11 @@ export default function Header() {
                                             </div>
                                         )}
                                         <Link
-                                            href="/account-setup"
+                                            href="/dashboards/settings"
                                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                                             onClick={() => setProfileOpen(false)}
                                         >
-                                            My Profile
+                                            Profile
                                         </Link>
                                         <Link
                                             href="/dashboards"

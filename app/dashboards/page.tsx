@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import Sidebar from "./Sidebar";
 import AdminHeader from "./AdminHeader";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useSidebarState } from "@/hooks/useSidebarState";
 import {
   resolveGeneratorProfileFields,
   streamGeneratePosts,
@@ -172,7 +173,7 @@ function MiniCalendar() {
 
 // ── Dashboard Page ─────────────────────────────────────────────────────────
 export default function DashboardPage() {
-  const [sidebarSlim, setSidebarSlim] = useState(false);
+  const { sidebarSlim, setSidebarSlim } = useSidebarState();
   const [activeTab, setActiveTab] = useState("Overview");
   const [activePlat, setActivePlat] = useState("ig");
   const [generating, setGenerating] = useState(false);
@@ -296,6 +297,7 @@ export default function DashboardPage() {
           {/* Topbar */}
           <AdminHeader
             pageTitle="Dashboard"
+            slim={sidebarSlim}
             onToggle={() => setSidebarSlim((s) => !s)}
             searchPlaceholder="Search posts, analytics…"
             userName={user?.name}

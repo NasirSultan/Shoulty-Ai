@@ -105,30 +105,108 @@ export const setUserProfile = async (payload: {
     subIndustryId?: string;
     brandLogo?: File | null;
 }) => {
-    const formData = new FormData();
-    formData.append("email", payload.email);
-    formData.append("brandName", payload.brandName);
-    formData.append("website", payload.website);
-    formData.append("phone", payload.phone || "");
-    payload.connectedSocials.forEach((social) => {
-        formData.append("connectedSocials", social);
-    });
-    if (payload.industryId) {
-        formData.append("industryId", payload.industryId);
-    }
-    if (payload.subIndustryId) {
-        formData.append("subIndustryId", payload.subIndustryId);
-    }
-    if (payload.brandLogo) {
-        formData.append("brandLogo", payload.brandLogo);
+    // If there's a file, use FormData; otherwise use JSON
+    const hasFile = payload.brandLogo && payload.brandLogo instanceof File;
+
+    // Add token header if available
+    const headers: Record<string, string> = {};
+
+    if (typeof window !== "undefined") {
+        const token = localStorage.getItem("shoutly_token");
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+            console.log("[setUserProfile] Token present:", token.substring(0, 20) + "...");
+        } else {
+            console.warn("[setUserProfile] No token found in localStorage");
+        }
     }
 
-    const response = await axios.post(API_ENDPOINTS.setProfile, formData, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        },
-    });
-    return response.data;
+    let data: FormData | Record<string, unknown>;
+    
+    if (hasFile) {
+        // Use FormData for file upload
+        const formData = new FormData();
+        formData.append("email", payload.email);
+        formData.append("brandName", payload.brandName);
+        formData.append("website", payload.website);
+        formData.append("phone", payload.phone || "");
+        payload.connectedSocials.forEach((social) => {
+            formData.append("connectedSocials", social);
+        });
+        if (payload.industryId) {
+            formData.append("industryId", payload.industryId);
+        }
+        if (payload.subIndustryId) {
+            formData.append("subIndustryId", payload.subIndustryId);
+        }
+        if (payload.brandLogo) {
+            formData.append("brandLogo", payload.brandLogo);
+        }
+        data = formData;
+        console.log("[setUserProfile] Using FormData (file upload)");
+    } else {
+        // Use JSON for non-file requests
+        // Build a minimal payload with only core fields that backend supports
+        const jsonData: Record<string, unknown> = {
+            email: payload.email,
+            brandName: payload.brandName,
+            website: payload.website,
+            phone: payload.phone || "",
+        };
+
+        // Add connectedSocials if not empty
+        if (payload.connectedSocials && payload.connectedSocials.length > 0) {
+            jsonData.connectedSocials = payload.connectedSocials;
+        }
+
+        // Try to add industry fields if provided - backend might not support these
+        if (payload.industryId) {
+            jsonData.industryId = payload.industryId;
+        }
+        if (payload.subIndustryId) {
+            jsonData.subIndustryId = payload.subIndustryId;
+        }
+
+        data = jsonData;
+        headers["Content-Type"] = "application/json";
+        console.log("[setUserProfile] Using JSON (no file)");
+    }
+
+    // Debug log
+    console.log("[setUserProfile] API Endpoint:", API_ENDPOINTS.setProfile);
+    console.log("[setUserProfile] Sending data:", data);
+
+    try {
+        const response = await axios.post(API_ENDPOINTS.setProfile, data, {
+            headers,
+        });
+        console.log("[setUserProfile] Success response:", response.data);
+        return response.data;
+    } catch (error: unknown) {
+        console.error("[setUserProfile] Full error object:", error);
+        
+        if (error instanceof Error) {
+            console.error("[setUserProfile] Error message:", error.message);
+            console.error("[setUserProfile] Error stack:", error.stack);
+        }
+
+        // Check if it's an axios error
+        if (error && typeof error === 'object' && 'response' in error) {
+            const axiosError = error as { response?: { status: number; statusText: string; data: unknown } };
+            console.error("[setUserProfile] Axios error:", {
+                status: axiosError.response?.status,
+                statusText: axiosError.response?.statusText,
+                data: axiosError.response?.data,
+            });
+            
+            // Backend 500 error - might be an incompatibility issue
+            if (axiosError.response?.status === 500) {
+                console.error("[setUserProfile] Backend returned 500 - endpoint may have an issue or field validation failure");
+            }
+        }
+        
+        throw error;
+    }
 };
 
 export const savePendingAuthFlow = (flow: PendingAuthFlow) => {
@@ -163,6 +241,97 @@ export const logout = () => {
 export const fetchProfile = async () => {
     const response = await shoutlyClient.get(API_ENDPOINTS.userProfile);
     return response.data;
+};
+
+export const updateProfile = async (payload: {
+    name?: string;
+    displayName?: string;
+    password?: string;
+    phone?: string;
+    jobTitle?: string;
+    industryId?: string;
+    subIndustryId?: string;
+    timezone?: string;
+    language?: string;
+    brandName?: string;
+    brandLogo?: string;
+    website?: string;
+    emailNotification?: boolean;
+    pushNotification?: boolean;
+    weeklyNotification?: boolean;
+    file?: File | null;
+}) => {
+    const hasFile = payload.file && payload.file instanceof File;
+    const headers: Record<string, string> = {};
+
+    let data: FormData | Record<string, unknown>;
+
+    if (hasFile) {
+        // Use FormData for file upload
+        const formData = new FormData();
+        if (payload.name) formData.append("name", payload.name);
+        if (payload.displayName) formData.append("displayName", payload.displayName);
+        if (payload.password) formData.append("password", payload.password);
+        if (payload.phone) formData.append("phone", payload.phone);
+        if (payload.jobTitle) formData.append("jobTitle", payload.jobTitle);
+        if (payload.industryId) formData.append("industryId", payload.industryId);
+        if (payload.subIndustryId) formData.append("subIndustryId", payload.subIndustryId);
+        if (payload.timezone) formData.append("timezone", payload.timezone);
+        if (payload.language) formData.append("language", payload.language);
+        if (payload.brandName) formData.append("brandName", payload.brandName);
+        if (payload.brandLogo) formData.append("brandLogo", payload.brandLogo);
+        if (payload.website) formData.append("website", payload.website);
+        if (payload.emailNotification !== undefined) formData.append("emailNotification", String(payload.emailNotification));
+        if (payload.pushNotification !== undefined) formData.append("pushNotification", String(payload.pushNotification));
+        if (payload.weeklyNotification !== undefined) formData.append("weeklyNotification", String(payload.weeklyNotification));
+        if (payload.file) formData.append("file", payload.file);
+        data = formData;
+    } else {
+        // Use JSON for non-file requests
+        data = {};
+        if (payload.name !== undefined) (data as any).name = payload.name;
+        if (payload.displayName !== undefined) (data as any).displayName = payload.displayName;
+        if (payload.password !== undefined) (data as any).password = payload.password;
+        if (payload.phone !== undefined) (data as any).phone = payload.phone;
+        if (payload.jobTitle !== undefined) (data as any).jobTitle = payload.jobTitle;
+        if (payload.industryId !== undefined) (data as any).industryId = payload.industryId;
+        if (payload.subIndustryId !== undefined) (data as any).subIndustryId = payload.subIndustryId;
+        if (payload.timezone !== undefined) (data as any).timezone = payload.timezone;
+        if (payload.language !== undefined) (data as any).language = payload.language;
+        if (payload.brandName !== undefined) (data as any).brandName = payload.brandName;
+        if (payload.brandLogo !== undefined) (data as any).brandLogo = payload.brandLogo;
+        if (payload.website !== undefined) (data as any).website = payload.website;
+        if (payload.emailNotification !== undefined) (data as any).emailNotification = payload.emailNotification;
+        if (payload.pushNotification !== undefined) (data as any).pushNotification = payload.pushNotification;
+        if (payload.weeklyNotification !== undefined) (data as any).weeklyNotification = payload.weeklyNotification;
+        headers["Content-Type"] = "application/json";
+    }
+
+    try {
+        const response = await shoutlyClient.patch(API_ENDPOINTS.profileUpdate, data, {
+            headers: Object.keys(headers).length > 0 ? headers : undefined,
+        });
+        return response.data;
+    } catch (error) {
+        console.error("[updateProfile] Error:", error);
+        throw error;
+    }
+};
+
+export const updatePassword = async (payload: {
+    currentPassword: string;
+    newPassword: string;
+}) => {
+    try {
+        const response = await shoutlyClient.patch(API_ENDPOINTS.passwordUpdate, {
+            currentPassword: payload.currentPassword,
+            newPassword: payload.newPassword,
+        });
+        return response.data;
+    } catch (error) {
+        console.error("[updatePassword] Error:", error);
+        throw error;
+    }
 };
 
 export const isProfileComplete = (user: any): boolean => {

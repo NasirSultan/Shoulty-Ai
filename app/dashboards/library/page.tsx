@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Sidebar from "../Sidebar";
 import AdminHeader from "../AdminHeader";
+import { useSidebarState } from "@/hooks/useSidebarState";
 import { saveDashboardCalendarPost } from "../calendarSync";
 import { fetchImages, fetchIndustries } from "@/api/homeApi";
 import {
@@ -895,7 +896,7 @@ function LibCardItem({ card, viewMode, isFav, onFav, onOpen, onCopy }: {
 
 // ── Main Page ──────────────────────────────────────────────────────────────
 export default function LibraryPage() {
-  const [sidebarSlim, setSidebarSlim] = useState(false);
+  const { sidebarSlim, setSidebarSlim } = useSidebarState();
   const [industry, setIndustry] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [filterType, setFilterType] = useState<FilterType>("all");
@@ -915,7 +916,7 @@ export default function LibraryPage() {
     resolveGeneratorProfileFields((user ?? null) as Record<string, unknown> | null);
 
   // Build cards from backend images (with fallback to static pool)
-  const buildCardsFromApi = (apiImages: { url?: string; imageUrl?: string; id?: string | number }[], k: string): LibCard[] => {
+  const buildCardsFromApi = (apiImages: { url?: string; imageUrl?: string; file?: string; id?: string | number }[], k: string): LibCard[] => {
     const caps = CAPS[k] || CAPS.startup;
     const tags = TAGS_MAP[k] || TAGS_MAP.startup;
     const cats = INDUSTRY_CATS[k] || INDUSTRY_CATS.startup;
@@ -929,7 +930,7 @@ export default function LibraryPage() {
         cap: caps[i % caps.length],
         tags: tags.slice(0, 6),
         plats: PLAT_SETS[i % PLAT_SETS.length],
-        img: img.url || img.imageUrl || (IMGS[k] || IMGS.startup)[i % 30],
+        img: img.file || img.url || img.imageUrl || (IMGS[k] || IMGS.startup)[i % 30],
         bestTime: `${bt.t} ${bt.tz}`,
         eng: ENG_VALS[i % ENG_VALS.length],
         k,
@@ -947,7 +948,9 @@ export default function LibraryPage() {
   const loadLibrary = async (k: string) => {
     setLoading(true);
     try {
-      const apiImages = (await fetchImages(k)) as { url?: string; imageUrl?: string; id?: string | number }[];
+      // Use the proper subIndustryId UUID from generatorIdsByKey, not the industry key
+      const subIndustryUUID = generatorIdsByKey[k]?.subIndustryId || profileSubIndustryId || null;
+      const apiImages = (await fetchImages(subIndustryUUID)) as { url?: string; imageUrl?: string; id?: string | number }[];
       const cards = apiImages?.length > 0 ? buildCardsFromApi(apiImages, k) : buildCards(k);
       setAllCards(cards);
       applyFilter(cards, filterType, sort);
@@ -1061,6 +1064,7 @@ export default function LibraryPage() {
           {/* Topbar */}
           <AdminHeader
             pageTitle="Image & Reel Library"
+            slim={sidebarSlim}
             onToggle={() => setSidebarSlim((s: boolean) => !s)}
             searchValue={searchInput}
             onSearchChange={setSearchInput}

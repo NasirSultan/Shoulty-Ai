@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Sidebar from "../Sidebar";
 import AdminHeader from "../AdminHeader";
+import { useSidebarState } from "@/hooks/useSidebarState";
 import {
   DASHBOARD_CALENDAR_EVENT,
   readDashboardCalendarPosts,
@@ -20,6 +21,7 @@ import {
   streamGenerateAndSavePosts,
   streamGeneratePosts,
 } from "@/api/postGeneratorApi";
+import { createMonthlyPlan, getUserPlan, type GetPlanResponse } from "@/api/calendarApi";
 import { useUserProfile } from "@/hooks/useUserProfile";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -238,23 +240,14 @@ function resolveTopicFromIndustry(industryId: string, subIndustryId?: string): s
 }
 
 function pickNonRepeatingImagePool(count: number, topic: string): string[] {
-  const topicPool = TOPIC_IMAGE_MAP[topic] || [];
-  const allAvailable = Array.from(
-    new Set([...topicPool, ...STOCK_IMAGES, ...Object.values(TOPIC_IMAGE_MAP).flat()])
-  );
+  const rawTopicPool = TOPIC_IMAGE_MAP[topic] || TOPIC_IMAGE_MAP.business || STOCK_IMAGES;
+  const topicPool = Array.from(new Set(rawTopicPool));
+  if (!topicPool.length) return [STOCK_IMAGES[0]];
+
   const shuffledTopic = [...topicPool].sort(() => Math.random() - 0.5);
-  const seen = new Set<string>();
   const result: string[] = [];
-  for (const img of shuffledTopic) {
-    if (!seen.has(img)) { seen.add(img); result.push(img); }
-    if (result.length === count) break;
-  }
-  if (result.length < count) {
-    const shuffledAll = [...allAvailable].sort(() => Math.random() - 0.5);
-    for (const img of shuffledAll) {
-      if (!seen.has(img)) { seen.add(img); result.push(img); }
-      if (result.length === count) break;
-    }
+  for (let i = 0; i < count; i++) {
+    result.push(shuffledTopic[i % shuffledTopic.length]);
   }
   return result;
 }
@@ -380,6 +373,71 @@ const sameDay = (a: Date, b: Date) =>
 const fmt = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 const toIso = (d: Date) =>
   d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+const FALLBACK_CALENDAR_IMAGE = STOCK_IMAGES[0];
+
+const imageFingerprint = (src?: string | null) => {
+  const value = (src || "").trim();
+  if (!value) return "";
+
+  // Treat URL variants with different query/hash as the same image.
+  try {
+    const parsed = new URL(value);
+    return `${parsed.origin}${parsed.pathname}`.toLowerCase();
+  } catch {
+    return value.split("?")[0].split("#")[0].toLowerCase();
+  }
+};
+
+const safeImageSrc = (src?: string | null) => {
+  const value = (src || "").trim();
+  return value || FALLBACK_CALENDAR_IMAGE;
+};
+
+const onCalendarImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {
+  const target = event.currentTarget;
+  if (target.dataset.fallbackApplied === "1") return;
+  target.dataset.fallbackApplied = "1";
+  target.src = FALLBACK_CALENDAR_IMAGE;
+};
+
+async function getSelectedSubIndustryImages(subIndustryId: string): Promise<string[]> {
+  const response = await fetch(
+    `/api/display-images?subIndustryId=${encodeURIComponent(subIndustryId)}`,
+    {
+      method: "GET",
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch selected images (${response.status})`);
+  }
+
+  const data = (await response.json()) as
+    | {
+        images?: Array<{ file?: string; url?: string } | string>;
+      }
+    | undefined;
+
+  const urls = (data?.images || [])
+    .map((item) => {
+      if (typeof item === "string") return item.trim();
+      return (item?.file || item?.url || "").trim();
+    })
+    .filter(Boolean);
+
+  const dedupedByFingerprint: string[] = [];
+  const seen = new Set<string>();
+  for (const url of urls) {
+    const key = imageFingerprint(url);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    dedupedByFingerprint.push(url);
+  }
+
+  return dedupedByFingerprint;
+}
 
 function buildRelevantHashtags(caption: string, imageUrl?: string): string[] {
   const topic = detectTopicFromCaption(caption) || detectTopicFromImageUrl(imageUrl || "") || "business";
@@ -440,7 +498,7 @@ function PostCard({ p, onOpen, onDup, onDel }: { p: Post; onOpen: () => void; on
   return (
     <div onClick={onOpen} style={{ background: "#fff", border: "1px solid #E2E4F0", borderRadius: 10, overflow: "hidden", cursor: "pointer", boxShadow: "0 1px 4px rgba(11,12,26,.06)", position: "relative", marginBottom: 6 }}>
       <div style={{ position: "relative", overflow: "hidden" }}>
-        <img src={p.img} alt="" style={{ width: "100%", height: 90, objectFit: "cover", display: "block" }} loading="lazy" />
+        <img src={safeImageSrc(p.img)} onError={onCalendarImageError} alt="" style={{ width: "100%", height: 90, objectFit: "cover", display: "block" }} loading="lazy" />
         <div style={{ position: "absolute", top: 5, left: 5, display: "flex", alignItems: "center", gap: 3, padding: "2px 7px", borderRadius: 4, background: meta.bg + "aa", color: "#fff", fontSize: 9.5, fontWeight: 800, fontFamily: "Sora,sans-serif" }}>
           <i className={`fa-solid ${meta.icon}`} style={{ fontSize: 8 }} />&nbsp;{meta.label}
         </div>
@@ -497,7 +555,7 @@ function MiniCard({ p, onOpen, onDup, onDel }: { p: Post; onOpen: () => void; on
   return (
     <div onClick={onOpen} style={{ background: "#fff", border: "1px solid #E2E4F0", borderRadius: 8, overflow: "hidden", cursor: "pointer", boxShadow: "0 1px 4px rgba(11,12,26,.06)", position: "relative", marginBottom: 5, flexShrink: 0 }}>
       <div style={{ position: "relative", overflow: "hidden" }}>
-        <img src={p.img} alt="" style={{ width: "100%", height: 70, objectFit: "cover", display: "block" }} loading="lazy" />
+        <img src={safeImageSrc(p.img)} onError={onCalendarImageError} alt="" style={{ width: "100%", height: 70, objectFit: "cover", display: "block" }} loading="lazy" />
         <div style={{ position: "absolute", top: 4, left: 4, padding: "2px 6px", borderRadius: 3, background: meta.bg + "bb", color: "#fff", fontSize: 8.5, fontWeight: 800, fontFamily: "Sora,sans-serif" }}>
           <i className={`fa-solid ${meta.icon}`} style={{ fontSize: 7 }} />&nbsp;{meta.label}
         </div>
@@ -880,7 +938,7 @@ function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate
               onClick={() => setShowImagePreviewPopup(true)}
               title="Click to preview image"
             >
-              <img src={img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              <img src={safeImageSrc(img)} onError={(event) => { onCalendarImageError(event); setImg(FALLBACK_CALENDAR_IMAGE); }} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               <div style={{ position: "absolute", inset: 0, background: "rgba(11,12,26,.38)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, opacity: 0, transition: "opacity .18s" }}
                 onMouseEnter={e => ((e.currentTarget as HTMLElement).style.opacity = "1")}
                 onMouseLeave={e => ((e.currentTarget as HTMLElement).style.opacity = "0")}
@@ -1121,7 +1179,8 @@ function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate
               onMouseLeave={stopImagePanning}
             >
               <img
-                src={img}
+                src={safeImageSrc(img)}
+                onError={(event) => { onCalendarImageError(event); setImg(FALLBACK_CALENDAR_IMAGE); }}
                 alt="Post preview"
                 draggable={false}
                 style={{
@@ -1287,7 +1346,7 @@ function RightPanel({ rpTab, setRpTab, posts, onOpen, onAddIdea, showToast }: {
             <div style={{ fontSize: 10.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".6px", color: "#8486AB", fontFamily: "Sora,sans-serif", marginTop: 16, marginBottom: 8 }}>Next Scheduled</div>
             {upcoming.map(p => (
               <div key={p.id} onClick={() => onOpen(p.id)} style={{ display: "flex", gap: 7, alignItems: "center", padding: "6px 0", borderBottom: "1px solid #ECEDF8", cursor: "pointer" }}>
-                <img src={p.img} alt="" style={{ width: 32, height: 32, borderRadius: 6, objectFit: "cover", flexShrink: 0 }} />
+                <img src={safeImageSrc(p.img)} onError={onCalendarImageError} alt="" style={{ width: 32, height: 32, borderRadius: 6, objectFit: "cover", flexShrink: 0 }} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 11.5, fontWeight: 600, color: "#0B0C1A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 140 }}>{p.caption}</div>
                   <div style={{ fontSize: 10, color: "#8486AB", display: "flex", alignItems: "center", gap: 3, marginTop: 1 }}>
@@ -1361,7 +1420,7 @@ function useToast() {
 
 // ── Main Page ──────────────────────────────────────────────────────────────
 export default function CalendarPage() {
-  const [sidebarSlim, setSidebarSlim] = useState(false);
+  const { sidebarSlim, setSidebarSlim } = useSidebarState();
   const [today, setToday] = useState(() => startOfDay(new Date()));
   const [posts, setPosts] = useState<Post[]>([]);
   const [nextId, setNextId] = useState(10000);
@@ -1442,6 +1501,12 @@ export default function CalendarPage() {
   const [genCount, setGenCount] = useState(0);
   const [genStatus, setGenStatus] = useState("Preparing stream...");
   const [genInFlight, setGenInFlight] = useState(false);
+  const planPostTime = "10:00";
+  const [planLoading, setPlanLoading] = useState(false);
+  const [getUserPlanOpen, setGetUserPlanOpen] = useState(false);
+  const [userPlanData, setUserPlanData] = useState<GetPlanResponse | null>(null);
+  const [userPlanLoading, setUserPlanLoading] = useState(false);
+  const [userPlanError, setUserPlanError] = useState("");
   const { toast, show: showToast } = useToast();
   const { user } = useUserProfile();
 
@@ -1563,6 +1628,127 @@ export default function CalendarPage() {
       setNextId(n => n + 1);
       showToast("✅ Post generated!", "green");
     }, 1400);
+  };
+
+  const createPlanDirect = async () => {
+    if (planLoading) return;
+
+    const { industryId, subIndustryId } = resolveGeneratorProfileFields(
+      (user ?? null) as Record<string, unknown> | null
+    );
+    const userSubIndustry = (user as Record<string, unknown>)?.subIndustryId as string | undefined;
+    const effectiveSubIndustry = userSubIndustry || subIndustryId;
+
+    if (!effectiveSubIndustry) {
+      showToast("Please set your sub-industry in your profile settings", "red");
+      return;
+    }
+
+    const prompt = `Create a complete monthly content plan for ${effectiveSubIndustry}, including educational, engagement, promotional, and trend-based posts.`;
+    const startId = nextId;
+
+    setPlanLoading(true);
+    showToast("Creating your monthly plan...", "brand");
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") || "" : "";
+      const response = await createMonthlyPlan(
+        {
+          prompt,
+          subIndustries: [effectiveSubIndustry],
+          postTime: planPostTime,
+        },
+        token
+      );
+
+      if (!response.success) {
+        showToast(response.message || "Failed to create plan", "red");
+        return;
+      }
+
+      const planResponse = await getUserPlan(token);
+      if (!planResponse.success || !planResponse.posts || planResponse.posts.length === 0) {
+        showToast("Monthly plan created, but no posts were returned", "amber");
+        return;
+      }
+
+      const selectedImages = await getSelectedSubIndustryImages(effectiveSubIndustry);
+      const selectedImageQueue = [...selectedImages];
+      const usedImageKeys = new Set<string>();
+
+      const takeNextSelectedImage = () => {
+        while (selectedImageQueue.length) {
+          const candidate = selectedImageQueue.shift() || "";
+          const key = imageFingerprint(candidate);
+          if (candidate && key && !usedImageKeys.has(key)) {
+            usedImageKeys.add(key);
+            return candidate;
+          }
+        }
+        return "";
+      };
+
+      const choosePlanImage = (backendImage?: string) => {
+        const backend = (backendImage || "").trim();
+        const backendKey = imageFingerprint(backend);
+        if (backend && backendKey && !usedImageKeys.has(backendKey)) {
+          usedImageKeys.add(backendKey);
+          return backend;
+        }
+
+        const selectedFallback = takeNextSelectedImage();
+        if (selectedFallback) return selectedFallback;
+
+        if (backend) return backend;
+        return FALLBACK_CALENDAR_IMAGE;
+      };
+
+      if (selectedImages.length < planResponse.posts.length) {
+        showToast(
+          `Only ${selectedImages.length} selected profile images found for ${planResponse.posts.length} posts. Using backend images for the rest.`,
+          "amber"
+        );
+      }
+
+      const mappedPosts = planResponse.posts.map((backendPost, index) => {
+        const postDate = new Date(backendPost.postTime);
+        return {
+          id: startId + index,
+          date: postDate,
+          caption: backendPost.content?.text || "",
+          hashtags: backendPost.content?.hashtags || [],
+          plats: ["ig", "fb"] as PlatKey[],
+          type: backendPost.media?.type === "REEL" ? "reel" : "image" as PostType,
+          timeStr: postDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          timesOptions: TIMES_POOL[0],
+          img: choosePlanImage(backendPost.media?.file),
+          score: rndInt(75, 95),
+          status: (backendPost.status.toLowerCase() as Status) || "scheduled",
+          reach: rndInt(15, 110) * 1000,
+          engRate: "8.5%",
+          isAI: true,
+        };
+      });
+
+      setPosts((prev) => {
+        const existingKeys = new Set(prev.map((p) => `${p.date.toISOString()}|${p.caption}`));
+        const additions = mappedPosts.filter(
+          (p) => !existingKeys.has(`${p.date.toISOString()}|${p.caption}`)
+        );
+        const merged = [...prev, ...additions].sort((a, b) => a.date.getTime() - b.date.getTime());
+        writeDashboardCalendarPosts(merged);
+        return merged;
+      });
+
+      setNextId((prev) => Math.max(prev, startId + mappedPosts.length + 1));
+      setView("month");
+      setOffset(0);
+      showToast(`✅ Plan created and ${mappedPosts.length} posts added to calendar`, "green");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to create monthly plan";
+      showToast(message, "red");
+    } finally {
+      setPlanLoading(false);
+    }
   };
 
   const startAiGeneration = async () => {
@@ -1820,6 +2006,7 @@ export default function CalendarPage() {
           {/* Topbar */}
           <AdminHeader
             pageTitle="Content Calendar"
+            slim={sidebarSlim}
             onToggle={() => setSidebarSlim(s => !s)}
             searchValue={search}
             onSearchChange={setSearch}
@@ -1874,6 +2061,37 @@ export default function CalendarPage() {
                 })}
               </div>
               <div style={{ width: 1, height: 24, background: "#E2E4F0", flexShrink: 0 }} />
+              <button onClick={createPlanDirect} disabled={planLoading} style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 18px", borderRadius: 8, background: "#10B981", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: planLoading ? "not-allowed" : "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(16,185,129,.32)", whiteSpace: "nowrap", flexShrink: 0, opacity: planLoading ? 0.7 : 1 }}>
+                <i className="fa-solid fa-calendar-plus" style={{ fontSize: 12 }} /> {planLoading ? "Creating..." : "Create Plan"}
+              </button>
+              <button onClick={async () => {
+                setUserPlanLoading(true);
+                setUserPlanError("");
+                try {
+                  const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") || "" : "";
+                  console.log("📋 Fetching user plan with token:", token ? "✓ Token present" : "✗ No token");
+                  const response = await getUserPlan(token);
+                  console.log("📋 User plan response:", response);
+                  
+                  if (response && response.success) {
+                    console.log("📋 Plan fetched successfully:", response);
+                    setUserPlanData(response);
+                    setGetUserPlanOpen(true);
+                  } else {
+                    const errorMsg = response?.message || "Failed to fetch user plan";
+                    console.log("📋 Plan fetch failed:", errorMsg);
+                    setUserPlanError(errorMsg);
+                  }
+                } catch (error) {
+                  const errorMsg = error instanceof Error ? error.message : "Failed to fetch user plan";
+                  console.error("📋 Get user plan error:", errorMsg, error);
+                  setUserPlanError(errorMsg);
+                } finally {
+                  setUserPlanLoading(false);
+                }
+              }} disabled={userPlanLoading} style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 18px", borderRadius: 8, background: "#3B82F6", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: userPlanLoading ? "not-allowed" : "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(59,130,246,.32)", whiteSpace: "nowrap", flexShrink: 0, opacity: userPlanLoading ? 0.7 : 1 }}>
+                <i className="fa-solid fa-file-lines" style={{ fontSize: 12 }} /> {userPlanLoading ? "Loading..." : "Get User Plan"}
+              </button>
               <button onClick={startAiGeneration} style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 18px", borderRadius: 8, background: "linear-gradient(135deg,#5B5BD6,#7C3AED)", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(91,91,214,.32)", whiteSpace: "nowrap", flexShrink: 0 }}>
                 <i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 12 }} /> AI Generate
               </button>
@@ -1941,6 +2159,123 @@ export default function CalendarPage() {
 
       {/* AI Generate Modal */}
       <GenModal open={genOpen} pct={genProgress} generatedCount={genCount} statusText={genStatus} />
+
+      {/* Get User Plan Modal */}
+      {getUserPlanOpen && (
+        <div
+          style={{ position: "fixed", inset: 0, background: "rgba(11,12,26,.55)", backdropFilter: "blur(8px)", zIndex: 600, display: "flex", alignItems: "center", justifyContent: "center" }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setGetUserPlanOpen(false);
+              setUserPlanError("");
+            }
+          }}
+        >
+          <div style={{ background: "#fff", borderRadius: 18, padding: "32px 38px", width: 560, maxHeight: "90vh", overflowY: "auto", textAlign: "left", boxShadow: "0 32px 80px rgba(11,12,26,.2)" }}>
+            <div style={{ fontSize: 20, fontWeight: 800, color: "#0B0C1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.3px", marginBottom: 24, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span>📋 Your Content Plan</span>
+              <button
+                onClick={() => {
+                  setGetUserPlanOpen(false);
+                  setUserPlanError("");
+                }}
+                style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#8486AB" }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {userPlanError && (
+              <div style={{ background: "#FEF2F2", border: "1px solid rgba(239,68,68,.2)", borderRadius: 8, padding: "12px 14px", marginBottom: 16, fontSize: 13, color: "#EF4444", fontWeight: 600 }}>
+                ❌ {userPlanError}
+              </div>
+            )}
+
+            {userPlanLoading ? (
+              <div style={{ textAlign: "center", padding: "40px 20px" }}>
+                <div style={{ fontSize: 28, marginBottom: 12 }}>⏳</div>
+                <div style={{ color: "#8486AB", fontSize: 14 }}>Loading your content plan...</div>
+              </div>
+            ) : userPlanData ? (
+              <div>
+                {/* Plan Metadata */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 24 }}>
+                  <div style={{ background: "#F8F9FC", border: "1px solid #E2E4F0", borderRadius: 10, padding: "14px 16px" }}>
+                    <div style={{ fontSize: 11.5, fontWeight: 700, color: "#8486AB", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 6 }}>Total Posts</div>
+                    <div style={{ fontSize: 18, fontWeight: 800, color: "#0B0C1A" }}>{userPlanData.meta?.totalPosts || userPlanData.posts?.length || 0}</div>
+                  </div>
+                  <div style={{ background: "#F8F9FC", border: "1px solid #E2E4F0", borderRadius: 10, padding: "14px 16px" }}>
+                    <div style={{ fontSize: 11.5, fontWeight: 700, color: "#8486AB", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 6 }}>Status</div>
+                    <div style={{ fontSize: 18, fontWeight: 800, color: "#0B0C1A" }}>📅 Active</div>
+                  </div>
+                </div>
+
+                {/* Connected Socials */}
+                {(userPlanData.meta?.connectedSocials?.length || 0) > 0 && (
+                  <div style={{ marginBottom: 24 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#0B0C1A", marginBottom: 10 }}>🔗 Connected Platforms</div>
+                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                      {userPlanData.meta?.connectedSocials?.map((s: unknown, i: number) => {
+                        const platform = typeof s === "object" && s !== null && "platform" in s ? (s as Record<string, unknown>).platform : typeof s === "object" && s !== null && "name" in s ? (s as Record<string, unknown>).name : "Unknown";
+                        return (
+                          <span key={i} style={{ background: "#E8E8FF", color: "#5B5BD6", padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 600 }}>
+                            {String(platform)}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Posts List */}
+                {(userPlanData.posts?.length || 0) > 0 && (
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#0B0C1A", marginBottom: 12 }}>📝 Scheduled Posts ({userPlanData.posts?.length || 0})</div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                      {userPlanData.posts?.slice(0, 5).map((post, i: number) => (
+                        <div key={post.postId || i} style={{ background: "#F8F9FC", border: "1px solid #E2E4F0", borderRadius: 10, padding: "12px 14px" }}>
+                          <div style={{ display: "flex", alignItems: "start", justifyContent: "space-between", gap: 8 }}>
+                            <div style={{ flex: 1 }}>
+                              <div style={{ fontSize: 12.5, fontWeight: 700, color: "#0B0C1A", marginBottom: 4 }}>Post #{i + 1}</div>
+                              <div style={{ fontSize: 11.5, color: "#8486AB", marginBottom: 6, lineHeight: 1.4 }}>
+                                {post.content?.text?.substring(0, 80)}
+                                {(post.content?.text?.length || 0) > 80 ? "..." : ""}
+                              </div>
+                              <div style={{ fontSize: 10.5, color: "#8486AB" }}>
+                                📅 {new Date(post.postTime).toLocaleDateString()} • {new Date(post.postTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                              </div>
+                            </div>
+                            <span style={{ background: post.status === "PUBLISHED" ? "#D1FAE5" : post.status === "SCHEDULED" ? "#FEF3C7" : "#E0E7FF", color: post.status === "PUBLISHED" ? "#047857" : post.status === "SCHEDULED" ? "#92400E" : "#4338CA", padding: "2px 8px", borderRadius: 4, fontSize: 10, fontWeight: 600, whiteSpace: "nowrap" }}>
+                              {post.status}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                      {(userPlanData.posts?.length || 0) > 5 && (
+                        <div style={{ textAlign: "center", padding: "10px", color: "#8486AB", fontSize: 12 }}>
+                          +{(userPlanData.posts?.length || 0) - 5} more posts
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : null}
+
+            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 24 }}>
+              <button
+                onClick={() => {
+                  setGetUserPlanOpen(false);
+                  setUserPlanError("");
+                }}
+                style={{ padding: "10px 18px", borderRadius: 8, background: "#fff", color: "#3D3F60", fontSize: 13, fontWeight: 700, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif" }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Toast */}
       <div style={{

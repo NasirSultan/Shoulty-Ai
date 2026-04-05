@@ -21,12 +21,6 @@ const navItems = [
     href: "/dashboards",
   },
   {
-    icon: "fa-solid fa-wand-magic-sparkles",
-    label: "Generate Content",
-    href: "/generate",
-    badge: "AI",
-  },
-  {
     icon: "fa-solid fa-chart-simple",
     label: "Analytics",
     href: "/dashboards/analytics",
@@ -40,11 +34,6 @@ const navItems = [
     icon: "fa-solid fa-photo-film",
     label: "Image & Reel Library",
     href: "/dashboards/library",
-  },
-  {
-    icon: "fa-solid fa-users",
-    label: "Team",
-    href: "/dashboards/team",
   },
   { section: "Settings" },
   {
@@ -110,23 +99,24 @@ export default function Sidebar({ slim, onToggle, activePath = "/dashboard" }: S
           padding: "0 16px",
           borderBottom: "1px solid rgba(255,255,255,.06)",
           flexShrink: 0,
+          justifyContent: slim ? "center" : "flex-start",
         }}
       >
         <Link href="/dashboards" style={{ textDecoration: "none", flexShrink: 0 }}>
           <div
             style={{
               position: "relative",
-              width: slim ? 46 : 170,
-              height: 70,
+              width: slim ? 32 : 170,
+              height: slim ? 32 : 70,
               flexShrink: 0,
             }}
           >
             <Image
-              src="/images/logo2.png"
+              src={slim ? "/images/logo_head.png" : "/images/logo2.png"}
               alt="Shoutly AI"
               fill
               priority
-              style={{ objectFit: "contain", objectPosition: "left center" }}
+              style={{ objectFit: "contain", objectPosition: "center" }}
             />
           </div>
         </Link>

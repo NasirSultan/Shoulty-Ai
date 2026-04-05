@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import Sidebar from "../../Sidebar";
 import AdminHeader from "../../AdminHeader";
+import { useSidebarState } from "@/hooks/useSidebarState";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 type PlatStatus = "connected" | "disconnected" | "error" | "syncing";
@@ -484,7 +485,7 @@ function PickerModal({ plats, onSelect, onClose }: { plats: Platform[]; onSelect
 
 // ── Main Page ──────────────────────────────────────────────────────────────
 export default function SocialAccountsPage() {
-  const [sidebarSlim, setSidebarSlim] = useState(false);
+  const { sidebarSlim, setSidebarSlim } = useSidebarState();
   const [plats, setPlats] = useState<Platform[]>(INIT_PLATS);
   const [filter, setFilter] = useState<FilterType>("all");
   const [alertVisible, setAlertVisible] = useState(true);
@@ -583,6 +584,7 @@ export default function SocialAccountsPage() {
           {/* Topbar */}
           <AdminHeader
             pageTitle="Social Accounts"
+            slim={sidebarSlim}
             onToggle={() => setSidebarSlim(s => !s)}
             searchPlaceholder="Search accounts…"
             actionButton={

@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from '../Sidebar'; // Import the sidebar component
-import AdminHeader from '../AdminHeader';
-
+import AdminHeader from '../AdminHeader';import { useSidebarState } from '@/hooks/useSidebarState';
 // --- Types ---
 interface Member {
   initials: string;
@@ -72,7 +71,7 @@ const showToast = (msg: string, type: 'default' | 'green' | 'red' | 'brand' | 'a
 
 // --- Main Component ---
 const TeamPage: React.FC = () => {
-  const [sidebarSlim, setSidebarSlim] = useState(false);
+  const { sidebarSlim, setSidebarSlim } = useSidebarState();
   const [members, setMembers] = useState<Member[]>(initialMembers);
   const [approvals, setApprovals] = useState<Approval[]>(initialApprovals);
   const [activities] = useState<Activity[]>(initialActivities);
@@ -412,6 +411,7 @@ const TeamPage: React.FC = () => {
         {/* Topbar */}
         <AdminHeader
           pageTitle="Team & Approvals"
+          slim={sidebarSlim}
           onToggle={() => setSidebarSlim((s) => !s)}
           searchPlaceholder="Search team, approvals…"
           actionButton={

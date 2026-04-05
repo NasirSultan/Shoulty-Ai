@@ -68,11 +68,24 @@ export const fetchImages = async (subIndustryId?: string | null) => {
     try {
         let url = API_ENDPOINTS.displayImages;
         if (subIndustryId) {
-            url += `?subIndustryId=${subIndustryId}`;
+            url += `?subIndustryId=${encodeURIComponent(String(subIndustryId))}`;
         }
         console.log("📸 Fetching images from:", url);
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const res = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            },
+            cache: "no-store",
+        });
+        
+        if (!res.ok) {
+            const errorText = await res.text().catch(() => "Unknown error");
+            console.error(`❌ API Error ${res.status}:`, errorText);
+            throw new Error(`HTTP error! status: ${res.status} - ${errorText}`);
+        }
+        
         const data = await res.json();
         console.log("📸 Images response:", data);
         const images = Array.isArray(data)
@@ -83,7 +96,8 @@ export const fetchImages = async (subIndustryId?: string | null) => {
         console.log("📸 Processed images:", images);
         return images;
     } catch (error) {
-        console.error("Failed to fetch images:", error);
+        console.error("❌ Failed to fetch images:", error);
+        // Return empty array on error instead of throwing
         return [];
     }
 };

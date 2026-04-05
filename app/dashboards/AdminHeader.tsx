@@ -7,6 +7,8 @@ interface AdminHeaderProps {
   pageTitle: string;
   /** Additional breadcrumb segments rendered before the final title */
   breadcrumb?: string[];
+  /** Sidebar state - true if minimized, false if expanded */
+  slim?: boolean;
   /** Called when the hamburger is clicked to toggle sidebar */
   onToggle?: () => void;
   /** Controlled search input value */
@@ -28,6 +30,7 @@ interface AdminHeaderProps {
 export default function AdminHeader({
   pageTitle,
   breadcrumb = [],
+  slim = false,
   onToggle,
   searchValue,
   onSearchChange,
@@ -52,7 +55,7 @@ export default function AdminHeader({
         zIndex: 100,
       }}
     >
-      {/* Hamburger */}
+      {/* Toggle Sidebar Button */}
       {onToggle && (
         <div
           onClick={onToggle}
@@ -65,9 +68,11 @@ export default function AdminHeader({
             justifyContent: "center",
             color: "#9496B5",
             cursor: "pointer",
+            transition: "all 0.2s ease",
           }}
+          title={slim ? "Expand sidebar" : "Collapse sidebar"}
         >
-          <i className="fa-solid fa-bars" style={{ fontSize: 14 }} />
+          <i className={`fa-solid ${slim ? "fa-chevron-right" : "fa-chevron-left"}`} style={{ fontSize: 14 }} />
         </div>
       )}
 

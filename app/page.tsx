@@ -579,44 +579,91 @@ export default function LandingPage() {
 
             <section
                 id="generator"
-                className="py-14 sm:py-24 bg-white text-slate-900 overflow-hidden"
+                className="py-14 sm:py-24 bg-white text-slate-900 overflow-hidden relative"
             >
-                <div className="max-w-7xl mx-auto px-4 sm:px-6">
+                {/* Background Banner */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-orange-100/40 to-red-100/20 rounded-full blur-3xl -mr-48 -mt-48"></div>
+                    <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-blue-100/30 to-purple-100/20 rounded-full blur-3xl -ml-40 -mb-40"></div>
+                    <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600">
+                        <defs>
+                            <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+                                <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(100,116,139,0.05)" strokeWidth="1"/>
+                            </pattern>
+                        </defs>
+                        <rect width="1200" height="600" fill="url(#grid)" />
+                    </svg>
+                </div>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
                     {/* Floating Badge - Changed to Brand Orange Gradient */}
-                    <div className="flex justify-center mb-5 sm:mb-6">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 sm:px-5 rounded-full bg-gradient-to-r from-orange-500 to-red-600 text-white text-xs sm:text-sm font-black tracking-widest uppercase shadow-lg shadow-orange-200">
-                            <span>3 Simple Steps</span>
+                    <div className="banner relative bg-gradient-to-r from-orange-600/95 via-orange-500/90 to-red-600/95 rounded-3xl px-8 py-10 sm:py-12 mb-8 border-2 border-orange-300/50 backdrop-blur-md shadow-2xl shadow-orange-600/40 overflow-hidden group hover:shadow-orange-600/60 transition-all duration-300">
+                        {/* Premium gradient overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-orange-900/10 rounded-3xl pointer-events-none"></div>
+                        
+                        {/* AI Neural Network Background Pattern */}
+                        <svg className="absolute inset-0 w-full h-full rounded-3xl" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg" style={{opacity: 0.08}}>
+                            <defs>
+                                <pattern id="aiGrid" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+                                    <circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.3)"/>
+                                    <line x1="50" y1="0" x2="50" y2="100" stroke="rgba(255,255,255,0.1)" strokeWidth="0.5"/>
+                                    <line x1="0" y1="50" x2="100" y2="50" stroke="rgba(255,255,255,0.1)" strokeWidth="0.5"/>
+                                </pattern>
+                            </defs>
+                            <rect width="1200" height="400" fill="url(#aiGrid)"/>
+                            {/* Floating AI nodes */}
+                            <circle cx="200" cy="100" r="3" fill="rgba(255,200,100,0.4)" style={{animation: 'float1 6s ease-in-out infinite'}}/>
+                            <circle cx="400" cy="200" r="3" fill="rgba(255,150,100,0.4)" style={{animation: 'float2 7s ease-in-out infinite'}}/>
+                            <circle cx="800" cy="150" r="3" fill="rgba(255,180,100,0.4)" style={{animation: 'float3 8s ease-in-out infinite'}}/>
+                            <circle cx="1000" cy="300" r="3" fill="rgba(255,120,100,0.4)" style={{animation: 'float4 6.5s ease-in-out infinite'}}/>
+                        </svg>
+
+                        {/* Enhanced decorative background elements with glow */}
+                        <div className="absolute -top-24 -right-24 w-72 h-72 bg-orange-300/30 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
+                        <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-red-400/25 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '1s' }}></div>
+                        <div className="absolute top-1/2 right-1/4 w-48 h-48 bg-yellow-400/15 rounded-full blur-2xl pointer-events-none"></div>
+                        
+                        {/* Bobble Floating Orbs */}
+                        <div className="absolute top-16 left-12 w-16 h-16 bg-gradient-to-br from-cyan-300/40 to-blue-400/30 rounded-full blur-xl pointer-events-none animate-bobble" style={{ filter: 'blur(20px)' }}></div>
+                        <div className="absolute top-20 right-20 w-12 h-12 bg-gradient-to-br from-yellow-300/50 to-orange-400/40 rounded-full blur-lg pointer-events-none animate-bobble-slow"></div>
+                        <div className="absolute bottom-16 left-1/3 w-14 h-14 bg-gradient-to-br from-pink-300/35 to-red-400/30 rounded-full blur-xl pointer-events-none animate-bobble" style={{ animationDelay: '0.3s' }}></div>
+                        <div className="absolute bottom-12 right-1/4 w-10 h-10 bg-gradient-to-br from-orange-300/45 to-yellow-400/35 rounded-full blur-lg pointer-events-none animate-bobble-slow" style={{ animationDelay: '0.5s' }}></div>
+                        
+                        {/* Floating AI Particles */}
+                        <div className="absolute top-1/4 left-1/4 w-1 h-1 bg-white/40 rounded-full animate-pulse" style={{ animation: 'float 4s ease-in-out infinite' }}></div>
+                        <div className="absolute top-1/3 right-1/3 w-1.5 h-1.5 bg-orange-200/30 rounded-full animate-pulse" style={{ animation: 'float 5s ease-in-out infinite 1s' }}></div>
+                        <div className="absolute bottom-1/4 left-1/3 w-1 h-1 bg-yellow-200/30 rounded-full animate-pulse" style={{ animation: 'float 6s ease-in-out infinite 2s' }}></div>
+                        <div className="absolute top-2/3 right-1/4 w-1.5 h-1.5 bg-white/20 rounded-full animate-pulse" style={{ animation: 'float 4.5s ease-in-out infinite 1.5s' }}></div>
+                        
+                        {/* Inner border glow effect */}
+                        <div className="absolute inset-0 rounded-3xl border border-orange-200/30 pointer-events-none"></div>
+                        
+                        <div className="relative z-10">
+                            <div className="flex justify-center mb-6 sm:mb-8">
+                                <div className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-full bg-gradient-to-r from-white/25 to-white/10 text-white text-xs sm:text-sm font-black tracking-widest uppercase shadow-lg shadow-orange-400/50 backdrop-blur-md border border-white/40 hover:from-white/35 hover:to-white/15 transition-all duration-300">
+                                    <span className="drop-shadow-lg">✨ 3 Simple Steps</span>
+                                </div>
+                            </div>
+
+                            {/* Title - Enhanced with drop shadow and glow */}
+                            <h1 className="text-3xl sm:text-4xl md:text-6xl text-center mb-4 sm:mb-5 font-black tracking-tighter text-white drop-shadow-lg">
+                                Generate Your{" "}
+                                <span className="bg-gradient-to-r from-yellow-100 via-orange-100 to-red-100 bg-clip-text text-transparent drop-shadow-lg filter drop-shadow-md">
+                                    Year of Content
+                                </span>
+                            </h1>
+
+                            {/* Subtitle */}
+                            <p className="text-center text-white/95 text-sm sm:text-base max-w-2xl mx-auto mb-3 px-2 font-semibold drop-shadow-md">
+                                One prompt, 365 days of posts. Including local festivals
+                                & events.
+                            </p>
+
+                            <p className="text-center text-white/85 text-sm sm:text-base max-w-4xl mx-auto mb-10 sm:mb-14 px-2 leading-relaxed drop-shadow-sm">
+                                Shoutly AI is a social media automation and AI content generator that helps you build a complete social media calendar with branded posts, reels, captions, and hashtags in minutes.
+                            </p>
                         </div>
                     </div>
-
-                    {/* Title - Applied Brand Font Weight & Tracking */}
-                    <h1 className="text-3xl sm:text-4xl md:text-6xl text-center mb-3 sm:mb-4 font-black tracking-tighter text-slate-900">
-                        Generate Your{" "}
-                        <span className="bg-gradient-to-r from-orange-500 to-red-600 bg-clip-text text-transparent">
-                            Year of Content
-                        </span>
-                    </h1>
-
-                    {/* Subtitle */}
-                    <p className="text-center text-slate-500 text-sm sm:text-base max-w-2xl mx-auto mb-3 px-2 font-medium">
-                        One prompt, 365 days of posts. Including local festivals
-                        & events.
-                    </p>
-
-                    <p className="text-center text-slate-600 text-sm sm:text-base max-w-4xl mx-auto mb-10 sm:mb-16 px-2 leading-relaxed">
-                        Shoutly AI is a social media automation and AI content generator that helps you build a complete social media calendar with branded posts, reels, captions, and hashtags in minutes.
-                        <Link href="/case-studies" className="mx-1 text-slate-900 underline underline-offset-2 hover:text-orange-600">
-                            Case Studies
-                        </Link>
-                        <span>•</span>
-                        <Link href="/pricing" className="mx-1 text-slate-900 underline underline-offset-2 hover:text-orange-600">
-                            Pricing
-                        </Link>
-                        <span>•</span>
-                        <Link href="/help-center" className="ml-1 text-slate-900 underline underline-offset-2 hover:text-orange-600">
-                            Help Center
-                        </Link>
-                    </p>
 
                     {/* Cards Row */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
@@ -837,6 +884,24 @@ export default function LandingPage() {
                                     Stream error: {streamError}
                                 </div>
                             )}
+
+                            {/* AI Generation Status */}
+                            {streamLoading && (
+                                <div className="rounded-xl border border-orange-200 bg-gradient-to-r from-orange-50 to-red-50 px-6 py-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex gap-1.5">
+                                            <div className="w-2 h-8 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
+                                            <div className="w-2 h-8 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></div>
+                                            <div className="w-2 h-8 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-bold text-gray-900">🤖 AI is generating your images</p>
+                                            <p className="text-xs text-gray-600 mt-0.5">Powered by advanced AI • ~10-20 seconds</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
                             {/* Row 1 — first 4 streamed posts (arrival order) */}
                             <div>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
@@ -885,13 +950,40 @@ export default function LandingPage() {
                                             );
                                         }
 
-                                        // Slot not yet filled — pulse skeleton
+                                        // Slot not yet filled — enhanced loading skeleton
                                         if (!imageUrl) {
                                             return (
                                                 <div
                                                     key={`r1-loading-${i}`}
-                                                    className="aspect-square rounded-xl bg-gray-100 animate-pulse"
-                                                />
+                                                    className="aspect-square rounded-xl overflow-hidden relative bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 border border-orange-200"
+                                                >
+                                                    {/* Animated Background Gradient */}
+                                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer-fast"></div>
+                                                    
+                                                    {/* Loading Content */}
+                                                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white/20">
+                                                        {/* Animated Spinner */}
+                                                        <div className="relative w-12 h-12">
+                                                            <svg className="w-full h-full text-orange-500 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="3">
+                                                                <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor"></circle>
+                                                                <path className="opacity-100" fill="none" stroke="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                            </svg>
+                                                        </div>
+                                                        
+                                                        {/* Text Label */}
+                                                        <div className="text-center">
+                                                            <p className="text-sm font-bold text-gray-800">Generating</p>
+                                                            <p className="text-xs text-gray-600 mt-0.5">AI Magic...</p>
+                                                        </div>
+                                                        
+                                                        {/* Animated Dots */}
+                                                        <div className="flex gap-1">
+                                                            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-400 to-orange-600 animate-bounce" style={{ animationDelay: '0s' }}></div>
+                                                            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-400 to-orange-600 animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                                                            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-400 to-orange-600 animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             );
                                         }
 

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Sidebar from '../Sidebar'; // Import the sidebar component
 import AdminHeader from '../AdminHeader';
 import { useUserProfile } from '@/hooks/useUserProfile';
+import { useSidebarState } from '@/hooks/useSidebarState';
 import { fetchIndustries } from '@/api/homeApi';
 import { fetchProfile, setAccountPassword, setUserProfile } from '@/api/authApi';
 
@@ -130,7 +131,7 @@ const pickStringField = (
 // --- Main Component ---
 const SettingsPage: React.FC = () => {
   // State
-  const [sidebarSlim, setSidebarSlim] = useState(false);
+  const { sidebarSlim, setSidebarSlim } = useSidebarState();
   const [socials, setSocials] = useState<SocialAccount[]>(SOCIALS);
   const [notifState, setNotifState] = useState<NotifState>(() => {
     const init: NotifState = {};
@@ -1045,6 +1046,7 @@ const SettingsPage: React.FC = () => {
         {/* Topbar */}
         <AdminHeader
           pageTitle="Account Settings"
+          slim={sidebarSlim}
           onToggle={() => setSidebarSlim((s) => !s)}
           searchPlaceholder="Search settings…"
           userName={user?.name}

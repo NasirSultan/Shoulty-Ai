@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import Sidebar from "../../Sidebar";
 import AdminHeader from "../../AdminHeader";
+import { useSidebarState } from "@/hooks/useSidebarState";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 type CycleType = "monthly" | "yearly";
@@ -492,7 +493,7 @@ function SuccessOverlay({ name }: { name: string }) {
 
 // ── Main Page ──────────────────────────────────────────────────────────────
 export default function BillingPage() {
-  const [sidebarSlim, setSidebarSlim] = useState(false);
+  const { sidebarSlim, setSidebarSlim } = useSidebarState();
   const [currentPlan, setCurrentPlan] = useState("business");
   const [globalCycle, setGlobalCycle] = useState<CycleType>("monthly");
   const [planCycle, setPlanCycle] = useState<CycleType>("monthly");
@@ -556,6 +557,7 @@ export default function BillingPage() {
           {/* Topbar */}
           <AdminHeader
             pageTitle="Subscription & Billing"
+            slim={sidebarSlim}
             onToggle={() => setSidebarSlim(s => !s)}
             searchPlaceholder="Search billing…"
             actionButton={

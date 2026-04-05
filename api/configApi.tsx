@@ -27,4 +27,6 @@ export const API_ENDPOINTS = {
     googleLogin: `${SHOUTLY_API_BASE_URL}/api/auth/google/login`,
     emailLogin: `${SHOUTLY_API_BASE_URL}/api/auth/login`,
     userProfile: `${SHOUTLY_API_BASE_URL}/api/user/profile`,
+    profileUpdate: `${SHOUTLY_API_BASE_URL}/api/users/profile-update`,
+    passwordUpdate: `${SHOUTLY_API_BASE_URL}/api/users/password`,
 };

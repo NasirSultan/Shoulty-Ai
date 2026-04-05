@@ -10,25 +10,35 @@ export async function GET(request: Request) {
         ? `${UPSTREAM_BASE}?subIndustryId=${encodeURIComponent(subIndustryId)}`
         : UPSTREAM_BASE;
 
+    console.log("📸 [display-images] Calling upstream:", upstreamUrl);
+
     let upstream: Response;
     try {
         upstream = await fetch(upstreamUrl, {
-            headers: { Accept: "application/json" },
+            method: "GET",
+            headers: { 
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            },
             cache: "no-store",
         });
     } catch (err) {
         const message = err instanceof Error ? err.message : "Failed to reach upstream.";
-        return Response.json({ message }, { status: 502 });
+        console.error("❌ [display-images] Upstream fetch failed:", message);
+        return Response.json({ error: message, message }, { status: 502 });
     }
 
     if (!upstream.ok) {
         const text = await upstream.text().catch(() => "");
-        return new Response(text || `Upstream error ${upstream.status}`, {
+        const errorMsg = text || `Upstream error ${upstream.status}`;
+        console.error(`❌ [display-images] Upstream returned ${upstream.status}:`, errorMsg);
+        return new Response(JSON.stringify({ error: errorMsg, status: upstream.status }), {
             status: upstream.status,
-            headers: { "Content-Type": "text/plain" },
+            headers: { "Content-Type": "application/json" },
         });
     }
 
     const data = await upstream.json();
+    console.log("✅ [display-images] Success, returning data");
     return Response.json(data);
 }

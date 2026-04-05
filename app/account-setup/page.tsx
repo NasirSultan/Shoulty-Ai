@@ -9,9 +9,6 @@ import {
     ImageIcon,
     Globe,
     Phone,
-    Palette,
-    Eye,
-    EyeOff,
     Instagram,
     Facebook,
     Linkedin,
@@ -22,7 +19,6 @@ import {
     clearPendingAuthFlow,
     getPendingAuthFlow,
     isProfileComplete,
-    setAccountPassword,
     setUserProfile,
 } from "@/api/authApi";
 import { useIndustries } from "@/hooks/useIndustries";
@@ -37,10 +33,6 @@ function BrandSetupPageContent() {
     const [brandLogoPreview, setBrandLogoPreview] = useState("");
     const [selectedIndustry, setSelectedIndustry] = useState("");
     const [selectedSubIndustry, setSelectedSubIndustry] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState("");
     const [resolvedEmail, setResolvedEmail] = useState("");
@@ -123,16 +115,6 @@ function BrandSetupPageContent() {
             return;
         }
 
-        if (!password || password.length < 8) {
-            setError("Password must be at least 8 characters.");
-            return;
-        }
-
-        if (password !== confirmPassword) {
-            setError("Password and confirm password do not match.");
-            return;
-        }
-
         setError("");
         setStep(3);
     };
@@ -146,8 +128,6 @@ function BrandSetupPageContent() {
         try {
             setSubmitting(true);
             setError("");
-
-            await setAccountPassword(resolvedEmail, password);
 
             const response = await setUserProfile({
                 email: resolvedEmail,
@@ -322,52 +302,6 @@ function BrandSetupPageContent() {
                                 onChange={(e) => setPhone(e.target.value)}
                                 className="w-full py-3 px-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black font-arial text-gray-900 bg-white"
                             />
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="flex items-center gap-2 text-sm text-gray-700 mb-1 font-arial">
-                                Set Password
-                            </label>
-                            <div className="relative">
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    placeholder="At least 8 characters"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full py-3 pl-3 pr-11 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black font-arial text-gray-900 bg-white"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword((prev) => !prev)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                                    aria-label={showPassword ? "Hide password" : "Show password"}
-                                >
-                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="mb-6">
-                            <label className="flex items-center gap-2 text-sm text-gray-700 mb-1 font-arial">
-                                Confirm Password
-                            </label>
-                            <div className="relative">
-                                <input
-                                    type={showConfirmPassword ? "text" : "password"}
-                                    placeholder="Re-enter password"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    className="w-full py-3 pl-3 pr-11 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black font-arial text-gray-900 bg-white"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowConfirmPassword((prev) => !prev)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                                    aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
-                                >
-                                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                </button>
-                            </div>
                         </div>
 
                         <div className="mb-4">
