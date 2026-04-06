@@ -381,6 +381,12 @@ export default function LandingPage() {
 
     const previewPrimaryStockImages = previewStockImages.slice(0, 4);
     const previewSecondaryStockImages = previewStockImages.slice(4, 8);
+    const shouldShowFirstLoadMsg =
+        !streamLoading &&
+        streamedPosts.length === 0 &&
+        (generateLoadingImages ||
+            previewPrimaryStockImages.length < 4 ||
+            previewSecondaryStockImages.length < 4);
     const isGenerateReady =
         !!generateSelectedIndustry &&
         !!generatePendingSubIndustry &&
@@ -869,6 +875,12 @@ export default function LandingPage() {
                         Industry-specific templates that update instantly based
                         on your selection
                     </p>
+
+                    {shouldShowFirstLoadMsg && (
+                        <div className="max-w-2xl mx-auto mb-8 rounded-xl border border-orange-200 bg-orange-50 px-4 py-3 text-center text-sm font-medium text-orange-700">
+                            First time preview load can take up to 60 seconds.
+                        </div>
+                    )}
 
                     {/* Main Card */}
                     <div className="relative bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg border border-gray-100">
