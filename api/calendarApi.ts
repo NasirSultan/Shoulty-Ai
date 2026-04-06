@@ -177,9 +177,18 @@ export async function createMonthlyPlan(
     console.log("✅ createMonthlyPlan: Success", response.data);
     return response.data as CreatePlanResponse;
   } catch (error: any) {
+    // ── Handle 401 Unauthorized (session expired) ──────────────────────────────
+    if (error.response?.status === 401) {
+      const err = new Error("Session expired. Please login again.");
+      (err as any).statusCode = 401;
+      throw err;
+    }
+    
     const errorMsg = error.response?.data?.message || error.message || "Failed to create plan";
     console.error("❌ createMonthlyPlan error:", errorMsg, error.response?.data);
-    throw new Error(errorMsg);
+    const err = new Error(errorMsg);
+    (err as any).statusCode = error.response?.status || 500;
+    throw err;
   }
 }
 
@@ -208,9 +217,18 @@ export async function getUserPlan(token?: string): Promise<GetPlanResponse> {
     console.log("✅ getUserPlan: Success", response.data);
     return response.data as GetPlanResponse;
   } catch (error: any) {
+    // ── Handle 401 Unauthorized (session expired) ──────────────────────────────
+    if (error.response?.status === 401) {
+      const err = new Error("Session expired. Please login again.");
+      (err as any).statusCode = 401;
+      throw err;
+    }
+    
     const errorMsg = error.response?.data?.message || error.message || "Failed to fetch plan";
     console.error("❌ getUserPlan error:", errorMsg, error.response?.data);
-    throw new Error(errorMsg);
+    const err = new Error(errorMsg);
+    (err as any).statusCode = error.response?.status || 500;
+    throw err;
   }
 }
 

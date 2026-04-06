@@ -54,6 +54,12 @@ interface Industry {
 }
 
 const MIN_BRAND_DESCRIPTION_CHARS = 10;
+const LOCAL_TEMPLATE_FALLBACKS = [
+    "/templates/template-1.jpg",
+    "/templates/template-2.jpg",
+    "/templates/template-3.jpg",
+    "/templates/template-4.jpg",
+];
 
 export default function LandingPage() {
     const icons = [
@@ -93,9 +99,11 @@ export default function LandingPage() {
 
         // Typing logic
         React.useEffect(() => {
+            let timeout: ReturnType<typeof setTimeout> | undefined;
+
             if (subIndex === words[index].length + 1 && !reverse) {
-                setTimeout(() => setReverse(true), pause);
-                return;
+                timeout = setTimeout(() => setReverse(true), pause);
+                return () => clearTimeout(timeout);
             }
 
             if (subIndex === 0 && reverse) {
@@ -104,7 +112,7 @@ export default function LandingPage() {
                 return;
             }
 
-            const timeout = setTimeout(
+            timeout = setTimeout(
                 () => {
                     setSubIndex((prev) => prev + (reverse ? -1 : 1));
                 },
@@ -189,6 +197,7 @@ export default function LandingPage() {
     const [libraryLoadingImages, setLibraryLoadingImages] = useState(false);
     const [libraryFilterTerm, setLibraryFilterTerm] = useState("");
     const imageCacheRef = React.useRef<Record<string, ImageItem[]>>({});
+    const imageFetchInFlightRef = React.useRef<Record<string, Promise<ImageItem[]>>>({});
 
     const [industries, setIndustries] = useState<Industry[]>([]);
     const [loadingIndustries, setLoadingIndustries] = useState(true);
@@ -204,6 +213,15 @@ export default function LandingPage() {
         img.file ||
         img.url ||
         `${img.name || img.title || "preview"}-${index}`;
+    const getLocalTemplateFallback = (index: number) =>
+        LOCAL_TEMPLATE_FALLBACKS[index % LOCAL_TEMPLATE_FALLBACKS.length];
+    const getImageUrl = (img?: ImageItem | null) => img?.file || img?.url || "";
+    const getSubIndustryFallbackImage = (index: number) => {
+        const sourcePool = generateImages.length ? generateImages : previewStockImages;
+        if (!sourcePool.length) return getLocalTemplateFallback(index);
+        const source = sourcePool[index % sourcePool.length];
+        return getImageUrl(source) || getLocalTemplateFallback(index);
+    };
 
     const getImagesWithCache = async (
         type: "generate" | "library",
@@ -221,11 +239,38 @@ export default function LandingPage() {
             return;
         }
 
+        const existingRequest = imageFetchInFlightRef.current[cacheKey];
+        if (!forceRefresh && existingRequest) {
+            setLoading(true);
+            try {
+                const data = await existingRequest;
+                setImages(data);
+            } finally {
+                setLoading(false);
+            }
+            return;
+        }
+
         setLoading(true);
-        const data = await fetchImages(subIndustry);
-        imageCacheRef.current[cacheKey] = data;
-        setImages(data);
-        setLoading(false);
+        const requestPromise = fetchImages(subIndustry)
+            .then((data) => {
+                imageCacheRef.current[cacheKey] = data;
+                return data;
+            })
+            .finally(() => {
+                if (imageFetchInFlightRef.current[cacheKey] === requestPromise) {
+                    delete imageFetchInFlightRef.current[cacheKey];
+                }
+            });
+
+        imageFetchInFlightRef.current[cacheKey] = requestPromise;
+
+        try {
+            const data = await requestPromise;
+            setImages(data);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const refreshImages = async () => {
@@ -356,53 +401,33 @@ export default function LandingPage() {
     };
 
     const handleGenerateClick = async () => {
-        const fallbackIndustry = generateSelectedIndustry || (industries[0] ? String(industries[0].id) : "");
-        const selectedIndustryObj = industries.find(
-            (industry: Industry) => String(industry.id) === String(fallbackIndustry),
-        );
-        const fallbackSubIndustry =
-            generatePendingSubIndustry ||
-            (selectedIndustryObj?.subIndustries?.[0]
-                ? String(selectedIndustryObj.subIndustries[0].id)
-                : "");
-
         const missing = getGenerateMissingFields();
-
         if (missing.length > 0) {
-            let filteredMissing = [...missing];
-            if (fallbackIndustry) {
-                filteredMissing = filteredMissing.filter(
-                    (field) => field !== "industry",
-                );
-            }
-            if (fallbackSubIndustry) {
-                filteredMissing = filteredMissing.filter(
-                    (field) => field !== "sub-industry",
-                );
-            }
-            if (filteredMissing.length > 0) {
-                setGenerateValidationError(`Please select/fill: ${filteredMissing.join(", ")}.`);
-                return;
-            }
+            setGenerateValidationError(`Please select/fill: ${missing.join(", ")}.`);
+            return;
         }
 
         setGenerateValidationError(null);
+        const effectiveIndustryId = generateSelectedIndustry;
+        const effectiveSubIndustryId = generatePendingSubIndustry;
 
-        if (!fallbackIndustry || !fallbackSubIndustry) {
+        if (!effectiveIndustryId || !effectiveSubIndustryId) {
             setGenerateValidationError("Please select/fill: industry, sub-industry.");
             return;
         }
+
+        const selectedIndustryObj = industries.find(
+            (industry: Industry) => String(industry.id) === String(effectiveIndustryId),
+        );
 
         if (!selectedContent) {
             setSelectedContent("photos");
         }
 
-        setGenerateSelectedIndustry(fallbackIndustry);
         setGenerateSubIndustries(selectedIndustryObj?.subIndustries || []);
-        setGeneratePendingSubIndustry(fallbackSubIndustry);
-        setGenerateSelectedSubIndustry(fallbackSubIndustry);
+        setGenerateSelectedSubIndustry(effectiveSubIndustryId);
         scrollToSectionInOneSecond("gcontent");
-        await generateStreamPreview(fallbackIndustry, fallbackSubIndustry);
+        await generateStreamPreview(effectiveIndustryId, effectiveSubIndustryId);
     };
 
     const generateStreamPreview = async (
@@ -433,7 +458,7 @@ export default function LandingPage() {
         // Collect LLM (AI) posts using up to 2 stream attempts.
         // Running attempts sequentially avoids backend overload from simultaneous requests.
         const collectedAI: GeneratedPost[] = [];
-        let completedStreams = 0;
+        const completedAttempts = new Set<number>();
         let lastStreamError: string | null = null;
 
         const handleChunk = (chunk: { post: GeneratedPost }) => {
@@ -453,8 +478,10 @@ export default function LandingPage() {
             }
         };
 
-        const handleStreamDone = () => {
-            completedStreams++;
+        const markStreamDone = (attempt: number) => {
+            if (completedAttempts.has(attempt)) return;
+            completedAttempts.add(attempt);
+            const completedStreams = completedAttempts.size;
             console.log(`[Stream] Stream done (${completedStreams}/2), AI posts so far: ${collectedAI.length}`);
             if (completedStreams >= 2) {
                 console.log(`[Stream] Both streams done. Final AI posts: ${collectedAI.length}`);
@@ -467,20 +494,19 @@ export default function LandingPage() {
             try {
                 await streamGeneratePosts(requestBody, {
                     onChunk: handleChunk,
-                    onDone: handleStreamDone,
+                    onDone: () => markStreamDone(attempt),
                     signal: controller.signal,
                 });
             } catch (error: unknown) {
                 if (error instanceof Error && error.name === "AbortError") {
                     console.log("[Stream] Stream aborted (intentional)");
-                    handleStreamDone();
+                    markStreamDone(attempt);
                     return;
                 }
                 const msg = error instanceof Error ? error.message : "Stream error.";
                 lastStreamError = msg;
                 console.warn(`[Stream] Stream warning (attempt ${attempt}):`, msg);
-                completedStreams++;
-                if (completedStreams >= 2) setStreamLoading(false);
+                markStreamDone(attempt);
             }
         };
 
@@ -896,7 +922,7 @@ export default function LandingPage() {
                                         </div>
                                         <div>
                                             <p className="text-sm font-bold text-gray-900">🤖 AI is generating your images</p>
-                                            <p className="text-xs text-gray-600 mt-0.5">Powered by advanced AI • ~10-20 seconds</p>
+                                            <p className="text-xs text-gray-600 mt-0.5">Powered by advanced AI</p>
                                         </div>
                                     </div>
                                 </div>
@@ -939,8 +965,8 @@ export default function LandingPage() {
                                                         decoding="async"
                                                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                                         onError={(e) => {
-                                                            e.currentTarget.src =
-                                                                "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23f3f4f6'/%3E%3Ctext x='8' y='25' font-family='Arial' font-size='14' fill='%239ca3af'%3EIMG%3C/text%3E%3C/svg%3E";
+                                                            e.currentTarget.onerror = null;
+                                                            e.currentTarget.src = getSubIndustryFallbackImage(i + 4);
                                                         }}
                                                     />
                                                     <span className="absolute bottom-2 left-2 text-white bg-black/60 backdrop-blur-sm px-2 py-1 text-xs rounded-md font-medium">
@@ -1006,8 +1032,8 @@ export default function LandingPage() {
                                                     decoding="async"
                                                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                                     onError={(e) => {
-                                                        e.currentTarget.src =
-                                                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23f3f4f6'/%3E%3Ctext x='8' y='25' font-family='Arial' font-size='14' fill='%239ca3af'%3EIMG%3C/text%3E%3C/svg%3E";
+                                                        e.currentTarget.onerror = null;
+                                                        e.currentTarget.src = getSubIndustryFallbackImage(i);
                                                     }}
                                                 />
                                                 {post.source && (
@@ -1055,8 +1081,8 @@ export default function LandingPage() {
                                                     decoding="async"
                                                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                                     onError={(e) => {
-                                                        e.currentTarget.src =
-                                                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23f3f4f6'/%3E%3Ctext x='8' y='25' font-family='Arial' font-size='14' fill='%239ca3af'%3EIMG%3C/text%3E%3C/svg%3E";
+                                                        e.currentTarget.onerror = null;
+                                                        e.currentTarget.src = getSubIndustryFallbackImage(index);
                                                     }}
                                                 />
                                                 <span className="absolute bottom-2 left-2 text-white bg-black/60 backdrop-blur-sm px-2 py-1 text-xs rounded-md font-medium">

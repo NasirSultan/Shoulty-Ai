@@ -28,10 +28,29 @@ shoutlyClient.interceptors.request.use((config) => {
 // ── Auth ──────────────────────────────────────────────────────────────────────
 
 export const googleLogin = async (idToken: string) => {
-    const response = await shoutlyClient.post(API_ENDPOINTS.googleLogin, { idToken });
-    const { token, user } = response.data;
-    localStorage.setItem("shoutly_token", token);
-    return { token, user };
+    try {
+        const response = await axios.post(API_ENDPOINTS.googleLogin, { idToken });
+        const { token, user } = response.data;
+        localStorage.setItem("shoutly_token", token);
+        return { token, user };
+    } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+            const status = error.response?.status;
+            const apiMessage =
+                (error.response?.data as { message?: string } | undefined)?.message;
+
+            if (status === 401) {
+                throw new Error(
+                    apiMessage ||
+                        "Google session expired or invalid. Please sign in again."
+                );
+            }
+
+            throw new Error(apiMessage || "Google sign-in failed. Please try again.");
+        }
+
+        throw new Error("Google sign-in failed. Please try again.");
+    }
 };
 
 export const emailLogin = async (email: string, password: string) => {

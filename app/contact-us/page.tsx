@@ -47,9 +47,9 @@ export default function ContactPage() {
                             </h3>
 
                             <p className="text-gray-500 mb-4">
-                                #27, Embassy Tech Village, Outer Ring Road,
+                                No: 371 Gokula Pride, 4th Floor, JP Nagar
                                 <br />
-                                Bangalore, Karnataka 560103
+                                8th phase, Bangalore - 560083
                             </p>
 
                             <p className="text-orange-500 font-semibold text-sm mb-6">
@@ -79,13 +79,6 @@ export default function ContactPage() {
                             <p className="text-orange-500 font-semibold text-sm mb-6">
                                 ⚡ AMERICAS HQ · EST (GMT-5)
                             </p>
-
-                            <a
-                                href="tel:+19901700660"
-                                className="flex items-center gap-3 text-lg font-semibold"
-                            >
-                                📞 +1 99017 00660
-                            </a>
                         </div>
                     </div>
                 </section>
@@ -121,19 +114,13 @@ export default function ContactPage() {
                             </div>
                         </div>
 
-                        {/* Phone summary */}
+                        {/* Availability summary */}
                         <div className="bg-gray-50 p-6 rounded-2xl">
-                            <h3 className="text-xl font-bold mb-4">📞 RING US</h3>
-
-                            <div className="mb-4">
-                                <p className="text-sm text-gray-400">NORTH AMERICA</p>
-                                <p className="text-2xl font-bold">+1 99017 00660</p>
-                            </div>
-
-                            <div>
-                                <p className="text-sm text-gray-400">ASIA PACIFIC</p>
-                                <p className="text-2xl font-bold">+91 99017 00660</p>
-                            </div>
+                            <h3 className="text-xl font-bold mb-4">🌍 SUPPORT HOURS</h3>
+                            <p className="text-gray-600">
+                                Our global team is available around the clock via email for
+                                sales, support, and partnership requests.
+                            </p>
 
                             <p className="text-orange-500 mt-6 font-semibold">
                                 ⏰ 24/7 · Follow the sun support

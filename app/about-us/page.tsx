@@ -45,9 +45,14 @@ export default function LandingPage() {
           No designers. No strategists. No burnout.
         </p>
         <div className="flex flex-wrap gap-4 items-center">
-          <button className="bg-orange-500 text-white font-semibold px-10 py-4 rounded-full text-lg shadow-lg shadow-orange-500/20 hover:scale-105 transition-transform">
+          <a
+            href="https://go.shoutlyai.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-orange-500 text-white font-semibold px-10 py-4 rounded-full text-lg shadow-lg shadow-orange-500/20 hover:scale-105 transition-transform"
+          >
             🔥 JOIN THE MOVEMENT
-          </button>
+          </a>
           <button className="border-2 border-orange-500 text-gray-800 font-medium px-9 py-3.5 rounded-full hover:bg-orange-500 hover:text-white transition-all">
             ▶️ WATCH 2-MIN SETUP
           </button>
@@ -132,9 +137,14 @@ export default function LandingPage() {
           STOP <span className="line-through text-gray-600">HIRING.</span><br />
           <GradientText>START SHOUTING.</GradientText>
         </h2>
-        <button className="mt-8 bg-orange-500 text-white font-bold px-12 py-5 rounded-full text-xl shadow-2xl shadow-orange-500/40 hover:scale-105 transition-transform">
+        <a
+          href="https://go.shoutlyai.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-8 inline-block bg-orange-500 text-white font-bold px-12 py-5 rounded-full text-xl shadow-2xl shadow-orange-500/40 hover:scale-105 transition-transform"
+        >
           🔥 GET EARLY ACCESS
-        </button>
+        </a>
         <p className="mt-6 text-gray-500">No credit card. Just content.</p>
       </Section>
 

@@ -77,7 +77,11 @@ function SignInAccountContent() {
             void hydrateUserProfileInBackground(user);
         } catch (err) {
             console.error("Google login failed:", err);
-            setFormError("Google login failed. Please try again.");
+            setFormError(
+                err instanceof Error
+                    ? err.message
+                    : "Google login failed. Please try again."
+            );
         }
     };
 
@@ -118,22 +122,22 @@ function SignInAccountContent() {
     };
 
     return (
-        <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4">
+        <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 pt-20 pb-10">
 
             {/* Logo */}
-            <div className="mb-5">
+            <div className="mb-4 md:mb-5">
                 <Image
                     src="/images/logo.png"
                     alt="Logo"
-                    width={180}
-                    height={120}
+                    width={160}
+                    height={110}
                     priority
-                    className="mx-auto"
+                    className="mx-auto w-32 sm:w-40 h-auto"
                 />
             </div>
 
             {/* Card */}
-            <div className="w-full max-w-md bg-white border border-gray-200 rounded-2xl shadow-lg p-8">
+            <div className="w-full max-w-md bg-white border border-gray-200 rounded-2xl shadow-lg p-5 sm:p-8">
 
                 {/* Title */}
                 <h1
@@ -151,12 +155,14 @@ function SignInAccountContent() {
                 </p>
 
                 {/* Google Sign-in */}
-                <div className="w-full flex justify-center mb-6">
-                    <GoogleLogin
-                        onSuccess={handleGoogleSuccess}
-                        onError={() => console.error("Google login failed")}
-                        width="400"
-                    />
+                <div className="w-full flex justify-center mb-6 overflow-hidden">
+                    <div className="w-full max-w-full flex justify-center">
+                        <GoogleLogin
+                            onSuccess={handleGoogleSuccess}
+                            onError={() => console.error("Google login failed")}
+                            width="320"
+                        />
+                    </div>
                 </div>
 
                 {(googleError || formError) && (

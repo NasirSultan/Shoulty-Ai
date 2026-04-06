@@ -69,6 +69,8 @@ export const fetchImages = async (subIndustryId?: string | null) => {
         let url = API_ENDPOINTS.displayImages;
         if (subIndustryId) {
             url += `?subIndustryId=${encodeURIComponent(String(subIndustryId))}`;
+        } else {
+            url += "?allowRandomPreview=1";
         }
         console.log("📸 Fetching images from:", url);
         const res = await fetch(url, {

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Sidebar from "../Sidebar";
 import AdminHeader from "../AdminHeader";
@@ -21,7 +22,7 @@ import {
   streamGenerateAndSavePosts,
   streamGeneratePosts,
 } from "@/api/postGeneratorApi";
-import { createMonthlyPlan, getUserPlan, type GetPlanResponse } from "@/api/calendarApi";
+import { createMonthlyPlan, getUserPlan } from "@/api/calendarApi";
 import { useUserProfile } from "@/hooks/useUserProfile";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -456,6 +457,58 @@ function buildRelevantHashtags(caption: string, imageUrl?: string): string[] {
   return [...dynamicTags, ...topicTags].slice(0, 5);
 }
 
+function normalizeGeneratedContent(
+  rawText?: string,
+  rawHashtags?: string[]
+): { caption: string; hashtags: string[] } {
+  const fallbackCaption = (rawText || "").trim();
+  const fallbackHashtags = rawHashtags || [];
+
+  if (!fallbackCaption) {
+    return { caption: "", hashtags: fallbackHashtags };
+  }
+
+  const parseNode = (node: unknown): { caption: string; hashtags: string[] } | null => {
+    if (!node || typeof node !== "object") return null;
+    const record = node as Record<string, unknown>;
+    const text = typeof record.text === "string" ? record.text.trim() : "";
+    const hashtags = Array.isArray(record.hashtags)
+      ? record.hashtags.filter((tag): tag is string => typeof tag === "string")
+      : [];
+    if (!text) return null;
+    return { caption: text, hashtags: hashtags.length ? hashtags : fallbackHashtags };
+  };
+
+  // Case 1: Valid JSON object/array payload.
+  try {
+    const parsed = JSON.parse(fallbackCaption) as unknown;
+    if (Array.isArray(parsed)) {
+      for (const item of parsed) {
+        const normalized = parseNode(item);
+        if (normalized) return normalized;
+      }
+    } else {
+      const normalized = parseNode(parsed);
+      if (normalized) return normalized;
+    }
+  } catch {
+    // Continue with tolerant parsing below.
+  }
+
+  // Case 2: Multiple JSON objects concatenated in one string.
+  const textMatch = fallbackCaption.match(/"text"\s*:\s*"([\s\S]*?)"\s*,\s*"hashtags"/);
+  if (textMatch?.[1]) {
+    const caption = textMatch[1]
+      .replace(/\\n/g, "\n")
+      .replace(/\\"/g, '"')
+      .trim();
+    if (caption) return { caption, hashtags: fallbackHashtags };
+  }
+
+  // Final fallback: plain text as-is.
+  return { caption: fallbackCaption, hashtags: fallbackHashtags };
+}
+
 function seedPosts(baseDate: Date): Post[] {
   const posts: Post[] = [];
   const today = startOfDay(baseDate);
@@ -496,7 +549,7 @@ function PostCard({ p, onOpen, onDup, onDel }: { p: Post; onOpen: () => void; on
   };
   const ss = statusColors[p.status];
   return (
-    <div onClick={onOpen} style={{ background: "#fff", border: "1px solid #E2E4F0", borderRadius: 10, overflow: "hidden", cursor: "pointer", boxShadow: "0 1px 4px rgba(11,12,26,.06)", position: "relative", marginBottom: 6 }}>
+    <div className="post-card" onClick={onOpen} style={{ background: "#fff", border: "1px solid #E2E4F0", borderRadius: 10, overflow: "hidden", cursor: "pointer", boxShadow: "0 1px 4px rgba(11,12,26,.06)", position: "relative", marginBottom: 6 }}>
       <div style={{ position: "relative", overflow: "hidden" }}>
         <img src={safeImageSrc(p.img)} onError={onCalendarImageError} alt="" style={{ width: "100%", height: 90, objectFit: "cover", display: "block" }} loading="lazy" />
         <div style={{ position: "absolute", top: 5, left: 5, display: "flex", alignItems: "center", gap: 3, padding: "2px 7px", borderRadius: 4, background: meta.bg + "aa", color: "#fff", fontSize: 9.5, fontWeight: 800, fontFamily: "Sora,sans-serif" }}>
@@ -552,8 +605,15 @@ function MiniCard({ p, onOpen, onDup, onDel }: { p: Post; onOpen: () => void; on
     published: { bg: "#ECFDF5", color: "#10B981" },
   };
   const ss = statusColors[p.status];
+  
+  // Handle card click - only open modal, prevent any other actions
+  const handleCardClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onOpen();
+  };
+  
   return (
-    <div onClick={onOpen} style={{ background: "#fff", border: "1px solid #E2E4F0", borderRadius: 8, overflow: "hidden", cursor: "pointer", boxShadow: "0 1px 4px rgba(11,12,26,.06)", position: "relative", marginBottom: 5, flexShrink: 0 }}>
+    <div className="mmc" onClick={handleCardClick} style={{ background: "#fff", border: "1px solid #E2E4F0", borderRadius: 8, overflow: "hidden", cursor: "pointer", boxShadow: "0 1px 4px rgba(11,12,26,.06)", position: "relative", marginBottom: 5, flexShrink: 0 }}>
       <div style={{ position: "relative", overflow: "hidden" }}>
         <img src={safeImageSrc(p.img)} onError={onCalendarImageError} alt="" style={{ width: "100%", height: 70, objectFit: "cover", display: "block" }} loading="lazy" />
         <div style={{ position: "absolute", top: 4, left: 4, padding: "2px 6px", borderRadius: 3, background: meta.bg + "bb", color: "#fff", fontSize: 8.5, fontWeight: 800, fontFamily: "Sora,sans-serif" }}>
@@ -565,10 +625,10 @@ function MiniCard({ p, onOpen, onDup, onDel }: { p: Post; onOpen: () => void; on
         <div style={{ position: "absolute", bottom: 3, right: 4, padding: "1px 5px", borderRadius: 3, background: "rgba(0,0,0,.52)", color: scoreColor, fontSize: 8.5, fontWeight: 800, fontFamily: "JetBrains Mono,monospace" }}>
           {p.score}
         </div>
-        {/* hover overlay */}
+        {/* hover overlay - action buttons only */}
         <div className="mmc-actions" style={{ position: "absolute", inset: 0, background: "rgba(11,12,26,.5)", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, borderRadius: 8 }}>
-          {[{ icon:"fa-pen", action: onOpen }, { icon:"fa-copy", action: onDup }, { icon:"fa-trash", action: onDel }].map((btn, i) => (
-            <div key={i} onClick={e => { e.stopPropagation(); btn.action(); }} style={{ width: 28, height: 28, borderRadius: 7, background: "rgba(255,255,255,.95)", display: "flex", alignItems: "center", justifyContent: "center", color: "#0B0C1A", fontSize: 10, cursor: "pointer" }}>
+          {[{ title: "Edit", icon:"fa-pen", action: onOpen }, { title: "Duplicate", icon:"fa-copy", action: onDup }, { title: "Delete", icon:"fa-trash", action: onDel }].map((btn, i) => (
+            <div key={i} title={btn.title} onClick={(e) => { e.stopPropagation(); btn.action(); }} style={{ width: 28, height: 28, borderRadius: 7, background: "rgba(255,255,255,.95)", display: "flex", alignItems: "center", justifyContent: "center", color: "#0B0C1A", fontSize: 10, cursor: "pointer" }}>
               <i className={`fa-solid ${btn.icon}`} />
             </div>
           ))}
@@ -1420,10 +1480,28 @@ function useToast() {
 
 // ── Main Page ──────────────────────────────────────────────────────────────
 export default function CalendarPage() {
+  const router = useRouter();
   const { sidebarSlim, setSidebarSlim } = useSidebarState();
   const [today, setToday] = useState(() => startOfDay(new Date()));
   const [posts, setPosts] = useState<Post[]>([]);
   const [nextId, setNextId] = useState(10000);
+  const { user } = useUserProfile();
+
+  // ── Case #1: Sub-Industry Redirect ────────────────────────────────────────
+  // Check if user has selected sub-industry on page render.
+  // If NOT selected, redirect to profile page to force selection.
+  useEffect(() => {
+    if (!user) return; // Wait for user profile to load
+
+    const subIndustryId = (user as any)?.subIndustryId || (user as any)?.sub_industry_id || (user as any)?.selectedSubIndustryId;
+    const industryId = (user as any)?.industryId || (user as any)?.industry_id || (user as any)?.selectedIndustryId;
+
+    // If sub-industry is NOT selected, redirect to profile setup
+    if (!subIndustryId || !industryId) {
+      console.warn("❌ [Calendar] Sub-industry not selected. Redirecting to profile setup.");
+      router.push("/account-setup?redirect=calendar");
+    }
+  }, [user, router]);
 
   const mergeImportedPosts = useCallback((incoming: Post[]) => {
     if (!incoming.length) return;
@@ -1503,12 +1581,7 @@ export default function CalendarPage() {
   const [genInFlight, setGenInFlight] = useState(false);
   const planPostTime = "10:00";
   const [planLoading, setPlanLoading] = useState(false);
-  const [getUserPlanOpen, setGetUserPlanOpen] = useState(false);
-  const [userPlanData, setUserPlanData] = useState<GetPlanResponse | null>(null);
-  const [userPlanLoading, setUserPlanLoading] = useState(false);
-  const [userPlanError, setUserPlanError] = useState("");
   const { toast, show: showToast } = useToast();
-  const { user } = useUserProfile();
 
   const filtered = posts.filter(p => {
     if (platFilter !== "all" && !p.plats.includes(platFilter)) return false;
@@ -1518,8 +1591,17 @@ export default function CalendarPage() {
 
   const getAnchor = useCallback(() => {
     const d = new Date(today);
-    if (view === "7d") d.setDate(d.getDate() + offset);
-    else { d.setDate(1); d.setMonth(d.getMonth() + offset); }
+    if (view === "7d") {
+      // ── Case #3: Weekly Filter (Monday-Sunday) ──────────────────────────────────────
+      // Weekly view shows Monday to Sunday of current week + offset (weeks, not days).
+      // Formula: Get Monday of current week, then add offset weeks.
+      const dayOfWeek = d.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday
+      const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Days back to Monday
+      d.setDate(d.getDate() - daysToMonday + offset * 7); // Set to Monday + offset weeks
+    } else {
+      d.setDate(1);
+      d.setMonth(d.getMonth() + offset);
+    }
     return d;
   }, [today, view, offset]);
 
@@ -1633,7 +1715,7 @@ export default function CalendarPage() {
   const createPlanDirect = async () => {
     if (planLoading) return;
 
-    const { industryId, subIndustryId } = resolveGeneratorProfileFields(
+    const { subIndustryId } = resolveGeneratorProfileFields(
       (user ?? null) as Record<string, unknown> | null
     );
     const userSubIndustry = (user as Record<string, unknown>)?.subIndustryId as string | undefined;
@@ -1672,55 +1754,31 @@ export default function CalendarPage() {
       }
 
       const selectedImages = await getSelectedSubIndustryImages(effectiveSubIndustry);
-      const selectedImageQueue = [...selectedImages];
-      const usedImageKeys = new Set<string>();
-
-      const takeNextSelectedImage = () => {
-        while (selectedImageQueue.length) {
-          const candidate = selectedImageQueue.shift() || "";
-          const key = imageFingerprint(candidate);
-          if (candidate && key && !usedImageKeys.has(key)) {
-            usedImageKeys.add(key);
-            return candidate;
-          }
-        }
-        return "";
-      };
-
-      const choosePlanImage = (backendImage?: string) => {
-        const backend = (backendImage || "").trim();
-        const backendKey = imageFingerprint(backend);
-        if (backend && backendKey && !usedImageKeys.has(backendKey)) {
-          usedImageKeys.add(backendKey);
-          return backend;
-        }
-
-        const selectedFallback = takeNextSelectedImage();
-        if (selectedFallback) return selectedFallback;
-
-        if (backend) return backend;
-        return FALLBACK_CALENDAR_IMAGE;
-      };
-
-      if (selectedImages.length < planResponse.posts.length) {
-        showToast(
-          `Only ${selectedImages.length} selected profile images found for ${planResponse.posts.length} posts. Using backend images for the rest.`,
-          "amber"
-        );
+      if (!selectedImages.length) {
+        showToast("No selected sub-industry images found. Please add sub-industry images first.", "red");
+        return;
       }
+
+      // Strict mode: use only selected sub-industry images.
+      // If there are fewer images than posts, cycle through selected images.
+      const choosePlanImage = (index: number) => selectedImages[index % selectedImages.length];
 
       const mappedPosts = planResponse.posts.map((backendPost, index) => {
         const postDate = new Date(backendPost.postTime);
+        const normalized = normalizeGeneratedContent(
+          backendPost.content?.text,
+          backendPost.content?.hashtags || []
+        );
         return {
           id: startId + index,
           date: postDate,
-          caption: backendPost.content?.text || "",
-          hashtags: backendPost.content?.hashtags || [],
+          caption: normalized.caption,
+          hashtags: normalized.hashtags.length > 0 ? normalized.hashtags : buildRelevantHashtags(normalized.caption),
           plats: ["ig", "fb"] as PlatKey[],
           type: backendPost.media?.type === "REEL" ? "reel" : "image" as PostType,
           timeStr: postDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
           timesOptions: TIMES_POOL[0],
-          img: choosePlanImage(backendPost.media?.file),
+          img: choosePlanImage(index),
           score: rndInt(75, 95),
           status: (backendPost.status.toLowerCase() as Status) || "scheduled",
           reach: rndInt(15, 110) * 1000,
@@ -1744,6 +1802,22 @@ export default function CalendarPage() {
       setOffset(0);
       showToast(`✅ Plan created and ${mappedPosts.length} posts added to calendar`, "green");
     } catch (error) {
+      // ── Handle 401 Unauthorized (session expired) ────────────────────────────
+      const statusCode = (error as any)?.statusCode;
+      if (statusCode === 401 || (error instanceof Error && error.message.includes("Session expired"))) {
+        showToast("Session expired. Please login again.", "red");
+        // Clear stored token and redirect to login
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("shoutly_token");
+          localStorage.removeItem("shoutly_user");
+        }
+        // Redirect to signin
+        setTimeout(() => {
+          router.push("/sign-in");
+        }, 1000);
+        return;
+      }
+      
       const message = error instanceof Error ? error.message : "Failed to create monthly plan";
       showToast(message, "red");
     } finally {
@@ -1812,13 +1886,18 @@ export default function CalendarPage() {
             }
             usedImgs.add(assignedImg);
 
+            const normalized = normalizeGeneratedContent(
+              chunk.post?.text,
+              chunk.post?.hashtags
+            );
+
             const localPost: Post = {
               id: startId + received,
               date: postDate,
-              caption: chunk.post?.text || CAPTIONS_POOL[slotIndex % CAPTIONS_POOL.length],
+              caption: normalized.caption || CAPTIONS_POOL[slotIndex % CAPTIONS_POOL.length],
               hashtags:
-                chunk.post?.hashtags && chunk.post.hashtags.length
-                  ? chunk.post.hashtags
+                normalized.hashtags && normalized.hashtags.length
+                  ? normalized.hashtags
                   : rnd(HASHTAG_POOLS),
               plats: rnd(PLAT_COMBOS),
               type: "image",
@@ -1987,10 +2066,10 @@ export default function CalendarPage() {
         @keyframes shimmer { 0%{background-position:-600px 0} 100%{background-position:600px 0} }
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
         @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
-        .mmc-actions { opacity: 0; transition: opacity .15s; }
-        .mmc:hover .mmc-actions { opacity: 1; }
-        .pc-hover-actions { opacity: 0; transition: opacity .14s; }
-        .post-card:hover .pc-hover-actions { opacity: 1; }
+        .mmc-actions { opacity: 0; transition: opacity .15s; pointer-events: none; }
+        .mmc:hover .mmc-actions { opacity: 1; pointer-events: auto; }
+        .pc-hover-actions { opacity: 0; transition: opacity .14s; pointer-events: none; }
+        .post-card:hover .pc-hover-actions { opacity: 1; pointer-events: auto; }
         .tb-search:focus-within { width: 260px !important; border-color: #5B5BD6 !important; background: #fff !important; box-shadow: 0 0 0 3px rgba(91,91,214,.1) !important; }
         .sb-item-hover:hover { background: #1E1F2E; color: #F1F2FF; }
       `}</style>
@@ -2022,7 +2101,7 @@ export default function CalendarPage() {
           <div style={{ flexShrink: 0, background: "#fff", borderBottom: "1px solid #E2E4F0" }}>
             {/* Row 1: View tabs + nav */}
             <div style={{ display: "flex", alignItems: "stretch", padding: "0 20px", gap: 4, borderBottom: "1px solid #ECEDF8" }}>
-              {([["7d","fa-calendar-week","7 Days"],["month","fa-calendar","Monthly"],["pipeline","fa-robot","AI Pipeline"]] as const).map(([v, icon, label]) => (
+              {([["7d","fa-calendar-week","Weekly"],["month","fa-calendar","Monthly"],["pipeline","fa-robot","AI Pipeline"]] as const).map(([v, icon, label]) => (
                 <div key={v} onClick={() => { setView(v); setOffset(0); }} style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 16px", fontSize: 13, fontWeight: 700, color: view === v ? "#5B5BD6" : "#8486AB", cursor: "pointer", position: "relative", whiteSpace: "nowrap", fontFamily: "Sora,sans-serif", borderBottom: `2px solid ${view === v ? "#5B5BD6" : "transparent"}`, height: 44 }}>
                   <i className={`fa-solid ${icon} fa-xs`} /> {label}
                   <span style={{ padding: "2px 7px", borderRadius: 8, fontSize: 10, fontWeight: 800, background: view === v ? "#EEEEFF" : "#F0F1F9", color: view === v ? "#5B5BD6" : "#8486AB" }}>
@@ -2032,11 +2111,11 @@ export default function CalendarPage() {
               ))}
               <div style={{ width: 1, background: "#ECEDF8", margin: "10px 8px" }} />
               <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 0", marginLeft: "auto" }}>
-                <div onClick={() => setOffset(o => view === "7d" ? o - 7 : o - 1)} style={{ width: 28, height: 28, borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", color: "#3D3F60", cursor: "pointer", border: "1px solid #E2E4F0", background: "#fff", fontSize: 11 }}>
+                <div onClick={() => setOffset(o => o - 1)} style={{ width: 28, height: 28, borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", color: "#3D3F60", cursor: "pointer", border: "1px solid #E2E4F0", background: "#fff", fontSize: 11 }}>
                   <i className="fa-solid fa-chevron-left" />
                 </div>
                 <div style={{ fontSize: 14, fontWeight: 800, color: "#0B0C1A", fontFamily: "Sora,sans-serif", minWidth: 160, textAlign: "center", letterSpacing: "-.2px" }}>{periodTitle}</div>
-                <div onClick={() => setOffset(o => view === "7d" ? o + 7 : o + 1)} style={{ width: 28, height: 28, borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", color: "#3D3F60", cursor: "pointer", border: "1px solid #E2E4F0", background: "#fff", fontSize: 11 }}>
+                <div onClick={() => setOffset(o => o + 1)} style={{ width: 28, height: 28, borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", color: "#3D3F60", cursor: "pointer", border: "1px solid #E2E4F0", background: "#fff", fontSize: 11 }}>
                   <i className="fa-solid fa-chevron-right" />
                 </div>
                 <div onClick={() => setOffset(0)} style={{ padding: "5px 12px", borderRadius: 20, border: "1px solid #E2E4F0", background: "#fff", color: "#3D3F60", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Sora,sans-serif" }}>Today</div>
@@ -2063,34 +2142,6 @@ export default function CalendarPage() {
               <div style={{ width: 1, height: 24, background: "#E2E4F0", flexShrink: 0 }} />
               <button onClick={createPlanDirect} disabled={planLoading} style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 18px", borderRadius: 8, background: "#10B981", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: planLoading ? "not-allowed" : "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(16,185,129,.32)", whiteSpace: "nowrap", flexShrink: 0, opacity: planLoading ? 0.7 : 1 }}>
                 <i className="fa-solid fa-calendar-plus" style={{ fontSize: 12 }} /> {planLoading ? "Creating..." : "Create Plan"}
-              </button>
-              <button onClick={async () => {
-                setUserPlanLoading(true);
-                setUserPlanError("");
-                try {
-                  const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") || "" : "";
-                  console.log("📋 Fetching user plan with token:", token ? "✓ Token present" : "✗ No token");
-                  const response = await getUserPlan(token);
-                  console.log("📋 User plan response:", response);
-                  
-                  if (response && response.success) {
-                    console.log("📋 Plan fetched successfully:", response);
-                    setUserPlanData(response);
-                    setGetUserPlanOpen(true);
-                  } else {
-                    const errorMsg = response?.message || "Failed to fetch user plan";
-                    console.log("📋 Plan fetch failed:", errorMsg);
-                    setUserPlanError(errorMsg);
-                  }
-                } catch (error) {
-                  const errorMsg = error instanceof Error ? error.message : "Failed to fetch user plan";
-                  console.error("📋 Get user plan error:", errorMsg, error);
-                  setUserPlanError(errorMsg);
-                } finally {
-                  setUserPlanLoading(false);
-                }
-              }} disabled={userPlanLoading} style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 18px", borderRadius: 8, background: "#3B82F6", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: userPlanLoading ? "not-allowed" : "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(59,130,246,.32)", whiteSpace: "nowrap", flexShrink: 0, opacity: userPlanLoading ? 0.7 : 1 }}>
-                <i className="fa-solid fa-file-lines" style={{ fontSize: 12 }} /> {userPlanLoading ? "Loading..." : "Get User Plan"}
               </button>
               <button onClick={startAiGeneration} style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 18px", borderRadius: 8, background: "linear-gradient(135deg,#5B5BD6,#7C3AED)", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(91,91,214,.32)", whiteSpace: "nowrap", flexShrink: 0 }}>
                 <i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 12 }} /> AI Generate
@@ -2159,123 +2210,6 @@ export default function CalendarPage() {
 
       {/* AI Generate Modal */}
       <GenModal open={genOpen} pct={genProgress} generatedCount={genCount} statusText={genStatus} />
-
-      {/* Get User Plan Modal */}
-      {getUserPlanOpen && (
-        <div
-          style={{ position: "fixed", inset: 0, background: "rgba(11,12,26,.55)", backdropFilter: "blur(8px)", zIndex: 600, display: "flex", alignItems: "center", justifyContent: "center" }}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              setGetUserPlanOpen(false);
-              setUserPlanError("");
-            }
-          }}
-        >
-          <div style={{ background: "#fff", borderRadius: 18, padding: "32px 38px", width: 560, maxHeight: "90vh", overflowY: "auto", textAlign: "left", boxShadow: "0 32px 80px rgba(11,12,26,.2)" }}>
-            <div style={{ fontSize: 20, fontWeight: 800, color: "#0B0C1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.3px", marginBottom: 24, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <span>📋 Your Content Plan</span>
-              <button
-                onClick={() => {
-                  setGetUserPlanOpen(false);
-                  setUserPlanError("");
-                }}
-                style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#8486AB" }}
-              >
-                ✕
-              </button>
-            </div>
-
-            {userPlanError && (
-              <div style={{ background: "#FEF2F2", border: "1px solid rgba(239,68,68,.2)", borderRadius: 8, padding: "12px 14px", marginBottom: 16, fontSize: 13, color: "#EF4444", fontWeight: 600 }}>
-                ❌ {userPlanError}
-              </div>
-            )}
-
-            {userPlanLoading ? (
-              <div style={{ textAlign: "center", padding: "40px 20px" }}>
-                <div style={{ fontSize: 28, marginBottom: 12 }}>⏳</div>
-                <div style={{ color: "#8486AB", fontSize: 14 }}>Loading your content plan...</div>
-              </div>
-            ) : userPlanData ? (
-              <div>
-                {/* Plan Metadata */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 24 }}>
-                  <div style={{ background: "#F8F9FC", border: "1px solid #E2E4F0", borderRadius: 10, padding: "14px 16px" }}>
-                    <div style={{ fontSize: 11.5, fontWeight: 700, color: "#8486AB", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 6 }}>Total Posts</div>
-                    <div style={{ fontSize: 18, fontWeight: 800, color: "#0B0C1A" }}>{userPlanData.meta?.totalPosts || userPlanData.posts?.length || 0}</div>
-                  </div>
-                  <div style={{ background: "#F8F9FC", border: "1px solid #E2E4F0", borderRadius: 10, padding: "14px 16px" }}>
-                    <div style={{ fontSize: 11.5, fontWeight: 700, color: "#8486AB", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 6 }}>Status</div>
-                    <div style={{ fontSize: 18, fontWeight: 800, color: "#0B0C1A" }}>📅 Active</div>
-                  </div>
-                </div>
-
-                {/* Connected Socials */}
-                {(userPlanData.meta?.connectedSocials?.length || 0) > 0 && (
-                  <div style={{ marginBottom: 24 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: "#0B0C1A", marginBottom: 10 }}>🔗 Connected Platforms</div>
-                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                      {userPlanData.meta?.connectedSocials?.map((s: unknown, i: number) => {
-                        const platform = typeof s === "object" && s !== null && "platform" in s ? (s as Record<string, unknown>).platform : typeof s === "object" && s !== null && "name" in s ? (s as Record<string, unknown>).name : "Unknown";
-                        return (
-                          <span key={i} style={{ background: "#E8E8FF", color: "#5B5BD6", padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 600 }}>
-                            {String(platform)}
-                          </span>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {/* Posts List */}
-                {(userPlanData.posts?.length || 0) > 0 && (
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: "#0B0C1A", marginBottom: 12 }}>📝 Scheduled Posts ({userPlanData.posts?.length || 0})</div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                      {userPlanData.posts?.slice(0, 5).map((post, i: number) => (
-                        <div key={post.postId || i} style={{ background: "#F8F9FC", border: "1px solid #E2E4F0", borderRadius: 10, padding: "12px 14px" }}>
-                          <div style={{ display: "flex", alignItems: "start", justifyContent: "space-between", gap: 8 }}>
-                            <div style={{ flex: 1 }}>
-                              <div style={{ fontSize: 12.5, fontWeight: 700, color: "#0B0C1A", marginBottom: 4 }}>Post #{i + 1}</div>
-                              <div style={{ fontSize: 11.5, color: "#8486AB", marginBottom: 6, lineHeight: 1.4 }}>
-                                {post.content?.text?.substring(0, 80)}
-                                {(post.content?.text?.length || 0) > 80 ? "..." : ""}
-                              </div>
-                              <div style={{ fontSize: 10.5, color: "#8486AB" }}>
-                                📅 {new Date(post.postTime).toLocaleDateString()} • {new Date(post.postTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                              </div>
-                            </div>
-                            <span style={{ background: post.status === "PUBLISHED" ? "#D1FAE5" : post.status === "SCHEDULED" ? "#FEF3C7" : "#E0E7FF", color: post.status === "PUBLISHED" ? "#047857" : post.status === "SCHEDULED" ? "#92400E" : "#4338CA", padding: "2px 8px", borderRadius: 4, fontSize: 10, fontWeight: 600, whiteSpace: "nowrap" }}>
-                              {post.status}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                      {(userPlanData.posts?.length || 0) > 5 && (
-                        <div style={{ textAlign: "center", padding: "10px", color: "#8486AB", fontSize: 12 }}>
-                          +{(userPlanData.posts?.length || 0) - 5} more posts
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : null}
-
-            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 24 }}>
-              <button
-                onClick={() => {
-                  setGetUserPlanOpen(false);
-                  setUserPlanError("");
-                }}
-                style={{ padding: "10px 18px", borderRadius: 8, background: "#fff", color: "#3D3F60", fontSize: 13, fontWeight: 700, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif" }}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Toast */}
       <div style={{

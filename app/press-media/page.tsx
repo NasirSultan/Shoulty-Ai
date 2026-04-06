@@ -177,7 +177,7 @@ export default function Press() {
                                 color: "#6b7280",
                             }}
                         >
-                            <span>⚡ Founded 2024</span>
+                            <span>⚡ Founded 2026</span>
                             <span>🚀 100+ early customers</span>
                             <span>📸 3,000+ posts generated</span>
                         </div>

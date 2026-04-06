@@ -27,6 +27,23 @@ export default function Header() {
     const profileRef = useRef<HTMLDivElement>(null);
 
     const icons = [User, SparklesIcon, User, SparklesIcon];
+    const primaryLinks = [
+        { label: "Home", href: "/" },
+        { label: "Who We Help", href: "/#who-we-help" },
+        { label: "Library", href: "/#library" },
+        { label: "Pricing", href: "/#pricing" },
+    ];
+    const resourceLinks = [
+        { label: "Blog", href: "https://blog.shoutlyai.com/" },
+        { label: "Help Center / FAQ", href: "/help-center" },
+        { label: "Case Studies", href: "/case-studies" },
+    ];
+    const companyLinks = [
+        { label: "About Us", href: "/about-us" },
+        { label: "Contact", href: "/contact-us" },
+        { label: "Press", href: "/press-media" },
+        { label: "Careers", href: "/careers" },
+    ];
 
     const refreshAuthState = () => {
         const token = localStorage.getItem("shoutly_token");
@@ -112,32 +129,30 @@ export default function Header() {
     }
 
     return (
-        <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b">
-        <div className="relative bg-white font-arial py-10 text-gray-900 dark:text-white selection:text-white overflow-hidden">
-            {/* Navigation */}
-            <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+        <header className={`sticky top-0 z-50 bg-white border-b transition-shadow duration-200${isScrolled ? " shadow-sm" : ""}`}>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
                     {/* Logo */}
-                    <div className="relative w-28 h-10 sm:w-40 sm:h-14">
+                    <div className="relative flex-shrink-0 w-24 h-8 sm:w-36 sm:h-12">
                         <a href="/">
                             <Image
                                 src="/images/logo.png"
                                 alt="Shoutly AI logo"
                                 width={160}
                                 height={56}
-                                sizes="(max-width: 640px) 112px, 160px"
+                                sizes="(max-width: 640px) 96px, 144px"
                                 priority
-                                className="w-28 h-10 sm:w-40 sm:h-14 object-contain"
+                                className="w-24 h-8 sm:w-36 sm:h-12 object-contain"
                             />
                         </a>
                     </div>
 
                     {/* Desktop Links */}
-                    <div className="hidden md:flex items-center gap-8 text-sm font-medium text-black">
-                        <Link href="/">Home</Link>
-                        <Link href="/#who-we-help">Who We Help</Link>
-                        <Link href="/#library">Library</Link>
-                        <Link href="/#pricing">Pricing</Link>
+                    <div className="hidden min-[930px]:flex items-center gap-8 text-sm font-medium text-black">
+                        {primaryLinks.map((link) => (
+                            <Link key={link.label} href={link.href}>
+                                {link.label}
+                            </Link>
+                        ))}
 
                         {/* Resources Dropdown */}
                         <div className="relative group">
@@ -145,24 +160,15 @@ export default function Header() {
                                 Resources
                             </span>
                             <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition">
-                                <Link
-                                    href="https://blog.shoutlyai.com/"
-                                    className="block px-4 py-2 hover:bg-gray-100"
-                                >
-                                    Blog
-                                </Link>
-                                <Link
-                                    href="/help-center"
-                                    className="block px-4 py-2 hover:bg-gray-100"
-                                >
-                                    Help Center / FAQ
-                                </Link>
-                                <Link
-                                    href="/case-studies"
-                                    className="block px-4 py-2 hover:bg-gray-100"
-                                >
-                                    Case Studies
-                                </Link>
+                                {resourceLinks.map((link) => (
+                                    <Link
+                                        key={link.label}
+                                        href={link.href}
+                                        className="block px-4 py-2 hover:bg-gray-100"
+                                    >
+                                        {link.label}
+                                    </Link>
+                                ))}
                             </div>
                         </div>
 
@@ -170,36 +176,21 @@ export default function Header() {
                         <div className="relative group">
                             <span className="cursor-pointer py-4">Company</span>
                             <div className="absolute top-full left-0 mt-2 w-44 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition">
-                                <Link
-                                    href="/about-us"
-                                    className="block px-4 py-2 hover:bg-gray-100"
-                                >
-                                    About Us
-                                </Link>
-                                <Link
-                                    href="/contact-us"
-                                    className="block px-4 py-2 hover:bg-gray-100"
-                                >
-                                    Contact
-                                </Link>
-                                <Link
-                                    href="/press-media"
-                                    className="block px-4 py-2 hover:bg-gray-100"
-                                >
-                                    Press
-                                </Link>
-                                <Link
-                                    href="/careers"
-                                    className="block px-4 py-2 hover:bg-gray-100"
-                                >
-                                    Careers
-                                </Link>
+                                {companyLinks.map((link) => (
+                                    <Link
+                                        key={link.label}
+                                        href={link.href}
+                                        className="block px-4 py-2 hover:bg-gray-100"
+                                    >
+                                        {link.label}
+                                    </Link>
+                                ))}
                             </div>
                         </div>
                     </div>
 
                     {/* Right side (Desktop only) */}
-                    <div className="hidden md:flex text-black items-center gap-4">
+                    <div className="hidden min-[930px]:flex text-black items-center gap-4">
                         {user ? (
                             <div className="relative" ref={profileRef}>
                                 <button
@@ -275,133 +266,80 @@ export default function Header() {
                     {/* Hamburger (Mobile only) */}
                     <button
                         onClick={() => setMenuOpen(!menuOpen)}
-                        className="md:hidden text-2xl text-black"
+                        className="min-[930px]:hidden p-2 -mr-2 text-black rounded-lg hover:bg-gray-100 transition-colors"
+                        aria-label={menuOpen ? "Close menu" : "Open menu"}
                     >
-                        ☰
+                        {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                     </button>
-                </div>
+            </div>
 
                 {/* Mobile Menu */}
                 {menuOpen && (
-                    <div className="md:hidden bg-white border-t px-6 py-6 space-y-5">
-                        <Link
-                            href="/"
-                            className="block text-base text-black font-medium"
-                            onClick={() => setMenuOpen(false)}
-                        >
-                            Home
-                        </Link>
-                        <Link
-                            href="#features"
-                            className="block text-base text-black font-medium"
-                            onClick={() => setMenuOpen(false)}
-                        >
-                            Features
-                        </Link>
-                        <Link
-                            href="#who-we-help"
-                            className="block text-base text-black font-medium"
-                            onClick={() => setMenuOpen(false)}
-                        >
-                            Who We Help
-                        </Link>
-                        <Link
-                            href="#pricing"
-                            className="block text-base text-black font-medium"
-                            onClick={() => setMenuOpen(false)}
-                        >
-                            Pricing
-                        </Link>
+                    <div className="min-[930px]:hidden bg-white border-t px-5 py-5 space-y-4 max-h-[calc(100vh-4rem)] overflow-y-auto shadow-lg">
+                        {primaryLinks.map((link) => (
+                            <Link
+                                key={link.label}
+                                href={link.href}
+                                className="block text-base text-black font-medium"
+                                onClick={() => setMenuOpen(false)}
+                            >
+                                {link.label}
+                            </Link>
+                        ))}
 
                         {/* Resources */}
-                        <div className="space-y-2 border border-gray-200 bg-white rounded-lg p-3">
-                            <p className="font-semibold text-black">
+                            <div className="space-y-2 border border-gray-100 bg-gray-50 rounded-xl p-4">
+                                <p className="font-semibold text-black text-sm uppercase tracking-wide mb-2">
                                 Resources
                             </p>
-                            <Link
-                                href="/blog"
-                                className="block text-sm text-gray-700"
-                                onClick={() => setMenuOpen(false)}
-                            >
-                                Blog
-                            </Link>
-                            <Link
-                                href="/help-center"
-                                className="block text-sm text-gray-700"
-                                onClick={() => setMenuOpen(false)}
-                            >
-                                Help Center / FAQ
-                            </Link>
-                            <Link
-                                href="/case-studies"
-                                className="block text-sm text-gray-700"
-                                onClick={() => setMenuOpen(false)}
-                            >
-                                Case Studies
-                            </Link>
-                            <Link
-                                href="/free-tools"
-                                className="block text-sm text-gray-700"
-                                onClick={() => setMenuOpen(false)}
-                            >
-                                Free Tools
-                            </Link>
+                            {resourceLinks.map((link) => (
+                                <Link
+                                    key={link.label}
+                                    href={link.href}
+                                    className="block text-sm text-gray-700 py-1"
+                                    onClick={() => setMenuOpen(false)}
+                                >
+                                    {link.label}
+                                </Link>
+                            ))}
                         </div>
 
                         {/* Company */}
-                        <div className="space-y-2 border border-gray-200 bg-white rounded-lg p-3">
-                            <p className="font-semibold text-black">Company</p>
-                            <Link
-                                href="/about"
-                                className="block text-sm text-gray-700"
-                                onClick={() => setMenuOpen(false)}
-                            >
-                                About Us
-                            </Link>
-                            <Link
-                                href="/contact"
-                                className="block text-sm text-gray-700"
-                                onClick={() => setMenuOpen(false)}
-                            >
-                                Contact
-                            </Link>
-                            <Link
-                                href="/press"
-                                className="block text-sm text-gray-700"
-                                onClick={() => setMenuOpen(false)}
-                            >
-                                Press
-                            </Link>
-                            <Link
-                                href="/careers"
-                                className="block text-sm text-gray-700"
-                                onClick={() => setMenuOpen(false)}
-                            >
-                                Careers
-                            </Link>
+                            <div className="space-y-2 border border-gray-100 bg-gray-50 rounded-xl p-4">
+                                <p className="font-semibold text-black text-sm uppercase tracking-wide mb-2">Company</p>
+                            {companyLinks.map((link) => (
+                                <Link
+                                    key={link.label}
+                                    href={link.href}
+                                    className="block text-sm text-gray-700 py-1"
+                                    onClick={() => setMenuOpen(false)}
+                                >
+                                    {link.label}
+                                </Link>
+                            ))}
                         </div>
 
                         {/* Divider */}
-                        <div className="border-t pt-4 space-y-3">
+                            <div className="border-t border-gray-100 pt-4 space-y-3">
                             {user ? (
                                 <>
                                     <Link
-                                        href="/account-setup"
-                                        className="block text-center text-black text-sm font-medium"
+                                            href="/dashboards/settings"
+                                            className="block text-center text-black text-sm font-medium py-2"
                                         onClick={() => setMenuOpen(false)}
                                     >
                                         My Profile
                                     </Link>
                                     <Link
                                         href="/dashboards"
-                                        className="block text-center text-black text-sm font-medium"
+                                            className="block text-center text-black text-sm font-medium py-2"
                                         onClick={() => setMenuOpen(false)}
                                     >
                                         Dashboard
                                     </Link>
                                     <button
                                         onClick={() => { setMenuOpen(false); handleLogout(); }}
-                                        className="w-full text-center bg-red-600 text-white py-3 rounded-full text-sm font-medium"
+                                            className="w-full text-center bg-red-600 text-white py-3 rounded-xl text-sm font-medium active:opacity-80"
                                     >
                                         Sign Out
                                     </button>
@@ -410,14 +348,14 @@ export default function Header() {
                                 <>
                                     <Link
                                         href="/sign-in"
-                                        className="block text-center text-black text-sm font-medium"
+                                            className="block text-center text-black text-sm font-medium py-3 border border-gray-200 rounded-xl"
                                         onClick={() => setMenuOpen(false)}
                                     >
                                         Log In
                                     </Link>
                                     <Link
                                         href="/sign-up"
-                                        className="block text-center bg-black text-white py-3 rounded-full text-sm font-medium"
+                                            className="block text-center bg-black text-white py-3 rounded-xl text-sm font-medium active:opacity-80"
                                         onClick={() => setMenuOpen(false)}
                                     >
                                         Sign Up / Free Trial
@@ -427,8 +365,6 @@ export default function Header() {
                         </div>
                     </div>
                 )}
-            </nav>
-        </div>
-        </header>
+            </header>
     );
 }

@@ -102,35 +102,37 @@ export default function CreateAccountPage() {
     };
 
     return (
-        <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4">
+        <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 pt-20 pb-10">
 
             {/* Logo */}
-            <div className="mb-5">
+            <div className="mb-4 md:mb-5">
                 <Image
                     src="/images/logo.png"
                     alt="Logo"
-                    width={180}
-                    height={120}
+                    width={160}
+                    height={110}
                     priority
-                    className="mx-auto"
+                    className="mx-auto w-32 sm:w-40 h-auto"
                 />
             </div>
 
             {/* Card */}
-            <div className="w-full max-w-md bg-white border border-gray-200 rounded-2xl shadow-lg p-8">
+            <div className="w-full max-w-md bg-white border border-gray-200 rounded-2xl shadow-lg p-5 sm:p-8">
 
                 <h1 className="text-2xl text-center text-black mb-2" style={{ fontFamily: "Arial", fontWeight: 400 }}>
                     Create Account
                 </h1>
 
                 {/* Google Sign Up Button */}
-                <div className="w-full flex justify-center mb-8">
-                    <GoogleLogin
-                        onSuccess={handleGoogleSuccess}
-                        onError={() => setError("Google sign-up failed. Please try again.")}
-                        width="400"
-                        text="signup_with"
-                    />
+                <div className="w-full flex justify-center mb-6 md:mb-8 overflow-hidden">
+                    <div className="w-full max-w-full flex justify-center">
+                        <GoogleLogin
+                            onSuccess={handleGoogleSuccess}
+                            onError={() => setError("Google sign-up failed. Please try again.")}
+                            width="320"
+                            text="signup_with"
+                        />
+                    </div>
                 </div>
 
                 {/* Divider */}

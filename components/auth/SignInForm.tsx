@@ -31,7 +31,11 @@ export default function SignInForm() {
             window.dispatchEvent(new Event("auth-changed"));
             router.push("/dashboards");
         } catch (err) {
-            setError("Google sign-in failed. Please try again.");
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : "Google sign-in failed. Please try again."
+            );
             console.error("Google login failed:", err);
         }
     };
