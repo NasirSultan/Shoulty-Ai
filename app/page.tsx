@@ -11,6 +11,7 @@ import {
     generatePromptOnlyImages,
     GeneratedPost,
 } from "@/api/postGeneratorApi";
+import { streamGenerateTexts } from "@/api/textGeneratorApi";
 import PostPopup from "@/components/PostPopup";
 
 import {
@@ -202,8 +203,11 @@ export default function LandingPage() {
     const [industries, setIndustries] = useState<Industry[]>([]);
     const [loadingIndustries, setLoadingIndustries] = useState(true);
     const [brandDescription, setBrandDescription] = useState<string>("");
+    const [isRegeneratingBrand, setIsRegeneratingBrand] = useState(false);
+    const [regenerateBrandError, setRegenerateBrandError] = useState<string | null>(null);
     const [selectedContent, setSelectedContent] = useState<"photos" | "reels" | null>(null);
     const [generateValidationError, setGenerateValidationError] = useState<string | null>(null);
+    const regenerateBrandAbortRef = useRef<AbortController | null>(null);
     const getImageCacheKey = (
         type: "generate" | "library",
         subIndustry: string | null,
@@ -436,6 +440,81 @@ export default function LandingPage() {
         await generateStreamPreview(effectiveIndustryId, effectiveSubIndustryId);
     };
 
+    const handleRegenerateBrandDescription = async () => {
+        if (isRegeneratingBrand) return;
+
+        setRegenerateBrandError(null);
+        setIsRegeneratingBrand(true);
+
+        regenerateBrandAbortRef.current?.abort();
+        const controller = new AbortController();
+        regenerateBrandAbortRef.current = controller;
+
+        const selectedIndustryObj = industries.find(
+            (industry: Industry) => String(industry.id) === String(generateSelectedIndustry),
+        );
+        const selectedSubIndustryObj = selectedIndustryObj?.subIndustries.find(
+            (sub: SubIndustry) => String(sub.id) === String(generatePendingSubIndustry),
+        );
+
+        const prompt = [
+            "Generate one concise brand description for social media content planning.",
+            selectedIndustryObj?.name ? `Industry: ${selectedIndustryObj.name}.` : "",
+            selectedSubIndustryObj?.name ? `Sub-industry: ${selectedSubIndustryObj.name}.` : "",
+            selectedContent ? `Content preference: ${selectedContent}.` : "",
+            brandDescription.trim()
+                ? `Use this as context and improve it: \"${brandDescription.trim()}\".`
+                : "No prior description provided by user.",
+            `Length: ${MIN_BRAND_DESCRIPTION_CHARS} to 220 characters.`,
+            "Tone: clear, marketing-ready, brand-safe.",
+            "Return plain text only.",
+        ]
+            .filter(Boolean)
+            .join(" ");
+
+        const byIndex = new Map<number, string>();
+
+        try {
+            await streamGenerateTexts(
+                { prompt },
+                {
+                    signal: controller.signal,
+                    onChunk: (chunk) => {
+                        const text = typeof chunk?.text === "string" ? chunk.text.trim() : "";
+                        if (!text) return;
+
+                        byIndex.set(chunk.index, text);
+                        const first = [...byIndex.entries()].sort((a, b) => a[0] - b[0])[0]?.[1];
+                        if (first) {
+                            setBrandDescription(first.slice(0, 220));
+                        }
+                    },
+                },
+            );
+
+            const finalText = [...byIndex.entries()].sort((a, b) => a[0] - b[0])[0]?.[1];
+            if (!finalText) {
+                throw new Error("No regenerated brand description received.");
+            }
+            setBrandDescription(finalText.slice(0, 220));
+        } catch (error) {
+            if (error instanceof Error && error.name === "AbortError") {
+                return;
+            }
+
+            setRegenerateBrandError(
+                error instanceof Error
+                    ? error.message
+                    : "Could not regenerate brand description. Please try again.",
+            );
+        } finally {
+            if (regenerateBrandAbortRef.current === controller) {
+                regenerateBrandAbortRef.current = null;
+            }
+            setIsRegeneratingBrand(false);
+        }
+    };
+
     const generateStreamPreview = async (
         industryIdOverride?: string,
         subIndustryIdOverride?: string,
@@ -628,70 +707,39 @@ export default function LandingPage() {
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-                    {/* Floating Badge - Changed to Brand Orange Gradient */}
-                    <div className="banner relative bg-gradient-to-r from-orange-600/95 via-orange-500/90 to-red-600/95 rounded-3xl px-8 py-10 sm:py-12 mb-8 border-2 border-orange-300/50 backdrop-blur-md shadow-2xl shadow-orange-600/40 overflow-hidden group hover:shadow-orange-600/60 transition-all duration-300">
-                        {/* Premium gradient overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-orange-900/10 rounded-3xl pointer-events-none"></div>
-                        
-                        {/* AI Neural Network Background Pattern */}
-                        <svg className="absolute inset-0 w-full h-full rounded-3xl" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg" style={{opacity: 0.08}}>
-                            <defs>
-                                <pattern id="aiGrid" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-                                    <circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.3)"/>
-                                    <line x1="50" y1="0" x2="50" y2="100" stroke="rgba(255,255,255,0.1)" strokeWidth="0.5"/>
-                                    <line x1="0" y1="50" x2="100" y2="50" stroke="rgba(255,255,255,0.1)" strokeWidth="0.5"/>
-                                </pattern>
-                            </defs>
-                            <rect width="1200" height="400" fill="url(#aiGrid)"/>
-                            {/* Floating AI nodes */}
-                            <circle cx="200" cy="100" r="3" fill="rgba(255,200,100,0.4)" style={{animation: 'float1 6s ease-in-out infinite'}}/>
-                            <circle cx="400" cy="200" r="3" fill="rgba(255,150,100,0.4)" style={{animation: 'float2 7s ease-in-out infinite'}}/>
-                            <circle cx="800" cy="150" r="3" fill="rgba(255,180,100,0.4)" style={{animation: 'float3 8s ease-in-out infinite'}}/>
-                            <circle cx="1000" cy="300" r="3" fill="rgba(255,120,100,0.4)" style={{animation: 'float4 6.5s ease-in-out infinite'}}/>
-                        </svg>
+                    <div className="banner relative rounded-3xl px-8 py-10 sm:py-12 mb-8 overflow-hidden border border-slate-300/40 shadow-[0_24px_60px_rgba(10,20,35,0.28)] transition-all duration-300">
+                        <div className="absolute inset-0 pointer-events-none">
+                            <div
+                                className="absolute inset-0 bg-cover bg-center"
+                                style={{ backgroundImage: "url('/images/banner.png')" }}
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-br from-slate-950/85 via-cyan-950/65 to-teal-900/75" />
+                            <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:44px_44px] opacity-35" />
+                            <div className="absolute -top-20 -right-16 h-64 w-64 rounded-full bg-cyan-300/15 blur-3xl" />
+                            <div className="absolute -bottom-24 -left-10 h-72 w-72 rounded-full bg-amber-300/15 blur-3xl" />
+                            <div className="absolute inset-0 rounded-3xl border border-white/10" />
+                        </div>
 
-                        {/* Enhanced decorative background elements with glow */}
-                        <div className="absolute -top-24 -right-24 w-72 h-72 bg-orange-300/30 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
-                        <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-red-400/25 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '1s' }}></div>
-                        <div className="absolute top-1/2 right-1/4 w-48 h-48 bg-yellow-400/15 rounded-full blur-2xl pointer-events-none"></div>
-                        
-                        {/* Bobble Floating Orbs */}
-                        <div className="absolute top-16 left-12 w-16 h-16 bg-gradient-to-br from-cyan-300/40 to-blue-400/30 rounded-full blur-xl pointer-events-none animate-bobble" style={{ filter: 'blur(20px)' }}></div>
-                        <div className="absolute top-20 right-20 w-12 h-12 bg-gradient-to-br from-yellow-300/50 to-orange-400/40 rounded-full blur-lg pointer-events-none animate-bobble-slow"></div>
-                        <div className="absolute bottom-16 left-1/3 w-14 h-14 bg-gradient-to-br from-pink-300/35 to-red-400/30 rounded-full blur-xl pointer-events-none animate-bobble" style={{ animationDelay: '0.3s' }}></div>
-                        <div className="absolute bottom-12 right-1/4 w-10 h-10 bg-gradient-to-br from-orange-300/45 to-yellow-400/35 rounded-full blur-lg pointer-events-none animate-bobble-slow" style={{ animationDelay: '0.5s' }}></div>
-                        
-                        {/* Floating AI Particles */}
-                        <div className="absolute top-1/4 left-1/4 w-1 h-1 bg-white/40 rounded-full animate-pulse" style={{ animation: 'float 4s ease-in-out infinite' }}></div>
-                        <div className="absolute top-1/3 right-1/3 w-1.5 h-1.5 bg-orange-200/30 rounded-full animate-pulse" style={{ animation: 'float 5s ease-in-out infinite 1s' }}></div>
-                        <div className="absolute bottom-1/4 left-1/3 w-1 h-1 bg-yellow-200/30 rounded-full animate-pulse" style={{ animation: 'float 6s ease-in-out infinite 2s' }}></div>
-                        <div className="absolute top-2/3 right-1/4 w-1.5 h-1.5 bg-white/20 rounded-full animate-pulse" style={{ animation: 'float 4.5s ease-in-out infinite 1.5s' }}></div>
-                        
-                        {/* Inner border glow effect */}
-                        <div className="absolute inset-0 rounded-3xl border border-orange-200/30 pointer-events-none"></div>
-                        
                         <div className="relative z-10">
                             <div className="flex justify-center mb-6 sm:mb-8">
-                                <div className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-full bg-gradient-to-r from-white/25 to-white/10 text-white text-xs sm:text-sm font-black tracking-widest uppercase shadow-lg shadow-orange-400/50 backdrop-blur-md border border-white/40 hover:from-white/35 hover:to-white/15 transition-all duration-300">
-                                    <span className="drop-shadow-lg">✨ 3 Simple Steps</span>
+                                <div className="inline-flex items-center gap-2 rounded-full border border-cyan-100/30 bg-cyan-100/10 px-5 py-2.5 text-xs sm:text-sm font-black tracking-[0.18em] uppercase text-cyan-50 shadow-lg backdrop-blur-md">
+                                    <span>3 Simple Steps</span>
                                 </div>
                             </div>
 
-                            {/* Title - Enhanced with drop shadow and glow */}
-                            <h1 className="text-3xl sm:text-4xl md:text-6xl text-center mb-4 sm:mb-5 font-black tracking-tighter text-white drop-shadow-lg">
+                            <h1 className="text-3xl sm:text-4xl md:text-6xl text-center mb-4 sm:mb-5 font-black tracking-tighter text-white">
                                 Generate Your{" "}
-                                <span className="bg-gradient-to-r from-yellow-100 via-orange-100 to-red-100 bg-clip-text text-transparent drop-shadow-lg filter drop-shadow-md">
+                                <span className="bg-gradient-to-r from-cyan-100 via-amber-100 to-lime-100 bg-clip-text text-transparent">
                                     Year of Content
                                 </span>
                             </h1>
 
-                            {/* Subtitle */}
-                            <p className="text-center text-white/95 text-sm sm:text-base max-w-2xl mx-auto mb-3 px-2 font-semibold drop-shadow-md">
+                            <p className="text-center text-cyan-50 text-sm sm:text-base max-w-2xl mx-auto mb-3 px-2 font-semibold">
                                 One prompt, 365 days of posts. Including local festivals
                                 & events.
                             </p>
 
-                            <p className="text-center text-white/85 text-sm sm:text-base max-w-4xl mx-auto mb-10 sm:mb-14 px-2 leading-relaxed drop-shadow-sm">
+                            <p className="text-center text-slate-100/90 text-sm sm:text-base max-w-4xl mx-auto mb-2 px-2 leading-relaxed">
                                 Shoutly AI is a social media automation and AI content generator that helps you build a complete social media calendar with branded posts, reels, captions, and hashtags in minutes.
                             </p>
                         </div>
@@ -810,9 +858,29 @@ export default function LandingPage() {
                                 placeholder={animatedPlaceholder}
                             />
 
-                            <p className="text-xs sm:text-sm mb-6 text-slate-500 font-medium">
-                                Minimum {MIN_BRAND_DESCRIPTION_CHARS} characters required ({brandDescription.trim().length}/{MIN_BRAND_DESCRIPTION_CHARS})
-                            </p>
+                            <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                <p className="text-xs sm:text-sm text-slate-500 font-medium">
+                                    Minimum {MIN_BRAND_DESCRIPTION_CHARS} characters required ({brandDescription.trim().length}/{MIN_BRAND_DESCRIPTION_CHARS})
+                                </p>
+                                <button
+                                    type="button"
+                                    onClick={handleRegenerateBrandDescription}
+                                    disabled={isRegeneratingBrand}
+                                    className={`inline-flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-xs sm:text-sm font-bold transition-all ${
+                                        isRegeneratingBrand
+                                            ? "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400"
+                                            : "border-slate-200 bg-white text-slate-700 hover:border-orange-500 hover:text-orange-600"
+                                    }`}
+                                >
+                                    <RefreshCcw className={`h-4 w-4 ${isRegeneratingBrand ? "animate-spin" : ""}`} />
+                                    {isRegeneratingBrand ? "Regenerating..." : "Regenerate"}
+                                </button>
+                            </div>
+                            {regenerateBrandError && (
+                                <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-700">
+                                    {regenerateBrandError}
+                                </div>
+                            )}
 
                             {/* ... rest of the buttons and CTA ... */}
 
