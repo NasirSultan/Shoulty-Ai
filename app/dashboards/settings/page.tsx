@@ -5,7 +5,6 @@ import Sidebar from '../Sidebar'; // Import the sidebar component
 import AdminHeader from '../AdminHeader';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useSidebarState } from '@/hooks/useSidebarState';
-import { fetchIndustries } from '@/api/homeApi';
 import { fetchProfile, setAccountPassword, setUserProfile } from '@/api/authApi';
 
 // --- Types ---
@@ -33,17 +32,6 @@ interface NotifState {
     email: boolean;
     push: boolean;
   };
-}
-
-interface SubIndustryOption {
-  id: string | number;
-  name: string;
-}
-
-interface IndustryOption {
-  id: string | number;
-  name: string;
-  subIndustries: SubIndustryOption[];
 }
 
 // --- Data ---
@@ -146,12 +134,9 @@ const SettingsPage: React.FC = () => {
     displayName: '',
     email: '',
     jobTitle: '',
-    industryId: '',
-    subIndustryId: '',
     timezone: 'America/New_York (EST, UTC-5)',
     language: 'English (US)',
   });
-  const [industries, setIndustries] = useState<IndustryOption[]>([]);
   const [passwordFields, setPasswordFields] = useState({
     current: '',
     new: '',
@@ -193,21 +178,6 @@ const SettingsPage: React.FC = () => {
     .map((part) => part[0]?.toUpperCase() || '')
     .join('')) || initials || 'U';
 
-  const selectedIndustry = industries.find(
-    (ind) => String(ind.id) === String(profileData.industryId)
-  );
-  const subIndustryOptions = selectedIndustry?.subIndustries || [];
-
-  useEffect(() => {
-    fetchIndustries()
-      .then((data) => {
-        setIndustries((data || []) as IndustryOption[]);
-      })
-      .catch(() => {
-        setIndustries([]);
-      });
-  }, []);
-
   useEffect(() => {
     if (!user) return;
     setProfileData((prev) => ({
@@ -215,8 +185,6 @@ const SettingsPage: React.FC = () => {
       fullName: user.name || prev.fullName,
       displayName: user.name ? user.name.toLowerCase().replace(/\s+/g, '') : prev.displayName,
       email: user.email || prev.email,
-      industryId: pickStringField((user as Record<string, unknown>), ['industryId', 'industry_id', 'selectedIndustryId']) || prev.industryId,
-      subIndustryId: pickStringField((user as Record<string, unknown>), ['subIndustryId', 'sub_industry_id', 'selectedSubIndustryId']) || prev.subIndustryId,
     }));
 
     // Mark platforms as connected based on real connectedSocials from backend
@@ -445,12 +413,6 @@ const SettingsPage: React.FC = () => {
           pickStringField(merged, ['email']) ||
           pickStringField(existing, ['email']) ||
           prev.email,
-        industryId:
-          pickStringField(merged, ['industryId', 'industry_id', 'selectedIndustryId']) ||
-          prev.industryId,
-        subIndustryId:
-          pickStringField(merged, ['subIndustryId', 'sub_industry_id', 'selectedSubIndustryId']) ||
-          prev.subIndustryId,
       }));
     } catch {
       // Keep current UI state if backend refresh fails.
@@ -459,11 +421,6 @@ const SettingsPage: React.FC = () => {
 
   const saveSection = async (name: string, options?: { silentSuccess?: boolean }) => {
     if (name === 'Profile') {
-      if (!profileData.industryId || !profileData.subIndustryId) {
-        showToast('Select industry and sub-industry first', 'red');
-        return;
-      }
-
       try {
         const raw = localStorage.getItem('shoutly_user');
         const existing = raw ? (JSON.parse(raw) as Record<string, unknown>) : {};
@@ -509,8 +466,6 @@ const SettingsPage: React.FC = () => {
           website,
           phone,
           connectedSocials,
-          industryId: profileData.industryId,
-          subIndustryId: profileData.subIndustryId,
         });
 
         const backendUser =
@@ -528,8 +483,6 @@ const SettingsPage: React.FC = () => {
           jobTitle: profileData.jobTitle,
           timezone: profileData.timezone,
           language: profileData.language,
-          industryId: profileData.industryId,
-          subIndustryId: profileData.subIndustryId,
         };
         localStorage.setItem('shoutly_user', JSON.stringify(merged));
         window.dispatchEvent(new Event('auth-changed'));
@@ -618,8 +571,6 @@ const SettingsPage: React.FC = () => {
       displayName: user?.name ? user.name.toLowerCase().replace(/\s+/g, '') : '',
       email: user?.email || '',
       jobTitle: '',
-      industryId: pickStringField((user ?? null) as Record<string, unknown> | null, ['industryId', 'industry_id', 'selectedIndustryId']),
-      subIndustryId: pickStringField((user ?? null) as Record<string, unknown> | null, ['subIndustryId', 'sub_industry_id', 'selectedSubIndustryId']),
       timezone: 'America/New_York (EST, UTC-5)',
       language: 'English (US)',
     });
@@ -1171,44 +1122,6 @@ const SettingsPage: React.FC = () => {
                     <div><div className="fr-lbl">User ID</div><div className="fr-sub">Used by post scheduling APIs</div></div>
                     <div className="fr-ctrl">
                       <input className="field" type="text" value={profileUserId || 'Unavailable'} readOnly />
-                    </div>
-                  </div>
-                  <div className="form-row">
-                    <div><div className="fr-lbl">Industry</div><div className="fr-sub">Required for AI post generation</div></div>
-                    <div className="fr-ctrl">
-                      <select
-                        className="field"
-                        value={profileData.industryId}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          setProfileData((prev) => ({
-                            ...prev,
-                            industryId: value,
-                            subIndustryId: '',
-                          }));
-                        }}
-                      >
-                        <option value="">Select industry</option>
-                        {industries.map((ind) => (
-                          <option key={String(ind.id)} value={String(ind.id)}>{ind.name}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                  <div className="form-row">
-                    <div><div className="fr-lbl">Sub-industry</div><div className="fr-sub">Required for API post generation context</div></div>
-                    <div className="fr-ctrl">
-                      <select
-                        className="field"
-                        value={profileData.subIndustryId}
-                        onChange={(e) => handleProfileChange('subIndustryId', e.target.value)}
-                        disabled={!profileData.industryId || subIndustryOptions.length === 0}
-                      >
-                        <option value="">Select sub-industry</option>
-                        {subIndustryOptions.map((sub) => (
-                          <option key={String(sub.id)} value={String(sub.id)}>{sub.name}</option>
-                        ))}
-                      </select>
                     </div>
                   </div>
                   <div className="form-row">

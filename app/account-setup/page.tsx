@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import {
-    Upload,
     ImageIcon,
     Globe,
     Phone,
@@ -17,6 +16,7 @@ import {
 } from "lucide-react";
 import {
     clearPendingAuthFlow,
+    fetchProfile,
     getPendingAuthFlow,
     isProfileComplete,
     setUserProfile,
@@ -29,8 +29,6 @@ function BrandSetupPageContent() {
     const [brandName, setBrandName] = useState("");
     const [website, setWebsite] = useState("");
     const [phone, setPhone] = useState("");
-    const [brandLogo, setBrandLogo] = useState<File | null>(null);
-    const [brandLogoPreview, setBrandLogoPreview] = useState("");
     const [selectedIndustry, setSelectedIndustry] = useState("");
     const [selectedSubIndustry, setSelectedSubIndustry] = useState("");
     const [submitting, setSubmitting] = useState(false);
@@ -77,26 +75,68 @@ function BrandSetupPageContent() {
         }
     }, [router]);
 
-    useEffect(() => {
-        if (!brandLogo) {
-            setBrandLogoPreview("");
-            return;
-        }
-
-        const objectUrl = URL.createObjectURL(brandLogo);
-        setBrandLogoPreview(objectUrl);
-
-        return () => {
-            URL.revokeObjectURL(objectUrl);
-        };
-    }, [brandLogo]);
-
     const connectedSocialMap: Record<string, string> = {
         Instagram: "INSTAGRAM",
         Facebook: "FACEBOOK",
         LinkedIn: "LINKEDIN",
         "X (Twitter)": "TWITTER",
         YouTube: "YOUTUBE",
+    };
+
+    const buildLocalProfile = (base: Record<string, unknown>) => {
+        const selectedIndustryObj = industries.find(
+            (industry) => String(industry.id) === selectedIndustry,
+        );
+        const selectedSubIndustryObj = (
+            selectedIndustryObj?.subIndustries || []
+        ).find((subIndustry) => String(subIndustry.id) === selectedSubIndustry);
+
+        return {
+            ...base,
+            email: resolvedEmail,
+            brandName: brandName.trim(),
+            website: website.trim(),
+            phone: phone.trim(),
+            industryId: selectedIndustry,
+            subIndustryId: selectedSubIndustry,
+            industry_id: selectedIndustry,
+            sub_industry_id: selectedSubIndustry,
+            selectedIndustryId: selectedIndustry,
+            selectedSubIndustryId: selectedSubIndustry,
+            industryName:
+                selectedIndustryObj?.name || (base.industryName as string | undefined),
+            subIndustryName:
+                selectedSubIndustryObj?.name ||
+                (base.subIndustryName as string | undefined),
+        };
+    };
+
+    const persistLatestProfile = async (fallbackResponse: unknown) => {
+        if (typeof window === "undefined") return;
+
+        let profileFromApi: Record<string, unknown> | null = null;
+        try {
+            const profileResponse = await fetchProfile();
+            const fresh =
+                ((profileResponse as { user?: Record<string, unknown> })?.user ||
+                    (profileResponse as Record<string, unknown>)) ??
+                null;
+            if (fresh && typeof fresh === "object") {
+                profileFromApi = fresh;
+            }
+        } catch {
+            profileFromApi = null;
+        }
+
+        const fallback =
+            (((fallbackResponse as { user?: Record<string, unknown> })?.user ||
+                (fallbackResponse as Record<string, unknown>)) as
+                | Record<string, unknown>
+                | undefined) || {};
+
+        const localUser = buildLocalProfile(profileFromApi || fallback);
+        localStorage.setItem("shoutly_user", JSON.stringify(localUser));
+        window.dispatchEvent(new Event("auth-changed"));
     };
 
     const handleBrandSetupContinue = () => {
@@ -119,6 +159,24 @@ function BrandSetupPageContent() {
         setStep(3);
     };
 
+    const buildProfileErrorMessage = (err: any) => {
+        const baseMessage =
+            err?.response?.data?.message ||
+            "Failed to update profile. Please try again.";
+
+        const retryDebug = err?.profileRetryDebug as
+            | Array<{ label: string; status?: number; message: string }>
+            | undefined;
+
+        if (!retryDebug || retryDebug.length === 0) return baseMessage;
+
+        const compact = retryDebug
+            .map((entry) => `${entry.label}: ${entry.status || "ERR"}`)
+            .join(" | ");
+
+        return `${baseMessage} (${compact})`;
+    };
+
     const handleCompleteSetup = async () => {
         if (!resolvedEmail) {
             setError("Missing signup email. Please start the flow again.");
@@ -139,21 +197,39 @@ function BrandSetupPageContent() {
                 connectedSocials: selectedAccounts.map(
                     (account) => connectedSocialMap[account],
                 ),
-                brandLogo,
             });
 
-            if (typeof window !== "undefined") {
-                localStorage.setItem("shoutly_user", JSON.stringify(response));
-                window.dispatchEvent(new Event("auth-changed"));
-            }
+            await persistLatestProfile(response);
 
             clearPendingAuthFlow();
-            router.push("/dashboards");
+            router.push("/dashboards/settings/brand");
         } catch (err: any) {
-            setError(
-                err?.response?.data?.message ||
-                    "Failed to update profile. Please try again.",
-            );
+            setError(buildProfileErrorMessage(err));
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const handleSkipSocialAccounts = async () => {
+        if (submitting) return;
+        setSubmitting(true);
+        setError("");
+
+        try {
+            const response = await setUserProfile({
+                email: resolvedEmail,
+                brandName: brandName.trim(),
+                website: website.trim(),
+                phone: phone.trim(),
+                industryId: selectedIndustry,
+                subIndustryId: selectedSubIndustry,
+                connectedSocials: [],
+            });
+            await persistLatestProfile(response);
+            clearPendingAuthFlow();
+            router.push("/dashboards/settings/brand");
+        } catch (err: any) {
+            setError(buildProfileErrorMessage(err));
         } finally {
             setSubmitting(false);
         }
@@ -171,6 +247,7 @@ function BrandSetupPageContent() {
                     height={120}
                     priority
                     className="mx-auto"
+                    style={{ height: "auto" }}
                 />
             </div>
 
@@ -211,56 +288,12 @@ function BrandSetupPageContent() {
                 {step === 1 && (
                     <>
                         <h2 className="text-lg font-medium text-black mb-1 font-arial">
-                            Upload Your Logo
+                            Brand Information
                         </h2>
 
                         <p className="text-sm text-gray-600 mb-4 font-arial">
-                            This will be overlaid on your social posts
+                            Add your brand details to personalize your workspace
                         </p>
-
-                        <div className="border-2 border-gray-300 rounded-xl p-6 text-center mb-6 cursor-pointer hover:border-black transition">
-                            <input
-                                type="file"
-                                accept="image/png,image/jpeg,image/jpg,image/svg+xml"
-                                className="hidden"
-                                id="brand-logo-upload"
-                                onChange={(e) => {
-                                    const file = e.target.files?.[0] || null;
-                                    setBrandLogo(file);
-                                }}
-                            />
-                            <label htmlFor="brand-logo-upload" className="block cursor-pointer">
-                            {brandLogoPreview ? (
-                                <div className="flex flex-col items-center gap-3">
-                                    <div className="relative h-20 w-20 overflow-hidden rounded-lg border border-gray-300">
-                                        <Image
-                                            src={brandLogoPreview}
-                                            alt="Uploaded brand logo"
-                                            fill
-                                            className="object-contain"
-                                            unoptimized
-                                        />
-                                    </div>
-                                    <p className="text-sm text-black font-arial">
-                                        {brandLogo?.name}
-                                    </p>
-                                    <p className="text-xs text-gray-500 font-arial">
-                                        Click to replace logo
-                                    </p>
-                                </div>
-                            ) : (
-                                <>
-                                    <Upload className="mx-auto mb-2 text-gray-500" size={28} />
-                                    <p className="text-sm text-gray-700 font-arial">
-                                        Click to upload or drag and drop
-                                    </p>
-                                    <p className="text-xs text-gray-500 mt-1 font-arial">
-                                        PNG, JPG or SVG (max. 5MB)
-                                    </p>
-                                </>
-                            )}
-                            </label>
-                        </div>
 
                         <div className="mb-4">
                             <label className="flex items-center gap-2 text-sm text-gray-700 mb-1 font-arial">
@@ -507,13 +540,22 @@ function BrandSetupPageContent() {
                             </button>
 
                             <button
-                                onClick={handleCompleteSetup}
+                                onClick={() => handleCompleteSetup()}
                                 disabled={submitting}
                                 className="flex-1 h-12 bg-[#000000] text-white rounded-xl hover:opacity-90 transition font-arial"
                             >
                                 {submitting ? "Saving..." : "Complete Setup"}
                             </button>
                         </div>
+
+                        <button
+                            type="button"
+                            onClick={handleSkipSocialAccounts}
+                            disabled={submitting}
+                            className="mt-3 w-full text-center text-sm text-gray-500 hover:text-black transition font-arial underline underline-offset-2"
+                        >
+                            Skip for now — connect accounts later
+                        </button>
                     </>
                 )}
 

@@ -1486,22 +1486,24 @@ export default function CalendarPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [nextId, setNextId] = useState(10000);
   const { user } = useUserProfile();
+  const [profileSetupWarning, setProfileSetupWarning] = useState<string | null>(null);
 
-  // ── Case #1: Sub-Industry Redirect ────────────────────────────────────────
-  // Check if user has selected sub-industry on page render.
-  // If NOT selected, redirect to profile page to force selection.
+  // ── Case #1: Profile Setup Guard (non-blocking) ───────────────────────────
+  // If industry/sub-industry are missing, keep user in calendar and show warning.
   useEffect(() => {
     if (!user) return; // Wait for user profile to load
 
     const subIndustryId = (user as any)?.subIndustryId || (user as any)?.sub_industry_id || (user as any)?.selectedSubIndustryId;
     const industryId = (user as any)?.industryId || (user as any)?.industry_id || (user as any)?.selectedIndustryId;
 
-    // If sub-industry is NOT selected, redirect to profile setup
     if (!subIndustryId || !industryId) {
-      console.warn("❌ [Calendar] Sub-industry not selected. Redirecting to profile setup.");
-      router.push("/account-setup?redirect=calendar");
+      console.warn("[Calendar] Industry/sub-industry missing. Showing profile setup warning.");
+      setProfileSetupWarning("Industry and sub-industry are not set yet. Calendar is available, but AI planning and generation will be limited.");
+      return;
     }
-  }, [user, router]);
+
+    setProfileSetupWarning(null);
+  }, [user]);
 
   const mergeImportedPosts = useCallback((incoming: Post[]) => {
     if (!incoming.length) return;
@@ -1592,12 +1594,9 @@ export default function CalendarPage() {
   const getAnchor = useCallback(() => {
     const d = new Date(today);
     if (view === "7d") {
-      // ── Case #3: Weekly Filter (Monday-Sunday) ──────────────────────────────────────
-      // Weekly view shows Monday to Sunday of current week + offset (weeks, not days).
-      // Formula: Get Monday of current week, then add offset weeks.
-      const dayOfWeek = d.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday
-      const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Days back to Monday
-      d.setDate(d.getDate() - daysToMonday + offset * 7); // Set to Monday + offset weeks
+      // ── Case #3: Weekly Filter (rolling 7 days) ─────────────────────────────────────
+      // Weekly view starts from today and spans the next 7 days.
+      d.setDate(d.getDate() + offset * 7);
     } else {
       d.setDate(1);
       d.setMonth(d.getMonth() + offset);
@@ -1664,7 +1663,16 @@ export default function CalendarPage() {
   };
   const dupPost = (id: number) => {
     const p = posts.find(x => x.id === id);
-    if (p) { const d = new Date(p.date); d.setDate(d.getDate() + 1); setPosts(prev => [...prev, { ...p, id: nextId, status: "draft", date: d }]); setNextId(n => n + 1); showToast("📋 Duplicated", "brand"); }
+    if (p) {
+      const d = new Date(p.date);
+      d.setDate(d.getDate() + 1);
+      const duplicated: Post = { ...p, id: nextId, status: "draft", date: d };
+      setPosts(prev => [...prev, duplicated]);
+      saveDashboardCalendarPost(duplicated);
+      void upsertCalendarPostToBackend(duplicated);
+      setNextId(n => n + 1);
+      showToast("📋 Duplicated", "brand");
+    }
   };
 
   const generatePostsLocally = (
@@ -1706,7 +1714,25 @@ export default function CalendarPage() {
     showToast(`✦ Generating: "${idea.title}"…`, "brand");
     setTimeout(() => {
       const d = new Date(today.getTime() + rndInt(3, 14) * 86400000);
-      setPosts(prev => [...prev, { id: nextId, date: d, caption: rnd(CAPTIONS_POOL), hashtags: rnd(HASHTAG_POOLS), plats: rnd(PLAT_COMBOS), type: rnd(TYPE_POOL), timeStr: "7:45 AM", timesOptions: rnd(TIMES_POOL), img: rnd(STOCK_IMAGES), score: rndInt(72, 96), status: "scheduled", reach: rndInt(20, 90) * 1000, engRate: "9.1%", isAI: true }]);
+      const generatedPost: Post = {
+        id: nextId,
+        date: d,
+        caption: rnd(CAPTIONS_POOL),
+        hashtags: rnd(HASHTAG_POOLS),
+        plats: rnd(PLAT_COMBOS),
+        type: rnd(TYPE_POOL),
+        timeStr: "7:45 AM",
+        timesOptions: rnd(TIMES_POOL),
+        img: rnd(STOCK_IMAGES),
+        score: rndInt(72, 96),
+        status: "scheduled",
+        reach: rndInt(20, 90) * 1000,
+        engRate: "9.1%",
+        isAI: true,
+      };
+      setPosts(prev => [...prev, generatedPost]);
+      saveDashboardCalendarPost(generatedPost);
+      void upsertCalendarPostToBackend(generatedPost);
       setNextId(n => n + 1);
       showToast("✅ Post generated!", "green");
     }, 1400);
@@ -2096,6 +2122,21 @@ export default function CalendarPage() {
               </button>
             }
           />
+
+          {profileSetupWarning && (
+            <div style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: 10, margin: "10px 20px 0", padding: "10px 12px", borderRadius: 10, background: "#FFF7ED", border: "1px solid #FDBA74", color: "#9A3412" }}>
+              <i className="fa-solid fa-circle-exclamation" style={{ fontSize: 14 }} />
+              <div style={{ fontSize: 12.5, fontWeight: 600, lineHeight: 1.45, flex: 1 }}>
+                {profileSetupWarning}
+              </div>
+              <button
+                onClick={() => router.push("/dashboards/settings/brand")}
+                style={{ padding: "7px 10px", borderRadius: 7, border: "1px solid #FDBA74", background: "#fff", color: "#9A3412", fontSize: 11.5, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}
+              >
+                Go to Brand Settings
+              </button>
+            </div>
+          )}
 
           {/* Cal Toolbar */}
           <div style={{ flexShrink: 0, background: "#fff", borderBottom: "1px solid #E2E4F0" }}>

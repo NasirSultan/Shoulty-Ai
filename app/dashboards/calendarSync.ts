@@ -36,6 +36,25 @@ export const DASHBOARD_CALENDAR_EVENT = "shoutly:calendar-posts-updated";
 
 const isBrowser = typeof window !== "undefined";
 
+const getScopedCalendarStorageKey = () => {
+  if (!isBrowser) return DASHBOARD_CALENDAR_STORAGE_KEY;
+
+  try {
+    const raw = window.localStorage.getItem("shoutly_user");
+    if (!raw) return DASHBOARD_CALENDAR_STORAGE_KEY;
+    const user = JSON.parse(raw) as { id?: string | number; email?: string };
+    const scope =
+      (typeof user.id === "string" || typeof user.id === "number"
+        ? String(user.id)
+        : "") ||
+      (typeof user.email === "string" ? user.email.trim().toLowerCase() : "");
+    if (!scope) return DASHBOARD_CALENDAR_STORAGE_KEY;
+    return `${DASHBOARD_CALENDAR_STORAGE_KEY}.${scope}`;
+  } catch {
+    return DASHBOARD_CALENDAR_STORAGE_KEY;
+  }
+};
+
 const serializePost = (post: DashboardCalendarPost): StoredCalendarPost => ({
   ...post,
   date: post.date.toISOString(),
@@ -50,7 +69,7 @@ export function readDashboardCalendarPosts(): DashboardCalendarPost[] {
   if (!isBrowser) return [];
 
   try {
-    const raw = window.localStorage.getItem(DASHBOARD_CALENDAR_STORAGE_KEY);
+    const raw = window.localStorage.getItem(getScopedCalendarStorageKey());
     if (!raw) return [];
     const parsed = JSON.parse(raw) as StoredCalendarPost[];
     return parsed.map(deserializePost);
@@ -63,7 +82,7 @@ export function writeDashboardCalendarPosts(posts: DashboardCalendarPost[]) {
   if (!isBrowser) return;
 
   window.localStorage.setItem(
-    DASHBOARD_CALENDAR_STORAGE_KEY,
+    getScopedCalendarStorageKey(),
     JSON.stringify(posts.map(serializePost)),
   );
   window.dispatchEvent(new CustomEvent(DASHBOARD_CALENDAR_EVENT));

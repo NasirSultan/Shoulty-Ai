@@ -29,7 +29,7 @@ export default function SignInForm() {
             const { user } = await googleLogin(credentialResponse.credential!);
             localStorage.setItem("shoutly_user", JSON.stringify(user));
             window.dispatchEvent(new Event("auth-changed"));
-            router.push("/dashboards");
+            router.push("/dashboards/settings/brand");
         } catch (err) {
             setError(
                 err instanceof Error
@@ -55,7 +55,7 @@ export default function SignInForm() {
             const { user } = await emailLogin(formData.email.trim(), formData.password);
             localStorage.setItem("shoutly_user", JSON.stringify(user));
             window.dispatchEvent(new Event("auth-changed"));
-            router.push("/dashboards");
+            router.push("/dashboards/settings/brand");
         } catch (err) {
             setError("Invalid email or password");
             setLoading(false);

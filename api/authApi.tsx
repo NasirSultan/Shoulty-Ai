@@ -141,6 +141,12 @@ export const setUserProfile = async (payload: {
     }
 
     let data: FormData | Record<string, unknown>;
+    const coreJsonData: Record<string, unknown> = {
+        email: payload.email,
+        brandName: payload.brandName,
+        website: payload.website,
+        phone: payload.phone || "",
+    };
     
     if (hasFile) {
         // Use FormData for file upload
@@ -167,10 +173,7 @@ export const setUserProfile = async (payload: {
         // Use JSON for non-file requests
         // Build a minimal payload with only core fields that backend supports
         const jsonData: Record<string, unknown> = {
-            email: payload.email,
-            brandName: payload.brandName,
-            website: payload.website,
-            phone: payload.phone || "",
+            ...coreJsonData,
         };
 
         // Add connectedSocials if not empty
@@ -196,11 +199,81 @@ export const setUserProfile = async (payload: {
     console.log("[setUserProfile] Sending data:", data);
 
     try {
-        const response = await axios.post(API_ENDPOINTS.setProfile, data, {
-            headers,
-        });
-        console.log("[setUserProfile] Success response:", response.data);
-        return response.data;
+        if (hasFile) {
+            const response = await axios.post(API_ENDPOINTS.setProfile, data, {
+                headers,
+            });
+            console.log("[setUserProfile] Success response:", response.data);
+            return response.data;
+        }
+
+        const payloadAttempts: Array<{ label: string; data: Record<string, unknown> }> = [
+            { label: "camelCase industry fields", data: data as Record<string, unknown> },
+        ];
+
+        if (payload.industryId || payload.subIndustryId) {
+            // Retry with snake_case keys for backends that don't accept camelCase.
+            payloadAttempts.push({
+                label: "snake_case industry fields",
+                data: {
+                    ...coreJsonData,
+                    ...(payload.connectedSocials && payload.connectedSocials.length > 0
+                        ? { connectedSocials: payload.connectedSocials }
+                        : {}),
+                    ...(payload.industryId ? { industry_id: payload.industryId } : {}),
+                    ...(payload.subIndustryId ? { sub_industry_id: payload.subIndustryId } : {}),
+                },
+            });
+
+            // Final fallback ensures profile still updates if industry fields are rejected.
+            payloadAttempts.push({
+                label: "core profile only",
+                data: {
+                    ...coreJsonData,
+                    ...(payload.connectedSocials && payload.connectedSocials.length > 0
+                        ? { connectedSocials: payload.connectedSocials }
+                        : {}),
+                },
+            });
+        }
+
+        let lastError: unknown;
+        const attemptStatuses: Array<{ label: string; status?: number; message: string }> = [];
+        for (let i = 0; i < payloadAttempts.length; i++) {
+            const attempt = payloadAttempts[i];
+            try {
+                if (i > 0) {
+                    console.warn(`[setUserProfile] Retry attempt ${i + 1}/${payloadAttempts.length} with fallback payload shape.`);
+                    console.log("[setUserProfile] Retry payload:", attempt.data);
+                }
+                const response = await axios.post(API_ENDPOINTS.setProfile, attempt.data, {
+                    headers,
+                });
+                console.log("[setUserProfile] Success response:", response.data);
+                return response.data;
+            } catch (err: unknown) {
+                lastError = err;
+                const status = axios.isAxiosError(err) ? err.response?.status : undefined;
+                const message = axios.isAxiosError(err)
+                    ? ((err.response?.data as { message?: string } | undefined)?.message || err.message)
+                    : (err instanceof Error ? err.message : "Unknown error");
+                attemptStatuses.push({
+                    label: attempt.label,
+                    status,
+                    message,
+                });
+                // Retry only for backend errors or payload-shape validation failures.
+                const retryable = status === 500 || status === 400 || status === 422;
+                if (!retryable || i === payloadAttempts.length - 1) {
+                    if (err && typeof err === "object") {
+                        (err as { profileRetryDebug?: Array<{ label: string; status?: number; message: string }> }).profileRetryDebug = attemptStatuses;
+                    }
+                    throw err;
+                }
+            }
+        }
+
+        throw lastError;
     } catch (error: unknown) {
         console.error("[setUserProfile] Full error object:", error);
         

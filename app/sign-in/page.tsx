@@ -7,7 +7,7 @@ import { Suspense } from "react";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import { useEffect, useState } from "react";
-import { emailLogin, fetchProfile, googleLogin, isProfileComplete } from "@/api/authApi";
+import { emailLogin, fetchProfile, googleLogin } from "@/api/authApi";
 
 function SignInAccountContent() {
     const router = useRouter();
@@ -20,8 +20,7 @@ function SignInAccountContent() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
-        router.prefetch("/dashboards");
-        router.prefetch("/account-setup");
+        router.prefetch("/dashboards/settings/brand");
     }, [router]);
 
     const getSafeNextPath = () => {
@@ -52,20 +51,14 @@ function SignInAccountContent() {
     };
 
     const routeAfterLogin = (user: any) => {
+        void user;
         const safeNext = getSafeNextPath();
         if (safeNext) {
-            router.push(safeNext);
+            router.push("/dashboards/settings/brand");
             return;
         }
 
-        if (isProfileComplete(user)) {
-            router.push("/dashboards");
-            return;
-        }
-
-        const userEmail =
-            typeof user?.email === "string" ? user.email : "";
-        router.push(userEmail ? `/account-setup?email=${encodeURIComponent(userEmail)}` : "/account-setup");
+        router.push("/dashboards/settings/brand");
     };
 
     const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
