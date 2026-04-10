@@ -862,21 +862,23 @@ export default function LandingPage() {
                                 <p className="text-xs sm:text-sm text-slate-500 font-medium">
                                     Minimum {MIN_BRAND_DESCRIPTION_CHARS} characters required ({brandDescription.trim().length}/{MIN_BRAND_DESCRIPTION_CHARS})
                                 </p>
-                                <button
-                                    type="button"
-                                    onClick={handleRegenerateBrandDescription}
-                                    disabled={isRegeneratingBrand}
-                                    className={`inline-flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-xs sm:text-sm font-bold transition-all ${
-                                        isRegeneratingBrand
-                                            ? "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400"
-                                            : "border-slate-200 bg-white text-slate-700 hover:border-orange-500 hover:text-orange-600"
-                                    }`}
-                                >
-                                    <RefreshCcw className={`h-4 w-4 ${isRegeneratingBrand ? "animate-spin" : ""}`} />
-                                    {isRegeneratingBrand ? "Regenerating..." : "Regenerate"}
-                                </button>
+                                {false && (
+                                    <button
+                                        type="button"
+                                        onClick={handleRegenerateBrandDescription}
+                                        disabled={isRegeneratingBrand}
+                                        className={`inline-flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-xs sm:text-sm font-bold transition-all ${
+                                            isRegeneratingBrand
+                                                ? "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400"
+                                                : "border-slate-200 bg-white text-slate-700 hover:border-orange-500 hover:text-orange-600"
+                                        }`}
+                                    >
+                                        <RefreshCcw className={`h-4 w-4 ${isRegeneratingBrand ? "animate-spin" : ""}`} />
+                                        {isRegeneratingBrand ? "Regenerating..." : "Regenerate"}
+                                    </button>
+                                )}
                             </div>
-                            {regenerateBrandError && (
+                            {false && regenerateBrandError && (
                                 <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-700">
                                     {regenerateBrandError}
                                 </div>
