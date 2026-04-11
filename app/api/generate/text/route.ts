@@ -29,6 +29,31 @@ const tryUpstreamRequest = async (url: string, body: unknown) => {
     });
 };
 
+const buildFallbackText = (prompt: string) => {
+    const cleaned = prompt.replace(/\s+/g, " ").trim().slice(0, 140);
+    return cleaned
+        ? `✨ ${cleaned}\n\nTell your audience what makes your brand different and end with a clear CTA.`
+        : "✨ Build a strong brand story, share one clear value, and end with a simple CTA.";
+};
+
+const buildFallbackSseResponse = (prompt: string) => {
+    const payload = [
+        `data: ${JSON.stringify({ index: 0, text: buildFallbackText(prompt) })}`,
+        "",
+        `data: ${JSON.stringify({ done: true })}`,
+        "",
+    ].join("\n");
+
+    return new Response(payload, {
+        status: 200,
+        headers: {
+            "Content-Type": "text/event-stream",
+            "Cache-Control": "no-cache, no-transform",
+            "X-Accel-Buffering": "no",
+        },
+    });
+};
+
 export async function POST(request: Request) {
     let body: any;
     try {
@@ -96,16 +121,7 @@ export async function POST(request: Request) {
     if (!upstream) {
         const last = failures[failures.length - 1];
         console.error("❌ [generate/text] Upstream retries exhausted:", failures);
-        return new Response(
-            JSON.stringify({
-                message: last?.message || "Text generator is temporarily unavailable.",
-                attempts: failures.map((f) => ({ url: f.url, status: f.status || null })),
-            }),
-            {
-                status: 502,
-                headers: { "Content-Type": "application/json" },
-            }
-        );
+        return buildFallbackSseResponse(body.prompt || last?.message || "");
     }
 
     console.log("✅ [generate/text] Streaming response from upstream");
