@@ -16,14 +16,14 @@ interface SidebarProps {
 const navItems = [
   { section: "Workspace" },
   {
-    icon: "fa-solid fa-gauge",
-    label: "Dashboard",
-    href: "/dashboards",
+    icon: "fa-solid fa-house-chimney",
+    label: "Brand Settings",
+    href: "/dashboards/settings/brand",
   },
   {
-    icon: "fa-solid fa-chart-simple",
-    label: "Analytics",
-    href: "/dashboards/analytics",
+    icon: "fa-solid fa-share-nodes",
+    label: "Social Account",
+    href: "/dashboards/settings/accounts",
   },
   {
     icon: "fa-solid fa-calendar-days",
@@ -32,23 +32,23 @@ const navItems = [
   },
   {
     icon: "fa-solid fa-photo-film",
-    label: "Image & Reel Library",
+    label: "Image and Reel Library",
     href: "/dashboards/library",
   },
-  { section: "Settings" },
+  { section: "Dashboard" },
   {
-    icon: "fa-solid fa-house-chimney",
-    label: "Brand Settings",
-    href: "/dashboards/settings/brand",
+    icon: "fa-solid fa-gauge",
+    label: "Dash Board",
+    href: "/dashboards",
   },
   {
-    icon: "fa-solid fa-share-nodes",
-    label: "Social Accounts",
-    href: "/dashboards/settings/accounts",
+    icon: "fa-solid fa-chart-simple",
+    label: "Anlytics",
+    href: "/dashboards/analytics",
   },
   {
     icon: "fa-solid fa-credit-card",
-    label: "Subscription & Billing",
+    label: "Subscription",
     href: "/dashboards/settings/billing",
   },
   {
