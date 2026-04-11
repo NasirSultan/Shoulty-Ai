@@ -12,7 +12,22 @@
 
 export const runtime = "nodejs";
 
-const UPSTREAM_URL = "https://ai-shoutly-backend.onrender.com/api/generator/texts";
+const UPSTREAM_URLS = [
+    "https://ai-shoutly-backend.onrender.com/api/generator/texts",
+    "https://backend.shoutlyai.com/api/generator/texts",
+];
+
+const tryUpstreamRequest = async (url: string, body: unknown) => {
+    return fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "text/event-stream",
+        },
+        body: JSON.stringify(body),
+        cache: "no-store",
+    });
+};
 
 export async function POST(request: Request) {
     let body: any;
@@ -43,34 +58,54 @@ export async function POST(request: Request) {
 
     console.log("📝 [generate/text] Processing request with prompt:", body.prompt.substring(0, 50) + "...");
 
-    let upstream: Response;
-    try {
-        console.log("📝 [generate/text] Forwarding to upstream:", UPSTREAM_URL);
-        upstream = await fetch(UPSTREAM_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "text/event-stream",
-            },
-            body: JSON.stringify(body),
-            cache: "no-store",
-        });
-    } catch (err) {
-        const message = err instanceof Error ? err.message : "Failed to reach upstream.";
-        console.error("❌ [generate/text] Upstream fetch failed:", message);
-        return new Response(JSON.stringify({ message }), {
-            status: 502,
-            headers: { "Content-Type": "application/json" },
-        });
+    let upstream: Response | null = null;
+    const failures: Array<{ url: string; status?: number; message: string }> = [];
+
+    for (const url of UPSTREAM_URLS) {
+        for (let attempt = 1; attempt <= 2; attempt += 1) {
+            try {
+                console.log(`📝 [generate/text] Forwarding to upstream (${attempt}/2):`, url);
+                const candidate = await tryUpstreamRequest(url, body);
+                if (candidate.ok) {
+                    upstream = candidate;
+                    break;
+                }
+
+                const text = await candidate.text().catch(() => "");
+                failures.push({
+                    url,
+                    status: candidate.status,
+                    message: text || `Upstream error ${candidate.status}`,
+                });
+
+                if (candidate.status < 500 || attempt === 2) {
+                    break;
+                }
+            } catch (err) {
+                const message = err instanceof Error ? err.message : "Failed to reach upstream.";
+                failures.push({ url, message });
+                if (attempt === 2) {
+                    break;
+                }
+            }
+        }
+
+        if (upstream) break;
     }
 
-    if (!upstream.ok) {
-        const text = await upstream.text().catch(() => "");
-        console.error(`❌ [generate/text] Upstream returned ${upstream.status}:`, text);
-        return new Response(text || `Upstream error ${upstream.status}`, {
-            status: upstream.status,
-            headers: { "Content-Type": "text/plain" },
-        });
+    if (!upstream) {
+        const last = failures[failures.length - 1];
+        console.error("❌ [generate/text] Upstream retries exhausted:", failures);
+        return new Response(
+            JSON.stringify({
+                message: last?.message || "Text generator is temporarily unavailable.",
+                attempts: failures.map((f) => ({ url: f.url, status: f.status || null })),
+            }),
+            {
+                status: 502,
+                headers: { "Content-Type": "application/json" },
+            }
+        );
     }
 
     console.log("✅ [generate/text] Streaming response from upstream");
