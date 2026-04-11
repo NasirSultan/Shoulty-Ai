@@ -457,13 +457,14 @@ export default function LandingPage() {
             (sub: SubIndustry) => String(sub.id) === String(generatePendingSubIndustry),
         );
 
-        const prompt = [
+        const normalizedBrandContext = brandDescription.replace(/\s+/g, " ").trim();
+        const fullPrompt = [
             "Generate one concise brand description for social media content planning.",
             selectedIndustryObj?.name ? `Industry: ${selectedIndustryObj.name}.` : "",
             selectedSubIndustryObj?.name ? `Sub-industry: ${selectedSubIndustryObj.name}.` : "",
             selectedContent ? `Content preference: ${selectedContent}.` : "",
-            brandDescription.trim()
-                ? `Use this as context and improve it: \"${brandDescription.trim()}\".`
+            normalizedBrandContext
+                ? `Use this as context and improve it: \"${normalizedBrandContext.slice(0, 260)}\".`
                 : "No prior description provided by user.",
             `Length: ${MIN_BRAND_DESCRIPTION_CHARS} to 220 characters.`,
             "Tone: clear, marketing-ready, brand-safe.",
@@ -472,11 +473,21 @@ export default function LandingPage() {
             .filter(Boolean)
             .join(" ");
 
-        const byIndex = new Map<number, string>();
+        const compactPrompt = [
+            "Write one brand description.",
+            selectedIndustryObj?.name ? `Industry: ${selectedIndustryObj.name}.` : "",
+            selectedSubIndustryObj?.name ? `Sub-industry: ${selectedSubIndustryObj.name}.` : "",
+            `Length: ${MIN_BRAND_DESCRIPTION_CHARS} to 180 characters.`,
+            "Return plain text only.",
+        ]
+            .filter(Boolean)
+            .join(" ");
 
-        try {
+        const runPrompt = async (promptText: string) => {
+            const byIndex = new Map<number, string>();
+
             await streamGenerateTexts(
-                { prompt },
+                { prompt: promptText },
                 {
                     signal: controller.signal,
                     onChunk: (chunk) => {
@@ -496,7 +507,22 @@ export default function LandingPage() {
             if (!finalText) {
                 throw new Error("No regenerated brand description received.");
             }
-            setBrandDescription(finalText.slice(0, 220));
+
+            return finalText.slice(0, 220);
+        };
+
+        try {
+            let regenerated: string;
+            try {
+                regenerated = await runPrompt(fullPrompt);
+            } catch (firstError) {
+                if (firstError instanceof Error && firstError.name === "AbortError") {
+                    throw firstError;
+                }
+                regenerated = await runPrompt(compactPrompt);
+            }
+
+            setBrandDescription(regenerated);
         } catch (error) {
             if (error instanceof Error && error.name === "AbortError") {
                 return;

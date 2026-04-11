@@ -56,19 +56,41 @@ const streamTextGenerator = async (
   request: GenerateTextsRequest,
   callbacks: StreamCallbacks<GeneratedTextChunk>
 ) => {
-  const response = await fetch(API_ENDPOINTS.textGeneratorGenerate, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "text/event-stream",
-    },
-    body: JSON.stringify(request),
-    signal: callbacks.signal,
-  });
+  const endpoints = [
+    API_ENDPOINTS.textGeneratorGenerate,
+    API_ENDPOINTS.textGeneratorGenerateDirect,
+  ];
 
-  if (!response.ok) {
-    const errText = await response.text().catch(() => "");
-    throw new Error(parseErrorMessage(errText, response.status));
+  let response: Response | null = null;
+  let lastErrorMessage = "";
+
+  for (const endpoint of endpoints) {
+    try {
+      const candidate = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "text/event-stream",
+        },
+        body: JSON.stringify(request),
+        signal: callbacks.signal,
+      });
+
+      if (candidate.ok) {
+        response = candidate;
+        break;
+      }
+
+      const errText = await candidate.text().catch(() => "");
+      lastErrorMessage = parseErrorMessage(errText, candidate.status);
+    } catch (err) {
+      lastErrorMessage =
+        err instanceof Error ? err.message : "Text generation request failed.";
+    }
+  }
+
+  if (!response) {
+    throw new Error(lastErrorMessage || "Text generator is temporarily unavailable. Please try again.");
   }
 
   if (!response.body) {
