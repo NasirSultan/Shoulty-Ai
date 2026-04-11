@@ -495,10 +495,6 @@ export default function LandingPage() {
                         if (!text) return;
 
                         byIndex.set(chunk.index, text);
-                        const first = [...byIndex.entries()].sort((a, b) => a[0] - b[0])[0]?.[1];
-                        if (first) {
-                            setBrandDescription(first.slice(0, 220));
-                        }
                     },
                 },
             );
