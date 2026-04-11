@@ -68,7 +68,11 @@ export default function SuccessPage() {
 
                 {/* Continue Button */}
                 <button
-                    onClick={() => router.push("/sign-in")}
+                    onClick={() =>
+                        router.push(
+                            isResetFlow ? "/sign-in" : "/dashboards/settings/brand",
+                        )
+                    }
                     className="w-full h-12 bg-[#000000] text-white hover:opacity-90 transition"
                     style={{ fontFamily: "Arial", fontWeight: 400 }}
                 >
