@@ -337,8 +337,6 @@ const SettingsPage: React.FC = () => {
         website,
         phone,
         connectedSocials,
-        industryId: profileData.industryId,
-        subIndustryId: profileData.subIndustryId,
         brandLogo: file,
       });
 
