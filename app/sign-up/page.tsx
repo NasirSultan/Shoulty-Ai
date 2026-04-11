@@ -67,6 +67,7 @@ export default function CreateAccountPage() {
                 name: googleName,
                 email: googleEmail,
                 source: "google",
+                googleIdToken: credentialResponse.credential,
             });
             router.push(`/verification?email=${encodeURIComponent(googleEmail)}&source=google`);
         } catch (err: any) {

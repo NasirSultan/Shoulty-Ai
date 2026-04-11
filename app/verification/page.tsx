@@ -3,7 +3,12 @@
 import { Suspense, useState } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { getPendingAuthFlow, registerUser, verifyOtpCode } from "@/api/authApi";
+import {
+    getPendingAuthFlow,
+    googleLogin,
+    registerUser,
+    verifyOtpCode,
+} from "@/api/authApi";
 
 function VerifyEmailContent() {
     const router = useRouter();
@@ -26,6 +31,16 @@ function VerifyEmailContent() {
             setSubmitting(true);
             setError("");
             await verifyOtpCode(email, otp.trim());
+
+            if (source === "google") {
+                const pending = getPendingAuthFlow();
+                if (pending?.googleIdToken) {
+                    const { user } = await googleLogin(pending.googleIdToken);
+                    localStorage.setItem("shoutly_user", JSON.stringify(user));
+                    window.dispatchEvent(new Event("auth-changed"));
+                }
+            }
+
             router.push(
                 source === "google"
                     ? `/account-setup?email=${encodeURIComponent(email)}`

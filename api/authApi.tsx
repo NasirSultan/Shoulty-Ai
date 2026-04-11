@@ -6,6 +6,7 @@ type PendingAuthFlow = {
     email: string;
     name?: string;
     source?: "email" | "google";
+    googleIdToken?: string;
 };
 
 const PENDING_AUTH_KEY = "shoutly_pending_auth";

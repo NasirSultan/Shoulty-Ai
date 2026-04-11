@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
-import { getPendingAuthFlow, setAccountPassword } from "@/api/authApi";
+import { emailLogin, getPendingAuthFlow, setAccountPassword } from "@/api/authApi";
 
 function CreatePasswordContent() {
     const router = useRouter();
@@ -39,6 +39,9 @@ function CreatePasswordContent() {
             setSubmitting(true);
             setError("");
             await setAccountPassword(email, password);
+            const { user } = await emailLogin(email, password);
+            localStorage.setItem("shoutly_user", JSON.stringify(user));
+            window.dispatchEvent(new Event("auth-changed"));
             router.push(`/account-setup?email=${encodeURIComponent(email)}`);
         } catch (err: any) {
             setError(
