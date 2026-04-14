@@ -22,6 +22,7 @@ import {
   streamGenerateAndSavePosts,
   streamGeneratePosts,
 } from "@/api/postGeneratorApi";
+import { createFacebookDirectPost } from "@/api/facebookApi";
 import { createMonthlyPlan, getUserPlan } from "@/api/calendarApi";
 import { useUserProfile } from "@/hooks/useUserProfile";
 
@@ -539,7 +540,7 @@ function seedPosts(baseDate: Date): Post[] {
 }
 
 // ── Sub-components ─────────────────────────────────────────────────────────
-function PostCard({ p, onOpen, onDup, onDel }: { p: Post; onOpen: () => void; onDup: () => void; onDel: () => void }) {
+function PostCard({ p, onOpen, onDup, onDel, onPublishFacebook }: { p: Post; onOpen: () => void; onDup: () => void; onDel: () => void; onPublishFacebook: () => void }) {
   const meta = TYPE_INFO[p.type];
   const scoreColor = p.score >= 80 ? "#10B981" : p.score >= 60 ? "#F59E0B" : "#EF4444";
   const statusColors: Record<Status, { bg: string; color: string }> = {
@@ -563,9 +564,14 @@ function PostCard({ p, onOpen, onDup, onDel }: { p: Post; onOpen: () => void; on
         </div>
         {/* hover actions */}
         <div className="pc-hover-actions" style={{ position: "absolute", top: 4, right: 4, display: "flex", gap: 3, zIndex: 5 }}>
-          {[{ title:"Edit", icon:"fa-pen", action: onOpen }, { title:"Dup", icon:"fa-copy", action: onDup }, { title:"Del", icon:"fa-trash", action: onDel }].map(btn => (
+          {[
+            { title:"Edit", iconClass:"fa-solid fa-pen", action: onOpen },
+            { title:"Post FB", iconClass:"fa-brands fa-facebook-f", action: onPublishFacebook },
+            { title:"Dup", iconClass:"fa-solid fa-copy", action: onDup },
+            { title:"Del", iconClass:"fa-solid fa-trash", action: onDel },
+          ].map(btn => (
             <div key={btn.title} onClick={e => { e.stopPropagation(); btn.action(); }} style={{ width: 22, height: 22, borderRadius: 5, background: "rgba(255,255,255,.9)", display: "flex", alignItems: "center", justifyContent: "center", color: "#3D3F60", fontSize: 9, cursor: "pointer", border: "1px solid rgba(255,255,255,.6)" }}>
-              <i className={`fa-solid ${btn.icon}`} />
+              <i className={btn.iconClass} />
             </div>
           ))}
         </div>
@@ -596,7 +602,7 @@ function PostCard({ p, onOpen, onDup, onDel }: { p: Post; onOpen: () => void; on
   );
 }
 
-function MiniCard({ p, onOpen, onDup, onDel }: { p: Post; onOpen: () => void; onDup: () => void; onDel: () => void }) {
+function MiniCard({ p, onOpen, onDup, onDel, onPublishFacebook }: { p: Post; onOpen: () => void; onDup: () => void; onDel: () => void; onPublishFacebook: () => void }) {
   const meta = TYPE_INFO[p.type];
   const scoreColor = p.score >= 80 ? "#10B981" : p.score >= 60 ? "#F59E0B" : "#EF4444";
   const statusColors: Record<Status, { bg: string; color: string }> = {
@@ -627,9 +633,14 @@ function MiniCard({ p, onOpen, onDup, onDel }: { p: Post; onOpen: () => void; on
         </div>
         {/* hover overlay - action buttons only */}
         <div className="mmc-actions" style={{ position: "absolute", inset: 0, background: "rgba(11,12,26,.5)", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, borderRadius: 8 }}>
-          {[{ title: "Edit", icon:"fa-pen", action: onOpen }, { title: "Duplicate", icon:"fa-copy", action: onDup }, { title: "Delete", icon:"fa-trash", action: onDel }].map((btn, i) => (
+          {[
+            { title: "Edit", iconClass:"fa-solid fa-pen", action: onOpen },
+            { title: "Post FB", iconClass:"fa-brands fa-facebook-f", action: onPublishFacebook },
+            { title: "Duplicate", iconClass:"fa-solid fa-copy", action: onDup },
+            { title: "Delete", iconClass:"fa-solid fa-trash", action: onDel },
+          ].map((btn, i) => (
             <div key={i} title={btn.title} onClick={(e) => { e.stopPropagation(); btn.action(); }} style={{ width: 28, height: 28, borderRadius: 7, background: "rgba(255,255,255,.95)", display: "flex", alignItems: "center", justifyContent: "center", color: "#0B0C1A", fontSize: 10, cursor: "pointer" }}>
-              <i className={`fa-solid ${btn.icon}`} />
+              <i className={btn.iconClass} />
             </div>
           ))}
         </div>
@@ -664,12 +675,13 @@ interface ModalState {
   initDate: Date | null;
 }
 
-function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate, showToast, user }: {
+function EditModal({ state, posts, today, onClose, onSave, onPublishFacebook, onDelete, onDuplicate, showToast, user }: {
   state: ModalState;
   posts: Post[];
   today: Date;
   onClose: () => void;
   onSave: (data: PostUpsert) => void;
+  onPublishFacebook: (data: PostUpsert) => Promise<void>;
   onDelete: (id: number) => void;
   onDuplicate: (id: number) => void;
   showToast: (msg: string, type: string) => void;
@@ -694,6 +706,7 @@ function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate
   const [imageSuccessMessage, setImageSuccessMessage] = useState("");
   const [showCaptionPromptPopup, setShowCaptionPromptPopup] = useState(false);
   const [showImagePreviewPopup, setShowImagePreviewPopup] = useState(false);
+  const [isPublishingFacebook, setIsPublishingFacebook] = useState(false);
   const [imageZoom, setImageZoom] = useState(1);
   const [imagePan, setImagePan] = useState({ x: 0, y: 0 });
   const [isPanningImage, setIsPanningImage] = useState(false);
@@ -971,6 +984,42 @@ function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate
   const circ = 113;
   const dashOffset = circ - (score / 100) * circ;
 
+  const handlePublishToFacebook = async () => {
+    if (isPublishingFacebook) return;
+    if (!caption.trim()) {
+      showToast("Add a caption before posting to Facebook.", "red");
+      return;
+    }
+
+    setIsPublishingFacebook(true);
+    try {
+      await onPublishFacebook({
+        id: p?.id ?? null,
+        caption,
+        date: dateVal ? new Date(dateVal) : today,
+        type: typeVal,
+        plats: selPlats.length ? selPlats : ["ig"],
+        hashtags: tags,
+        status: "published",
+        timeStr: selTime,
+        timesOptions: timesOpts,
+        img,
+        score,
+        reach: rndInt(10, 80) * 1000,
+        engRate: "8.5%",
+        isAI: false,
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to publish to Facebook.";
+      showToast(message, "red");
+    } finally {
+      setIsPublishingFacebook(false);
+    }
+  };
+
   if (!state.open) return null;
   return (
     <div onClick={e => { if ((e.target as HTMLElement).id === "modal-backdrop") onClose(); }} id="modal-backdrop"
@@ -1176,6 +1225,16 @@ function EditModal({ state, posts, today, onClose, onSave, onDelete, onDuplicate
           </div>
           <div style={{ display: "flex", gap: 8, marginLeft: "auto" }}>
             <button onClick={onClose} style={{ padding: "9px 16px", borderRadius: 7, border: "1px solid #E2E4F0", background: "#fff", color: "#3D3F60", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Cancel</button>
+            <button
+              onClick={() => {
+                void handlePublishToFacebook();
+              }}
+              disabled={isPublishingFacebook}
+              style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 16px", borderRadius: 7, background: isPublishingFacebook ? "#8CB8F7" : "#1877F2", color: "#fff", fontSize: 13, fontWeight: 800, cursor: isPublishingFacebook ? "not-allowed" : "pointer", border: "none", fontFamily: "Sora,sans-serif" }}
+            >
+              <i className="fa-brands fa-facebook" style={{ fontSize: 12 }} />
+              {isPublishingFacebook ? "Posting..." : "Post to Facebook now"}
+            </button>
             <button onClick={() => onSave({ id: p?.id ?? null, caption, date: dateVal ? new Date(dateVal) : today, type: typeVal, plats: selPlats.length ? selPlats : ["ig"], hashtags: tags, status, timeStr: selTime, timesOptions: timesOpts, img, score, reach: rndInt(10, 80) * 1000, engRate: "8.5%", isAI: false })}
               style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 20px", borderRadius: 7, background: "#5B5BD6", color: "#fff", fontSize: 13.5, fontWeight: 800, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(91,91,214,.32)" }}>
               <i className="fa-solid fa-calendar-check" style={{ fontSize: 12 }} /> Save & Schedule
@@ -1339,10 +1398,11 @@ function GenModal({
 }
 
 // ── Right Panel ────────────────────────────────────────────────────────────
-function RightPanel({ rpTab, setRpTab, posts, onOpen, onAddIdea, showToast }: {
+function RightPanel({ rpTab, setRpTab, posts, onOpen, onAddIdea, showToast, onOpenFacebookConnect }: {
   rpTab: RpTab; setRpTab: (t: RpTab) => void; posts: Post[];
   onOpen: (id: number) => void; onAddIdea: (idea: typeof IDEAS_LIST[0]) => void;
   showToast: (msg: string, type: string) => void;
+  onOpenFacebookConnect: () => void;
 }) {
   const upcoming = posts.filter(p => p.status === "scheduled").sort((a, b) => a.date.getTime() - b.date.getTime()).slice(0, 6);
   return (
@@ -1359,7 +1419,7 @@ function RightPanel({ rpTab, setRpTab, posts, onOpen, onAddIdea, showToast }: {
           <>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
               <div style={{ fontSize: 10.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".6px", color: "#8486AB", fontFamily: "Sora,sans-serif" }}>Connected Accounts</div>
-              <div onClick={() => showToast("✦ Opening connect flow…","brand")} style={{ display: "flex", alignItems: "center", gap: 4, padding: "4px 10px", borderRadius: 20, background: "#EEEEFF", color: "#5B5BD6", fontSize: 11, fontWeight: 700, cursor: "pointer", border: "1px solid #DDDDFB" }}>
+              <div onClick={onOpenFacebookConnect} style={{ display: "flex", alignItems: "center", gap: 4, padding: "4px 10px", borderRadius: 20, background: "#EEEEFF", color: "#5B5BD6", fontSize: 11, fontWeight: 700, cursor: "pointer", border: "1px solid #DDDDFB" }}>
                 <i className="fa-solid fa-plus" style={{ fontSize: 9 }} /> Add Account
               </div>
             </div>
@@ -1653,6 +1713,103 @@ export default function CalendarPage() {
       showToast("✅ Post scheduled!", "green");
     }
     closeModal();
+  };
+
+  const publishFacebookNow = async (data: PostUpsert) => {
+    const message = (data.caption || "").trim();
+    if (!message) {
+      throw new Error("Caption is required for Facebook direct post.");
+    }
+
+    const normalizedHashtags = (data.hashtags || [])
+      .map((tag) => tag.trim())
+      .filter(Boolean)
+      .map((tag) => (tag.startsWith("#") ? tag : `#${tag}`));
+
+    const imageUrlCandidate = (data.img || "").trim();
+    const imageUrl = /^https?:\/\//i.test(imageUrlCandidate)
+      ? imageUrlCandidate
+      : undefined;
+
+    const response = await createFacebookDirectPost({
+      message,
+      title: data.type ? `${TYPE_INFO[data.type].label} Post` : undefined,
+      imageUrl,
+      hashtags: normalizedHashtags.length ? normalizedHashtags : undefined,
+    });
+
+    const platforms = Array.from(
+      new Set([...(data.plats || ["fb"]), "fb"])
+    ) as PlatKey[];
+
+    savePost({
+      ...data,
+      plats: platforms,
+      status: "published",
+    });
+
+    const postId = response.data?.postId;
+    showToast(
+      postId
+        ? `✅ Posted to Facebook (ID: ${postId})`
+        : "✅ Posted to Facebook",
+      "green"
+    );
+  };
+
+  const publishPostToFacebook = async (id: number) => {
+    const post = posts.find((item) => item.id === id);
+    if (!post) {
+      showToast("Post not found.", "red");
+      return;
+    }
+
+    const message = post.caption.trim();
+    if (!message) {
+      showToast("Caption is required for Facebook direct post.", "red");
+      return;
+    }
+
+    try {
+      const hashtags = (post.hashtags || [])
+        .map((tag) => tag.trim())
+        .filter(Boolean)
+        .map((tag) => (tag.startsWith("#") ? tag : `#${tag}`));
+
+      const imageUrlCandidate = (post.img || "").trim();
+      const imageUrl = /^https?:\/\//i.test(imageUrlCandidate)
+        ? imageUrlCandidate
+        : undefined;
+
+      const response = await createFacebookDirectPost({
+        message,
+        title: `${TYPE_INFO[post.type].label} Post`,
+        imageUrl,
+        hashtags: hashtags.length ? hashtags : undefined,
+      });
+
+      const updatedPost: Post = {
+        ...post,
+        status: "published",
+        plats: Array.from(new Set([...post.plats, "fb"])) as PlatKey[],
+      };
+
+      setPosts((prev) => prev.map((item) => (item.id === id ? updatedPost : item)));
+      saveDashboardCalendarPost(updatedPost);
+      void upsertCalendarPostToBackend(updatedPost);
+
+      const postId = response.data?.postId;
+      showToast(
+        postId
+          ? `✅ Posted to Facebook (ID: ${postId})`
+          : "✅ Posted to Facebook",
+        "green"
+      );
+    } catch (error) {
+      const messageText =
+        error instanceof Error ? error.message : "Failed to publish to Facebook.";
+      showToast(messageText, "red");
+    }
   };
 
   const deletePost = (id: number) => {
@@ -2015,7 +2172,7 @@ export default function CalendarPage() {
           </div>
           {/* Posts */}
           <div style={{ borderRight: "1px solid #ECEDF8", padding: 8, minHeight: 600, background: isWE ? "rgba(235,236,248,.35)" : isToday ? "rgba(91,91,214,.025)" : undefined, display: "flex", flexDirection: "column" }}>
-            {dayPosts.map(p => <PostCard key={p.id} p={p} onOpen={() => openModal(p.id)} onDup={() => dupPost(p.id)} onDel={() => deletePost(p.id)} />)}
+            {dayPosts.map(p => <PostCard key={p.id} p={p} onOpen={() => openModal(p.id)} onDup={() => dupPost(p.id)} onDel={() => deletePost(p.id)} onPublishFacebook={() => { void publishPostToFacebook(p.id); }} />)}
             <button onClick={() => openModal(null, d)} style={{ marginTop: "auto", padding: 8, borderRadius: 7, border: "1.5px dashed #E2E4F0", color: "#BFC1D9", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 5, background: "transparent", width: "100%" }}>
               <i className="fa-solid fa-plus" style={{ fontSize: 11 }} /> Add Post
             </button>
@@ -2054,7 +2211,7 @@ export default function CalendarPage() {
               {usePipeline && isFuture && dayPosts.length === 0 && d.getDate() % 3 === 1 && (
                 <div style={{ height: 70, borderRadius: 7, background: "linear-gradient(90deg,#EEEEFF 0%,#DDDDFB 50%,#EEEEFF 100%)", backgroundSize: "600px", animation: "shimmer 1.5s infinite" }} />
               )}
-              {dayPosts.slice(0, 2).map(p => <MiniCard key={p.id} p={p} onOpen={() => openModal(p.id)} onDup={() => dupPost(p.id)} onDel={() => deletePost(p.id)} />)}
+              {dayPosts.slice(0, 2).map(p => <MiniCard key={p.id} p={p} onOpen={() => openModal(p.id)} onDup={() => dupPost(p.id)} onDel={() => deletePost(p.id)} onPublishFacebook={() => { void publishPostToFacebook(p.id); }} />)}
               {dayPosts.length > 2 && (
                 <div style={{ fontSize: 10, fontWeight: 700, color: "#5B5BD6", padding: "3px 7px", borderRadius: 5, background: "#EEEEFF", cursor: "pointer", display: "flex", alignItems: "center", gap: 3, marginTop: 1 }}>
                   <i className="fa-solid fa-layer-group" style={{ fontSize: 8 }} /> +{dayPosts.length - 2} more
@@ -2241,13 +2398,13 @@ export default function CalendarPage() {
             </div>
 
             {/* Right Panel */}
-            <RightPanel rpTab={rpTab} setRpTab={setRpTab} posts={filtered} onOpen={id => openModal(id)} onAddIdea={addIdeaPost} showToast={showToast} />
+            <RightPanel rpTab={rpTab} setRpTab={setRpTab} posts={filtered} onOpen={id => openModal(id)} onAddIdea={addIdeaPost} showToast={showToast} onOpenFacebookConnect={() => router.push("/facebook")} />
           </div>
         </div>
       </div>
 
       {/* Edit Modal */}
-      <EditModal state={modal} posts={posts} today={today} onClose={closeModal} onSave={savePost} onDelete={deletePost} onDuplicate={dupPost} showToast={showToast} user={user} />
+      <EditModal state={modal} posts={posts} today={today} onClose={closeModal} onSave={savePost} onPublishFacebook={publishFacebookNow} onDelete={deletePost} onDuplicate={dupPost} showToast={showToast} user={user} />
 
       {/* AI Generate Modal */}
       <GenModal open={genOpen} pct={genProgress} generatedCount={genCount} statusText={genStatus} />

@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Sidebar from "../../Sidebar";
 import AdminHeader from "../../AdminHeader";
 import { useSidebarState } from "@/hooks/useSidebarState";
+import { getFacebookAuthUrl, getFacebookPages } from "@/api/facebookApi";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 type PlatStatus = "connected" | "disconnected" | "error" | "syncing";
@@ -44,59 +46,42 @@ const INIT_PLATS: Platform[] = [
     color: "#E1306C", grad: "linear-gradient(135deg,#F77737,#E1306C,#C13584,#833AB4)",
     desc: "Share photos, Reels & Stories with 2B+ active users",
     perms: ["Publish photos & videos","Read post insights","Manage comments","Access follower data"],
-    accounts: [
-      { id:"ig1", name:"Brand Name Official", handle:"@brandname", ava:"IG", col:"#E1306C", followers:"32.4K", lastSync:"2 min ago", health:"active" },
-      { id:"ig2", name:"Brand Stories", handle:"@brandstories", ava:"BS", col:"#833AB4", followers:"14.8K", lastSync:"5 min ago", health:"active" },
-    ],
-    status: "connected", stats: { f:"47.2K", p:"280", e:"8.4%" },
+    accounts: [], status: "disconnected",
   },
   {
     id: "fb", name: "Facebook", icon: "fa-brands fa-facebook",
     color: "#1877F2", grad: "linear-gradient(135deg,#1877F2,#0C52C5)",
     desc: "Reach billions via Pages, Groups & Reels",
     perms: ["Manage Facebook Pages","Publish posts & reels","Access Page analytics","Moderate comments"],
-    accounts: [
-      { id:"fb1", name:"Brand Name Page", handle:"Brand Name Co.", ava:"FB", col:"#1877F2", followers:"28.5K", lastSync:"12 min ago", health:"active" },
-    ],
-    status: "connected", stats: { f:"28.5K", p:"198", e:"4.2%" },
+    accounts: [], status: "disconnected",
   },
   {
     id: "tw", name: "Twitter / X", icon: "fa-brands fa-x-twitter",
     color: "#1A1A1A", grad: "linear-gradient(135deg,#1A1A1A,#444)",
     desc: "Real-time conversations, threads & viral reach",
     perms: ["Post & schedule tweets","Read account timeline","Access engagement metrics","Manage replies"],
-    accounts: [
-      { id:"tw1", name:"Brand Name", handle:"@brandname", ava:"TW", col:"#333", followers:"19.1K", lastSync:"1 hr ago", health:"syncing" },
-    ],
-    status: "syncing", stats: { f:"19.1K", p:"2.4K", e:"5.6%" },
+    accounts: [], status: "disconnected",
   },
   {
     id: "li", name: "LinkedIn", icon: "fa-brands fa-linkedin",
     color: "#0A66C2", grad: "linear-gradient(135deg,#0A66C2,#0853A0)",
     desc: "Professional network for B2B growth & thought leadership",
     perms: ["Share posts & articles","Manage Company Page","View follower analytics","Post on behalf of company"],
-    accounts: [
-      { id:"li1", name:"Brand Name Co.", handle:"Company Page · 12.8K followers", ava:"LI", col:"#0A66C2", followers:"12.8K", lastSync:"Just now", health:"active" },
-    ],
-    status: "connected", stats: { f:"12.8K", p:"145", e:"7.8%" },
+    accounts: [], status: "disconnected",
   },
   {
     id: "th", name: "Threads", icon: "fa-brands fa-threads",
     color: "#333333", grad: "linear-gradient(135deg,#111,#444)",
     desc: "Text-first social conversations powered by Meta",
     perms: ["Publish threads & replies","Read engagement data","Access follower count"],
-    accounts: [
-      { id:"th1", name:"Brand Name", handle:"@brandname", ava:"TH", col:"#333", followers:"8.4K", lastSync:"3 min ago", health:"active" },
-    ],
-    status: "connected", stats: { f:"8.4K", p:"97", e:"6.1%" },
+    accounts: [], status: "disconnected",
   },
   {
     id: "yt", name: "YouTube", icon: "fa-brands fa-youtube",
     color: "#FF0000", grad: "linear-gradient(135deg,#FF0000,#CC0000)",
     desc: "World's largest video platform — 2B+ monthly users",
     perms: ["Upload & schedule videos","Manage channel","Post community updates","Read analytics"],
-    accounts: [], status: "error",
-    errorMsg: "API token expired. Reconnect to resume scheduled uploads.",
+    accounts: [], status: "disconnected",
   },
   {
     id: "tk", name: "TikTok", icon: "fa-brands fa-tiktok",
@@ -494,6 +479,41 @@ export default function SocialAccountsPage() {
   const [oauthStep, setOauthStep] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
   const { toasts, show: showToast, remove: removeToast } = useToasts();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // Check Facebook connection on mount
+  useEffect(() => {
+    // If returning from /facebook after successful OAuth
+    if (searchParams.get("fb") === "connected") {
+      showToast("✅ Facebook connected successfully!", "green");
+      router.replace("/dashboards/settings/accounts");
+    }
+
+    // Check if Facebook is already connected via API
+    const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null;
+    if (!token) return;
+
+    getFacebookPages().then(pages => {
+      if (Array.isArray(pages) && pages.length > 0) {
+        setPlats(prev => prev.map(p => {
+          if (p.id !== "fb") return p;
+          const accounts: Account[] = pages.map(pg => ({
+            id: pg.pageId,
+            name: pg.pageName ?? "Facebook Page",
+            handle: pg.isDefault ? "Default Page" : "Page",
+            ava: "FB",
+            col: "#1877F2",
+            followers: "—",
+            lastSync: "Just now",
+            health: "active" as const,
+          }));
+          return { ...p, status: "connected" as PlatStatus, accounts, stats: { f: "—", p: "—", e: "—%" } };
+        }));
+      }
+    }).catch(() => { /* not connected, stay disconnected */ });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const filteredPlats = plats.filter(p => {
     if (filter === "connected") return ["connected","syncing"].includes(p.status);
@@ -511,7 +531,18 @@ export default function SocialAccountsPage() {
   const openPicker = () => setModal({ type:"picker" });
   const closeModal = () => { setModal({ type:null }); setOauthStep(0); setShowSuccess(false); };
 
-  const startOAuth = (platId: string) => {
+  const startOAuth = async (platId: string) => {
+    if (platId === "fb") {
+      try {
+        const url = await getFacebookAuthUrl();
+        window.location.href = url;
+      } catch {
+        showToast("Facebook connect failed. Please try again.", "red");
+        closeModal();
+      }
+      return;
+    }
+
     setModal({ type:"oauthLoading", platId });
     setOauthStep(0);
     let step = 0;

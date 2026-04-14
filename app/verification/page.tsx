@@ -21,6 +21,17 @@ function VerifyEmailContent() {
     const [error, setError] = useState("");
     const [info, setInfo] = useState("");
 
+    const handleCopyEmail = async () => {
+        if (!email || email === "your email") return;
+        try {
+            await navigator.clipboard.writeText(email);
+            setInfo("Email copied to clipboard.");
+            setError("");
+        } catch {
+            setError("Unable to copy email. Please copy it manually.");
+        }
+    };
+
     const handleVerifyContinue = async () => {
         if (otp.trim().length !== 6) {
             setError("Enter the 6-digit OTP sent to your email.");
@@ -116,6 +127,17 @@ function VerifyEmailContent() {
                 >
                     We sent a code to <span style={{ fontFamily: "Arial", fontWeight: 500 }}>{email}</span>
                 </p>
+
+                <div className="mb-6 flex justify-center">
+                    <button
+                        type="button"
+                        onClick={handleCopyEmail}
+                        className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50"
+                        style={{ fontFamily: "Arial", fontWeight: 400 }}
+                    >
+                        Copy email
+                    </button>
+                </div>
 
                 {/* Verification Code */}
                 <label
