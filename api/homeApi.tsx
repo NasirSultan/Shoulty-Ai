@@ -85,6 +85,10 @@ export const fetchImages = async (subIndustryId?: string | null) => {
         if (!res.ok) {
             const errorText = await res.text().catch(() => "Unknown error");
             console.error(`❌ API Error ${res.status}:`, errorText);
+            if (res.status === 400) {
+                console.warn("📸 [fetchImages] Invalid subIndustryId, returning empty array");
+                return [];
+            }
             throw new Error(`HTTP error! status: ${res.status} - ${errorText}`);
         }
         

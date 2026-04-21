@@ -288,6 +288,7 @@ export default function LandingPage() {
     };
     useEffect(() => {
         const loadGenerateImages = async () => {
+            if (!generateSelectedSubIndustry) return;
             await getImagesWithCache(
                 "generate",
                 generateSelectedSubIndustry,
@@ -429,6 +430,17 @@ export default function LandingPage() {
         const selectedIndustryObj = industries.find(
             (industry: Industry) => String(industry.id) === String(effectiveIndustryId),
         );
+
+        const selectedSubIndustryObj = selectedIndustryObj?.subIndustries.find(
+            (sub: SubIndustry) => String(sub.id) === String(effectiveSubIndustryId),
+        );
+
+        if (!selectedSubIndustryObj) {
+            setGenerateValidationError("Selected sub-industry is invalid. Please select again.");
+            return;
+        }
+
+        console.log("[Generate] Selected industry:", selectedIndustryObj?.name, "Sub-industry:", selectedSubIndustryObj?.name);
 
         if (!selectedContent) {
             setSelectedContent("photos");
