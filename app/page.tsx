@@ -184,7 +184,7 @@ export default function LandingPage() {
         useState<string | null>(null);
     const [generatePendingSubIndustry, setGeneratePendingSubIndustry] =
         useState<string | null>(null);
-    const [brandDescription, setBrandDescription] = useState("Real estate agent in Austin. Luxury homes,");
+    const [brandDescription, setBrandDescription] = useState("");
 
     const [libraryShowSubIndustries, setLibraryShowSubIndustries] =
         useState(false);
