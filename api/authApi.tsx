@@ -55,13 +55,35 @@ export const googleLogin = async (idToken: string) => {
 };
 
 export const emailLogin = async (email: string, password: string) => {
-    const response = await shoutlyClient.post(API_ENDPOINTS.emailLogin, {
-        email,
-        password,
-    });
-    const { token, user } = response.data;
-    localStorage.setItem("shoutly_token", token);
-    return { token, user };
+    try {
+        const response = await shoutlyClient.post(API_ENDPOINTS.emailLogin, {
+            email,
+            password,
+        });
+        const { token, user } = response.data;
+        localStorage.setItem("shoutly_token", token);
+        return { token, user };
+    } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+            const status = error.response?.status;
+            const apiMessage =
+                (error.response?.data as { message?: string } | undefined)?.message;
+
+            if (status === 401) {
+                throw new Error(apiMessage || "Invalid email or password.");
+            }
+
+            if (status === 500) {
+                throw new Error(
+                    apiMessage || "Server error. Please try again later."
+                );
+            }
+
+            throw new Error(apiMessage || "Sign-in failed. Please try again.");
+        }
+
+        throw new Error("Sign-in failed. Please try again.");
+    }
 };
 
 export const registerUser = async (payload: {

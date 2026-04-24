@@ -184,6 +184,7 @@ export default function LandingPage() {
         useState<string | null>(null);
     const [generatePendingSubIndustry, setGeneratePendingSubIndustry] =
         useState<string | null>(null);
+    const [brandDescription, setBrandDescription] = useState("Real estate agent in Austin. Luxury homes,");
 
     const [libraryShowSubIndustries, setLibraryShowSubIndustries] =
         useState(false);
@@ -202,10 +203,9 @@ export default function LandingPage() {
 
     const [industries, setIndustries] = useState<Industry[]>([]);
     const [loadingIndustries, setLoadingIndustries] = useState(true);
-    const [brandDescription, setBrandDescription] = useState<string>("");
+    const [selectedContent, setSelectedContent] = useState<"photos" | "reels" | null>(null);
     const [isRegeneratingBrand, setIsRegeneratingBrand] = useState(false);
     const [regenerateBrandError, setRegenerateBrandError] = useState<string | null>(null);
-    const [selectedContent, setSelectedContent] = useState<"photos" | "reels" | null>(null);
     const [generateValidationError, setGenerateValidationError] = useState<string | null>(null);
     const regenerateBrandAbortRef = useRef<AbortController | null>(null);
     const getImageCacheKey = (
@@ -698,6 +698,71 @@ export default function LandingPage() {
     ];
 
     const animatedPlaceholder = useTypingEffect(placeholderOptions);
+    
+    // Hero mosaic setup
+    const INDUSTRY_PHOTOS = [
+      { label: "Healthcare", url: "https://images.pexels.com/photos/4386466/pexels-photo-4386466.jpeg?w=300&h=200&fit=crop" },
+      { label: "Dental Clinic", url: "https://images.pexels.com/photos/3845626/pexels-photo-3845626.jpeg?w=300&h=200&fit=crop" },
+      { label: "Pharmacy", url: "https://images.pexels.com/photos/3683042/pexels-photo-3683042.jpeg?w=300&h=200&fit=crop" },
+      { label: "Veterinary", url: "https://images.pexels.com/photos/6231768/pexels-photo-6231768.jpeg?w=300&h=200&fit=crop" },
+      { label: "Restaurant", url: "https://images.pexels.com/photos/260922/pexels-photo-260922.jpeg?w=300&h=200&fit=crop" },
+      { label: "Bakery", url: "https://images.pexels.com/photos/5710149/pexels-photo-5710149.jpeg?w=300&h=200&fit=crop" },
+      { label: "Coffee Shop", url: "https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg?w=300&h=200&fit=crop" },
+      { label: "Real Estate", url: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?w=300&h=200&fit=crop" },
+      { label: "Interior Design", url: "https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?w=300&h=200&fit=crop" },
+      { label: "Architecture", url: "https://images.pexels.com/photos/1732414/pexels-photo-1732414.jpeg?w=300&h=200&fit=crop" },
+      { label: "Fitness Gym", url: "https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?w=300&h=200&fit=crop" },
+      { label: "Yoga Studio", url: "https://images.pexels.com/photos/3823039/pexels-photo-3823039.jpeg?w=300&h=200&fit=crop" },
+      { label: "Spa", url: "https://images.pexels.com/photos/210019/pexels-photo-210019.jpeg?w=300&h=200&fit=crop" },
+      { label: "Education", url: "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?w=300&h=200&fit=crop" },
+      { label: "University", url: "https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg?w=300&h=200&fit=crop" },
+      { label: "E-Commerce", url: "https://images.pexels.com/photos/5632379/pexels-photo-5632379.jpeg?w=300&h=200&fit=crop" },
+      { label: "Fashion", url: "https://images.pexels.com/photos/298863/pexels-photo-298863.jpeg?w=300&h=200&fit=crop" },
+      { label: "Jewelry", url: "https://images.pexels.com/photos/1121588/pexels-photo-1121588.jpeg?w=300&h=200&fit=crop" },
+      { label: "Finance", url: "https://images.pexels.com/photos/4386363/pexels-photo-4386363.jpeg?w=300&h=200&fit=crop" },
+      { label: "Legal", url: "https://images.pexels.com/photos/6077378/pexels-photo-6077378.jpeg?w=300&h=200&fit=crop" },
+      { label: "Accounting", url: "https://images.pexels.com/photos/6863170/pexels-photo-6863170.jpeg?w=300&h=200&fit=crop" },
+      { label: "Hair Salon", url: "https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg?w=300&h=200&fit=crop" },
+      { label: "Nail Studio", url: "https://images.pexels.com/photos/3993454/pexels-photo-3993454.jpeg?w=300&h=200&fit=crop" },
+      { label: "Barbershop", url: "https://images.pexels.com/photos/247322/pexels-photo-247322.jpeg?w=300&h=200&fit=crop" },
+      { label: "Skincare", url: "https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?w=300&h=200&fit=crop" },
+      { label: "Travel", url: "https://images.pexels.com/photos/3278215/pexels-photo-3278215.jpeg?w=300&h=200&fit=crop" },
+      { label: "Hotel", url: "https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?w=300&h=200&fit=crop" },
+      { label: "Resort", url: "https://images.pexels.com/photos/338504/pexels-photo-338504.jpeg?w=300&h=200&fit=crop" },
+      { label: "Events", url: "https://images.pexels.com/photos/587741/pexels-photo-587741.jpeg?w=300&h=200&fit=crop" },
+      { label: "Weddings", url: "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?w=300&h=200&fit=crop" },
+      { label: "Music", url: "https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?w=300&h=200&fit=crop" },
+      { label: "Tech Startup", url: "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?w=300&h=200&fit=crop" },
+      { label: "Gaming", url: "https://images.pexels.com/photos/316444/pexels-photo-316444.jpeg?w=300&h=200&fit=crop" },
+      { label: "Cybersecurity", url: "https://images.pexels.com/photos/6054887/pexels-photo-6054887.jpeg?w=300&h=200&fit=crop" },
+      { label: "Automotive", url: "https://images.pexels.com/photos/120049/pexels-photo-120049.jpeg?w=300&h=200&fit=crop" },
+      { label: "Construction", url: "https://images.pexels.com/photos/209251/pexels-photo-209251.jpeg?w=300&h=200&fit=crop" },
+      { label: "Agriculture", url: "https://images.pexels.com/photos/1904716/pexels-photo-1904716.jpeg?w=300&h=200&fit=crop" },
+      { label: "Floristry", url: "https://images.pexels.com/photos/126859/pexels-photo-126859.jpeg?w=300&h=200&fit=crop" },
+      { label: "Photography", url: "https://images.pexels.com/photos/1181467/pexels-photo-1181467.jpeg?w=300&h=200&fit=crop" },
+      { label: "Sports", url: "https://images.pexels.com/photos/248547/pexels-photo-248547.jpeg?w=300&h=200&fit=crop" },
+    ];
+    
+    const shuffleArray = (arr: any[]) => {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    };
+    
+    const [shuffledIndustries, setShuffledIndustries] = useState<any[]>([]);
+    
+    useEffect(() => {
+      setShuffledIndustries(shuffleArray(INDUSTRY_PHOTOS));
+    }, []);
+    
+    const columnsCount = 5;
+    const itemsPerColumn = Math.ceil(shuffledIndustries.length / columnsCount);
+    const directions = ['scrollUp', 'scrollDown', 'scrollUp', 'scrollDown', 'scrollUp'];
+    const speeds = [120, 160, 110, 150, 130];
+
     return (
         <div className="relative bg-white dark:bg-gray-950 font-arial min-h-screen text-gray-900 dark:text-white selection:text-white overflow-hidden">
             {/* GLOBAL FLOATING AI + SOCIAL MEDIA BUBBLES */}
@@ -722,6 +787,129 @@ export default function LandingPage() {
                 ))}
             </div>
 
+            {/* HERO SECTION WITH MOSAIC */}
+            <section className="relative overflow-hidden min-h-screen flex items-center pt-16 bg-gradient-to-b from-slate-950 via-slate-900 to-white">
+                {/* Orbs */}
+                <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full blur-3xl opacity-10 -ml-48 -mt-32 animate-pulse" style={{animation: "f1 20s ease-in-out infinite alternate"}}></div>
+                <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-full blur-3xl opacity-10 -mr-40 -mt-20 animate-pulse" style={{animation: "f2 24s ease-in-out infinite alternate"}}></div>
+                
+                {/* Grid Background */}
+                <div className="absolute inset-0 pointer-events-none" style={{
+                    backgroundImage: "linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px), linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px)",
+                    backgroundSize: "52px 52px",
+                    WebkitMaskImage: "radial-gradient(ellipse 90% 80% at 50% 40%, black 30%, transparent 100%)",
+                    maskImage: "radial-gradient(ellipse 90% 80% at 50% 40%, black 30%, transparent 100%)"
+                }}></div>
+
+                <div className="relative z-10 w-full max-w-6xl mx-auto px-8 sm:px-12 py-20 grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+                    {/* Left Content */}
+                    <div className="flex flex-col gap-6">
+                        {/* Pill Badge */}
+                        <div className="inline-flex items-center gap-2 w-fit px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/30">
+                            <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></span>
+                            <span className="text-xs font-bold uppercase tracking-wider text-blue-400">AI Social Media Automation</span>
+                        </div>
+
+                        {/* Heading */}
+                        <h1 className="text-5xl md:text-6xl font-black tracking-tight text-white leading-tight">
+                            One Prompt.<br />
+                            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">365 Days</span>
+                            <br />
+                            of Content.<br />
+                            Zero Effort.
+                        </h1>
+
+                        {/* Subtitle */}
+                        <p className="text-base text-slate-300 leading-relaxed max-w-md">
+                            Shoutly AI generates a full year of on-brand social media content from a single business prompt — scheduled, optimised, and ready to publish across every platform.
+                        </p>
+
+                        {/* CTAs */}
+                        <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                            <button onClick={() => scrollToSectionInOneSecond('industry-cards')} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold hover:shadow-lg hover:shadow-blue-500/50 transition-all">
+                                Start Free Trial
+                                <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
+                                    <path d="M2.5 7h9M8 3.5 11.5 7 8 10.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Right - Mosaic Gallery */}
+                    <div className="relative">
+                        <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur p-4" style={{height: "480px"}}>
+                            {/* Badge */}
+                            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 px-4 py-2 rounded-full bg-slate-900/80 border border-white/10 backdrop-blur flex items-center gap-2 text-xs font-bold text-slate-300">
+                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                                45+ industries • authentic matching photos
+                            </div>
+
+                            {/* Mosaic Grid */}
+                            <div className="grid grid-cols-5 gap-1 h-full overflow-hidden" style={{
+                                WebkitMaskImage: "linear-gradient(180deg, transparent 0%, black 8%, black 90%, transparent 100%)",
+                                maskImage: "linear-gradient(180deg, transparent 0%, black 8%, black 90%, transparent 100%)"
+                            }}>
+                                {Array.from({length: columnsCount}).map((_, colIndex) => {
+                                    const startIdx = colIndex * itemsPerColumn;
+                                    const endIdx = Math.min(startIdx + itemsPerColumn, shuffledIndustries.length);
+                                    const columnItems = shuffledIndustries.slice(startIdx, endIdx);
+                                    const allItems = [...columnItems, ...columnItems, ...columnItems.slice(0, 6)];
+                                    const direction = directions[colIndex];
+                                    const speed = speeds[colIndex];
+                                    
+                                    return (
+                                        <div 
+                                            key={colIndex} 
+                                            className="flex flex-col gap-1"
+                                            style={{
+                                                animation: `${direction === 'scrollUp' ? 'scrollUp' : 'scrollDown'} ${speed}s linear infinite`,
+                                                animationPlayState: 'running'
+                                            }}
+                                        >
+                                            {allItems.map((item, idx) => (
+                                                <div 
+                                                    key={idx} 
+                                                    className="relative flex-shrink-0 rounded-lg overflow-hidden border border-white/10 hover:border-white/30 hover:scale-110 transition-all cursor-pointer group"
+                                                    style={{height: "90px", zIndex: "auto"}}
+                                                >
+                                                    <img 
+                                                        src={item.url} 
+                                                        alt={item.label}
+                                                        loading="lazy"
+                                                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                                    />
+                                                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60"></div>
+                                                    <span className="absolute bottom-1 left-0 right-0 text-center text-xs font-bold text-white uppercase tracking-wider" style={{textShadow: '0 1px 4px rgba(0,0,0,.9)'}}>
+                                                        {item.label}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <style jsx>{`
+                    @keyframes scrollUp {
+                        from { transform: translateY(0); }
+                        to { transform: translateY(-50%); }
+                    }
+                    @keyframes scrollDown {
+                        from { transform: translateY(-50%); }
+                        to { transform: translateY(0); }
+                    }
+                    @keyframes f1 {
+                        to { transform: translate(40px, 50px); }
+                    }
+                    @keyframes f2 {
+                        to { transform: translate(-40px, 40px); }
+                    }
+                `}</style>
+            </section>
+
             <section
                 id="generator"
                 className="py-14 sm:py-24 bg-white text-slate-900 overflow-hidden relative"
@@ -741,7 +929,7 @@ export default function LandingPage() {
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-                    <div className="banner relative rounded-3xl px-8 py-10 sm:py-12 mb-8 overflow-hidden border border-slate-300/40 shadow-[0_24px_60px_rgba(10,20,35,0.28)] transition-all duration-300">
+                    <div className="banner hidden relative rounded-3xl px-8 py-10 sm:py-12 mb-8 overflow-hidden border border-slate-300/40 shadow-[0_24px_60px_rgba(10,20,35,0.28)] transition-all duration-300">
                         <div className="absolute inset-0 pointer-events-none">
                             <div
                                 className="absolute inset-0 bg-cover bg-center"
@@ -780,7 +968,7 @@ export default function LandingPage() {
                     </div>
 
                     {/* Cards Row */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
+                    <div id="industry-cards" className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
                         {/* CARD 1 - Industry Selection */}
                         <div className="border border-slate-200 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm relative overflow-hidden bg-slate-50/50">
                             <div className="flex items-center gap-3 mb-5 sm:mb-6">

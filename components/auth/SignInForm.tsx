@@ -93,6 +93,11 @@ export default function SignInForm() {
                     </div>
 
                     <form onSubmit={handleSubmit} className="w-full space-y-6">
+                        {error && (
+                            <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm font-medium">
+                                {error}
+                            </div>
+                        )}
                         <div>
                             <label className="block text-sm font-bold text-gray-600 mb-2.5 ml-1">
                                 Email Address
