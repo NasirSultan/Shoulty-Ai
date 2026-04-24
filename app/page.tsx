@@ -718,9 +718,9 @@ export default function LandingPage() {
       { label: "University", url: "https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg?w=300&h=200&fit=crop" },
       { label: "E-Commerce", url: "https://images.pexels.com/photos/5632379/pexels-photo-5632379.jpeg?w=300&h=200&fit=crop" },
       { label: "Fashion", url: "https://images.pexels.com/photos/298863/pexels-photo-298863.jpeg?w=300&h=200&fit=crop" },
-      { label: "Jewelry", url: "https://images.pexels.com/photos/1121588/pexels-photo-1121588.jpeg?w=300&h=200&fit=crop" },
+      
       { label: "Finance", url: "https://images.pexels.com/photos/4386363/pexels-photo-4386363.jpeg?w=300&h=200&fit=crop" },
-      { label: "Legal", url: "https://images.pexels.com/photos/6077378/pexels-photo-6077378.jpeg?w=300&h=200&fit=crop" },
+      
       { label: "Accounting", url: "https://images.pexels.com/photos/6863170/pexels-photo-6863170.jpeg?w=300&h=200&fit=crop" },
       { label: "Hair Salon", url: "https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg?w=300&h=200&fit=crop" },
       { label: "Nail Studio", url: "https://images.pexels.com/photos/3993454/pexels-photo-3993454.jpeg?w=300&h=200&fit=crop" },
@@ -734,7 +734,7 @@ export default function LandingPage() {
       { label: "Music", url: "https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?w=300&h=200&fit=crop" },
       { label: "Tech Startup", url: "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?w=300&h=200&fit=crop" },
       { label: "Gaming", url: "https://images.pexels.com/photos/316444/pexels-photo-316444.jpeg?w=300&h=200&fit=crop" },
-      { label: "Cybersecurity", url: "https://images.pexels.com/photos/6054887/pexels-photo-6054887.jpeg?w=300&h=200&fit=crop" },
+      
       { label: "Automotive", url: "https://images.pexels.com/photos/120049/pexels-photo-120049.jpeg?w=300&h=200&fit=crop" },
       { label: "Construction", url: "https://images.pexels.com/photos/209251/pexels-photo-209251.jpeg?w=300&h=200&fit=crop" },
       { label: "Agriculture", url: "https://images.pexels.com/photos/1904716/pexels-photo-1904716.jpeg?w=300&h=200&fit=crop" },
