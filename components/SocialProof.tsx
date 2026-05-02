@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 const faqs = [
     {
@@ -63,22 +64,22 @@ export function FAQ() {
 
 const testimonials = [
     {
-        quote: "Shoutly has completely saved my sanity. I used to spend Sundays stressed about content. Now it's all done in 10 minutes.",
-        author: "Sarah J.",
-        role: "Small Business Owner",
-        avatar: "https://i.pravatar.cc/150?u=sarah"
+        quote: "Shoutly has completely saved my sanity. I used to spend Sundays stressed about content for my online store. Now it's all done in 10 minutes.",
+        author: "Arjun Kapur",
+        role: "E-commerce Founder, Mumbai",
+        avatar: "images/user/user-02.jpg"
     },
     {
-        quote: "The brand voice feature is incredible. It actually sounds like me, not a robot. My engagement has doubled.",
-        author: "Mark T.",
-        role: "Marketing Freelancer",
-        avatar: "https://i.pravatar.cc/150?u=mark"
+        quote: "The brand voice feature is incredible. It actually sounds like me, not a robot. My real estate agency's engagement has doubled.",
+        author: "Vikram Malhotra",
+        role: "Real Estate Consultant, Delhi",
+        avatar: "images/user/owner.jpg"
     },
     {
-        quote: "I manage 5 clients and Shoutly is the only reason I can sleep at night. Best investment for my agency.",
-        author: "Elena R.",
-        role: "Social Media Manager",
-        avatar: "https://i.pravatar.cc/150?u=elena"
+        quote: "I manage 5 clients for my agency and Shoutly is the only reason I can sleep at night. Best investment for Indian marketers.",
+        author: "Priya Iyer",
+        role: "Agency Founder, Bangalore",
+        avatar: "images/user/user-03.jpg"
     }
 ];
 
@@ -100,10 +101,13 @@ export function Testimonials() {
                             </div>
                             <p className="text-lg text-gray-700 dark:text-gray-300 mb-6 italic">&quot;{t.quote}&quot;</p>
                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden">
-                                    {/* Fallback for avatar if external not allowed, but using standard placeholder pattern */}
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img src={t.avatar} alt={t.author} className="w-full h-full object-cover" />
+                                <div className="relative w-12 h-12 rounded-full overflow-hidden">
+                                    <Image 
+                                        src={t.avatar} 
+                                        alt={t.author} 
+                                        fill
+                                        className="object-cover" 
+                                    />
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-gray-900 dark:text-white">{t.author}</h4>

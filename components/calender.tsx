@@ -26,7 +26,7 @@ interface ContentDay {
   badgeClass: string;
 }
 
-const SocialMediaCalendar = () => {
+const SocialMediaCalendar = ({ selectedIndustry }: { selectedIndustry?: string }) => {
   // 1. Data Setup from original source
   const captions = [
     "Boost your Monday productivity with smart marketing habits.",

@@ -114,25 +114,19 @@ const streamPostGenerator = async <TChunk>(
   let response = await doRequest(endpoint);
 
   if (!response.ok) {
-    if (response.status === 503 && fallbackEndpoint) {
-      // Lambda proxy got a 503 from Render — try the direct upstream URL instead.
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      response = await doRequest(fallbackEndpoint);
-      if (!response.ok && (response.status === 503 || response.status === 504)) {
-        await new Promise((resolve) => setTimeout(resolve, 4000));
-        response = await doRequest(fallbackEndpoint);
-      }
-    } else if (response.status === 503) {
-      // No fallback available — simple single retry via the same proxy.
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      response = await doRequest(endpoint);
-    } else if (response.status === 504 && fallbackEndpoint) {
-      // Lambda timed out (Render cold start). Retry directly from the browser.
+    const retryableStatuses = [502, 503, 504];
+    if (retryableStatuses.includes(response.status)) {
+      console.warn(`[Stream] Proxy returned ${response.status}. Retrying via proxy...`);
+      
+      // Attempt 2: Wait 3s
       await new Promise((resolve) => setTimeout(resolve, 3000));
-      response = await doRequest(fallbackEndpoint);
-      if (!response.ok && (response.status === 503 || response.status === 504)) {
-        await new Promise((resolve) => setTimeout(resolve, 4000));
-        response = await doRequest(fallbackEndpoint);
+      response = await doRequest(endpoint);
+      
+      // Attempt 3: Wait 5s
+      if (!response.ok && retryableStatuses.includes(response.status)) {
+        console.warn(`[Stream] Proxy still returning ${response.status}. Final retry attempt...`);
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        response = await doRequest(endpoint);
       }
     }
 
@@ -175,7 +169,13 @@ const streamPostGenerator = async <TChunk>(
       return;
     }
 
-    callbacks.onChunk(parsed as TChunk);
+    const chunk = parsed as TChunk;
+    if (chunk && typeof chunk === "object" && "post" in chunk) {
+      const p = (chunk as any).post;
+      if (p && !p.source) p.source = "LLM";
+    }
+
+    callbacks.onChunk(chunk);
   };
 
   while (true) {

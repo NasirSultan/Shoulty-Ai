@@ -13,6 +13,9 @@ import {
 } from "@/api/postGeneratorApi";
 import { streamGenerateTexts } from "@/api/textGeneratorApi";
 import PostPopup from "@/components/PostPopup";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { DEMO_POSTS } from "@/data/demo-posts";
+import { Testimonials, FAQ } from "@/components/SocialProof";
 
 import {
     FaFacebookF,
@@ -174,7 +177,9 @@ export default function LandingPage() {
     >([]);
     const [generateImages, setGenerateImages] = useState<ImageItem[]>([]);
     const [generateLoadingImages, setGenerateLoadingImages] = useState(false);
-    const [previewStockImages, setPreviewStockImages] = useState<ImageItem[]>([]);
+    const [previewStockImages, setPreviewStockImages] = useState<ImageItem[]>(
+        DEMO_POSTS.map(p => ({ id: p.id, url: p.image.imageUrl, name: p.text }))
+    );
     const [streamedPosts, setStreamedPosts] = useState<GeneratedPost[]>([]);
     const [streamLoading, setStreamLoading] = useState(false);
     const [streamError, setStreamError] = useState<string | null>(null);
@@ -331,7 +336,7 @@ export default function LandingPage() {
         });
 
         if (!uniqueImages.length) {
-            setPreviewStockImages([]);
+            // If no unique images from API, don't clear. This preserves DEMO_POSTS fallback.
             return;
         }
 
@@ -582,8 +587,8 @@ export default function LandingPage() {
 
         const handleChunk = (chunk: { post: GeneratedPost }) => {
             // Only collect LLM (AI) posts — skip DB posts
-            if (chunk.post?.source !== "LLM") {
-                console.log("[Stream] Skipping DB post, waiting for LLM...");
+            if (chunk.post?.source === "DB") {
+                console.log("[Stream] Skipping DB post...");
                 return;
             }
             
@@ -682,12 +687,21 @@ export default function LandingPage() {
         console.log(`[Stream] All settled. Final AI posts: ${collectedAI.length}`);
         setStreamLoading(false);
     };
-    // REPLACE WITH:
     useEffect(() => {
         const loadIndustries = async () => {
             const data = await fetchIndustries();
             setIndustries(data);
             setLoadingIndustries(false);
+
+            // Pre-select "Food & Beverage" for the library to avoid empty state
+            const defaultIndustry = data.find((ind: Industry) => ind.name === "Food & Beverage");
+            if (defaultIndustry) {
+                setLibrarySelectedIndustry(String(defaultIndustry.id));
+                const firstSub = defaultIndustry.subIndustries?.[0];
+                if (firstSub) {
+                    setLibrarySelectedSubIndustry(String(firstSub.id));
+                }
+            }
         };
         loadIndustries();
     }, []);
@@ -1130,7 +1144,7 @@ export default function LandingPage() {
                             </div>
                             <p className="text-center text-xs sm:text-sm text-slate-900 mb-8 font-medium">
                                 No credit card required • 2-min setup <br />
-                                100+ founders already automating
+                                Trusted by 5,000+ businesses automating their social media
                             </p>
 
                             {/* Power CTA Button - Changed to Brand Black/Orange */}
@@ -1429,7 +1443,9 @@ export default function LandingPage() {
                     </div>
                 </div>
             </section>
-            <Calender />
+            <Calender selectedIndustry={
+                industries.find(ind => String(ind.id) === String(generateSelectedIndustry))?.name
+            } />
 
             <section
                 id="who-we-help"
@@ -2696,6 +2712,8 @@ export default function LandingPage() {
                 <PricingSection />
             </div>
 
+            <Testimonials />
+
             <section className="py-14 sm:py-20 bg-white overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
                     {/* Title */}
@@ -2758,6 +2776,8 @@ export default function LandingPage() {
                     {/* Feature Cards */}
                 </div>
             </section>
+
+            <FAQ />
 
             {/* Post Modal */}
             {selectedPreviewPost && (
