@@ -15,7 +15,8 @@ import { streamGenerateTexts } from "@/api/textGeneratorApi";
 import PostPopup from "@/components/PostPopup";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { DEMO_POSTS } from "@/data/demo-posts";
-import { Testimonials, FAQ } from "@/components/SocialProof";
+import { Testimonials } from "@/components/SocialProof";
+import { HomepageFAQ } from "@/components/FAQ";
 
 import {
     FaFacebookF,
@@ -2777,7 +2778,7 @@ export default function LandingPage() {
                 </div>
             </section>
 
-            <FAQ />
+            <HomepageFAQ />
 
             {/* Post Modal */}
             {selectedPreviewPost && (

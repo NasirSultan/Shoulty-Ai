@@ -173,7 +173,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-200 dark:border-gray-800 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
+        <div className="border-t border-gray-200 dark:border-gray-800 pt-6 flex flex-col items-center text-center">
           <p className="text-xs text-gray-500 dark:text-gray-400">
             © {currentYear} shoutlyai — <span className="font-semibold text-gray-900 dark:text-white">Qubixel Technologies Private Limited</span>. All rights reserved.
             <span className="block sm:inline sm:ml-1 text-gray-500 dark:text-gray-400">smart ai powering your social media for the next 365 days.</span>
