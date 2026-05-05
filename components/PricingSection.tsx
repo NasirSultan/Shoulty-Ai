@@ -375,77 +375,7 @@ export default function PricingSection() {
           </div>
         </div>
 
-        {/* Competitor table */}
-        <h2 style={{ fontSize: "clamp(18px,2.5vw,24px)", fontWeight: 800, color: "#111827", textAlign: "center", marginBottom: 5 }}>How we compare</h2>
-        <p style={{ fontSize: 12, color: "#6B7280", textAlign: "center", marginBottom: 24 }}>ShoutlyAI is the only tool built for India — festival AI, INR pricing, 5,000+ poster library</p>
-        <div style={{ overflowX: "auto", borderRadius: 14, boxShadow: "0 2px 12px rgba(0,0,0,.06)", marginBottom: 36 }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", background: "#fff" }}>
-            <thead>
-              <tr>
-                {["Tool", "Entry price", "No watermark", "Reels", "Festival AI", "India focus", "365-day plan", "Free tier"].map((h) => (
-                  <th key={h} style={{ padding: "10px 9px", fontSize: 10, fontWeight: 700, background: "#F9FAFB", color: "#6B7280", borderBottom: "1.5px solid #E5E7EB", textAlign: h === "Tool" ? "left" : "center", paddingLeft: h === "Tool" ? 14 : 9 }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                { name: "ShoutlyAI", you: true, entry: inr ? "₹3,000" : "$36", noWm: inr ? "₹3,000" : "$36", reels: true, fest: true, india: true, y365: true, free: "7-day" },
-                { name: "Predis.ai", you: false, entry: "$19", noWm: "$19", reels: true, fest: false, india: false, y365: false, free: "Trial" },
-                { name: "SocialBee", you: false, entry: "$29", noWm: "$29", reels: false, fest: false, india: false, y365: false, free: "14-day" },
-                { name: "Buffer",    you: false, entry: "$6/ch", noWm: "$6/ch", reels: false, fest: false, india: false, y365: false, free: "3 channels" },
-                { name: "Hootsuite", you: false, entry: "$99", noWm: "$99", reels: false, fest: false, india: false, y365: false, free: "No" },
-              ].map((c, ci) => (
-                <tr key={c.name} style={{ background: c.you ? "#EFF6FF" : "transparent" }}>
-                  <td style={{ padding: "10px 14px", fontSize: c.you ? 12 : 11, fontWeight: 700, color: c.you ? "#1D4ED8" : "#111827", borderBottom: ci < 4 ? "1px solid #F3F4F6" : "none" }}>
-                    {c.you ? "🚀 " : ""}{c.name}
-                    {c.you && <span style={{ marginLeft: 5, fontSize: 8, background: "#2563EB", color: "#fff", padding: "1px 6px", borderRadius: 8, fontWeight: 700 }}>YOU</span>}
-                  </td>
-                  {[c.entry, c.noWm, c.reels, c.fest, c.india, c.y365, c.free].map((val, vi) => (
-                    <td key={vi} style={{ textAlign: "center", fontSize: typeof val === "boolean" ? 13 : 10, fontWeight: typeof val === "boolean" ? 700 : 400, color: typeof val === "boolean" ? (val ? "#059669" : "#D1D5DB") : (c.you ? "#1E40AF" : "#374151"), borderBottom: ci < 4 ? "1px solid #F3F4F6" : "none", background: c.you ? "#EFF6FF" : "transparent" }}>
-                      {typeof val === "boolean" ? (val ? "✓" : "✗") : (val as string)}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <div style={{ textAlign: "center", fontSize: 10, color: "#9CA3AF", margin: "0 0 36px" }}>
-          Extra brand add-on: ₹2,500/mo &nbsp;·&nbsp; White-label: ₹15,000/mo &nbsp;·&nbsp; API access: Agency plan only &nbsp;·&nbsp; Custom AI training: ₹83,000 one-time
-        </div>
-
-        {/* Value banner */}
-        <div style={{ background: "linear-gradient(135deg,#1B2A4A,#0F172A)", borderRadius: 20, padding: "36px 28px", textAlign: "center", color: "#fff", marginBottom: 32 }}>
-          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: ".12em", color: "#60A5FA", marginBottom: 9, textTransform: "uppercase" }}>The Math Is Simple</div>
-          <div style={{ fontSize: "clamp(18px,3vw,28px)", fontWeight: 800, marginBottom: 10, lineHeight: 1.3 }}>
-            Agency charges ₹3,00,000/year.<br />
-            <span style={{ color: "#60A5FA" }}>ShoutlyAI costs ₹{((annual ? 4800 : 6000) * 12).toLocaleString("en-IN")}/year.</span>
-          </div>
-          <p style={{ fontSize: 13, color: "#94A3B8", margin: "0 auto 22px", maxWidth: 400, lineHeight: 1.6 }}>
-            Same content. Zero briefings. No revisions. No invoices. Just 365 days of on-brand posts, done.
-          </p>
-          <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap", marginBottom: 12 }}>
-            <button style={{ background: "#2563EB", color: "#fff", border: "none", borderRadius: 10, padding: "13px 28px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Start 7-Day Free Trial →</button>
-            <button style={{ background: "transparent", color: "#94A3B8", border: "1.5px solid rgba(255,255,255,.15)", borderRadius: 10, padding: "12px 22px", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>See how it works</button>
-          </div>
-          <div style={{ fontSize: 10, color: "#475569" }}>No credit card required &nbsp;·&nbsp; Cancel anytime &nbsp;·&nbsp; GST invoice on all paid plans</div>
-        </div>
-
-        {/* FAQs */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 12, marginBottom: 40 }}>
-          {[
-            { q: "Is there a free trial?", a: "Yes — 7 days of AI content, completely free. No credit card. Upgrade anytime when you're ready." },
-            { q: "Can I pay in INR?", a: "Yes. UPI, Net Banking, and all Indian Debit/Credit cards accepted. GST invoice included with every paid plan." },
-            { q: "Why is SOLO limited to 2 platforms?", a: "SOLO is built for SMBs starting out. Instagram + Facebook cover 90% of Indian SMB social reach. Upgrade to CREATOR for all 6 platforms." },
-            { q: "Can I switch plans anytime?", a: "Absolutely. Upgrade or downgrade anytime. Annual plan unused days are prorated automatically." },
-          ].map((faq) => (
-            <div key={faq.q} style={{ background: "#fff", border: "1.5px solid #E5E7EB", borderRadius: 12, padding: "14px 16px" }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: "#111827", marginBottom: 4 }}>{faq.q}</div>
-              <div style={{ fontSize: 10, color: "#6B7280", lineHeight: 1.6 }}>{faq.a}</div>
-            </div>
-          ))}
-        </div>
+        
 
       </div>
     </div>
