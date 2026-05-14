@@ -854,10 +854,10 @@ export default function LandingPage() {
                     <div className="relative">
                         <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur p-4" style={{height: "480px"}}>
                             {/* Badge */}
-                            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 px-4 py-2 rounded-full bg-slate-900/80 border border-white/10 backdrop-blur flex items-center gap-2 text-xs font-bold text-slate-300">
-                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                                45+ industries • authentic matching photos
-                            </div>
+                            <div className="w-max absolute top-4 left-1/2 -translate-x-1/2 z-20 px-4 py-2 rounded-full bg-slate-900/80 border border-white/10 backdrop-blur flex items-center justify-center gap-2 text-xs font-bold text-slate-300 whitespace-nowrap">
+  <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+  155+ Industries • Authentic Matching Photos
+</div>
 
                             {/* Mosaic Grid */}
                             <div className="grid grid-cols-5 gap-1 h-full overflow-hidden" style={{
@@ -2408,7 +2408,7 @@ export default function LandingPage() {
                                     <li>• Makeup Services</li>
                                     <li>• Nail Care & Art</li>
                                     <li>• Skin Care Services</li>
-                                    <li>• Spa & Welness</li>
+                                    <li>• Spa & Wellness</li>
                                 </div>
                             </ul>
 
