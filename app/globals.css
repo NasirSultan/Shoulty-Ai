@@ -150,3 +150,64 @@ body {
 .animate-bobble-slow {
   animation: bobble-slow 1s ease-in-out infinite;
 }
+
+/* Hero Mosaic Animations */
+@keyframes scrollUp {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes scrollDown {
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes f1 {
+  to {
+    transform: translate(40px, 50px);
+  }
+}
+
+@keyframes f2 {
+  to {
+    transform: translate(-40px, 40px);
+  }
+}
+@keyframes scrollUp {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes scrollDown {
+  0% {
+    transform: translateY(-50%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-shimmer-fast {
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}

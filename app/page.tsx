@@ -714,69 +714,122 @@ export default function LandingPage() {
 
     const animatedPlaceholder = useTypingEffect(placeholderOptions);
     
-    // Hero mosaic setup
-    const INDUSTRY_PHOTOS = [
-      { label: "Healthcare", url: "https://images.pexels.com/photos/4386466/pexels-photo-4386466.jpeg?w=300&h=200&fit=crop" },
-      { label: "Dental Clinic", url: "https://images.pexels.com/photos/3845626/pexels-photo-3845626.jpeg?w=300&h=200&fit=crop" },
-      { label: "Pharmacy", url: "https://images.pexels.com/photos/3683042/pexels-photo-3683042.jpeg?w=300&h=200&fit=crop" },
-      { label: "Veterinary", url: "https://images.pexels.com/photos/6231768/pexels-photo-6231768.jpeg?w=300&h=200&fit=crop" },
-      { label: "Restaurant", url: "https://images.pexels.com/photos/260922/pexels-photo-260922.jpeg?w=300&h=200&fit=crop" },
-      { label: "Bakery", url: "https://images.pexels.com/photos/5710149/pexels-photo-5710149.jpeg?w=300&h=200&fit=crop" },
-      { label: "Coffee Shop", url: "https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg?w=300&h=200&fit=crop" },
-      { label: "Real Estate", url: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?w=300&h=200&fit=crop" },
-      { label: "Interior Design", url: "https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?w=300&h=200&fit=crop" },
-      { label: "Architecture", url: "https://images.pexels.com/photos/1732414/pexels-photo-1732414.jpeg?w=300&h=200&fit=crop" },
-      { label: "Fitness Gym", url: "https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?w=300&h=200&fit=crop" },
-      { label: "Yoga Studio", url: "https://images.pexels.com/photos/3823039/pexels-photo-3823039.jpeg?w=300&h=200&fit=crop" },
-      { label: "Spa", url: "https://images.pexels.com/photos/210019/pexels-photo-210019.jpeg?w=300&h=200&fit=crop" },
-      { label: "Education", url: "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?w=300&h=200&fit=crop" },
-      { label: "University", url: "https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg?w=300&h=200&fit=crop" },
-      { label: "E-Commerce", url: "https://images.pexels.com/photos/5632379/pexels-photo-5632379.jpeg?w=300&h=200&fit=crop" },
-      { label: "Fashion", url: "https://images.pexels.com/photos/298863/pexels-photo-298863.jpeg?w=300&h=200&fit=crop" },
-      
-      { label: "Finance", url: "https://images.pexels.com/photos/4386363/pexels-photo-4386363.jpeg?w=300&h=200&fit=crop" },
-      
-      { label: "Accounting", url: "https://images.pexels.com/photos/6863170/pexels-photo-6863170.jpeg?w=300&h=200&fit=crop" },
-      { label: "Hair Salon", url: "https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg?w=300&h=200&fit=crop" },
-      { label: "Nail Studio", url: "https://images.pexels.com/photos/3993454/pexels-photo-3993454.jpeg?w=300&h=200&fit=crop" },
-      { label: "Barbershop", url: "https://images.pexels.com/photos/247322/pexels-photo-247322.jpeg?w=300&h=200&fit=crop" },
-      { label: "Skincare", url: "https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?w=300&h=200&fit=crop" },
-      { label: "Travel", url: "https://images.pexels.com/photos/3278215/pexels-photo-3278215.jpeg?w=300&h=200&fit=crop" },
-      { label: "Hotel", url: "https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?w=300&h=200&fit=crop" },
-      { label: "Resort", url: "https://images.pexels.com/photos/338504/pexels-photo-338504.jpeg?w=300&h=200&fit=crop" },
-      { label: "Events", url: "https://images.pexels.com/photos/587741/pexels-photo-587741.jpeg?w=300&h=200&fit=crop" },
-      { label: "Weddings", url: "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?w=300&h=200&fit=crop" },
-      { label: "Music", url: "https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?w=300&h=200&fit=crop" },
-      { label: "Tech Startup", url: "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?w=300&h=200&fit=crop" },
-      { label: "Gaming", url: "https://images.pexels.com/photos/316444/pexels-photo-316444.jpeg?w=300&h=200&fit=crop" },
-      
-      { label: "Automotive", url: "https://images.pexels.com/photos/120049/pexels-photo-120049.jpeg?w=300&h=200&fit=crop" },
-      { label: "Construction", url: "https://images.pexels.com/photos/209251/pexels-photo-209251.jpeg?w=300&h=200&fit=crop" },
-      { label: "Agriculture", url: "https://images.pexels.com/photos/1904716/pexels-photo-1904716.jpeg?w=300&h=200&fit=crop" },
-      { label: "Floristry", url: "https://images.pexels.com/photos/126859/pexels-photo-126859.jpeg?w=300&h=200&fit=crop" },
-      { label: "Photography", url: "https://images.pexels.com/photos/1181467/pexels-photo-1181467.jpeg?w=300&h=200&fit=crop" },
-      { label: "Sports", url: "https://images.pexels.com/photos/248547/pexels-photo-248547.jpeg?w=300&h=200&fit=crop" },
-    ];
-    
-    const shuffleArray = (arr: any[]) => {
-      const a = [...arr];
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
+    // Hero mosaic setup - PERFECTLY MATCHED images with correct titles
+const INDUSTRY_PHOTOS = [
+  // Healthcare & Medical
+  { label: "Healthcare", url: "https://images.pexels.com/photos/4386466/pexels-photo-4386466.jpeg?w=300&h=200&fit=crop" }, // Doctor with patient
+  { label: "Dental Clinic", url: "https://images.pexels.com/photos/3845626/pexels-photo-3845626.jpeg?w=300&h=200&fit=crop" }, // Dentist working
+  { label: "Pharmacy", url: "https://images.pexels.com/photos/3683042/pexels-photo-3683042.jpeg?w=300&h=200&fit=crop" }, // Pharmacist
+  { label: "Veterinary", url: "https://images.pexels.com/photos/6231768/pexels-photo-6231768.jpeg?w=300&h=200&fit=crop" }, // Vet with dog
+  
+  // Food & Beverage
+  { label: "Restaurant", url: "https://images.pexels.com/photos/260922/pexels-photo-260922.jpeg?w=300&h=200&fit=crop" }, // Pizza
+  { label: "Bakery", url: "https://images.pexels.com/photos/5710149/pexels-photo-5710149.jpeg?w=300&h=200&fit=crop" }, // Bread/croissants
+  { label: "Coffee Shop", url: "https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg?w=300&h=200&fit=crop" }, // Coffee cup
+  
+  // Real Estate & Construction
+  { label: "Real Estate", url: "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?w=300&h=200&fit=crop" }, // House key
+  { label: "Interior Design", url: "https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?w=300&h=200&fit=crop" }, // Living room
+  { label: "Architecture", url: "https://images.pexels.com/photos/1732414/pexels-photo-1732414.jpeg?w=300&h=200&fit=crop" }, // Building exterior
+  { label: "Construction", url: "https://images.pexels.com/photos/209251/pexels-photo-209251.jpeg?w=300&h=200&fit=crop" }, // Construction site
+  
+  // Fitness & Wellness
+  { label: "Fitness Gym", url: "https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?w=300&h=200&fit=crop" }, // Weights
+  { label: "Yoga Studio", url: "https://images.pexels.com/photos/3823039/pexels-photo-3823039.jpeg?w=300&h=200&fit=crop" }, // Yoga pose
+  { label: "Spa", url: "https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=300&h=200&fit=crop" }, // Massage stones
+  
+  // Education
+  { label: "Education", url: "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?w=300&h=200&fit=crop" }, // Kids in classroom
+  { label: "University", url: "https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg?w=300&h=200&fit=crop" }, // Graduation
+  
+  // Retail & E-commerce
+  { label: "E-Commerce", url: "https://images.pexels.com/photos/5632379/pexels-photo-5632379.jpeg?w=300&h=200&fit=crop" }, // Online shopping phone
+  { label: "Fashion", url: "https://images.pexels.com/photos/298863/pexels-photo-298863.jpeg?w=300&h=200&fit=crop" }, // Clothes rack
+  
+  // Finance & Business - FIXED: Now showing actual accounting/finance images
+  { label: "Finance", url: "https://images.pexels.com/photos/4386363/pexels-photo-4386363.jpeg?w=300&h=200&fit=crop" }, // Coins/graph
+  { label: "Accounting", url: "https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=300&h=200&fit=crop" }, // Calculator & documents
+  
+  // Beauty & Salon
+  { label: "Hair Salon", url: "https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg?w=300&h=200&fit=crop" }, // Hair cutting
+  { label: "Nail Studio", url: "https://plus.unsplash.com/premium_photo-1661290231745-15f1ed6fea88?w=300&h=200&fit=crop" }, // Nail art
+  { label: "Barbershop", url: "https://images.pexels.com/photos/247322/pexels-photo-247322.jpeg?w=300&h=200&fit=crop" }, // Barber
+  { label: "Skincare", url: "https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?w=300&h=200&fit=crop" }, // Face mask
+  
+  // Travel & Hospitality
+  { label: "Travel", url: "https://images.pexels.com/photos/3278215/pexels-photo-3278215.jpeg?w=300&h=200&fit=crop" }, // Beach
+  { label: "Hotel", url: "https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?w=300&h=200&fit=crop" }, // Hotel lobby
+  { label: "Resort", url: "https://images.pexels.com/photos/338504/pexels-photo-338504.jpeg?w=300&h=200&fit=crop" }, // Pool resort
+  
+  // Events & Entertainment
+  { label: "Events", url: "https://images.pexels.com/photos/587741/pexels-photo-587741.jpeg?w=300&h=200&fit=crop" }, // Event setup
+  { label: "Weddings", url: "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?w=300&h=200&fit=crop" }, // Wedding rings
+  { label: "Music", url: "https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?w=300&h=200&fit=crop" }, // Guitar
+  
+  // Technology
+  { label: "Tech Startup", url: "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?w=300&h=200&fit=crop" }, // Laptop coding
+  { label: "Gaming", url: "https://images.pexels.com/photos/316444/pexels-photo-316444.jpeg?w=300&h=200&fit=crop" }, // Gaming setup
+  
+  // Automotive
+  { label: "Automotive", url: "https://images.pexels.com/photos/120049/pexels-photo-120049.jpeg?w=300&h=200&fit=crop" }, // Car engine
+  
+  // Agriculture
+  { label: "Agriculture", url: "https://images.pexels.com/photos/1904716/pexels-photo-1904716.jpeg?w=300&h=200&fit=crop" }, // Tractor field
+  
+  // Floristry - FIXED: Flower shop image
+  { label: "Floristry", url: "https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?w=300&h=200&fit=crop" }, // Flower bouquet shop
+  
+  // Photography
+  { label: "Photography", url: "https://images.pexels.com/photos/1181467/pexels-photo-1181467.jpeg?w=300&h=200&fit=crop" }, // Camera
+  
+  // Sports
+  { label: "Sports", url: "https://images.pexels.com/photos/248547/pexels-photo-248547.jpeg?w=300&h=200&fit=crop" }, // Soccer ball
+];
+
+// Keep the organized order function
+const getOrganizedIndustries = () => {
+  // Group by category
+  const categories = {
+    medical: INDUSTRY_PHOTOS.slice(0, 4),
+    food: INDUSTRY_PHOTOS.slice(4, 7),
+    realEstate: INDUSTRY_PHOTOS.slice(7, 11),
+    wellness: INDUSTRY_PHOTOS.slice(11, 14),
+    education: INDUSTRY_PHOTOS.slice(14, 16),
+    retail: INDUSTRY_PHOTOS.slice(16, 18),
+    finance: INDUSTRY_PHOTOS.slice(18, 20),
+    beauty: INDUSTRY_PHOTOS.slice(20, 24),
+    travel: INDUSTRY_PHOTOS.slice(24, 27),
+    events: INDUSTRY_PHOTOS.slice(27, 30),
+    tech: INDUSTRY_PHOTOS.slice(30, 32),
+    other: INDUSTRY_PHOTOS.slice(32)
+  };
+  
+  // Interleave categories for visual variety
+  const result = [];
+  const maxLen = Math.max(...Object.values(categories).map(arr => arr.length));
+  
+  for (let i = 0; i < maxLen; i++) {
+    for (const category of Object.values(categories)) {
+      if (category[i]) {
+        result.push(category[i]);
       }
-      return a;
-    };
-    
-    const [shuffledIndustries, setShuffledIndustries] = useState<any[]>([]);
-    
-    useEffect(() => {
-      setShuffledIndustries(shuffleArray(INDUSTRY_PHOTOS));
-    }, []);
-    
-    const columnsCount = 5;
-    const itemsPerColumn = Math.ceil(shuffledIndustries.length / columnsCount);
-    const directions = ['scrollUp', 'scrollDown', 'scrollUp', 'scrollDown', 'scrollUp'];
-    const speeds = [120, 160, 110, 150, 130];
+    }
+  }
+  
+  return result;
+};
+
+const [organizedIndustries, setOrganizedIndustries] = useState<any[]>([]);
+
+useEffect(() => {
+  // Use organized order instead of random shuffle
+  setOrganizedIndustries(getOrganizedIndustries());
+}, []);
+
+const columnsCount = 5;
+const itemsPerColumn = Math.ceil(organizedIndustries.length / columnsCount);
+const directions = ['scrollUp', 'scrollDown', 'scrollUp', 'scrollDown', 'scrollUp'];
+const speeds = [120, 160, 110, 150, 130];
 
     return (
         <div className="relative bg-white dark:bg-gray-950 font-arial min-h-screen text-gray-900 dark:text-white selection:text-white overflow-hidden">
@@ -850,79 +903,66 @@ export default function LandingPage() {
                         </div>
                     </div>
 
-                    {/* Right - Mosaic Gallery */}
-                    <div className="relative">
-                        <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur p-4" style={{height: "480px"}}>
-                            {/* Badge */}
-                            <div className="w-max absolute top-4 left-1/2 -translate-x-1/2 z-20 px-4 py-2 rounded-full bg-slate-900/80 border border-white/10 backdrop-blur flex items-center justify-center gap-2 text-xs font-bold text-slate-300 whitespace-nowrap">
-  <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-  155+ Industries • Authentic Matching Photos
+                    {/* Right - Mosaic Gallery with Perfectly Matched Labels */}
+<div className="relative">
+  <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur p-4" style={{height: "480px"}}>
+    {/* Badge */}
+    <div className="w-max absolute top-4 left-1/2 -translate-x-1/2 z-20 px-4 py-2 rounded-full bg-slate-900/80 border border-white/10 backdrop-blur flex items-center justify-center gap-2 text-xs font-bold text-slate-300 whitespace-nowrap">
+      <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+      155+ Industries • Authentic Matching Photos
+    </div>
+
+    {/* Mosaic Grid */}
+    <div className="grid grid-cols-5 gap-1 h-full overflow-hidden" style={{
+      WebkitMaskImage: "linear-gradient(180deg, transparent 0%, black 8%, black 90%, transparent 100%)",
+      maskImage: "linear-gradient(180deg, transparent 0%, black 8%, black 90%, transparent 100%)"
+    }}>
+      {Array.from({length: columnsCount}).map((_, colIndex) => {
+        const startIdx = colIndex * itemsPerColumn;
+        const endIdx = Math.min(startIdx + itemsPerColumn, organizedIndustries.length);
+        const columnItems = organizedIndustries.slice(startIdx, endIdx);
+        // Repeat for smooth infinite scroll
+        const allItems = [...columnItems, ...columnItems, ...columnItems];
+        const direction = directions[colIndex];
+        const speed = speeds[colIndex];
+        
+        return (
+          <div 
+            key={colIndex} 
+            className="flex flex-col gap-1"
+            style={{
+              animation: `${direction === 'scrollUp' ? 'scrollUp' : 'scrollDown'} ${speed}s linear infinite`,
+            }}
+          >
+            {allItems.map((item, idx) => (
+              <div 
+                key={`${colIndex}-${idx}`} 
+                className="relative flex-shrink-0 rounded-lg overflow-hidden border border-white/10 hover:border-white/30 hover:scale-110 transition-all cursor-pointer group"
+                style={{height: "90px", zIndex: "auto"}}
+              >
+                <img 
+                  src={item.url} 
+                  alt={item.label}
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  onError={(e) => {
+                    // Fallback for any broken images
+                    e.currentTarget.src = "https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?w=300&h=200&fit=crop";
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/70"></div>
+                <span className="absolute bottom-1 left-0 right-0 text-center text-[10px] font-bold text-white uppercase tracking-wider px-1 drop-shadow-lg" style={{textShadow: '0 1px 4px rgba(0,0,0,.9)'}}>
+                  {item.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        );
+      })}
+    </div>
+  </div>
 </div>
-
-                            {/* Mosaic Grid */}
-                            <div className="grid grid-cols-5 gap-1 h-full overflow-hidden" style={{
-                                WebkitMaskImage: "linear-gradient(180deg, transparent 0%, black 8%, black 90%, transparent 100%)",
-                                maskImage: "linear-gradient(180deg, transparent 0%, black 8%, black 90%, transparent 100%)"
-                            }}>
-                                {Array.from({length: columnsCount}).map((_, colIndex) => {
-                                    const startIdx = colIndex * itemsPerColumn;
-                                    const endIdx = Math.min(startIdx + itemsPerColumn, shuffledIndustries.length);
-                                    const columnItems = shuffledIndustries.slice(startIdx, endIdx);
-                                    const allItems = [...columnItems, ...columnItems, ...columnItems.slice(0, 6)];
-                                    const direction = directions[colIndex];
-                                    const speed = speeds[colIndex];
-                                    
-                                    return (
-                                        <div 
-                                            key={colIndex} 
-                                            className="flex flex-col gap-1"
-                                            style={{
-                                                animation: `${direction === 'scrollUp' ? 'scrollUp' : 'scrollDown'} ${speed}s linear infinite`,
-                                                animationPlayState: 'running'
-                                            }}
-                                        >
-                                            {allItems.map((item, idx) => (
-                                                <div 
-                                                    key={idx} 
-                                                    className="relative flex-shrink-0 rounded-lg overflow-hidden border border-white/10 hover:border-white/30 hover:scale-110 transition-all cursor-pointer group"
-                                                    style={{height: "90px", zIndex: "auto"}}
-                                                >
-                                                    <img 
-                                                        src={item.url} 
-                                                        alt={item.label}
-                                                        loading="lazy"
-                                                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                                    />
-                                                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60"></div>
-                                                    <span className="absolute bottom-1 left-0 right-0 text-center text-xs font-bold text-white uppercase tracking-wider" style={{textShadow: '0 1px 4px rgba(0,0,0,.9)'}}>
-                                                        {item.label}
-                                                    </span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    </div>
                 </div>
-
-                <style jsx>{`
-                    @keyframes scrollUp {
-                        from { transform: translateY(0); }
-                        to { transform: translateY(-50%); }
-                    }
-                    @keyframes scrollDown {
-                        from { transform: translateY(-50%); }
-                        to { transform: translateY(0); }
-                    }
-                    @keyframes f1 {
-                        to { transform: translate(40px, 50px); }
-                    }
-                    @keyframes f2 {
-                        to { transform: translate(-40px, 40px); }
-                    }
-                `}</style>
             </section>
 
             <section
