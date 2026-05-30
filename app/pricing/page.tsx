@@ -3,7 +3,7 @@ import { PricingFAQ } from "@/components/FAQ";
 
 export const metadata = {
   title: "Pricing | ShoutlyAI - AI Social Media Automation for India",
-  description: "Simple, transparent pricing for Indian SMBs. Start with 7 days free. Save 20% with annual billing.",
+  description: "Simple, transparent pricing for Indian SMBs. Start with 14 days free. Save 20% with annual billing.",
 };
 
 export default function PricingPage() {
@@ -24,7 +24,7 @@ export default function PricingPage() {
           </h2>
           <p className="text-lg text-slate-600 mb-10 max-w-2xl mx-auto">
             Join 1,200+ Indian founders who saved ₹2.5L+/year using ShoutlyAI.
-            Zero risk, 7 days free trial.
+            Zero risk, 14 days free trial.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <a 

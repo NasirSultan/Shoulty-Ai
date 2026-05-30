@@ -2385,7 +2385,7 @@ export default function CalendarPage() {
                     <div style={{ width: 38, height: 38, borderRadius: 10, background: "rgba(255,255,255,.12)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>🤖</div>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 13.5, fontWeight: 800, color: "#fff", fontFamily: "Sora,sans-serif" }}>AI Content Pipeline — Rolling Generation</div>
-                      <div style={{ fontSize: 11.5, color: "rgba(255,255,255,.6)", marginTop: 2 }}>New posts auto-generated every 7 days · Brand voice · Best times</div>
+                      <div style={{ fontSize: 11.5, color: "rgba(255,255,255,.6)", marginTop: 2 }}>New posts auto-generated · Brand voice · Best times</div>
                     </div>
                     <button onClick={startAiGeneration} style={{ padding: "7px 14px", borderRadius: 7, background: "rgba(255,255,255,.15)", border: "1px solid rgba(255,255,255,.22)", color: "rgba(255,255,255,.9)", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Sora,sans-serif" }}>+ Generate More</button>
                   </div>

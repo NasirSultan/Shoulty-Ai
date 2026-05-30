@@ -20,7 +20,7 @@ const RefundPolicy: React.FC = () => {
               1. Free Trial
             </h2>
             <p className="text-[#4b5563]">
-              ShoutlyAI offers a free trial with limited features. No payment information is required to start the trial. You may cancel your trial at any time before it ends without being charged.
+              ShoutlyAI offers a 14-day free trial with access to all features. No payment information is required to start the trial. You may cancel your trial at any time before it ends without being charged.
             </p>
           </section>
 
@@ -35,11 +35,11 @@ const RefundPolicy: React.FC = () => {
 
           <section className="mb-12">
             <h2 className="text-[1.8rem] font-[700] border-b-2 border-[#f97316] inline-block mb-6 pb-2">
-              3. 7-Day Money-Back Guarantee
+              3. 14-Day Money-Back Guarantee
             </h2>
             <div className="bg-[#f0fdf4] border-l-4 border-[#22c55e] p-6 rounded-2xl mb-6">
               <p className="m-0 font-[500] text-[#166534]">
-                <strong>✅ First-Time Subscribers:</strong> If you are not completely satisfied with ShoutlyAI within the first 7 days of your initial paid subscription, you may request a full refund. This guarantee applies only to your first subscription and does not apply to renewals or subsequent purchases.
+                <strong>✅ First-Time Subscribers:</strong> If you are not completely satisfied with ShoutlyAI within the first 14 days of your initial paid subscription, you may request a full refund. This guarantee applies only to your first subscription and does not apply to renewals or subsequent purchases.
               </p>
             </div>
           </section>
@@ -49,8 +49,8 @@ const RefundPolicy: React.FC = () => {
               4. Refund Eligibility
             </h2>
             <ul className="list-disc ml-8 text-[#4b5563] space-y-2">
-              <li><strong>Within 7 days of first payment:</strong> Full refund (less any transaction fees charged by payment processors)</li>
-              <li><strong>After 7 days:</strong> No refunds for partial months or unused portions of your subscription</li>
+              <li><strong>Within 14 days of first payment:</strong> Full refund (less any transaction fees charged by payment processors)</li>
+              <li><strong>After 14 days:</strong> No refunds for partial months or unused portions of your subscription</li>
               <li><strong>Annual plans:</strong> Pro-rated refunds available only within the first 30 days</li>
               <li><strong>Upgrades/Downgrades:</strong> No refunds for downgrades; credit applied to future bills</li>
             </ul>

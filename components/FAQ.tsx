@@ -23,13 +23,13 @@ export const FAQS: FAQItem[] = [
   {
     id: 1, cat: "start",
     q: "What is ShoutlyAI and how does it work?",
-    a: `ShoutlyAI is an AI-powered social media automation tool built specifically for Indian businesses. You type one prompt describing your brand — e.g. "A premium gym in Koramangala, Bangalore focused on weight loss" — and ShoutlyAI generates a full year of social media posts, captions, hashtags, and a posting schedule. Posts are matched to your industry from our library of 5,000+ professional poster templates and automatically tuned to Indian festivals and occasions.`,
-    cta: { text: "Start your 7-day free trial →", href: "/signup" }
+    a: `ShoutlyAI is an AI-powered social media automation tool built specifically for Indian businesses. You type one prompt describing your brand — e.g. "A premium gym in Koramangala, Bangalore focused on weight loss" — and ShoutlyAI generates a full year of social media posts, captions, hashtags, and a posting schedule. Posts are matched to your industry from our library of 10,000+ professional poster templates and automatically tuned to Indian festivals and occasions.`,
+    cta: { text: "Start your 14-day free trial →", href: "/signup" }
   },
   {
     id: 2, cat: "start",
     q: "Is there a free trial? Do I need a credit card?",
-    a: `Yes — your first 7 days are completely free. No credit card required. You get full access to the Starter plan: 7 days of AI-generated posts for your brand on Instagram and Facebook. Upgrade to any paid plan when you're ready.`,
+    a: `Yes — we offer a 14-day free trial with full access to all features. No credit card required. You get to experience the full power of ShoutlyAI: AI-generated posts, scheduling across 10 platforms, and unified analytics. Upgrade to the paid plan when you're ready.`,
     cta: { text: "Start free →", href: "/signup" }
   },
   {
@@ -56,9 +56,9 @@ export const FAQS: FAQItem[] = [
   // ── PRICING & BILLING (7) ─────────────────────────────────────────────────
   {
     id: 7, cat: "billing",
-    q: "What are the pricing plans? How much does it cost in India?",
-    a: `ShoutlyAI has 5 plans priced in INR:\n\n• Starter — Free (Instagram + Facebook, 7 days, watermarked)\n• SOLO — ₹3,000/mo (Instagram + Facebook, 1 brand, 365 posts/year, no watermark)\n• CREATOR — ₹6,000/mo (6 platforms, unlimited posts, 1 brand)\n• BUSINESS — ₹12,000/mo (8 platforms, 3 brands, analytics dashboard)\n• AGENCY — ₹25,000/mo (10 brands, white-label, API access)\n\nAnnual billing saves 20% on all plans — equivalent to 2.4 months free.`,
-    cta: { text: "See full pricing →", href: "/pricing" }
+    q: "What is the pricing model? How much does it cost?",
+    a: `ShoutlyAI offers one simple, all-inclusive plan with transparent pricing in INR:\n\n• Monthly: ₹10,000/mo\n• Yearly: ₹8,000/mo (billed annually at ₹96,000)\n\nAnnual billing saves you 20% — equivalent to 2.4 months free. Every feature and all 10 platforms are included in this one plan. No feature gates, no hidden fees.`,
+    cta: { text: "See pricing details →", href: "/pricing" }
   },
   {
     id: 8, cat: "billing",
@@ -68,40 +68,40 @@ export const FAQS: FAQItem[] = [
   {
     id: 9, cat: "billing",
     q: "Can I cancel anytime? What is the refund policy?",
-    a: `Yes — cancel anytime from Account Settings with one click. No questions asked, no lock-in, no cancellation fees.\n\nFor monthly plans: cancellation takes effect at the end of your current billing period.\n\nFor annual plans: we offer a 7-day refund window from your purchase date if you are not satisfied. After 7 days, annual plans are non-refundable but you retain full access until the plan expires.`
+    a: `Yes — cancel anytime from Account Settings with one click. No questions asked, no lock-in, no cancellation fees.\n\nWe offer a 14-day money-back guarantee. If you're not satisfied within your first 14 days of a paid subscription, we'll refund you in full. For monthly plans after the guarantee period, cancellation takes effect at the end of your current billing period.`,
   },
   {
     id: 10, cat: "billing",
     q: "What is the difference between monthly and annual billing?",
-    a: `Annual billing saves you 20% compared to monthly — equivalent to getting 2.4 months free per year. Annual plans are billed upfront for the full year. Monthly plans are billed each month and offer more flexibility.\n\nIf you are testing the product, start monthly. If you are committed to consistent social media presence, annual gives you the best value.`
+    a: `Annual billing saves you 20% compared to monthly — equivalent to getting 2.4 months free per year. Annual plans are billed upfront for the full year. Monthly plans are billed each month and offer more flexibility.\n\nAnnual plans also include priority support and advanced API access.`,
   },
   {
     id: 11, cat: "billing",
-    q: "Can I upgrade or downgrade my plan anytime?",
-    a: `Yes. Upgrades take effect immediately — you pay only the prorated difference for the remaining days in your billing cycle. Downgrades take effect at the start of your next billing cycle. All your content, brands, and calendars are preserved when switching plans.`
-  },
-  {
-    id: 12, cat: "billing",
     q: "Do you provide GST invoices for business expenses?",
     a: `Yes. Every payment generates a GST-compliant invoice automatically sent to your registered email. Add your GSTIN in Account → Billing → Tax Details to have it included on all future invoices. ShoutlyAI is GST-registered and all invoices include our GSTIN for your records.`
   },
   {
+    id: 12, cat: "billing",
+    q: "Can I manage multiple brands under one account?",
+    a: `Our standard plan is built for one main brand with unlimited posting across all 10 platforms. If you need to manage multiple brands or need white-label capabilities for an agency, please contact our sales team for custom enterprise options.`,
+    cta: { text: "Contact Sales →", href: "mailto:support@shoutlyai.com" }
+  },
+  {
     id: 13, cat: "billing",
-    q: "Can I add extra brands without upgrading my plan?",
-    a: `Yes — extra brands can be added as an add-on at ₹2,500/month per brand on SOLO and CREATOR plans. BUSINESS supports 3 brands and AGENCY supports 10 brands.\n\nFor agencies managing many client brands with white-label requirements, the Agency plan is the most cost-effective option.`,
-    cta: { text: "Talk to our team →", href: "/contact" }
+    q: "Are there any hidden fees or extra costs for extra platforms?",
+    a: `None. One price unlocks everything. Unlike other tools that charge extra for LinkedIn or TikTok, ShoutlyAI includes all 10 supported platforms (Instagram, Facebook, X, LinkedIn, TikTok, Threads, Bluesky, YouTube, Pinterest, Google Biz) in the base price.`
   },
 
   // ── FEATURES & PLATFORMS (7) ──────────────────────────────────────────────
   {
     id: 14, cat: "features",
     q: "Which social media platforms does ShoutlyAI support?",
-    a: `Platform access depends on your plan:\n\n• Starter & SOLO: Instagram, Facebook\n• CREATOR: Instagram, Facebook, X/Twitter, LinkedIn, TikTok, Google My Business\n• BUSINESS & AGENCY: All above + YouTube, Threads\n\nDirect publishing (auto-post without leaving the app) is available on all platforms except YouTube, where you export and upload manually.`
+    a: `We support 10 major networks: Instagram, Facebook, X/Twitter, LinkedIn, TikTok, Threads, Bluesky, YouTube, Pinterest, and Google My Business.\n\nAll 10 are included in your plan from day one. Direct publishing and scheduling are supported across all networks.`
   },
   {
     id: 15, cat: "features",
     q: "Does ShoutlyAI create Reels and video content?",
-    a: `SOLO includes 5 Reel covers per month. CREATOR includes 15 Reels per month. BUSINESS and AGENCY have unlimited Reels.\n\nReels are generated as cover-image-style posts with animated text and music suggestions — not full video production. AI-generated full video content is on our Q4 2026 roadmap.`
+    a: `Yes, unlimited Reels are included in the plan. Reels are generated as high-engagement video-style posts with animated text, cover images, and trending music suggestions.\n\nFull AI video production (generative video) is on our Q4 2026 roadmap.`
   },
   {
     id: 16, cat: "features",
@@ -116,12 +116,12 @@ export const FAQS: FAQItem[] = [
   {
     id: 18, cat: "features",
     q: "Can I edit the AI-generated captions and change poster images?",
-    a: `Yes — every post is fully editable before it goes live. You can rewrite captions, regenerate captions with one click (the AI tries a completely different angle), swap the poster image from our library of 5,000+ templates, add or remove hashtags, change the posting time, or skip a day entirely. You are always in control.`
+    a: `Yes — every post is fully editable before it goes live. You can rewrite captions, regenerate captions with one click, swap the poster image from our library of 10,000+ templates, add or remove hashtags, change the posting time, or skip a day entirely. You are always in control.`
   },
   {
     id: 19, cat: "features",
     q: "Does ShoutlyAI show analytics on how my posts perform?",
-    a: `The analytics dashboard is included in the BUSINESS plan and above. It shows per-post engagement (likes, comments, reach), best-performing content types, optimal posting times for your audience, and month-over-month growth.\n\nSOLO and CREATOR plans show post status (published, scheduled, draft) only. Full analytics for all plans is on our Q3 2026 roadmap.`
+    a: `Yes, full analytics and reporting are included. You can see engagement metrics (likes, comments, reach), best-performing content types, and audience growth across all connected platforms in one unified dashboard.`
   },
   {
     id: 20, cat: "features",
@@ -133,27 +133,27 @@ export const FAQS: FAQItem[] = [
   {
     id: 21, cat: "content",
     q: "Will the content look professional and on-brand for my business?",
-    a: `Yes. ShoutlyAI matches your brand description to industry-specific professional poster templates, writes captions in your chosen tone (professional, casual, or energetic), includes your location and city context, and adapts to your target audience.\n\nThe more detail you put into your brand description, the more personalised the output. Most users describe the results as surprisingly on-point after their first generation.`
+    a: `Yes. ShoutlyAI matches your brand description to industry-specific professional poster templates, writes captions in your chosen tone (professional, casual, or energetic), includes your location and city context, and adapts to your target audience.\n\nThe more detail you put into your brand description, the more personalised the output.`
   },
   {
     id: 22, cat: "content",
     q: "How can one prompt generate 365 posts? Do they repeat?",
-    a: `The AI builds variety into the calendar automatically — rotating between post types (promotional, educational, festive, motivational, behind-the-scenes), mixing short and long captions, and cycling through different poster styles. Posts do not repeat.\n\nSeasonal content (festivals, occasions, seasons) adds natural variety across the year. Each day gets a unique combination of image, caption, and hashtags.`
+    a: `The AI builds variety into the calendar automatically — rotating between post types (promotional, educational, festive, motivational, behind-the-scenes), mixing short and long captions, and cycling through different poster styles. Posts do not repeat.\n\nSeasonal content adds natural variety across the year. Each day gets a unique combination of image, caption, and hashtags.`
   },
   {
     id: 23, cat: "content",
     q: "Will there be a ShoutlyAI watermark on my posts?",
-    a: `No watermark on any paid plan. SOLO, CREATOR, BUSINESS, and AGENCY all produce clean, watermark-free content ready to post under your brand name.\n\nOnly the free Starter plan includes a ShoutlyAI watermark. On all paid plans, you own the content completely.`
+    a: `No. All content is clean, watermark-free, and ready to post under your brand name. You own the content completely.`
   },
   {
     id: 24, cat: "content",
     q: "Can I download and export my posts?",
-    a: `Yes. Every generated post can be downloaded as a high-resolution image (1080×1080px for feed posts, 1080×1920px for stories and reels) and the caption can be copied to clipboard.\n\nYou can also export your full monthly calendar as a PDF content plan. Downloaded posts can be used on any platform — including ones ShoutlyAI does not yet directly integrate with, like WhatsApp Status or Pinterest.`
+    a: `Yes. Every generated post can be downloaded as a high-resolution image and the caption can be copied to clipboard.\n\nYou can also export your full monthly calendar as a PDF content plan. Downloaded posts can be used on any platform — including ones ShoutlyAI does not yet directly integrate with, like WhatsApp Status.`
   },
   {
     id: 25, cat: "content",
     q: "What if I don't like a generated caption or image?",
-    a: `Every post has a Regenerate Caption button — click it and the AI writes a completely different caption in seconds. You can also swap the poster image from the library browser, which shows all matching templates for your industry.\n\nYou can regenerate or swap as many times as you like before the post is scheduled or published.`
+    a: `Every post has a Regenerate Caption button — click it and the AI writes a completely different caption in seconds. You can also swap the poster image from the library browser, which shows matching templates for your industry.`,
   },
 
   // ── ACCOUNT & DATA (3) ────────────────────────────────────────────────────
@@ -339,7 +339,7 @@ export function FAQSection() {
             <button style={{ background: "transparent", color: "#94A3B8", border: "1.5px solid rgba(255,255,255,.15)", borderRadius: 10, padding: "11px 24px", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>📧 Email support</button>
             <a href="/signup" style={{ display: "inline-block", background: "#059669", color: "#fff", border: "none", borderRadius: 10, padding: "12px 24px", fontSize: 13, fontWeight: 700, textDecoration: "none" }}>🚀 Start free trial</a>
           </div>
-          <div style={{ fontSize: 11, color: "#475569" }}>No credit card required &nbsp;·&nbsp; 7 days free &nbsp;·&nbsp; Cancel anytime</div>
+          <div style={{ fontSize: 11, color: "#475569" }}>No credit card required &nbsp;·&nbsp; 14 days free &nbsp;·&nbsp; Cancel anytime</div>
         </div>
       </div>
     </div>
@@ -348,7 +348,7 @@ export function FAQSection() {
 
 export function PricingFAQ() {
   const [openId, setOpenId] = useState<number | null>(null);
-  const pricingFAQs = FAQS.filter(f => [2, 9, 8, 10, 11, 12].includes(f.id));
+  const pricingFAQs = FAQS.filter(f => [7, 2, 9, 8, 10, 11, 12, 13].includes(f.id));
 
   return (
     <div style={{ maxWidth: 680, margin: "0 auto", padding: "0 20px 60px" }}>

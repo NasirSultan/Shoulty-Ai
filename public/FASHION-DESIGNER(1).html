@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Fashion Designer Social Media Automation | ShoutlyAI</title>
+
+  <meta name="description" content="Grow your fashion designer brand with ShoutlyAI's automated social media content posting platform. Promote custom outfits, bridal wear, designer collections, styling reels, portfolio posts, and client enquiry content consistently." />
+  <meta name="keywords" content="fashion designer social media automation, fashion designer marketing, designer boutique Instagram content, custom outfit content posting, automated content posting for fashion designers, bridal designer digital marketing, fashion portfolio marketing, ShoutlyAI" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="ShoutlyAI" />
+  <link rel="canonical" href="https://shoutlyai.com/" />
+
+  <meta property="og:title" content="Fashion Designer Social Media Automation | ShoutlyAI" />
+  <meta property="og:description" content="Automate content posting for your fashion designer brand. Promote custom outfits, bridal wear, designer collections, styling reels, and portfolio content with ShoutlyAI." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://shoutlyai.com/" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1200&q=80" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Fashion Designer Social Media Automation | ShoutlyAI" />
+  <meta name="twitter:description" content="Automated content posting for fashion designers, bridal designers, couture studios, custom outfit creators, and designer boutiques." />
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1200&q=80" />
+
+  <style>
+    :root {
+      --primary: #581C87;
+      --secondary: #BE185D;
+      --accent: #D97706;
+      --gold: #F59E0B;
+      --cream: #FFF7ED;
+      --rose-soft: #FCE7F3;
+      --purple-soft: #F3E8FF;
+      --dark: #2E1065;
+      --text: #334155;
+      --muted: #64748B;
+      --white: #FFFFFF;
+      --soft: #F8FAFC;
+      --shadow: 0 18px 45px rgba(46, 16, 101, 0.15);
+      --radius: 24px;
+      --transition: all 0.3s ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: var(--white);
+      line-height: 1.7;
+    }
+
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+
+    .container { width: min(1180px, 92%); margin: auto; }
+    .section { padding: 90px 0; }
+
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(190, 24, 93, 0.12);
+      color: var(--primary);
+      font-weight: 900;
+      font-size: 0.86rem;
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3.15rem);
+      line-height: 1.15;
+      color: var(--dark);
+      margin-bottom: 16px;
+      letter-spacing: -0.045em;
+    }
+
+    .section-text {
+      max-width: 740px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 34px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 24px;
+      border-radius: 999px;
+      font-weight: 900;
+      transition: var(--transition);
+      border: 0;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+      color: var(--white);
+      box-shadow: 0 14px 30px rgba(190, 24, 93, 0.28);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 42px rgba(190, 24, 93, 0.38);
+    }
+
+    .btn-secondary {
+      background: var(--white);
+      color: var(--primary);
+      border: 1px solid rgba(88, 28, 135, 0.18);
+    }
+
+    .btn-secondary:hover {
+      background: var(--purple-soft);
+      transform: translateY(-3px);
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(88, 28, 135, 0.09);
+    }
+
+    .navbar {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .logo {
+      font-size: 1.45rem;
+      font-weight: 950;
+      color: var(--dark);
+      letter-spacing: -0.04em;
+    }
+
+    .logo span { color: var(--secondary); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      font-weight: 800;
+      font-size: 0.94rem;
+      color: var(--dark);
+    }
+
+    .nav-links a:hover { color: var(--secondary); }
+
+    .menu-toggle {
+      display: none;
+      background: var(--primary);
+      color: var(--white);
+      border: 0;
+      border-radius: 12px;
+      padding: 9px 12px;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .hero {
+      overflow: hidden;
+      background:
+        radial-gradient(circle at top left, rgba(190, 24, 93, 0.24), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(217, 119, 6, 0.18), transparent 32%),
+        linear-gradient(135deg, #F3E8FF 0%, #FCE7F3 48%, #FFF7ED 100%);
+      padding: 100px 0 80px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      align-items: center;
+      gap: 54px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.45rem, 5vw, 5rem);
+      line-height: 1.04;
+      color: var(--dark);
+      letter-spacing: -0.06em;
+      margin-bottom: 22px;
+    }
+
+    .hero p {
+      font-size: 1.13rem;
+      max-width: 660px;
+      margin-bottom: 30px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      max-width: 620px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(88, 28, 135, 0.08);
+      padding: 18px;
+      border-radius: 20px;
+      box-shadow: 0 10px 24px rgba(46, 16, 101, 0.08);
+    }
+
+    .stat-card strong {
+      display: block;
+      color: var(--dark);
+      font-size: 1.45rem;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-card span {
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    .hero-image-wrap {
+      position: relative;
+      padding: 16px;
+      border-radius: 36px;
+      background: rgba(255, 255, 255, 0.74);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-image-wrap::before {
+      content: "Automated Designer Content";
+      position: absolute;
+      left: -18px;
+      bottom: 42px;
+      z-index: 2;
+      background: var(--white);
+      color: var(--primary);
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 950;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-image, .about-image {
+      width: 100%;
+      object-fit: cover;
+      background: linear-gradient(135deg, var(--purple-soft), var(--rose-soft));
+    }
+
+    .hero-image {
+      height: 560px;
+      border-radius: 28px;
+    }
+
+    .about-image {
+      height: 520px;
+      border-radius: 34px;
+      box-shadow: var(--shadow);
+    }
+
+    .trust-grid, .services-grid, .benefits-grid, .testimonials-grid, .process-grid {
+      display: grid;
+      gap: 22px;
+    }
+
+    .trust-grid { grid-template-columns: repeat(4, 1fr); }
+    .services-grid, .benefits-grid, .testimonials-grid { grid-template-columns: repeat(3, 1fr); }
+    .process-grid { grid-template-columns: repeat(4, 1fr); counter-reset: step; }
+
+    .card, .process-card {
+      background: var(--white);
+      padding: 28px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(88, 28, 135, 0.08);
+      box-shadow: 0 14px 36px rgba(46, 16, 101, 0.08);
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow);
+    }
+
+    .icon {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(88, 28, 135, 0.14), rgba(190, 24, 93, 0.14), rgba(217, 119, 6, 0.12));
+      font-size: 1.55rem;
+      margin-bottom: 18px;
+    }
+
+    .card h3, .process-card h3 {
+      color: var(--dark);
+      font-size: 1.18rem;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .card p, .process-card p {
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .about { background: var(--soft); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .problem-list {
+      display: grid;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .problem-item {
+      display: flex;
+      gap: 14px;
+      background: var(--white);
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(88, 28, 135, 0.08);
+    }
+
+    .problem-item strong {
+      color: var(--dark);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .service-link {
+      margin-top: 18px;
+      display: inline-flex;
+      font-weight: 950;
+      color: var(--primary);
+    }
+
+    .benefits {
+      background:
+        linear-gradient(135deg, rgba(46, 16, 101, 0.94), rgba(88, 28, 135, 0.84), rgba(190, 24, 93, 0.72)),
+        url("https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=1600&q=80") center/cover;
+      color: var(--white);
+    }
+
+    .benefits .section-title, .benefits .section-text { color: var(--white); }
+
+    .benefits .section-badge {
+      background: rgba(255, 255, 255, 0.14);
+      color: var(--white);
+    }
+
+    .benefit-card {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(12px);
+      padding: 28px;
+      border-radius: var(--radius);
+    }
+
+    .benefit-card h3 { color: var(--white); margin-bottom: 8px; }
+    .benefit-card p { color: rgba(255, 255, 255, 0.86); }
+
+    .gallery { background: var(--purple-soft); }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 18px;
+    }
+
+    .gallery-card {
+      background: var(--white);
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(88, 28, 135, 0.08);
+      box-shadow: 0 14px 34px rgba(46, 16, 101, 0.08);
+      transition: var(--transition);
+    }
+
+    .gallery-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow);
+    }
+
+    .gallery-card img {
+      width: 100%;
+      height: 210px;
+      object-fit: cover;
+      background: linear-gradient(135deg, var(--purple-soft), var(--rose-soft));
+    }
+
+    .gallery-content { padding: 16px; }
+
+    .gallery-content h3 {
+      font-size: 1rem;
+      color: var(--dark);
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .hashtags {
+      color: var(--primary);
+      font-size: 0.82rem;
+      font-weight: 850;
+      line-height: 1.6;
+    }
+
+    .process-card::before {
+      counter-increment: step;
+      content: "0" counter(step);
+      display: inline-flex;
+      width: 46px;
+      height: 46px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+      color: var(--white);
+      font-weight: 950;
+      margin-bottom: 18px;
+    }
+
+    .testimonials { background: var(--soft); }
+
+    .quote {
+      font-size: 2rem;
+      color: var(--primary);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .reviewer {
+      margin-top: 20px;
+      font-weight: 950;
+      color: var(--dark);
+    }
+
+    .faq-grid {
+      display: grid;
+      gap: 14px;
+      max-width: 900px;
+    }
+
+    .faq-item {
+      background: var(--white);
+      border: 1px solid rgba(88, 28, 135, 0.08);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 10px 26px rgba(46, 16, 101, 0.06);
+    }
+
+    .faq-question {
+      width: 100%;
+      background: transparent;
+      border: 0;
+      padding: 20px;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      cursor: pointer;
+      font-weight: 950;
+      color: var(--dark);
+      font-size: 1rem;
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 0 20px 20px;
+      color: var(--muted);
+    }
+
+    .faq-item.active .faq-answer { display: block; }
+
+    .final-cta {
+      background:
+        radial-gradient(circle at top left, rgba(190, 24, 93, 0.22), transparent 32%),
+        radial-gradient(circle at bottom right, rgba(217, 119, 6, 0.16), transparent 34%),
+        linear-gradient(135deg, var(--purple-soft), var(--rose-soft));
+      text-align: center;
+    }
+
+    .final-cta .section-text { margin-left: auto; margin-right: auto; }
+
+    footer {
+      background: var(--dark);
+      color: rgba(255, 255, 255, 0.78);
+      padding: 60px 0 28px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr;
+      gap: 34px;
+      margin-bottom: 36px;
+    }
+
+    footer h3, footer h4 { color: var(--white); margin-bottom: 14px; }
+
+    .footer-links {
+      display: grid;
+      gap: 10px;
+    }
+
+    .footer-links a:hover { color: var(--gold); }
+
+    .copyright {
+      padding-top: 22px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 1024px) {
+      .hero-grid, .about-grid { grid-template-columns: 1fr; }
+      .trust-grid, .process-grid { grid-template-columns: repeat(2, 1fr); }
+      .services-grid, .benefits-grid, .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+      .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+      .hero-image { height: 460px; }
+    }
+
+    @media (max-width: 760px) {
+      .menu-toggle { display: inline-flex; }
+
+      .nav-links {
+        position: absolute;
+        left: 4%;
+        right: 4%;
+        top: 82px;
+        background: var(--white);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        padding: 22px;
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nav-links.active { display: flex; }
+      .navbar > .btn { display: none; }
+      .hero { padding-top: 70px; }
+
+      .hero-stats, .trust-grid, .services-grid, .benefits-grid, .testimonials-grid, .process-grid, .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .gallery-grid { grid-template-columns: 1fr; }
+      .hero-image, .about-image { height: 360px; }
+
+      .hero-image-wrap::before {
+        left: 16px;
+        bottom: 28px;
+        font-size: 0.8rem;
+      }
+
+      .section { padding: 64px 0; }
+    }
+  
+/* ShoutlyAI updated logo */
+.logo{display:inline-flex!important;align-items:center!important;gap:10px!important}
+.logo img{height:46px;width:auto;display:block;object-fit:contain}
+.footer-logo{height:46px;width:auto;display:block;object-fit:contain;margin-bottom:14px}
+@media(max-width:768px){.logo img,.footer-logo{height:40px}}
+
+</style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://shoutlyai.com/",
+        "name": "ShoutlyAI",
+        "url": "https://shoutlyai.com/",
+        "description": "ShoutlyAI is a social media automated content posting platform for fashion designers, couture studios, bridal designers, custom outfit creators, designer boutiques, and service providers."
+      },
+      {
+        "@type": "Service",
+        "@id": "https://shoutlyai.com/",
+        "name": "Fashion Designer Social Media Automation",
+        "serviceType": "Automated Social Media Content Posting",
+        "provider": {
+          "@id": "https://shoutlyai.com/"
+        },
+        "areaServed": "Global",
+        "description": "Automated social media content planning, creation, scheduling, and posting solution for fashion designers, bridal designers, couture studios, custom outfit creators, and designer boutiques."
+      },
+      {
+        "@type": "ProfessionalService",
+        "@id": "https://shoutlyai.com/",
+        "name": "ShoutlyAI",
+        "url": "https://shoutlyai.com/",
+        "description": "Social media automation platform helping fashion designers publish consistent portfolio content and improve digital visibility.",
+        "priceRange": "$$"
+      }
+    ]
+  }
+  </script>
+</head>
+
+<body>
+  <header>
+    <div class="container navbar">
+      <a href="https://shoutlyai.com/" class="logo" aria-label="ShoutlyAI Home"><img src="./shoutly-ai-logo.png" alt="ShoutlyAI logo" /></a>
+
+      <nav class="nav-links" id="navLinks" aria-label="Main navigation">
+        <a href="https://shoutlyai.com/">Home</a>
+        <a href="https://shoutlyai.com/about-us">About</a>
+        <a href="https://shoutlyai.com/#who-we-help">Services</a>
+        <a href="https://shoutlyai.com/#pricing">Pricing</a>
+        <a href="https://shoutlyai.com/contact-us">Contact</a>
+      </nav>
+
+      <a href="https://shoutlyai.com/" class="btn btn-primary">Start Automation</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div>
+          <span class="section-badge">🧵 Social Media Automation for Fashion Designers</span>
+          <h1>Grow Your Fashion Designer Brand with Automated Social Media Content Posting</h1>
+          <p>
+            ShoutlyAI helps fashion designers, bridal designers, couture studios, custom outfit creators, and designer boutiques publish consistent, elegant, portfolio-focused, and enquiry-ready social media content without daily manual effort.
+          </p>
+
+          <div class="hero-actions">
+            <a href="https://shoutlyai.com/" class="btn btn-primary">Automate My Designer Posts</a>
+            <a href="https://shoutlyai.com/" class="btn btn-secondary">Explore ShoutlyAI</a>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat-card"><strong>24/7</strong><span>Posting Support</span></div>
+            <div class="stat-card"><strong>10x</strong><span>Better Consistency</span></div>
+            <div class="stat-card"><strong>100%</strong><span>CTA-Focused Growth</span></div>
+          </div>
+        </div>
+
+        <div class="hero-image-wrap">
+          <img
+            class="hero-image"
+            src="https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=900&q=80"
+            width="900"
+            height="560"
+            loading="eager"
+            alt="Fashion designer social media automation for couture and custom outfit brand growth"
+            onerror="this.onerror=null;this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22900%22 height=%22560%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23F3E8FF%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23581C87%22 font-size=%2230%22 font-family=%22Arial%22%3EFashion Designer Content Automation%3C/text%3E%3C/svg%3E';"
+          />
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="trust">
+      <div class="container">
+        <span class="section-badge">Why Fashion Designers Need Automation</span>
+        <h2 class="section-title">Designer brands grow when portfolio, process, and client-ready content appear consistently</h2>
+        <p class="section-text">
+          Fashion designers need more than occasional outfit photos. Clients want to see your design language, fabric choices, fittings, custom work, bridal looks, and final transformations before they enquire.
+        </p>
+
+        <div class="trust-grid">
+          <div class="card"><div class="icon">📅</div><h3>Consistent Portfolio Posting</h3><p>Promote custom outfits, bridal wear, couture pieces, client fittings, festive collections, and new design launches regularly.</p></div>
+          <div class="card"><div class="icon">👗</div><h3>Design-Focused Content</h3><p>Showcase sketches, fabrics, embroidery, draping, silhouettes, fittings, behind-the-scenes moments, and final looks.</p></div>
+          <div class="card"><div class="icon">📈</div><h3>Better Brand Visibility</h3><p>Build visibility for people searching for fashion designers, bridal designers, couture studios, and custom outfit creators.</p></div>
+          <div class="card"><div class="icon">⚡</div><h3>Less Manual Effort</h3><p>Save time on content planning while keeping your designer page premium, active, and professional.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section about" id="about">
+      <div class="container about-grid">
+        <div>
+          <img
+            class="about-image"
+            src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=900&q=80"
+            width="900"
+            height="520"
+            loading="lazy"
+            alt="Fashion designer digital marketing and automated couture content posting"
+            onerror="this.onerror=null;this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22900%22 height=%22520%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23FCE7F3%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23581C87%22 font-size=%2230%22 font-family=%22Arial%22%3EFashion Designer Marketing%3C/text%3E%3C/svg%3E';"
+          />
+        </div>
+
+        <div>
+          <span class="section-badge">Problem → Solution</span>
+          <h2 class="section-title">Your design talent needs consistent digital proof</h2>
+          <p class="section-text">
+            Many fashion designers post only after completing a client outfit or launching a collection. But premium clients need repeated exposure to your process, craftsmanship, client results, and design expertise before they book.
+          </p>
+
+          <div class="problem-list">
+            <div class="problem-item"><span>❌</span><div><strong>Problem: Irregular posting reduces premium enquiry trust</strong><p>If your page looks inactive, clients may not understand your design style, customization process, service quality, or booking availability.</p></div></div>
+            <div class="problem-item"><span>✅</span><div><strong>Solution: Automated content posting with ShoutlyAI</strong><p>ShoutlyAI helps publish portfolio reels, bridal look posts, fabric stories, behind-the-scenes updates, client testimonials, and CTA-focused content consistently.</p></div></div>
+            <div class="problem-item"><span>✨</span><div><strong>Result: Better visibility and stronger designer branding</strong><p>Keep your fashion designer brand top-of-mind for bridal bookings, custom outfits, festive looks, couture pieces, and styling enquiries.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="services">
+      <div class="container">
+        <span class="section-badge">Fashion Designer Marketing Services</span>
+        <h2 class="section-title">Automated content solutions for fashion designers and couture studios</h2>
+        <p class="section-text">
+          ShoutlyAI supports designer-led fashion businesses with content workflows that make your portfolio look elegant, premium, active, and enquiry-ready.
+        </p>
+
+        <div class="services-grid">
+          <div class="card"><div class="icon">📲</div><h3>Instagram Content Posting</h3><p>Publish designer outfit reels, portfolio photos, fitting updates, client looks, process clips, and offer posts regularly.</p><a href="https://shoutlyai.com/" class="service-link">Start Posting →</a></div>
+          <div class="card"><div class="icon">👰</div><h3>Bridal & Custom Outfit Promotion</h3><p>Promote bridal lehengas, gowns, sarees, reception looks, custom blouses, couture pieces, and occasion wear.</p><a href="https://shoutlyai.com/" class="service-link">Promote Designs →</a></div>
+          <div class="card"><div class="icon">🎉</div><h3>Collection Launch Campaigns</h3><p>Plan campaigns for festive edits, wedding collections, seasonal drops, designer showcases, and custom booking slots.</p><a href="https://shoutlyai.com/" class="service-link">Launch Campaigns →</a></div>
+          <div class="card"><div class="icon">🧵</div><h3>Fabric & Process Content</h3><p>Create content around sketches, fabrics, embroidery, silhouettes, draping, trials, fittings, and craftsmanship.</p><a href="https://shoutlyai.com/" class="service-link">Create Process Content →</a></div>
+          <div class="card"><div class="icon">🎥</div><h3>Reel Ideas for Designers</h3><p>Create reel ideas for before-after outfits, sketch-to-final looks, fitting journeys, fabric reveals, store tours, and client transformations.</p><a href="https://shoutlyai.com/" class="service-link">Create Reels →</a></div>
+          <div class="card"><div class="icon">🎯</div><h3>Booking & Enquiry CTAs</h3><p>Use strategic CTA content to guide clients toward consultations, custom outfit enquiries, bridal appointments, and design bookings.</p><a href="https://shoutlyai.com/" class="service-link">Get Enquiries →</a></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section benefits" id="benefits">
+      <div class="container">
+        <span class="section-badge">Business Benefits</span>
+        <h2 class="section-title">Why automated posting is powerful for fashion designer growth</h2>
+        <p class="section-text">
+          Fashion designers need portfolio visibility, craftsmanship storytelling, client trust, and enquiry-focused content. Social media automation keeps your brand visible without daily content stress.
+        </p>
+
+        <div class="benefits-grid">
+          <div class="benefit-card"><h3>Improve Designer Visibility</h3><p>Stay visible to people searching for fashion designers, bridal designers, custom outfit creators, couture studios, and boutique designers.</p></div>
+          <div class="benefit-card"><h3>Build Portfolio Desire</h3><p>Consistent design, fitting, and transformation visuals create stronger interest in your custom outfits and designer services.</p></div>
+          <div class="benefit-card"><h3>Promote Bookings Clearly</h3><p>Share bridal appointments, consultation slots, festive collection bookings, custom outfit offers, and seasonal campaigns with ease.</p></div>
+          <div class="benefit-card"><h3>Highlight Design Expertise</h3><p>Showcase sketches, fabrics, embroidery, draping, final looks, client stories, styling, and craftsmanship details.</p></div>
+          <div class="benefit-card"><h3>Save Daily Effort</h3><p>Reduce the pressure of manually planning, designing, writing, and posting designer content every day.</p></div>
+          <div class="benefit-card"><h3>Increase Client Trust</h3><p>Regular posts prove that your fashion brand is active, premium, detail-focused, and ready for custom enquiries.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section gallery" id="gallery">
+      <div class="container">
+        <span class="section-badge">Image Gallery</span>
+        <h2 class="section-title">Fashion designer content ideas for premium social media growth</h2>
+        <p class="section-text">
+          A dedicated image gallery with fashion designer-focused visuals, SEO-friendly alt text, and hashtags for designer brand content inspiration.
+        </p>
+
+        <div class="gallery-grid">
+          <article class="gallery-card"><img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=500&q=80" width="500" height="210" loading="lazy" alt="Fashion designer portfolio content for automated social media posting"><div class="gallery-content"><h3>Designer Portfolio Looks</h3><p class="hashtags">#FashionDesigner #DesignerPortfolio #CoutureContent #ShoutlyAI</p></div></article>
+          <article class="gallery-card"><img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=500&q=80" width="500" height="210" loading="lazy" alt="Fashion designer couture campaign content for Instagram automation"><div class="gallery-content"><h3>Couture Campaigns</h3><p class="hashtags">#CoutureDesigner #FashionBrand #ContentAutomation #DesignerGrowth</p></div></article>
+          <article class="gallery-card"><img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=500&q=80" width="500" height="210" loading="lazy" alt="Fashion styling content for designer social media marketing"><div class="gallery-content"><h3>Styling & Lookbook Ideas</h3><p class="hashtags">#Lookbook #StyleDirection #SocialMedia #FashionMarketing</p></div></article>
+          <article class="gallery-card"><img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=500&q=80" width="500" height="210" loading="lazy" alt="Designer collection model content for fashion promotion"><div class="gallery-content"><h3>Collection Launch Posts</h3><p class="hashtags">#DesignerCollection #FashionCampaign #AutomatedPosting #ShoutlyAI</p></div></article>
+          <article class="gallery-card"><img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=500&q=80" width="500" height="210" loading="lazy" alt="Fashion designer editorial content for premium brand promotion"><div class="gallery-content"><h3>Editorial Fashion Edits</h3><p class="hashtags">#EditorialFashion #DesignerStyle #FashionContent #DigitalGrowth</p></div></article>
+          <article class="gallery-card"><img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=500&q=80" width="500" height="210" loading="lazy" alt="Custom outfit designer campaign content for social media branding"><div class="gallery-content"><h3>Custom Outfit Showcases</h3><p class="hashtags">#CustomOutfits #DesignerWear #CoutureMarketing #ShoutlyAI</p></div></article>
+          <article class="gallery-card"><img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=500&q=80" width="500" height="210" loading="lazy" alt="Designer studio content for fashion designer digital marketing"><div class="gallery-content"><h3>Studio & Process Stories</h3><p class="hashtags">#DesignerStudio #FashionProcess #DesignerMarketing #Automation</p></div></article>
+          <article class="gallery-card"><img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=500&q=80" width="500" height="210" loading="lazy" alt="Fashion collection content for designer brand growth"><div class="gallery-content"><h3>Premium Collection Drops</h3><p class="hashtags">#CollectionDrop #FashionDesignerBrand #ContentPosting #SocialGrowth</p></div></article>
+          <article class="gallery-card"><img src="https://images.unsplash.com/photo-1495385794356-15371f348c31?auto=format&fit=crop&w=500&q=80" width="500" height="210" loading="lazy" alt="Fashion accessories and styling content for designer automation"><div class="gallery-content"><h3>Accessories & Styling Details</h3><p class="hashtags">#FashionAccessories #DesignerDetails #StyleBusiness #CustomerGrowth</p></div></article>
+          <article class="gallery-card"><img src="https://images.unsplash.com/photo-1523381294911-8d3cead13475?auto=format&fit=crop&w=500&q=80" width="500" height="210" loading="lazy" alt="Fashion designer brand content for marketing"><div class="gallery-content"><h3>Designer Brand Positioning</h3><p class="hashtags">#FashionBranding #DesignerMarketing #DigitalMarketing #ShoutlyAI</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="process">
+      <div class="container">
+        <span class="section-badge">Simple Growth Process</span>
+        <h2 class="section-title">From designer content planning to consistent client enquiries</h2>
+        <p class="section-text">
+          ShoutlyAI simplifies your fashion designer content workflow through a clear automation process designed for portfolio visibility, process storytelling, booking promotion, and client action.
+        </p>
+
+        <div class="process-grid">
+          <div class="process-card"><h3>Strategy</h3><p>Define your design niche, ideal clients, portfolio themes, content style, services, and growth goals.</p></div>
+          <div class="process-card"><h3>Content Creation</h3><p>Create posts around custom outfits, bridal looks, sketches, fittings, fabrics, client stories, and reels.</p></div>
+          <div class="process-card"><h3>Automation</h3><p>Schedule and publish content consistently without relying on manual daily posting.</p></div>
+          <div class="process-card"><h3>Growth</h3><p>Improve online visibility, designer recall, client trust, and fashion enquiry opportunities.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section testimonials" id="testimonials">
+      <div class="container">
+        <span class="section-badge">Client Feedback</span>
+        <h2 class="section-title">What fashion designers say about consistent posting</h2>
+        <p class="section-text">
+          A professional social media presence helps designers showcase their portfolio, promote bookings, and stay remembered before clients decide who to work with.
+        </p>
+
+        <div class="testimonials-grid">
+          <div class="card"><div class="quote">“</div><p>Our designer studio page became more premium and active when we started posting portfolio reels, process content, and bridal looks consistently.</p><div class="reviewer">Ananya M. — Fashion Designer</div></div>
+          <div class="card"><div class="quote">“</div><p>Consistent content helped clients understand our custom outfit process better. It made our couture brand look more professional online.</p><div class="reviewer">Ritika S. — Bridal Designer</div></div>
+          <div class="card"><div class="quote">“</div><p>Automated posting helped us share collection drops, fabric stories, client transformations, and consultation updates without pressure.</p><div class="reviewer">Kavya V. — Couture Studio Founder</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="container">
+        <span class="section-badge">SEO FAQs</span>
+        <h2 class="section-title">Frequently asked questions about fashion designer social media automation</h2>
+        <p class="section-text">
+          Get clear answers on how automated content posting can support designer branding, portfolio promotion, styling reels, booking visibility, and client enquiries.
+        </p>
+
+        <div class="faq-grid">
+          <div class="faq-item active"><button class="faq-question">How can ShoutlyAI help a fashion designer grow online? <span>+</span></button><div class="faq-answer">ShoutlyAI helps fashion designers automate social media content posting, promote portfolio work, share design process content, improve consistency, and build stronger online visibility.</div></div>
+          <div class="faq-item"><button class="faq-question">What content can a fashion designer post using automation? <span>+</span></button><div class="faq-answer">A fashion designer can post portfolio reels, custom outfit reveals, bridal looks, sketches, fittings, fabric details, client testimonials, consultation updates, and collection launches.</div></div>
+          <div class="faq-item"><button class="faq-question">Can ShoutlyAI help promote bridal and custom outfit services on Instagram? <span>+</span></button><div class="faq-answer">Yes. ShoutlyAI supports automated content workflows that help fashion designers and couture studios maintain a consistent and professional Instagram presence.</div></div>
+          <div class="faq-item"><button class="faq-question">Does automated posting improve fashion designer branding? <span>+</span></button><div class="faq-answer">Yes. Consistent automated posting improves brand recall, builds client confidence, and helps fashion designers look active, premium, creative, and professional online.</div></div>
+          <div class="faq-item"><button class="faq-question">Can fashion designers use automation for collection launches and booking campaigns? <span>+</span></button><div class="faq-answer">Yes. Fashion designers can plan and schedule collection launches, bridal booking campaigns, festive edits, custom outfit promotions, and behind-the-scenes content.</div></div>
+          <div class="faq-item"><button class="faq-question">Do all enquiry buttons redirect to ShoutlyAI? <span>+</span></button><div class="faq-answer">Yes. All main enquiry buttons and CTA links on this landing page redirect to https://shoutlyai.com/"section final-cta" id="start">
+      <div class="container">
+        <span class="section-badge">Ready to Grow?</span>
+        <h2 class="section-title">Make your fashion designer brand visible every day</h2>
+        <p class="section-text">
+          Stop posting randomly. Build a consistent, premium, portfolio-focused, and conversion-ready social media presence for your fashion designer brand with ShoutlyAI.
+        </p>
+        <a href="https://shoutlyai.com/" class="btn btn-primary">Start with ShoutlyAI Today</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <div>
+        <img class="footer-logo" src="./shoutly-ai-logo.png" alt="ShoutlyAI logo" /><p>ShoutlyAI is a social media automated content posting platform helping fashion designers, couture studios, bridal designers, custom outfit creators, and service businesses stay consistent online.</p>
+      </div>
+
+      <div>
+        <h4>Quick Links</h4>
+        <div class="footer-links">
+          <a href="https://shoutlyai.com/">Home</a>
+          <a href="https://shoutlyai.com/about-us">About</a>
+          <a href="https://shoutlyai.com/#who-we-help">Services</a>
+          <a href="https://shoutlyai.com/#pricing">Pricing</a>
+          <a href="https://shoutlyai.com/contact-us">Contact</a>
+        </div>
+      </div>
+
+      <div>
+        <h4>Grow with Automation</h4>
+        <p>Launch a consistent social media system for your fashion designer brand.</p>
+        <br />
+        <a href="https://shoutlyai.com/" class="btn btn-primary">Contact ShoutlyAI</a>
+      </div>
+    </div>
+
+    <div class="container copyright">
+      © 2026 ShoutlyAI. All rights reserved. Social media automation for fashion designers, bridal designers, and couture studios.
+    </div>
+  </footer>
+
+  <script>
+    const menuToggle = document.getElementById("menuToggle");
+    const navLinks = document.getElementById("navLinks");
+
+    menuToggle.addEventListener("click", () => {
+      navLinks.classList.toggle("active");
+    });
+
+    document.querySelectorAll(".faq-question").forEach((button) => {
+      button.addEventListener("click", () => {
+        button.parentElement.classList.toggle("active");
+      });
+    });
+  </script>
+</body>
+</html>

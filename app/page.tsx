@@ -1184,7 +1184,7 @@ const speeds = [120, 160, 110, 150, 130];
                                 </button>
                             </div>
                             <p className="text-center text-xs sm:text-sm text-slate-900 mb-8 font-medium">
-                                No credit card required • 2-min setup <br />
+                                No credit card required • 14-day free trial <br />
                                 Trusted by 5,000+ businesses automating their social media
                             </p>
 
@@ -2747,9 +2747,8 @@ const speeds = [120, 160, 110, 150, 130];
                 </div>
             </section>
 
-            {/* Pricing */}
-            <div id="pricing">
-                {/* Assuming PricingSection is robust, otherwise wrap it */}
+            {/* Pricing Section */}
+            <div id="pricing" className="bg-[#faf6ef]">
                 <PricingSection />
             </div>
 

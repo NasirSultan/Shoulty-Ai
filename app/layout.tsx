@@ -41,8 +41,8 @@ const seoSchemaGraph = {
                 "AI-powered social media automation. Generate 365 days of posts, reels, and captions in minutes.",
             offers: {
                 "@type": "Offer",
-                price: "29.00",
-                priceCurrency: "USD",
+                price: "8000.00",
+                priceCurrency: "INR",
             },
         },
         {
@@ -59,8 +59,8 @@ const seoSchemaGraph = {
             offers: {
                 "@type": "Offer",
                 url: siteUrl,
-                priceCurrency: "USD",
-                price: "29.00",
+                priceCurrency: "INR",
+                price: "8000.00",
                 availability: "https://schema.org/InStock",
             },
             aggregateRating: {
@@ -94,7 +94,7 @@ const seoSchemaGraph = {
                     name: "How much does Shoutly AI cost?",
                     acceptedAnswer: {
                         "@type": "Answer",
-                        text: "Pricing starts at $29/month. We also offer a free trial with no credit card required.",
+                        text: "Pricing starts at ₹8,000/month (billed annually). We also offer a 14-day free trial with no credit card required.",
                     },
                 },
             ],
