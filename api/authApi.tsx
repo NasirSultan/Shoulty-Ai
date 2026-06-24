@@ -26,6 +26,23 @@ shoutlyClient.interceptors.request.use((config) => {
     return config;
 });
 
+shoutlyClient.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            console.error("🔒 Unauthorized (shoutlyClient)! Redirecting to sign-in...");
+            if (typeof window !== "undefined") {
+                localStorage.removeItem("shoutly_token");
+                localStorage.removeItem("shoutly_user");
+                if (!window.location.pathname.includes("/sign-in")) {
+                    window.location.href = `/sign-in?next=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+                }
+            }
+        }
+        return Promise.reject(error);
+    }
+);
+
 // ── Auth ──────────────────────────────────────────────────────────────────────
 
 export const googleLogin = async (idToken: string) => {

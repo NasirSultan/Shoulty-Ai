@@ -26,7 +26,7 @@ export const API_ENDPOINTS = {
     resetPassword: `${API_BASE_URL}/api/auth/reset-password`,
     googleLogin: `/api/auth/verify-token`,
     emailLogin: `${SHOUTLY_API_BASE_URL}/api/auth/login`,
-    userProfile: `${SHOUTLY_API_BASE_URL}/api/user/profile`,
+    userProfile: `${SHOUTLY_API_BASE_URL}/api/users/profile`,
     profileUpdate: `${SHOUTLY_API_BASE_URL}/api/users/profile-update`,
     passwordUpdate: `${SHOUTLY_API_BASE_URL}/api/users/password`,
 };

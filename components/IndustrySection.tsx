@@ -1,20 +1,21 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 
 const industries = [
-    { name: "Real Estate", icon: "🏠" },
-    { name: "Health & Wellness", icon: "🧘" },
-    { name: "Finance", icon: "💰" },
-    { name: "Fashion", icon: "👗" },
-    { name: "Technology", icon: "💻" },
-    { name: "Retail", icon: "🛍️" },
-    { name: "Food & Drink", icon: "🍷" },
-    { name: "Travel", icon: "✈️" },
-    { name: "Beauty", icon: "💄" },
-    { name: "Education", icon: "🎓" },
-    { name: "Fitness", icon: "🏋️" },
-    { name: "Legal", icon: "⚖️" },
+    { name: "Real Estate", icon: "🏠", href: "/real-estate.html" },
+    { name: "Health & Wellness", icon: "🧘", href: "/Dieticians.html" },
+    { name: "Finance", icon: "💰", href: "/mutual-fund.html" },
+    { name: "Fashion", icon: "👗", href: "/CLOTHING-AND-BOUTIQUE.html" },
+    { name: "Technology", icon: "💻", href: "/coding-academy.html" },
+    { name: "Retail", icon: "🛍️", href: "/textile.html" },
+    { name: "Food & Drink", icon: "🍷", href: "/Cafe.html" },
+    { name: "Travel", icon: "✈️", href: "/package.html" },
+    { name: "Beauty", icon: "💄", href: "/perfume.html" },
+    { name: "Education", icon: "🎓", href: "/SCHOOL-AND-CLG.html" },
+    { name: "Fitness", icon: "🏋️", href: "/GYM.html" },
+    { name: "Legal", icon: "⚖️", href: "/CA_GST.html" },
 ];
 
 export default function IndustrySection() {
@@ -28,13 +29,14 @@ export default function IndustrySection() {
 
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
                     {industries.map((item) => (
-                        <div
+                        <Link
                             key={item.name}
+                            href={item.href}
                             className="group bg-gray-50/50 border border-gray-100 p-8 rounded-[32px] text-center transition-all hover:bg-white hover:shadow-xl hover:shadow-gray-200/50 hover:border-white hover:-translate-y-1"
                         >
                             <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">{item.icon}</div>
                             <p className="text-sm font-bold text-gray-900">{item.name}</p>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             </div>

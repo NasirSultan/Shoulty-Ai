@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Sidebar from "./Sidebar";
 import AdminHeader from "./AdminHeader";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { UserProfile, useUserProfile } from "@/hooks/useUserProfile";
 import { useSidebarState } from "@/hooks/useSidebarState";
+import { Platform, connectPlatform, handleCallback } from "@/api/autopostApi";
 import {
   resolveGeneratorProfileFields,
   streamGeneratePosts,
@@ -118,6 +119,89 @@ const platLabels: Record<string, string> = {
   ig: "Instagram", li: "LinkedIn", tw: "Twitter", fb: "Facebook", tk: "TikTok",
 };
 
+// ── Social Accounts Section ──────────────────────────────────────────────
+function SocialAccountsSection({ user, showToast, refreshUser }: { user: UserProfile | null, showToast: (msg: string) => void, refreshUser: () => void }) {
+  const [connecting, setConnecting] = useState<Platform | null>(null);
+
+  const platforms: { id: Platform; name: string; icon: string; color: string; publish: boolean }[] = [
+    { id: "instagram", name: "Instagram", icon: "fa-brands fa-instagram", color: "#E1306C", publish: true },
+    { id: "facebook", name: "Facebook", icon: "fa-brands fa-facebook", color: "#1877F2", publish: true },
+    { id: "linkedin", name: "LinkedIn", icon: "fa-brands fa-linkedin", color: "#0A66C2", publish: true },
+    { id: "youtube", name: "YouTube", icon: "fa-brands fa-youtube", color: "#FF0000", publish: false },
+  ];
+
+  const handleConnect = async (platform: Platform) => {
+    if (connecting) return;
+    setConnecting(platform);
+    try {
+      const { redirectUrl } = await connectPlatform(platform);
+      if (redirectUrl) {
+        window.location.href = redirectUrl;
+      } else {
+        throw new Error("No redirect URL received from server.");
+      }
+    } catch (err: any) {
+      console.error(`Failed to connect ${platform}:`, err);
+      const msg = err.response?.data?.message || `Failed to start connection for ${platform}.`;
+      showToast(msg);
+      setConnecting(null);
+    }
+  };
+
+  const isConnected = (id: Platform) => {
+    return user?.connectedSocials?.some(s => s.toLowerCase() === id.toLowerCase());
+  };
+
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
+      {platforms.map((p) => {
+        const connected = isConnected(p.id);
+        const isThisConnecting = connecting === p.id;
+
+        return (
+          <div key={p.id} style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 20, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+              <div style={{ width: 44, height: 44, borderRadius: 10, background: p.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 20 }}>
+                <i className={p.icon} />
+              </div>
+              <div style={{ display: "flex", gap: 6 }}>
+                {!p.publish && (
+                  <span style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", padding: "2px 8px", borderRadius: 20, background: "#F0F1F8", color: "#9496B5" }}>Connect Only</span>
+                )}
+                {connected && (
+                  <span style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", padding: "2px 8px", borderRadius: 20, background: "#ECFDF5", color: "#10B981" }}>Connected</span>
+                )}
+              </div>
+            </div>
+            <div style={{ fontSize: 16, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 4 }}>{p.name}</div>
+            <div style={{ fontSize: 13, color: "#9496B5", marginBottom: 20 }}>
+              {p.publish ? "Publish images, reels, and stories directly." : "Connect your channel to sync channel analytics."}
+            </div>
+            <button
+              onClick={() => handleConnect(p.id)}
+              disabled={connected || !!connecting}
+              style={{ 
+                width: "100%", padding: "10px", borderRadius: 8, 
+                background: connected ? "#F8F9FD" : "#F0F1F8", 
+                color: connected ? "#C8CADF" : "#0D0E1A", 
+                fontSize: 13, fontWeight: 700, 
+                cursor: (connected || !!connecting) ? "default" : "pointer", 
+                border: "none", transition: "all 0.2s",
+                display: "flex", alignItems: "center", justifyContent: "center", gap: 8
+              }}
+              onMouseOver={(e) => { if(!connected && !connecting) e.currentTarget.style.background = "#E4E5EF" }}
+              onMouseOut={(e) => { if(!connected && !connecting) e.currentTarget.style.background = "#F0F1F8" }}
+            >
+              {isThisConnecting && <i className="fa-solid fa-circle-notch fa-spin" style={{ fontSize: 12 }} />}
+              {connected ? "Account Connected" : isThisConnecting ? "Redirecting..." : "Connect Account"}
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ── Toast Hook ─────────────────────────────────────────────────────────────
 function useToast() {
   const [toast, setToast] = useState({ visible: false, msg: "" });
@@ -181,7 +265,45 @@ export default function DashboardPage() {
   const [caption, setCaption] = useState("");
   const [tags2, setTags2] = useState<string[]>([]);
   const { toast, show: showToast } = useToast();
-  const { user, initials } = useUserProfile();
+  const { user, initials, refresh: refreshUser } = useUserProfile();
+  const [processingCallback, setProcessingCallback] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("status") === "connecting") {
+      setActiveTab("Automation"); // Ensure user sees the progress
+      const sessionToken = params.get("session_token");
+      const accountId = params.get("account_id");
+
+      const processCallback = async () => {
+        setProcessingCallback(true);
+        try {
+          if (sessionToken) {
+            await handleCallback({ sessionToken });
+          } else if (accountId) {
+            await handleCallback({
+              account_id: accountId,
+              network_unique_id: params.get("network_unique_id") || "",
+              username: params.get("username") || "",
+              network: params.get("network") || "INSTAGRAM",
+            });
+          }
+          showToast("Social account connected successfully!");
+          await refreshUser();
+          // Clean up URL
+          window.history.replaceState({}, document.title, window.location.pathname + "?status=connected");
+        } catch (err: any) {
+          console.error("Callback handling failed:", err);
+          const msg = err.response?.data?.message || "Failed to connect social account.";
+          showToast(msg);
+        } finally {
+          setProcessingCallback(false);
+        }
+      };
+
+      processCallback();
+    }
+  }, [showToast, refreshUser]);
 
   const generateCaption = async () => {
     const { industryId, subIndustryId } = resolveGeneratorProfileFields(
@@ -339,322 +461,338 @@ export default function DashboardPage() {
           {/* Scrollable Content */}
           <div style={{ flex: 1, overflowY: "auto", padding: "20px 22px" }}>
 
-            {/* Welcome greeting */}
-            <div style={{ marginBottom: 18 }}>
-              <div style={{ fontSize: 20, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.3px" }}>
-                Welcome back{user?.name ? `, ${user.name.split(" ")[0]}` : ""} 👋
-              </div>
-              {user?.brandName && (
-                <div style={{ fontSize: 13, color: "#9496B5", marginTop: 3 }}>
-                  Managing <strong style={{ color: "#5B5BD6" }}>{user.brandName}</strong>
-                  {user.connectedSocials && user.connectedSocials.length > 0 && (
-                    <> · {user.connectedSocials.length} platform{user.connectedSocials.length > 1 ? "s" : ""} connected</>
+            {activeTab === "Automation" ? (
+              <>
+                <div style={{ marginBottom: 18 }}>
+                  <div style={{ fontSize: 20, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.3px" }}>
+                    Social Account Connections 🔗
+                  </div>
+                  <div style={{ fontSize: 13, color: "#9496B5", marginTop: 3 }}>
+                    Connect your brand's social profiles to enable AI-powered auto posting and analytics.
+                  </div>
+                </div>
+                <SocialAccountsSection user={user} showToast={showToast} refreshUser={refreshUser} />
+              </>
+            ) : (
+              <>
+                {/* Welcome greeting */}
+                <div style={{ marginBottom: 18 }}>
+                  <div style={{ fontSize: 20, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.3px" }}>
+                    Welcome back{user?.name ? `, ${user.name.split(" ")[0]}` : ""} 👋
+                  </div>
+                  {user?.brandName && (
+                    <div style={{ fontSize: 13, color: "#9496B5", marginTop: 3 }}>
+                      Managing <strong style={{ color: "#5B5BD6" }}>{user.brandName}</strong>
+                      {user.connectedSocials && user.connectedSocials.length > 0 && (
+                        <> · {user.connectedSocials.length} platform{user.connectedSocials.length > 1 ? "s" : ""} connected</>
+                      )}
+                    </div>
                   )}
                 </div>
-              )}
-            </div>
 
-            {/* KPI Cards */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14, marginBottom: 18 }}>
-              {[
-                { icon: "fa-solid fa-users", iconBg: "#EEEEFF", iconC: "#5B5BD6", val: "147.2K", lbl: "Total Followers", delta: "+12.4%", up: true },
-                { icon: "fa-solid fa-chart-line", iconBg: "#ECFDF5", iconC: "#10B981", val: "8.7%", lbl: "Avg Engagement", delta: "+2.1%", up: true },
-                { icon: "fa-solid fa-calendar-check", iconBg: "#FFFBEB", iconC: "#F59E0B", val: "68", lbl: "Posts This Month", delta: "+8", up: true },
-                { icon: "fa-solid fa-eye", iconBg: "#FDF2F8", iconC: "#EC4899", val: "2.1M", lbl: "Total Reach", delta: "+18.3%", up: true },
-              ].map((k, i) => (
-                <div key={i} style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: "16px 18px", boxShadow: "0 1px 4px rgba(13,14,26,.07)", animation: `cardIn .3s ease ${i * 0.05 + 0.05}s both` }}>
-                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 10 }}>
-                    <div style={{ width: 36, height: 36, borderRadius: 10, background: k.iconBg, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <i className={k.icon} style={{ color: k.iconC }} />
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 3, padding: "3px 7px", borderRadius: 20, background: k.up ? "#ECFDF5" : "#FEF2F2", color: k.up ? "#10B981" : "#EF4444", fontSize: 11.5, fontWeight: 700, fontFamily: "JetBrains Mono,monospace" }}>
-                      <i className={`fa-solid fa-arrow-${k.up ? "up" : "down"}`} style={{ fontSize: 9 }} />{k.delta}
-                    </div>
-                  </div>
-                  <div style={{ fontSize: 26, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.5px", lineHeight: 1 }}>{k.val}</div>
-                  <div style={{ fontSize: 12.5, color: "#9496B5", marginTop: 4, fontWeight: 500 }}>{k.lbl}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* AI Banner */}
-            <div className="ai-banner-anim" style={{ borderRadius: 14, padding: "16px 20px", marginBottom: 18, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, boxShadow: "0 4px 20px rgba(91,91,214,.3)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                <div style={{ width: 42, height: 42, borderRadius: 12, background: "rgba(255,255,255,.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>✦</div>
-                <div>
-                  <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", fontFamily: "Sora,sans-serif", marginBottom: 3 }}>Shoutly AI Insight — Your best time to post is TODAY at 7:30 PM</div>
-                  <div style={{ fontSize: 12.5, color: "rgba(255,255,255,.65)" }}>Based on your audience activity patterns across Instagram & LinkedIn · Predicted +34% higher engagement vs your avg</div>
-                </div>
-              </div>
-              <button onClick={() => showToast("✦ Opening full AI insights…")} style={{ padding: "9px 18px", borderRadius: 7, background: "rgba(255,255,255,.15)", border: "1px solid rgba(255,255,255,.2)", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", fontFamily: "Sora,sans-serif", flexShrink: 0 }}>View Details →</button>
-            </div>
-
-            {/* Charts + AI Generator */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 18 }}>
-              {/* Engagement Chart Placeholder */}
-              <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-                  <div>
-                    <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.2px" }}>Engagement Overview</div>
-                    <div style={{ fontSize: 12, color: "#9496B5", marginTop: 2 }}>Cross-platform performance · Last 30 days</div>
-                  </div>
-                  <div style={{ display: "flex", gap: 4 }}>
-                    {["7D", "30D", "90D"].map((ct, i) => (
-                      <div key={ct} style={{ padding: "4px 10px", borderRadius: 20, fontSize: 11.5, fontWeight: 700, cursor: "pointer", background: i === 0 ? "#EEEEFF" : undefined, color: i === 0 ? "#5B5BD6" : "#9496B5" }}>{ct}</div>
-                    ))}
-                  </div>
-                </div>
-                <div style={{ position: "relative" }}>
-                  <div style={{ position: "absolute", top: -4, right: 0, padding: "2px 8px", borderRadius: 20, background: "#ECFDF5", border: "1px solid rgba(16,185,129,.2)", color: "#10B981", fontSize: 11, fontWeight: 700 }}>↑ +208% vs last month</div>
-                  <div style={{ height: 160, background: "#F0F1F8", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", color: "#9496B5", fontSize: 12 }}>📊 Chart renders here (Chart.js)</div>
-                </div>
-              </div>
-
-              {/* AI Post Generator */}
-              <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
-                <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 2 }}>AI Post Generator</div>
-                <div style={{ fontSize: 12, color: "#9496B5", marginBottom: 14 }}>Generate captions with a single click ✦</div>
-                <div style={{ display: "flex", gap: 5, marginBottom: 14, flexWrap: "wrap" }}>
-                  {Object.entries(platLabels).map(([key, label]) => {
-                    const active = activePlat === key;
-                    return (
-                      <div
-                        key={key}
-                        onClick={() => { setActivePlat(key); setCaption(""); setTags2([]); }}
-                        style={{ display: "flex", alignItems: "center", gap: 5, padding: "5px 11px", borderRadius: 20, border: `1.5px solid ${active ? platColors[key] : "#E4E5EF"}`, fontSize: 12, fontWeight: 700, cursor: "pointer", background: active ? platColors[key] : "#fff", color: active ? "#fff" : "#4B4D6B" }}
-                      >
-                        <div style={{ width: 7, height: 7, borderRadius: "50%", background: active ? "rgba(255,255,255,.4)" : platColors[key] }} />
-                        {label}
+                {/* KPI Cards */}
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14, marginBottom: 18 }}>
+                  {[
+                    { icon: "fa-solid fa-users", iconBg: "#EEEEFF", iconC: "#5B5BD6", val: "147.2K", lbl: "Total Followers", delta: "+12.4%", up: true },
+                    { icon: "fa-solid fa-chart-line", iconBg: "#ECFDF5", iconC: "#10B981", val: "8.7%", lbl: "Avg Engagement", delta: "+2.1%", up: true },
+                    { icon: "fa-solid fa-calendar-check", iconBg: "#FFFBEB", iconC: "#F59E0B", val: "68", lbl: "Posts This Month", delta: "+8", up: true },
+                    { icon: "fa-solid fa-eye", iconBg: "#FDF2F8", iconC: "#EC4899", val: "2.1M", lbl: "Total Reach", delta: "+18.3%", up: true },
+                  ].map((k, i) => (
+                    <div key={i} style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: "16px 18px", boxShadow: "0 1px 4px rgba(13,14,26,.07)", animation: `cardIn .3s ease ${i * 0.05 + 0.05}s both` }}>
+                      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 10 }}>
+                        <div style={{ width: 36, height: 36, borderRadius: 10, background: k.iconBg, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <i className={k.icon} style={{ color: k.iconC }} />
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 3, padding: "3px 7px", borderRadius: 20, background: k.up ? "#ECFDF5" : "#FEF2F2", color: k.up ? "#10B981" : "#EF4444", fontSize: 11.5, fontWeight: 700, fontFamily: "JetBrains Mono,monospace" }}>
+                          <i className={`fa-solid fa-arrow-${k.up ? "up" : "down"}`} style={{ fontSize: 9 }} />{k.delta}
+                        </div>
                       </div>
-                    );
-                  })}
-                </div>
-                <textarea
-                  placeholder="Describe your post topic… e.g. 'new product launch, summer vibe, call to action'"
-                  value={promptInput}
-                  onChange={(e) => setPromptInput(e.target.value)}
-                  style={{ width: "100%", padding: "11px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#F0F1F8", color: "#0D0E1A", fontSize: 13.5, outline: "none", resize: "none", height: 70, fontFamily: "inherit", lineHeight: 1.6 }}
-                />
-                {generating && (
-                  <div style={{ marginBottom: 12 }}>
-                    <div className="skel-line" style={{ width: "100%" }} />
-                    <div className="skel-line" style={{ width: "85%" }} />
-                    <div className="skel-line" style={{ width: "70%" }} />
-                  </div>
-                )}
-                {caption && !generating && (
-                  <div style={{ background: "linear-gradient(135deg,#EEEEFF,rgba(236,233,255,.5))", border: "1px solid rgba(91,91,214,.2)", borderRadius: 7, padding: "12px 14px", fontSize: 13.5, color: "#0D0E1A", lineHeight: 1.7, marginBottom: 12 }}>
-                    {caption}
-                  </div>
-                )}
-                {tags2.length > 0 && !generating && (
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 12 }}>
-                    {tags2.map((t) => (
-                      <span key={t} style={{ padding: "3px 9px", borderRadius: 6, background: "#EEEEFF", border: "1px solid #E0E0FA", color: "#5B5BD6", fontSize: 11.5, fontWeight: 600, fontFamily: "JetBrains Mono,monospace", cursor: "pointer" }}>{t}</span>
-                    ))}
-                  </div>
-                )}
-                <div style={{ display: "flex", gap: 7 }}>
-                  <button onClick={generateCaption} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "7px 13px", borderRadius: 7, background: "#5B5BD6", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: "pointer", border: "none" }}>
-                    <i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 11 }} /> Generate
-                  </button>
-                  {caption && !generating && (
-                    <>
-                      <button onClick={generateCaption} style={{ display: "flex", alignItems: "center", gap: 5, padding: "7px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#fff", color: "#4B4D6B", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
-                        <i className="fa-solid fa-rotate-right" style={{ fontSize: 11 }} /> Regen
-                      </button>
-                      <button onClick={copyCaption} style={{ display: "flex", alignItems: "center", gap: 5, padding: "7px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#fff", color: "#4B4D6B", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
-                        <i className="fa-regular fa-copy" style={{ fontSize: 11 }} /> Copy
-                      </button>
-                      <button onClick={() => showToast("📅 Added to calendar!")} style={{ display: "flex", alignItems: "center", gap: 5, padding: "7px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#fff", color: "#4B4D6B", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
-                        <i className="fa-solid fa-calendar-plus" style={{ fontSize: 11 }} /> Schedule
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Scheduled Posts Table */}
-            <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, boxShadow: "0 1px 4px rgba(13,14,26,.07)", marginBottom: 18 }}>
-              <div style={{ padding: "16px 18px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <div>
-                  <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif" }}>Scheduled Posts</div>
-                  <div style={{ fontSize: 12, color: "#9496B5" }}>Upcoming content across all platforms</div>
-                </div>
-                <button onClick={() => showToast("Opening full post manager…")} style={{ display: "flex", alignItems: "center", gap: 5, padding: "7px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#fff", color: "#4B4D6B", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
-                  View all <i className="fa-solid fa-arrow-right" style={{ fontSize: 11 }} />
-                </button>
-              </div>
-              <div style={{ padding: "10px 0" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                  <thead>
-                    <tr>
-                      {["Post", "Scheduled", "Est. Reach", "Status", "Actions"].map((h, i) => (
-                        <th key={h} style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: "#9496B5", padding: "8px 12px", textAlign: "left", borderBottom: "1px solid #E4E5EF", paddingLeft: i === 0 ? 18 : 12, paddingRight: i === 4 ? 18 : 12 }}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {posts.map((p, i) => {
-                      const statusStyles: Record<string, { bg: string; color: string; icon: string }> = {
-                        scheduled: { bg: "#EFF6FF", color: "#3B82F6", icon: "🕐" },
-                        draft: { bg: "#FFFBEB", color: "#F59E0B", icon: "✏️" },
-                        published: { bg: "#ECFDF5", color: "#10B981", icon: "✅" },
-                      };
-                      const ss = statusStyles[p.status];
-                      return (
-                        <tr key={i}>
-                          <td style={{ padding: "10px 12px 10px 18px", borderBottom: "1px solid #ECEDF5", verticalAlign: "middle" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                              <img src={p.img} alt="" style={{ width: 44, height: 44, borderRadius: 7, objectFit: "cover", display: "block" }} />
-                              <div style={{ minWidth: 0 }}>
-                                <div style={{ fontSize: 13, fontWeight: 600, color: "#0D0E1A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 200 }}>{p.name}</div>
-                                <div style={{ fontSize: 11.5, color: "#9496B5", display: "flex", alignItems: "center", gap: 4, marginTop: 2 }}>
-                                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: p.platC }} />{p.plat}
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                          <td style={{ padding: "10px 12px", borderBottom: "1px solid #ECEDF5", verticalAlign: "middle" }}>
-                            <div style={{ fontSize: 12.5, fontWeight: 600, color: "#0D0E1A", fontFamily: "JetBrains Mono,monospace" }}>{p.time}</div>
-                            <div style={{ fontSize: 11.5, color: "#9496B5" }}>{p.date}</div>
-                          </td>
-                          <td style={{ padding: "10px 12px", borderBottom: "1px solid #ECEDF5", verticalAlign: "middle" }}>
-                            <div style={{ fontSize: 13, fontWeight: 700, color: "#0D0E1A", fontFamily: "JetBrains Mono,monospace" }}>{p.reach}</div>
-                            <div style={{ fontSize: 11, color: "#9496B5", fontFamily: "JetBrains Mono,monospace" }}>{p.eng} eng</div>
-                          </td>
-                          <td style={{ padding: "10px 12px", borderBottom: "1px solid #ECEDF5", verticalAlign: "middle" }}>
-                            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 9px", borderRadius: 20, fontSize: 11.5, fontWeight: 700, background: ss.bg, color: ss.color }}>
-                              {ss.icon} {p.status.charAt(0).toUpperCase() + p.status.slice(1)}
-                            </span>
-                          </td>
-                          <td style={{ padding: "10px 18px 10px 12px", borderBottom: "1px solid #ECEDF5", verticalAlign: "middle" }}>
-                            <div className="row-actions">
-                              <div className="row-btn-hover" onClick={() => showToast("Opening editor…")} style={{ width: 28, height: 28, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", color: "#9496B5", fontSize: 12, cursor: "pointer", border: "1px solid #E4E5EF" }}>
-                                <i className="fa-solid fa-pen" style={{ fontSize: 11 }} />
-                              </div>
-                              <div className="row-btn-hover" onClick={() => showToast("More options…")} style={{ width: 28, height: 28, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", color: "#9496B5", fontSize: 12, cursor: "pointer", border: "1px solid #E4E5EF" }}>
-                                <i className="fa-solid fa-ellipsis" style={{ fontSize: 11 }} />
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Bottom Grid */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 2fr 1fr", gap: 14, marginBottom: 18 }}>
-
-              {/* Mini Calendar */}
-              <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
-                <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 2 }}>Content Calendar</div>
-                <div style={{ fontSize: 12, color: "#9496B5", marginBottom: 8 }}>March 2026</div>
-                <MiniCalendar />
-              </div>
-
-              {/* AI Ideas */}
-              <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-                  <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif" }}>AI Content Ideas</div>
-                  <span style={{ fontSize: 11, color: "#5B5BD6", fontWeight: 700, cursor: "pointer" }}>Refresh ↺</span>
-                </div>
-                {ideas.map((d, i) => (
-                  <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "9px 0", borderBottom: i < ideas.length - 1 ? "1px solid #ECEDF5" : undefined }}>
-                    <div style={{ width: 30, height: 30, borderRadius: 8, background: d.sb, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, flexShrink: 0 }}>{d.icon}</div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: "#0D0E1A", marginBottom: 2 }}>{d.title}</div>
-                      <div style={{ fontSize: 11.5, color: "#9496B5" }}>{d.sub}</div>
-                    </div>
-                    <div style={{ marginLeft: "auto", padding: "2px 8px", borderRadius: 20, fontSize: 11, fontWeight: 800, background: d.sb, color: d.sc, flexShrink: 0, fontFamily: "JetBrains Mono,monospace" }}>{d.score}</div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Trending + Workflow */}
-              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
-                  <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 14 }}>Trending Hashtags</div>
-                  {tags.map((t, i) => (
-                    <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0", borderBottom: i < tags.length - 1 ? "1px solid #ECEDF5" : undefined }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: "#5B5BD6", fontFamily: "JetBrains Mono,monospace" }}>{t.name}</div>
-                      <div style={{ flex: 1, margin: "0 12px", height: 4, background: "#E4E5EF", borderRadius: 2, overflow: "hidden" }}>
-                        <div style={{ height: "100%", borderRadius: 2, background: "linear-gradient(90deg,#5B5BD6,#7C3AED)", width: `${t.pct}%` }} />
-                      </div>
-                      <div style={{ fontSize: 11.5, fontWeight: 700, color: "#10B981", fontFamily: "JetBrains Mono,monospace" }}>+{t.pct}%</div>
+                      <div style={{ fontSize: 26, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.5px", lineHeight: 1 }}>{k.val}</div>
+                      <div style={{ fontSize: 12.5, color: "#9496B5", marginTop: 4, fontWeight: 500 }}>{k.lbl}</div>
                     </div>
                   ))}
                 </div>
-                <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
-                  <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 8 }}>Active Workflow</div>
-                  {wfSteps.map((s, i) => (
-                    <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 0", position: "relative" }}>
-                      {i < wfSteps.length - 1 && <span style={{ position: "absolute", left: 13, top: 32, bottom: -8, width: 1.5, background: "#ECEDF5" }} />}
-                      <div style={{ width: 26, height: 26, borderRadius: "50%", flexShrink: 0, background: s.c, color: s.tc, fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center" }}>{s.dot}</div>
+
+                {/* AI Banner */}
+                <div className="ai-banner-anim" style={{ borderRadius: 14, padding: "16px 20px", marginBottom: 18, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, boxShadow: "0 4px 20px rgba(91,91,214,.3)" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                    <div style={{ width: 42, height: 42, borderRadius: 12, background: "rgba(255,255,255,.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>✦</div>
+                    <div>
+                      <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", fontFamily: "Sora,sans-serif", marginBottom: 3 }}>Shoutly AI Insight — Your best time to post is TODAY at 7:30 PM</div>
+                      <div style={{ fontSize: 12.5, color: "rgba(255,255,255,.65)" }}>Based on your audience activity patterns across Instagram & LinkedIn · Predicted +34% higher engagement vs your avg</div>
+                    </div>
+                  </div>
+                  <button onClick={() => showToast("✦ Opening full AI insights…")} style={{ padding: "9px 18px", borderRadius: 7, background: "rgba(255,255,255,.15)", border: "1px solid rgba(255,255,255,.2)", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", fontFamily: "Sora,sans-serif", flexShrink: 0 }}>View Details →</button>
+                </div>
+
+                {/* Charts + AI Generator */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 18 }}>
+                  {/* Engagement Chart Placeholder */}
+                  <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
                       <div>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: "#0D0E1A" }}>{s.title}</div>
-                        <div style={{ fontSize: 11.5, color: "#9496B5", marginTop: 1 }}>{s.sub}</div>
+                        <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.2px" }}>Engagement Overview</div>
+                        <div style={{ fontSize: 12, color: "#9496B5", marginTop: 2 }}>Cross-platform performance · Last 30 days</div>
+                      </div>
+                      <div style={{ display: "flex", gap: 4 }}>
+                        {["7D", "30D", "90D"].map((ct, i) => (
+                          <div key={ct} style={{ padding: "4px 10px", borderRadius: 20, fontSize: 11.5, fontWeight: 700, cursor: "pointer", background: i === 0 ? "#EEEEFF" : undefined, color: i === 0 ? "#5B5BD6" : "#9496B5" }}>{ct}</div>
+                        ))}
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
+                    <div style={{ position: "relative" }}>
+                      <div style={{ position: "absolute", top: -4, right: 0, padding: "2px 8px", borderRadius: 20, background: "#ECFDF5", border: "1px solid rgba(16,185,129,.2)", color: "#10B981", fontSize: 11, fontWeight: 700 }}>↑ +208% vs last month</div>
+                      <div style={{ height: 160, background: "#F0F1F8", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", color: "#9496B5", fontSize: 12 }}>📊 Chart renders here (Chart.js)</div>
+                    </div>
+                  </div>
 
-              {/* Team + Top Post */}
-              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
-                  <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 8 }}>Team Activity</div>
-                  {team.map((t, i) => (
-                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: i < team.length - 1 ? "1px solid #ECEDF5" : undefined }}>
-                      <div style={{ position: "relative" }}>
-                        <div style={{ width: 32, height: 32, borderRadius: 9, background: t.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, color: "#fff" }}>{t.av}</div>
-                        <div style={{ position: "absolute", bottom: -1, right: -1, width: 9, height: 9, borderRadius: "50%", background: t.status, border: "1.5px solid #fff" }} />
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: "#0D0E1A" }}>{t.name}</div>
-                        <div style={{ fontSize: 11.5, color: "#9496B5" }}>{t.action}</div>
-                      </div>
-                      <div style={{ fontSize: 11, color: "#C8CADF", whiteSpace: "nowrap", fontFamily: "JetBrains Mono,monospace" }}>{t.time}</div>
+                  {/* AI Post Generator */}
+                  <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
+                    <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 2 }}>AI Post Generator</div>
+                    <div style={{ fontSize: 12, color: "#9496B5", marginBottom: 14 }}>Generate captions with a single click ✦</div>
+                    <div style={{ display: "flex", gap: 5, marginBottom: 14, flexWrap: "wrap" }}>
+                      {Object.entries(platLabels).map(([key, label]) => {
+                        const active = activePlat === key;
+                        return (
+                          <div
+                            key={key}
+                            onClick={() => { setActivePlat(key); setCaption(""); setTags2([]); }}
+                            style={{ display: "flex", alignItems: "center", gap: 5, padding: "5px 11px", borderRadius: 20, border: `1.5px solid ${active ? platColors[key] : "#E4E5EF"}`, fontSize: 12, fontWeight: 700, cursor: "pointer", background: active ? platColors[key] : "#fff", color: active ? "#fff" : "#4B4D6B" }}
+                          >
+                            <div style={{ width: 7, height: 7, borderRadius: "50%", background: active ? "rgba(255,255,255,.4)" : platColors[key] }} />
+                            {label}
+                          </div>
+                        );
+                      })}
                     </div>
-                  ))}
+                    <textarea
+                      placeholder="Describe your post topic… e.g. 'new product launch, summer vibe, call to action'"
+                      value={promptInput}
+                      onChange={(e) => setPromptInput(e.target.value)}
+                      style={{ width: "100%", padding: "11px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#F0F1F8", color: "#0D0E1A", fontSize: 13.5, outline: "none", resize: "none", height: 70, fontFamily: "inherit", lineHeight: 1.6 }}
+                    />
+                    {generating && (
+                      <div style={{ marginBottom: 12 }}>
+                        <div className="skel-line" style={{ width: "100%" }} />
+                        <div className="skel-line" style={{ width: "85%" }} />
+                        <div className="skel-line" style={{ width: "70%" }} />
+                      </div>
+                    )}
+                    {caption && !generating && (
+                      <div style={{ background: "linear-gradient(135deg,#EEEEFF,rgba(236,233,255,.5))", border: "1px solid rgba(91,91,214,.2)", borderRadius: 7, padding: "12px 14px", fontSize: 13.5, color: "#0D0E1A", lineHeight: 1.7, marginBottom: 12 }}>
+                        {caption}
+                      </div>
+                    )}
+                    {tags2.length > 0 && !generating && (
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 12 }}>
+                        {tags2.map((t) => (
+                          <span key={t} style={{ padding: "3px 9px", borderRadius: 6, background: "#EEEEFF", border: "1px solid #E0E0FA", color: "#5B5BD6", fontSize: 11.5, fontWeight: 600, fontFamily: "JetBrains Mono,monospace", cursor: "pointer" }}>{t}</span>
+                        ))}
+                      </div>
+                    )}
+                    <div style={{ display: "flex", gap: 7 }}>
+                      <button onClick={generateCaption} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "7px 13px", borderRadius: 7, background: "#5B5BD6", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: "pointer", border: "none" }}>
+                        <i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 11 }} /> Generate
+                      </button>
+                      {caption && !generating && (
+                        <>
+                          <button onClick={generateCaption} style={{ display: "flex", alignItems: "center", gap: 5, padding: "7px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#fff", color: "#4B4D6B", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
+                            <i className="fa-solid fa-rotate-right" style={{ fontSize: 11 }} /> Regen
+                          </button>
+                          <button onClick={copyCaption} style={{ display: "flex", alignItems: "center", gap: 5, padding: "7px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#fff", color: "#4B4D6B", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
+                            <i className="fa-regular fa-copy" style={{ fontSize: 11 }} /> Copy
+                          </button>
+                          <button onClick={() => showToast("📅 Added to calendar!")} style={{ display: "flex", alignItems: "center", gap: 5, padding: "7px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#fff", color: "#4B4D6B", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
+                            <i className="fa-solid fa-calendar-plus" style={{ fontSize: 11 }} /> Schedule
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
-                  <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 12 }}>Top Performing Post</div>
-                  <div style={{ borderRadius: 7, overflow: "hidden", background: "linear-gradient(135deg,#1e1b4b,#4338ca)", padding: 14 }}>
-                    <div style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "3px 9px", borderRadius: 20, background: "rgba(255,255,255,.15)", color: "rgba(255,255,255,.85)", fontSize: 11, fontWeight: 700, marginBottom: 8, fontFamily: "Sora,sans-serif" }}>🔥 #1 This Month</div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,.9)", lineHeight: 1.5 }}>3 viral social media growth hacks that tripled our reach in 30 days…</div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 10 }}>
-                      {[["82K", "Reach"], ["11.3%", "Engagement"], ["3.1K", "Saves"], ["940", "Shares"]].map(([v, l]) => (
-                        <div key={l} style={{ background: "rgba(255,255,255,.1)", borderRadius: 8, padding: 8, border: "1px solid rgba(255,255,255,.1)" }}>
-                          <div style={{ fontSize: 14, fontWeight: 800, color: "#fff", fontFamily: "Sora,sans-serif" }}>{v}</div>
-                          <div style={{ fontSize: 10.5, color: "rgba(255,255,255,.55)" }}>{l}</div>
+
+                {/* Scheduled Posts Table */}
+                <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, boxShadow: "0 1px 4px rgba(13,14,26,.07)", marginBottom: 18 }}>
+                  <div style={{ padding: "16px 18px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif" }}>Scheduled Posts</div>
+                      <div style={{ fontSize: 12, color: "#9496B5" }}>Upcoming content across all platforms</div>
+                    </div>
+                    <button onClick={() => showToast("Opening full post manager…")} style={{ display: "flex", alignItems: "center", gap: 5, padding: "7px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#fff", color: "#4B4D6B", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
+                      View all <i className="fa-solid fa-arrow-right" style={{ fontSize: 11 }} />
+                    </button>
+                  </div>
+                  <div style={{ padding: "10px 0" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                      <thead>
+                        <tr>
+                          {["Post", "Scheduled", "Est. Reach", "Status", "Actions"].map((h, i) => (
+                            <th key={h} style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: "#9496B5", padding: "8px 12px", textAlign: "left", borderBottom: "1px solid #E4E5EF", paddingLeft: i === 0 ? 18 : 12, paddingRight: i === 4 ? 18 : 12 }}>{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {posts.map((p, i) => {
+                          const statusStyles: Record<string, { bg: string; color: string; icon: string }> = {
+                            scheduled: { bg: "#EFF6FF", color: "#3B82F6", icon: "🕐" },
+                            draft: { bg: "#FFFBEB", color: "#F59E0B", icon: "✏️" },
+                            published: { bg: "#ECFDF5", color: "#10B981", icon: "✅" },
+                          };
+                          const ss = statusStyles[p.status];
+                          return (
+                            <tr key={i}>
+                              <td style={{ padding: "10px 12px 10px 18px", borderBottom: "1px solid #ECEDF5", verticalAlign: "middle" }}>
+                                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                                  <img src={p.img} alt="" style={{ width: 44, height: 44, borderRadius: 7, objectFit: "cover", display: "block" }} />
+                                  <div style={{ minWidth: 0 }}>
+                                    <div style={{ fontSize: 13, fontWeight: 600, color: "#0D0E1A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 200 }}>{p.name}</div>
+                                    <div style={{ fontSize: 11.5, color: "#9496B5", display: "flex", alignItems: "center", gap: 4, marginTop: 2 }}>
+                                      <div style={{ width: 6, height: 6, borderRadius: "50%", background: p.platC }} />{p.plat}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td style={{ padding: "10px 12px", borderBottom: "1px solid #ECEDF5", verticalAlign: "middle" }}>
+                                <div style={{ fontSize: 12.5, fontWeight: 600, color: "#0D0E1A", fontFamily: "JetBrains Mono,monospace" }}>{p.time}</div>
+                                <div style={{ fontSize: 11.5, color: "#9496B5" }}>{p.date}</div>
+                              </td>
+                              <td style={{ padding: "10px 12px", borderBottom: "1px solid #ECEDF5", verticalAlign: "middle" }}>
+                                <div style={{ fontSize: 13, fontWeight: 700, color: "#0D0E1A", fontFamily: "JetBrains Mono,monospace" }}>{p.reach}</div>
+                                <div style={{ fontSize: 11, color: "#9496B5", fontFamily: "JetBrains Mono,monospace" }}>{p.eng} eng</div>
+                              </td>
+                              <td style={{ padding: "10px 12px", borderBottom: "1px solid #ECEDF5", verticalAlign: "middle" }}>
+                                <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 9px", borderRadius: 20, fontSize: 11.5, fontWeight: 700, background: ss.bg, color: ss.color }}>
+                                  {ss.icon} {p.status.charAt(0).toUpperCase() + p.status.slice(1)}
+                                </span>
+                              </td>
+                              <td style={{ padding: "10px 18px 10px 12px", borderBottom: "1px solid #ECEDF5", verticalAlign: "middle" }}>
+                                <div className="row-actions">
+                                  <div className="row-btn-hover" onClick={() => showToast("Opening editor…")} style={{ width: 28, height: 28, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", color: "#9496B5", fontSize: 12, cursor: "pointer", border: "1px solid #E4E5EF" }}>
+                                    <i className="fa-solid fa-pen" style={{ fontSize: 11 }} />
+                                  </div>
+                                  <div className="row-btn-hover" onClick={() => showToast("More options…")} style={{ width: 28, height: 28, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", color: "#9496B5", fontSize: 12, cursor: "pointer", border: "1px solid #E4E5EF" }}>
+                                    <i className="fa-solid fa-ellipsis" style={{ fontSize: 11 }} />
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Bottom Grid */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 2fr 1fr", gap: 14, marginBottom: 18 }}>
+
+                  {/* Mini Calendar */}
+                  <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
+                    <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 2 }}>Content Calendar</div>
+                    <div style={{ fontSize: 12, color: "#9496B5", marginBottom: 8 }}>March 2026</div>
+                    <MiniCalendar />
+                  </div>
+
+                  {/* AI Ideas */}
+                  <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif" }}>AI Content Ideas</div>
+                      <span style={{ fontSize: 11, color: "#5B5BD6", fontWeight: 700, cursor: "pointer" }}>Refresh ↺</span>
+                    </div>
+                    {ideas.map((d, i) => (
+                      <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "9px 0", borderBottom: i < ideas.length - 1 ? "1px solid #ECEDF5" : undefined }}>
+                        <div style={{ width: 30, height: 30, borderRadius: 8, background: d.sb, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, flexShrink: 0 }}>{d.icon}</div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: "#0D0E1A", marginBottom: 2 }}>{d.title}</div>
+                          <div style={{ fontSize: 11.5, color: "#9496B5" }}>{d.sub}</div>
+                        </div>
+                        <div style={{ marginLeft: "auto", padding: "2px 8px", borderRadius: 20, fontSize: 11, fontWeight: 800, background: d.sb, color: d.sc, flexShrink: 0, fontFamily: "JetBrains Mono,monospace" }}>{d.score}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Trending + Workflow */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                    <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 14 }}>Trending Hashtags</div>
+                      {tags.map((t, i) => (
+                        <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0", borderBottom: i < tags.length - 1 ? "1px solid #ECEDF5" : undefined }}>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: "#5B5BD6", fontFamily: "JetBrains Mono,monospace" }}>{t.name}</div>
+                          <div style={{ flex: 1, margin: "0 12px", height: 4, background: "#E4E5EF", borderRadius: 2, overflow: "hidden" }}>
+                            <div style={{ height: "100%", borderRadius: 2, background: "linear-gradient(90deg,#5B5BD6,#7C3AED)", width: `${t.pct}%` }} />
+                          </div>
+                          <div style={{ fontSize: 11.5, fontWeight: 700, color: "#10B981", fontFamily: "JetBrains Mono,monospace" }}>+{t.pct}%</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 8 }}>Active Workflow</div>
+                      {wfSteps.map((s, i) => (
+                        <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 0", position: "relative" }}>
+                          {i < wfSteps.length - 1 && <span style={{ position: "absolute", left: 13, top: 32, bottom: -8, width: 1.5, background: "#ECEDF5" }} />}
+                          <div style={{ width: 26, height: 26, borderRadius: "50%", flexShrink: 0, background: s.c, color: s.tc, fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center" }}>{s.dot}</div>
+                          <div>
+                            <div style={{ fontSize: 13, fontWeight: 600, color: "#0D0E1A" }}>{s.title}</div>
+                            <div style={{ fontSize: 11.5, color: "#9496B5", marginTop: 1 }}>{s.sub}</div>
+                          </div>
                         </div>
                       ))}
                     </div>
                   </div>
+
+                  {/* Team + Top Post */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                    <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 8 }}>Team Activity</div>
+                      {team.map((t, i) => (
+                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: i < team.length - 1 ? "1px solid #ECEDF5" : undefined }}>
+                          <div style={{ position: "relative" }}>
+                            <div style={{ width: 32, height: 32, borderRadius: 9, background: t.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, color: "#fff" }}>{t.av}</div>
+                            <div style={{ position: "absolute", bottom: -1, right: -1, width: 9, height: 9, borderRadius: "50%", background: t.status, border: "1.5px solid #fff" }} />
+                          </div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: 13, fontWeight: 600, color: "#0D0E1A" }}>{t.name}</div>
+                            <div style={{ fontSize: 11.5, color: "#9496B5" }}>{t.action}</div>
+                          </div>
+                          <div style={{ fontSize: 11, color: "#C8CADF", whiteSpace: "nowrap", fontFamily: "JetBrains Mono,monospace" }}>{t.time}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 12 }}>Top Performing Post</div>
+                      <div style={{ borderRadius: 7, overflow: "hidden", background: "linear-gradient(135deg,#1e1b4b,#4338ca)", padding: 14 }}>
+                        <div style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "3px 9px", borderRadius: 20, background: "rgba(255,255,255,.15)", color: "rgba(255,255,255,.85)", fontSize: 11, fontWeight: 700, marginBottom: 8, fontFamily: "Sora,sans-serif" }}>🔥 #1 This Month</div>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,.9)", lineHeight: 1.5 }}>3 viral social media growth hacks that tripled our reach in 30 days…</div>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 10 }}>
+                          {[["82K", "Reach"], ["11.3%", "Engagement"], ["3.1K", "Saves"], ["940", "Shares"]].map(([v, l]) => (
+                            <div key={l} style={{ background: "rgba(255,255,255,.1)", borderRadius: 8, padding: 8, border: "1px solid rgba(255,255,255,.1)" }}>
+                              <div style={{ fontSize: 14, fontWeight: 800, color: "#fff", fontFamily: "Sora,sans-serif" }}>{v}</div>
+                              <div style={{ fontSize: 10.5, color: "rgba(255,255,255,.55)" }}>{l}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
-              </div>
 
-            </div>
-
-            {/* Platform Icons */}
-            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", padding: "8px 0" }}>
-              {[
-                { cls: "fa-brands fa-instagram", color: "#E1306C" },
-                { cls: "fa-brands fa-facebook", color: "#1877F2" },
-                { cls: "fa-brands fa-linkedin", color: "#0A66C2" },
-                { cls: "fa-brands fa-x-twitter", color: "#000" },
-                { cls: "fa-brands fa-threads", color: "#000" },
-                { cls: "fa-brands fa-tiktok", color: "#111" },
-                { cls: "fa-brands fa-youtube", color: "#FF0000" },
-              ].map((ic, i) => (
-                <i key={i} className={ic.cls} style={{ color: ic.color, fontSize: 16 }} />
-              ))}
-            </div>
+                {/* Platform Icons */}
+                <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", padding: "8px 0" }}>
+                  {[
+                    { cls: "fa-brands fa-instagram", color: "#E1306C" },
+                    { cls: "fa-brands fa-facebook", color: "#1877F2" },
+                    { cls: "fa-brands fa-linkedin", color: "#0A66C2" },
+                    { cls: "fa-brands fa-x-twitter", color: "#000" },
+                    { cls: "fa-brands fa-threads", color: "#000" },
+                    { cls: "fa-brands fa-tiktok", color: "#111" },
+                    { cls: "fa-brands fa-youtube", color: "#FF0000" },
+                  ].map((ic, i) => (
+                    <i key={i} className={ic.cls} style={{ color: ic.color, fontSize: 16 }} />
+                  ))}
+                </div>
+              </>
+            )}
 
           </div>{/* /content */}
         </div>{/* /main */}

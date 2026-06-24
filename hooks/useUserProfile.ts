@@ -31,16 +31,7 @@ export function useUserProfile() {
     const [user, setUser] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        // 1. Serve cached data instantly so UI doesn't flash
-        try {
-            const raw = localStorage.getItem("shoutly_user");
-            if (raw) setUser(JSON.parse(raw) as UserProfile);
-        } catch {
-            // ignore
-        }
-
-        // 2. Refresh from API if authenticated
+    const fetchFreshProfile = async () => {
         const token =
             typeof window !== "undefined"
                 ? localStorage.getItem("shoutly_token")
@@ -51,57 +42,68 @@ export function useUserProfile() {
             return;
         }
 
-        fetchProfile()
-            .then((data: unknown) => {
-                const fresh =
-                    (data as { user?: UserProfile })?.user ??
-                    (data as UserProfile);
-                if (fresh && typeof fresh === "object") {
-                    let merged = fresh as UserProfile;
-                    try {
-                        const rawLocal = localStorage.getItem("shoutly_user");
-                        const cached = rawLocal
-                            ? (JSON.parse(rawLocal) as Record<string, unknown>)
-                            : null;
+        try {
+            const data: any = await fetchProfile();
+            const fresh = data?.user ?? data;
+            if (fresh && typeof fresh === "object") {
+                let merged = fresh as UserProfile;
+                try {
+                    const rawLocal = localStorage.getItem("shoutly_user");
+                    const cached = rawLocal
+                        ? (JSON.parse(rawLocal) as Record<string, unknown>)
+                        : null;
 
-                        const freshIndustry =
-                            (merged as Record<string, unknown>).industryId ??
-                            (merged as Record<string, unknown>).industry_id ??
-                            (merged as Record<string, unknown>).selectedIndustryId;
-                        const freshSubIndustry =
-                            (merged as Record<string, unknown>).subIndustryId ??
-                            (merged as Record<string, unknown>).sub_industry_id ??
-                            (merged as Record<string, unknown>).selectedSubIndustryId;
+                    const freshIndustry =
+                        (merged as Record<string, unknown>).industryId ??
+                        (merged as Record<string, unknown>).industry_id ??
+                        (merged as Record<string, unknown>).selectedIndustryId;
+                    const freshSubIndustry =
+                        (merged as Record<string, unknown>).subIndustryId ??
+                        (merged as Record<string, unknown>).sub_industry_id ??
+                        (merged as Record<string, unknown>).selectedSubIndustryId;
 
-                        if (cached && (!freshIndustry || !freshSubIndustry)) {
-                            merged = {
-                                ...(cached as UserProfile),
-                                ...merged,
-                                industryId:
-                                    (freshIndustry as string | undefined) ||
-                                    (cached.industryId as string | undefined) ||
-                                    (cached.industry_id as string | undefined) ||
-                                    (cached.selectedIndustryId as string | undefined),
-                                subIndustryId:
-                                    (freshSubIndustry as string | undefined) ||
-                                    (cached.subIndustryId as string | undefined) ||
-                                    (cached.sub_industry_id as string | undefined) ||
-                                    (cached.selectedSubIndustryId as string | undefined),
-                            };
-                        }
-                    } catch {
-                        // ignore merge fallback errors
+                    if (cached && (!freshIndustry || !freshSubIndustry)) {
+                        merged = {
+                            ...(cached as UserProfile),
+                            ...merged,
+                            industryId:
+                                (freshIndustry as string | undefined) ||
+                                (cached.industryId as string | undefined) ||
+                                (cached.industry_id as string | undefined) ||
+                                (cached.selectedIndustryId as string | undefined),
+                            subIndustryId:
+                                (freshSubIndustry as string | undefined) ||
+                                (cached.subIndustryId as string | undefined) ||
+                                (cached.sub_industry_id as string | undefined) ||
+                                (cached.selectedSubIndustryId as string | undefined),
+                        };
                     }
-
-                    localStorage.setItem("shoutly_user", JSON.stringify(merged));
-                    setUser(merged);
+                } catch {
+                    // ignore merge fallback errors
                 }
-            })
-            .catch(() => {
-                // silent — already showing cached data
-            })
-            .finally(() => setLoading(false));
+
+                localStorage.setItem("shoutly_user", JSON.stringify(merged));
+                setUser(merged);
+            }
+        } catch (err) {
+            console.error("Profile fetch failed:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        // 1. Serve cached data instantly so UI doesn't flash
+        try {
+            const raw = localStorage.getItem("shoutly_user");
+            if (raw) setUser(JSON.parse(raw) as UserProfile);
+        } catch {
+            // ignore
+        }
+
+        // 2. Refresh from API if authenticated
+        fetchFreshProfile();
     }, []);
 
-    return { user, loading, initials: getInitials(user?.name) };
+    return { user, loading, refresh: fetchFreshProfile, initials: getInitials(user?.name) };
 }

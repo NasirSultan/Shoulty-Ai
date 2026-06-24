@@ -32,6 +32,7 @@ import {
     FaWhatsapp,
     FaDiscord,
 } from "react-icons/fa";
+import FloatingChatBot from "@/components/FloatingChatBot";
 
 // Type definitions
 interface SubIndustry {
@@ -1546,19 +1547,19 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* List */}
                             <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li>• Gym / Fitness Studio</li>
-                                <li>• Yoga Centre</li>
-                                <li>• Zumba / Aerobic Studio</li>
-                                <li>• CrossFit / Personal Trainer</li>
+                                <li><a href="/GYM.html" className="hover:text-blue-600 transition-colors">• Gym / Fitness Studio</a></li>
+                                <li><a href="/yoga-centre.html" className="hover:text-blue-600 transition-colors">• Yoga Centre</a></li>
+                                <li><a href="/zumba-aerobic-studio.html" className="hover:text-blue-600 transition-colors">• Zumba / Aerobic Studio</a></li>
+                                <li><a href="/Crossfit_Personal-Trainer.html" className="hover:text-blue-600 transition-colors">• CrossFit / Personal Trainer</a></li>
                                 <div
                                     style={{ display: "none" }}
                                     id="Health"
                                     className="text-sm text-gray-600 space-y-2 mb-4"
                                 >
-                                    <li>• Physiotherapy Clinic</li>
-                                    <li>• Dietician / Nutritionist</li>
-                                    <li>• Wellness & Supplements</li>
-                                    <li>• Weight Loss / Body Transformation</li>
+                                    <li><a href="/physiotheraphy.html" className="hover:text-blue-600 transition-colors">• Physiotherapy Clinic</a></li>
+                                    <li><a href="/Dieticians.html" className="hover:text-blue-600 transition-colors">• Dietician / Nutritionist</a></li>
+                                    <li><a href="/wellness-supplements.html" className="hover:text-blue-600 transition-colors">• Wellness & Supplements</a></li>
+                                    <li><a href="/weight-loss-body-transformation.html" className="hover:text-blue-600 transition-colors">• Weight Loss / Body Transformation</a></li>
                                 </div>
                             </ul>
                             {/* More Link */}
@@ -1593,21 +1594,21 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* List */}
                             <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li>• Restaurants (veg / multicuisine)</li>
-                                <li>• Restaurants (non-veg / multicuisine)</li>
-                                <li>• Cafes & Coffee Shops</li>
-                                <li>• Juice Bars / Smoothie Bars</li>
+                                <li><a href="/veg-multicuisine-restaurant.html" className="hover:text-blue-600 transition-colors">• Restaurants (veg / multicuisine)</a></li>
+                                <li><a href="/NV RESTAURANT.html" className="hover:text-blue-600 transition-colors">• Restaurants (non-veg / multicuisine)</a></li>
+                                <li><a href="/Cafe.html" className="hover:text-blue-600 transition-colors">• Cafes & Coffee Shops</a></li>
+                                <li><a href="/Juicebar_smoothiebar.html" className="hover:text-blue-600 transition-colors">• Juice Bars / Smoothie Bars</a></li>
                                 <div
                                     style={{ display: "none" }}
                                     id="food"
                                     className="text-sm text-gray-600 space-y-2 mb-4"
                                 >
-                                    <li>• Bakery / Cake Shop</li>
-                                    <li>• Cloud Kitchen</li>
-                                    <li>• Catering Services</li>
-                                    <li>• Food Trucks</li>
-                                    <li>• Sweets & Namkeen Stores</li>
-                                    <li>• Organic & Healthy Food Brands</li>
+                                    <li><a href="/CAKE.html" className="hover:text-blue-600 transition-colors">• Bakery / Cake Shop</a></li>
+                                    <li><a href="/Cloud-Kitchen.html" className="hover:text-blue-600 transition-colors">• Cloud Kitchen</a></li>
+                                    <li><a href="/catering_.html" className="hover:text-blue-600 transition-colors">• Catering Services</a></li>
+                                    <li><a href="/food-truck.html" className="hover:text-blue-600 transition-colors">• Food Trucks</a></li>
+                                    <li><a href="/namkeen.html" className="hover:text-blue-600 transition-colors">• Sweets & Namkeen Stores</a></li>
+                                    <li><a href="/organic-food.html" className="hover:text-blue-600 transition-colors">• Organic & Healthy Food Brands</a></li>
                                 </div>
                             </ul>
 
@@ -1644,16 +1645,16 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* List */}
                             <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li>• Clothing Store / Boutique</li>
-                                <li>• Fashion Designer</li>
-                                <li>• Footwear</li>
-                                <li>• Watches / Jewelry</li>
+                                <li><a href="/CLOTHING-AND-BOUTIQUE.html" className="hover:text-blue-600 transition-colors">• Clothing Store / Boutique</a></li>
+                                <li><a href="/FASHION-DESIGNER(1).html" className="hover:text-blue-600 transition-colors">• Fashion Designer</a></li>
+                                <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Footwear</a></li>
+                                <li><a href="/watches-jewelry.html" className="hover:text-blue-600 transition-colors">• Watches / Jewelry</a></li>
                                 <div
                                     style={{ display: "none" }}
                                     id="fashion"
                                     className="text-sm text-gray-600 space-y-2 mb-4"
                                 >
-                                    <li>• Perfume / Fragrance Brand</li>
+                                    <li><a href="/perfume.html" className="hover:text-blue-600 transition-colors">• Perfume / Fragrance Brand</a></li>
                                 </div>
                             </ul>
 
@@ -1694,18 +1695,18 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* List */}
                             <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li>• Real Estate Agents</li>
-                                <li>• Developers / Builders</li>
-                                <li>• Farm Plots / Gated Communities</li>
-                                <li>• Interior Design</li>
+                                <li><a href="/real-estate.html" className="hover:text-blue-600 transition-colors">• Real Estate Agents</a></li>
+                                <li><a href="/DEVELOPERS_AND_BUILDERS.html" className="hover:text-blue-600 transition-colors">• Developers / Builders</a></li>
+                                <li><a href="/GATED-COMMUNITIES.html" className="hover:text-blue-600 transition-colors">• Farm Plots / Gated Communities</a></li>
+                                <li><a href="/interior.html" className="hover:text-blue-600 transition-colors">• Interior Design</a></li>
                                 <div
                                     style={{ display: "none" }}
                                     id="real"
                                     className="text-sm text-gray-600 space-y-2 mb-4"
                                 >
-                                    <li>• Architecture Firms</li>
-                                    <li>• Property Consultants</li>
-                                    <li>• Home Construction Materials</li>
+                                    <li><a href="/Architecture.html" className="hover:text-blue-600 transition-colors">• Architecture Firms</a></li>
+                                    <li><a href="/PROPERTY-CONSULTANT.html" className="hover:text-blue-600 transition-colors">• Property Consultants</a></li>
+                                    <li><a href="/Construction-materials.html" className="hover:text-blue-600 transition-colors">• Home Construction Materials</a></li>
                                 </div>
                             </ul>
 
@@ -1742,21 +1743,23 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* List */}
                             <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li>• Schools & Colleges</li>
+                                <li><a href="/SCHOOL-AND-CLG.html" className="hover:text-blue-600 transition-colors">• Schools & Colleges</a></li>
                                 <li>
-                                    • Coaching Institutes (NEET / JEE / UPSC /
-                                    CAT etc.)
+                                    <a href="/COACHING-INSTITUTE.html" className="hover:text-blue-600 transition-colors">
+                                        • Coaching Institutes (NEET / JEE / UPSC /
+                                        CAT etc.)
+                                    </a>
                                 </li>
-                                <li>• Coding Academy / EdTech</li>
-                                <li>• Online Tutors</li>
-                                <li>• Pre-School / Montessori</li>
+                                <li><a href="/coding-academy.html" className="hover:text-blue-600 transition-colors">• Coding Academy / EdTech</a></li>
+                                <li><a href="/ONLINE-TUTOR.html" className="hover:text-blue-600 transition-colors">• Online Tutors</a></li>
+                                <li><a href="/Pre-school_Montessori.html" className="hover:text-blue-600 transition-colors">• Pre-School / Montessori</a></li>
                                 <div
                                     style={{ display: "none" }}
                                     id="edu"
                                     className="text-sm text-gray-600 space-y-2 mb-4"
                                 >
-                                    <li>• Skill Training Centres</li>
-                                    <li>• IELTS / Language Centres</li>
+                                    <li><a href="/training-centers.html" className="hover:text-blue-600 transition-colors">• Skill Training Centres</a></li>
+                                    <li><a href="/IELTS.html" className="hover:text-blue-600 transition-colors">• IELTS / Language Centres</a></li>
                                 </div>
                             </ul>
 
@@ -1793,18 +1796,18 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* List */}
                             <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li>• CA / Tax / GST Services</li>
-                                <li>• Insurance Agents</li>
-                                <li>• Mutual Fund Advisors</li>
-                                <li>• Stock & Crypto Trading Services</li>
+                                <li><a href="/CA_GST.html" className="hover:text-blue-600 transition-colors">• CA / Tax / GST Services</a></li>
+                                <li><a href="/Insurance.html" className="hover:text-blue-600 transition-colors">• Insurance Agents</a></li>
+                                <li><a href="/mutual-fund.html" className="hover:text-blue-600 transition-colors">• Mutual Fund Advisors</a></li>
+                                <li><a href="/Cripto-and-Trading.html" className="hover:text-blue-600 transition-colors">• Stock & Crypto Trading Services</a></li>
                                 <div
                                     style={{ display: "none" }}
                                     id="finance"
                                     className="text-sm text-gray-600 space-y-2 mb-4"
                                 >
-                                    <li>• Business Consultants</li>
-                                    <li>• Accounting Firms</li>
-                                    <li>• Loan Agents</li>
+                                    <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Business Consultants</a></li>
+                                    <li><a href="/accounting-firm.html" className="hover:text-blue-600 transition-colors">• Accounting Firms</a></li>
+                                    <li><a href="/Loan.html" className="hover:text-blue-600 transition-colors">• Loan Agents</a></li>
                                 </div>
                             </ul>
 
@@ -1845,18 +1848,18 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* List */}
                             <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li>• Hospitals & Clinics</li>
-                                <li>• Dentists</li>
-                                <li>• Dermatologists</li>
-                                <li>• Eye Clinics</li>
+                                <li><a href="/physiotheraphy.html" className="hover:text-blue-600 transition-colors">• Hospitals & Clinics</a></li>
+                                <li><a href="/physiotheraphy.html" className="hover:text-blue-600 transition-colors">• Dentists</a></li>
+                                <li><a href="/physiotheraphy.html" className="hover:text-blue-600 transition-colors">• Dermatologists</a></li>
+                                <li><a href="/physiotheraphy.html" className="hover:text-blue-600 transition-colors">• Eye Clinics</a></li>
                                 <div
                                     style={{ display: "none" }}
                                     id="medical"
                                     className="text-sm text-gray-600 space-y-2 mb-4"
                                 >
-                                    <li>• Pharmacy / Medical Stores</li>
-                                    <li>• Diagnostic Laboratories</li>
-                                    <li>• Home Nursing Services</li>
+                                    <li><a href="/physiotheraphy.html" className="hover:text-blue-600 transition-colors">• Pharmacy / Medical Stores</a></li>
+                                    <li><a href="/physiotheraphy.html" className="hover:text-blue-600 transition-colors">• Diagnostic Laboratories</a></li>
+                                    <li><a href="/physiotheraphy.html" className="hover:text-blue-600 transition-colors">• Home Nursing Services</a></li>
                                 </div>
                             </ul>
 
@@ -1897,18 +1900,18 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* List */}
                             <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li>• SaaS Products</li>
-                                <li>• Website Development</li>
-                                <li>• App Development</li>
-                                <li>• Digital Marketing Agencies</li>
+                                <li><a href="/coding-academy.html" className="hover:text-blue-600 transition-colors">• SaaS Products</a></li>
+                                <li><a href="/website-development-social-media-automation.html" className="hover:text-blue-600 transition-colors">• Website Development</a></li>
+                                <li><a href="/coding-academy.html" className="hover:text-blue-600 transition-colors">• App Development</a></li>
+                                <li><a href="/coding-academy.html" className="hover:text-blue-600 transition-colors">• Digital Marketing Agencies</a></li>
                                 <div
                                     style={{ display: "none" }}
                                     id="tech"
                                     className="text-sm text-gray-600 space-y-2 mb-4"
                                 >
-                                    <li>• AI Tools</li>
-                                    <li>• Cyber Security</li>
-                                    <li>• Tech Startups</li>
+                                    <li><a href="/coding-academy.html" className="hover:text-blue-600 transition-colors">• AI Tools</a></li>
+                                    <li><a href="/coding-academy.html" className="hover:text-blue-600 transition-colors">• Cyber Security</a></li>
+                                    <li><a href="/coding-academy.html" className="hover:text-blue-600 transition-colors">• Tech Startups</a></li>
                                 </div>
                             </ul>
 
@@ -1945,17 +1948,17 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* List */}
                             <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li>• Hotels / Resorts</li>
-                                <li>• Travel Agencies</li>
-                                <li>• Tour Packages</li>
-                                <li>• Homestays / Airbnb Hosts</li>
+                                <li><a href="/hotels-resorts.html" className="hover:text-blue-600 transition-colors">• Hotels / Resorts</a></li>
+                                <li><a href="/travel-agencies.html" className="hover:text-blue-600 transition-colors">• Travel Agencies</a></li>
+                                <li><a href="/tour-packages.html" className="hover:text-blue-600 transition-colors">• Tour Packages</a></li>
+                                <li><a href="/homestays-airbnb-hosts.html" className="hover:text-blue-600 transition-colors">• Homestays / Airbnb Hosts</a></li>
                                 <div
                                     style={{ display: "none" }}
                                     id="hospitality"
                                     className="text-sm text-gray-600 space-y-2 mb-4"
                                 >
-                                    <li>• Car Rentals</li>
-                                    <li>• Adventure Tourism</li>
+                                    <li><a href="/car-rentals.html" className="hover:text-blue-600 transition-colors">• Car Rentals</a></li>
+                                    <li><a href="/adventure-tourism.html" className="hover:text-blue-600 transition-colors">• Adventure Tourism</a></li>
                                 </div>
                             </ul>
 
@@ -1996,16 +1999,16 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* List */}
                             <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li>• Car Showrooms</li>
-                                <li>• Two-Wheeler Dealers</li>
-                                <li>• Auto Repair Workshops</li>
-                                <li>• Car Spa / Detailing</li>
+                                <li><a href="/car-showrooms.html" className="hover:text-blue-600 transition-colors">• Car Showrooms</a></li>
+                                <li><a href="/two-wheeler-dealers.html" className="hover:text-blue-600 transition-colors">• Two-Wheeler Dealers</a></li>
+                                <li><a href="/auto-repair-workshops.html" className="hover:text-blue-600 transition-colors">• Auto Repair Workshops</a></li>
+                                <li><a href="/car-spa-detailing.html" className="hover:text-blue-600 transition-colors">• Car Spa / Detailing</a></li>
                                 <div
                                     style={{ display: "none" }}
                                     id="auto"
                                     className="text-sm text-gray-600 space-y-2 mb-4"
                                 >
-                                    <li>• Car Accessories & Parts</li>
+                                    <li><a href="/car-accessories-and-parts.html" className="hover:text-blue-600 transition-colors">• Car Accessories & Parts</a></li>
                                 </div>
                             </ul>
 
@@ -2042,16 +2045,16 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* List */}
                             <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li>• Furniture Store</li>
-                                <li>• Home Decor Brand</li>
-                                <li>• Kitchenware</li>
-                                <li>• Electronics & Appliances</li>
+                                <li><a href="/furniture-store.html" className="hover:text-blue-600 transition-colors">• Furniture Store</a></li>
+                                <li><a href="/home-decor-brand.html" className="hover:text-blue-600 transition-colors">• Home Decor Brand</a></li>
+                                <li><a href="/kitchenware.html" className="hover:text-blue-600 transition-colors">• Kitchenware</a></li>
+                                <li><a href="/electronics-and-appliances.html" className="hover:text-blue-600 transition-colors">• Electronics & Appliances</a></li>
                                 <div
                                     style={{ display: "none" }}
                                     id="home"
                                     className="text-sm text-gray-600 space-y-2 mb-4"
                                 >
-                                    <li>• Cleaning / Pest Control</li>
+                                    <li><a href="/cleaning-pest-control.html" className="hover:text-blue-600 transition-colors">• Cleaning / Pest Control</a></li>
                                 </div>
                             </ul>
 
@@ -2088,17 +2091,17 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* List */}
                             <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li>• Event Planners</li>
-                                <li>• Wedding Photographers</li>
-                                <li>• Videography / Drone Shoots</li>
-                                <li>• DJs / Bands</li>
+                                <li><a href="/catering_.html" className="hover:text-blue-600 transition-colors">• Event Planners</a></li>
+                                <li><a href="/catering_.html" className="hover:text-blue-600 transition-colors">• Wedding Photographers</a></li>
+                                <li><a href="/catering_.html" className="hover:text-blue-600 transition-colors">• Videography / Drone Shoots</a></li>
+                                <li><a href="/catering_.html" className="hover:text-blue-600 transition-colors">• DJs / Bands</a></li>
                                 <div
                                     style={{ display: "none" }}
                                     id="events"
                                     className="text-sm text-gray-600 space-y-2 mb-4"
                                 >
-                                    <li>• Stage Decor & Lighting</li>
-                                    <li>• Corporate Event Organizers</li>
+                                    <li><a href="/catering_.html" className="hover:text-blue-600 transition-colors">• Stage Decor & Lighting</a></li>
+                                    <li><a href="/catering_.html" className="hover:text-blue-600 transition-colors">• Corporate Event Organizers</a></li>
                                 </div>
                             </ul>
 
@@ -2140,16 +2143,16 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* List */}
                             <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li>• Sports Academies</li>
-                                <li>• Cricket Training</li>
-                                <li>• Football Clubs</li>
-                                <li>• Swimming Schools</li>
+                                <li><a href="/Crossfit_Personal-Trainer.html" className="hover:text-blue-600 transition-colors">• Sports Academies</a></li>
+                                <li><a href="/Crossfit_Personal-Trainer.html" className="hover:text-blue-600 transition-colors">• Cricket Training</a></li>
+                                <li><a href="/Crossfit_Personal-Trainer.html" className="hover:text-blue-600 transition-colors">• Football Clubs</a></li>
+                                <li><a href="/Crossfit_Personal-Trainer.html" className="hover:text-blue-600 transition-colors">• Swimming Schools</a></li>
                                 <div
                                     style={{ display: "none" }}
                                     id="sports"
                                     className="text-sm text-gray-600 space-y-2 mb-4"
                                 >
-                                    <li>• Trekking & Adventure Gear</li>
+                                    <li><a href="/Crossfit_Personal-Trainer.html" className="hover:text-blue-600 transition-colors">• Trekking & Adventure Gear</a></li>
                                 </div>
                             </ul>
 
@@ -2190,24 +2193,24 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* List */}
                             <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li>• Accessories (Bags)</li>
-                                <li>• Footwear</li>
-                                <li>• Gift Shops</li>
-                                <li>• Home Appliances</li>
+                                <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Accessories (Bags)</a></li>
+                                <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Footwear</a></li>
+                                <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Gift Shops</a></li>
+                                <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Home Appliances</a></li>
                                 <div
                                     style={{ display: "none" }}
                                     id="retail"
                                     className="text-sm text-gray-600 space-y-2 mb-4"
                                 >
-                                    <li>• Kids Clothing</li>
-                                    <li>• Laptops & Computers</li>
-                                    <li>• Men&apos;s Clothing</li>
-                                    <li>• Online Stores</li>
-                                    <li>• Smartphones</li>
-                                    <li>• Supermarkets</li>
-                                    <li>• Toy Stores</li>
-                                    <li>• Wearables</li>
-                                    <li>• Women&apos;s Clothing</li>
+                                    <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Kids Clothing</a></li>
+                                    <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Laptops & Computers</a></li>
+                                    <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Men&apos;s Clothing</a></li>
+                                    <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Online Stores</a></li>
+                                    <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Smartphones</a></li>
+                                    <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Supermarkets</a></li>
+                                    <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Toy Stores</a></li>
+                                    <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Wearables</a></li>
+                                    <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Women&apos;s Clothing</a></li>
                                 </div>
                             </ul>
 
@@ -2248,16 +2251,16 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* List */}
                             <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li>• Coaches / Trainers</li>
-                                <li>• Influencers</li>
-                                <li>• Motivational Speakers</li>
-                                <li>• Consultants</li>
+                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Coaches / Trainers</a></li>
+                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Influencers</a></li>
+                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Motivational Speakers</a></li>
+                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Consultants</a></li>
                                 <div
                                     style={{ display: "none" }}
                                     id="personal"
                                     className="text-sm text-gray-600 space-y-2 mb-4"
                                 >
-                                    <li>• Podcasters / Content Creators</li>
+                                    <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Podcasters / Content Creators</a></li>
                                 </div>
                             </ul>
 
@@ -2298,17 +2301,19 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* List */}
                             <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li>• Electrician / Plumber</li>
-                                <li>• Cleaning Services</li>
-                                <li>• Solar Panels</li>
-                                <li>• Water Purifier Dealers</li>
+                                <li><a href="/interior.html" className="hover:text-blue-600 transition-colors">• Electrician / Plumber</a></li>
+                                <li><a href="/cleaning-pest-control.html" className="hover:text-blue-600 transition-colors">• Cleaning Services</a></li>
+                                <li><a href="/interior.html" className="hover:text-blue-600 transition-colors">• Solar Panels</a></li>
+                                <li><a href="/interior.html" className="hover:text-blue-600 transition-colors">• Water Purifier Dealers</a></li>
                                 <div
                                     style={{ display: "none" }}
                                     id="ser"
                                     className="text-sm text-gray-600 space-y-2 mb-4"
                                 >
                                     <li>
-                                        • Interior Woodwork / Modular Kitchen
+                                        <a href="/interior.html" className="hover:text-blue-600 transition-colors">
+                                            • Interior Woodwork / Modular Kitchen
+                                        </a>
                                     </li>
                                 </div>
                             </ul>
@@ -2346,10 +2351,10 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* List */}
                             <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li>• Charitable Trusts</li>
-                                <li>• Women & Child Welfare</li>
-                                <li>• Environmental Campaigns</li>
-                                <li>• Social Causes</li>
+                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Charitable Trusts</a></li>
+                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Women & Child Welfare</a></li>
+                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Environmental Campaigns</a></li>
+                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Social Causes</a></li>
                                 <div
                                     style={{ display: "none" }}
                                     id="ngo"
@@ -2391,10 +2396,10 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* List */}
                             <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li>• Machinery Industries</li>
-                                <li>• Textile Production</li>
-                                <li>• Packaging & Printing</li>
-                                <li>• Wholesale Distribution</li>
+                                <li><a href="/machinery.html" className="hover:text-blue-600 transition-colors">• Machinery Industries</a></li>
+                                <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Textile Production</a></li>
+                                <li><a href="/package.html" className="hover:text-blue-600 transition-colors">• Packaging & Printing</a></li>
+                                <li><a href="/wholesale-distribution.html" className="hover:text-blue-600 transition-colors">• Wholesale Distribution</a></li>
                                 <div
                                     style={{ display: "none" }}
                                     id="manu"
@@ -2435,20 +2440,20 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* List */}
                             <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li>• Ayurvedic & Holis</li>
-                                <li>• Beauty Courses</li>
-                                <li>• Grooming Services</li>
-                                <li>• Hair Care Men</li>
+                                <li><a href="/perfume.html" className="hover:text-blue-600 transition-colors">• Ayurvedic & Holis</a></li>
+                                <li><a href="/perfume.html" className="hover:text-blue-600 transition-colors">• Beauty Courses</a></li>
+                                <li><a href="/perfume.html" className="hover:text-blue-600 transition-colors">• Grooming Services</a></li>
+                                <li><a href="/perfume.html" className="hover:text-blue-600 transition-colors">• Hair Care Men</a></li>
                                 <div
                                     style={{ display: "none" }}
                                     id="beauty"
                                     className="text-sm text-gray-600 space-y-2 mb-4"
                                 >
-                                    <li>• Hair Care Women</li>
-                                    <li>• Makeup Services</li>
-                                    <li>• Nail Care & Art</li>
-                                    <li>• Skin Care Services</li>
-                                    <li>• Spa & Wellness</li>
+                                    <li><a href="/perfume.html" className="hover:text-blue-600 transition-colors">• Hair Care Women</a></li>
+                                    <li><a href="/perfume.html" className="hover:text-blue-600 transition-colors">• Makeup Services</a></li>
+                                    <li><a href="/perfume.html" className="hover:text-blue-600 transition-colors">• Nail Care & Art</a></li>
+                                    <li><a href="/perfume.html" className="hover:text-blue-600 transition-colors">• Skin Care Services</a></li>
+                                    <li><a href="/perfume.html" className="hover:text-blue-600 transition-colors">• Spa & Wellness</a></li>
                                 </div>
                             </ul>
 
@@ -2489,17 +2494,17 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* List */}
                             <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li>• Startup Founders</li>
-                                <li>• Business Owners</li>
-                                <li>• Solopreneurs</li>
-                                <li>• Digital Entrepreneurs</li>
+                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Startup Founders</a></li>
+                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Business Owners</a></li>
+                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Solopreneurs</a></li>
+                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Digital Entrepreneurs</a></li>
                                 <div
                                     style={{ display: "none" }}
                                     id="entre"
                                     className="text-sm text-gray-600 space-y-2 mb-4"
                                 >
-                                    <li>• Women Entrepreneurs</li>
-                                    <li>• Young Entrepreneurs</li>
+                                    <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Women Entrepreneurs</a></li>
+                                    <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Young Entrepreneurs</a></li>
                                 </div>
                             </ul>
 
@@ -2828,6 +2833,9 @@ const speeds = [120, 160, 110, 150, 130];
                     onClose={() => setSelectedPreviewPost(null)}
                 />
             )}
+
+            {/* Floating ChatBot */}
+            <FloatingChatBot />
         </div>
     );
 }

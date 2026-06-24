@@ -131,7 +131,7 @@ export const fetchIndustries = async () => {
             console.log("🏢 Fetching industries from:", url);
 
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 12000);
+            const timeoutId = setTimeout(() => controller.abort("timeout"), 12000);
 
             let res: Response;
             try {
@@ -150,7 +150,7 @@ export const fetchIndustries = async () => {
             industriesMemoryCache = { data: normalized, timestamp: Date.now() };
             writeIndustriesToSession(normalized);
             return normalized;
-        } catch (error) {
+        } catch (error: any) {
             if (industriesMemoryCache?.data?.length) {
                 return industriesMemoryCache.data;
             }
@@ -160,7 +160,11 @@ export const fetchIndustries = async () => {
                 return staleSession.data;
             }
 
-            console.error("Industry fetch failed:", error);
+            if (error.name === "AbortError" || error === "timeout") {
+                console.warn("Industry fetch timed out or was aborted.");
+            } else {
+                console.error("Industry fetch failed:", error);
+            }
             return [];
         } finally {
             industriesInFlight = null;
