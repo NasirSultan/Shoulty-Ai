@@ -85,5 +85,25 @@ console.log("New lead captured:",lead);document.getElementById("leadForm").style
 /* Image lightbox */
 (function(){var img=document.getElementById("previewImg");var box=document.getElementById("lightbox");var boxImg=document.getElementById("lightboxImg");if(!img||!box)return;img.addEventListener("click",function(){boxImg.src=img.src;box.classList.add("show");});box.addEventListener("click",function(){box.classList.remove("show");});document.addEventListener("keydown",function(e){if(e.key==="Escape")box.classList.remove("show");});})();
 </script>
+  <script>(function(){
+  if (window.__industrySharedLayoutLoader) return;
+  window.__industrySharedLayoutLoader = true;
+  var candidates = [
+    '/industry-shared-layout.js',
+    'industry-shared-layout.js',
+    '../industry-shared-layout.js',
+    '../../industry-shared-layout.js'
+  ];
+  var i = 0;
+  function loadNext(){
+    if (i >= candidates.length) return;
+    var s = document.createElement('script');
+    s.src = candidates[i++];
+    s.onload = function(){};
+    s.onerror = loadNext;
+    (document.body || document.documentElement).appendChild(s);
+  }
+  loadNext();
+})();</script>
 </body>
 </html>

@@ -72,5 +72,25 @@ body{--benefit-image:url("https://images.unsplash.com/photo-1581056771107-24ca5f
 
 <footer><div class="container footer-grid"><div><img class="footer-logo" src="https://shoutlyai.com/_next/image?url=%2Fimages%2Flogo.png&amp;w=256&amp;q=75" alt="ShoutlyAI logo" / decoding="async" referrerpolicy="no-referrer"><p>ShoutlyAI is a social media automated content posting platform helping businesses stay consistent online and generate more enquiries.</p></div><div><div class="mock-heading">Quick Links</div><div class="footer-links"><a href="https://shoutlyai.com/">Home</a><a href="https://shoutlyai.com/about-us">About</a><a href="#services">Services</a><a href="#faq">FAQ</a><a href="https://shoutlyai.com/contact-us">Contact</a></div></div><div><div class="mock-heading">Grow With Automation</div><p>Launch a consistent social media system for your business.</p><br><a href="#preview" class="btn btn-primary">Get Started</a></div></div><div class="container copyright">© 2026 ShoutlyAI. All rights reserved. AI Social Media Management for Dentists.</div></footer>
 <script>const menuToggle=document.getElementById("menuToggle"),navLinks=document.getElementById("navLinks");menuToggle&&menuToggle.addEventListener("click",()=>navLinks.classList.toggle("active"));document.querySelectorAll(".faq-question").forEach(b=>b.addEventListener("click",()=>b.parentElement.classList.toggle("active")));document.getElementById("leadCaptureForm")?.addEventListener("submit",e=>{e.preventDefault();alert("Thank you! Our team will contact you with your free sample.");});</script>
+  <script>(function(){
+  if (window.__industrySharedLayoutLoader) return;
+  window.__industrySharedLayoutLoader = true;
+  var candidates = [
+    '/industry-shared-layout.js',
+    'industry-shared-layout.js',
+    '../industry-shared-layout.js',
+    '../../industry-shared-layout.js'
+  ];
+  var i = 0;
+  function loadNext(){
+    if (i >= candidates.length) return;
+    var s = document.createElement('script');
+    s.src = candidates[i++];
+    s.onload = function(){};
+    s.onerror = loadNext;
+    (document.body || document.documentElement).appendChild(s);
+  }
+  loadNext();
+})();</script>
 </body>
 </html>
