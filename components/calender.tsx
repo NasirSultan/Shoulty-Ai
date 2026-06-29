@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Facebook,
   Twitter,
@@ -105,37 +105,37 @@ const SocialMediaCalendar = ({ selectedIndustry }: { selectedIndustry?: string }
   ];
 
   const types = [
-    { name: "Educational", color: "bg-[#4c6ef5]" },
+    { name: "Educational", color: "bg-[#f97316]" },
     { name: "Reels", color: "bg-[#e64980]" },
     { name: "Engagement", color: "bg-[#f03e3e]" },
-    { name: "Educational", color: "bg-[#4c6ef5]" },
+    { name: "Educational", color: "bg-[#f97316]" },
     { name: "Reels", color: "bg-[#e64980]" },
     { name: "Engagement", color: "bg-[#f03e3e]" },
-    { name: "Educational", color: "bg-[#4c6ef5]" },
+    { name: "Educational", color: "bg-[#f97316]" },
     { name: "Reels", color: "bg-[#e64980]" },
     { name: "Engagement", color: "bg-[#f03e3e]" },
-    { name: "Educational", color: "bg-[#4c6ef5]" },
+    { name: "Educational", color: "bg-[#f97316]" },
     { name: "Reels", color: "bg-[#e64980]" },
     { name: "Engagement", color: "bg-[#f03e3e]" },
-    { name: "Educational", color: "bg-[#4c6ef5]" },
+    { name: "Educational", color: "bg-[#f97316]" },
     { name: "Reels", color: "bg-[#e64980]" },
     { name: "Engagement", color: "bg-[#f03e3e]" },
-    { name: "Educational", color: "bg-[#4c6ef5]" },
+    { name: "Educational", color: "bg-[#f97316]" },
     { name: "Reels", color: "bg-[#e64980]" },
     { name: "Engagement", color: "bg-[#f03e3e]" },
-    { name: "Educational", color: "bg-[#4c6ef5]" },
+    { name: "Educational", color: "bg-[#f97316]" },
     { name: "Reels", color: "bg-[#e64980]" },
     { name: "Engagement", color: "bg-[#f03e3e]" },
     { name: "Reels", color: "bg-[#e64980]" },
     { name: "Reels", color: "bg-[#e64980]" },
     { name: "Engagement", color: "bg-[#f03e3e]" },
-    { name: "Cultural Day", color: "bg-[#4c6ef5]" },
+    { name: "Cultural Day", color: "bg-[#f97316]" },
     { name: "Cultural Day", color: "bg-[#e64980]" },
     { name: "Festival", color: "bg-[#f03e3e]" },
-    { name: "Festival", color: "bg-[#4c6ef5]" },
-    { name: "Festival", color: "bg-[#4c6ef5]" },
-    { name: "National Day", color: "bg-[#4c6ef5]" },
-    { name: "National Day", color: "bg-[#4c6ef5]" },
+    { name: "Festival", color: "bg-[#f97316]" },
+    { name: "Festival", color: "bg-[#f97316]" },
+    { name: "National Day", color: "bg-[#f97316]" },
+    { name: "National Day", color: "bg-[#f97316]" },
   ];
 
   // Your local images from the /public folder
@@ -173,15 +173,6 @@ const SocialMediaCalendar = ({ selectedIndustry }: { selectedIndustry?: string }
     "/images/ghandhi.jpg",
   ];
 
-  const shuffleArray = <T,>(arr: T[]): T[] => {
-    const a = [...arr];
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  };
-
   // 2. Generating the 31 days base content (day number is fixed per slot)
   const baseContents = Array.from({ length: 31 }, (_, i) => {
     const typeObj = types[i % types.length];
@@ -195,59 +186,77 @@ const SocialMediaCalendar = ({ selectedIndustry }: { selectedIndustry?: string }
     };
   });
 
-  // Shuffle entire content objects together every 3s — day number never changes
-  // Initialize with unshuffled baseContents so server and client render identically (avoids hydration mismatch)
-  const [shuffledContents, setShuffledContents] = useState(baseContents);
-  const [fadeKey, setFadeKey] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setShuffledContents(shuffleArray([...baseContents]));
-      setFadeKey((k) => k + 1);
-    }, 3000);
-    return () => clearInterval(interval);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const days: ContentDay[] = shuffledContents.map((content, i) => ({
+  const allDays: ContentDay[] = baseContents.map((content, i) => ({
     day: i + 1,
     ...content,
   }));
 
+  const [view, setView] = useState<"weekly" | "monthly">("weekly");
+
+  const days = view === "weekly" ? allDays.slice(0, 7) : allDays;
+
   return (
-    <div className="bg-[#f5f7fc] min-h-screen p-6 md:p-10 font-sans">
-      <style>{`
-        @keyframes imgFadeIn {
-          from { opacity: 0; transform: scale(0.96); }
-          to   { opacity: 1; transform: scale(1); }
-        }
-        .card-shuffle {
-          animation: imgFadeIn 0.6s ease-out forwards;
-        }
-      `}</style>
-      <header className="mb-8">
-        <h2 className="text-2xl sm:text-3xl md:text-5xl text-center text-black mb-3 sm:mb-4">
-          Social Media Calendar Preview
+    <div className="py-16 sm:py-28 px-6 md:px-10 font-sans" style={{ background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 50%, #fff7f0 100%)" }}>
+      <header className="mb-10 sm:mb-14 text-center">
+        {/* Badge */}
+        <div className="flex justify-center mb-5">
+          <span className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold uppercase tracking-widest">
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 3l14 9-14 9V3z" />
+            </svg>
+            Content Calendar
+          </span>
+        </div>
+
+        {/* Heading */}
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
+          Social Media{" "}
+          <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+            Calendar Preview
+          </span>
         </h2>
-        <p className="text-center text-gray-600 text-sm sm:text-base max-w-2xl mx-auto mb-10 sm:mb-16 px-2">
+
+        {/* Subtitle */}
+        <p className="text-slate-500 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed px-2 mb-8">
           A sample monthly content plan showing how posts, reels, and campaigns
           can be scheduled for consistent growth.
         </p>
+
+        {/* Weekly / Monthly toggle */}
+        <div className="inline-flex items-center gap-1 p-1 rounded-full bg-gray-100 border border-gray-200">
+          {(["weekly", "monthly"] as const).map((v) => (
+            <button
+              key={v}
+              onClick={() => setView(v)}
+              className={`px-6 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                view === v
+                  ? "bg-gradient-to-r from-orange-500 to-red-500 text-white"
+                  : "text-gray-500 hover:text-orange-500"
+              }`}
+            >
+              {v === "weekly" ? "Weekly" : "Monthly"}
+            </button>
+          ))}
+        </div>
       </header>
 
-      {/* Week Header */}
+      {/* Day-of-week header row */}
       <div className="hidden lg:grid grid-cols-7 mb-4 text-center font-bold text-gray-400 text-xs uppercase tracking-wider">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
           <div key={day}>{day}</div>
         ))}
       </div>
 
-      {/* 3. Calendar Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4">
+      {/* Calendar Grid */}
+      <div className={`grid gap-4 ${
+        view === "weekly"
+          ? "grid-cols-1 sm:grid-cols-3 lg:grid-cols-7"
+          : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7"
+      }`}>
         {days.map((item) => (
           <div
-            key={`${fadeKey}-${item.day}`}
-            className="bg-white rounded-xl p-3 shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col h-full card-shuffle"
+            key={item.day}
+            className="bg-white rounded-xl p-3 shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col h-full"
           >
             <div className="flex justify-between items-start mb-2">
               <span className="font-bold text-lg text-gray-700 leading-none">
@@ -282,7 +291,7 @@ const SocialMediaCalendar = ({ selectedIndustry }: { selectedIndustry?: string }
               <p className="text-[11px] leading-tight text-gray-800 font-medium mb-1 line-clamp-2">
                 {item.caption}
               </p>
-              <p className="text-[10px] text-blue-500 font-medium truncate">
+              <p className="text-[10px] text-orange-500 font-medium truncate">
                 {item.hashtags}
               </p>
             </div>

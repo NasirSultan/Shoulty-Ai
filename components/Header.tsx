@@ -21,6 +21,7 @@ export default function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
     const [user, setUser] = useState<UserProfile | null>(null);
+    const [activeLink, setActiveLink] = useState<string>("/");
     const pathname = usePathname();
     const router = useRouter();
     const { data: session, status } = useSession();
@@ -114,9 +115,16 @@ export default function Header() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    const isActive = (path: string) => {
-        if (path === "/" && pathname !== "/") return false;
-        return pathname === path;
+    // Sync activeLink when pathname changes (for real page navigations)
+    useEffect(() => {
+        setActiveLink(pathname);
+    }, [pathname]);
+
+    const isActive = (href: string) => {
+        // Once a hash link is clicked, match only by activeLink (ignore pathname for home)
+        if (activeLink.includes("#") || href.includes("#")) return activeLink === href;
+        if (href === "/" && pathname !== "/") return false;
+        return activeLink === href || pathname === href;
     };
 
     if (
@@ -129,7 +137,7 @@ export default function Header() {
     }
 
     return (
-        <header className={`sticky top-0 z-50 bg-white border-b transition-shadow duration-200${isScrolled ? " shadow-sm" : ""}`}>
+        <header className={`sticky top-0 z-50 bg-white transition-shadow duration-200${isScrolled ? " shadow-sm" : ""}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
                     {/* Logo */}
                     <div className="relative flex-shrink-0 w-24 h-8 sm:w-36 sm:h-12">
@@ -149,8 +157,20 @@ export default function Header() {
                     {/* Desktop Links */}
                     <div className="hidden min-[930px]:flex items-center gap-8 text-sm font-medium text-black">
                         {primaryLinks.map((link) => (
-                            <Link key={link.label} href={link.href}>
+                            <Link
+                                key={link.label}
+                                href={link.href}
+                                onClick={() => setActiveLink(link.href)}
+                                className={`relative pb-0.5 transition-colors ${
+                                    isActive(link.href)
+                                        ? "text-orange-500 font-semibold"
+                                        : "text-black hover:text-orange-500"
+                                }`}
+                            >
                                 {link.label}
+                                {isActive(link.href) && (
+                                    <span className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500" />
+                                )}
                             </Link>
                         ))}
 
@@ -280,8 +300,10 @@ export default function Header() {
                             <Link
                                 key={link.label}
                                 href={link.href}
-                                className="block text-base text-black font-medium"
-                                onClick={() => setMenuOpen(false)}
+                                className={`block text-base font-medium ${
+                                    isActive(link.href) ? "text-orange-500" : "text-black"
+                                }`}
+                                onClick={() => { setActiveLink(link.href); setMenuOpen(false); }}
                             >
                                 {link.label}
                             </Link>

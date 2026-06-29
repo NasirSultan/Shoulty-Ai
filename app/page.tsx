@@ -1,6 +1,5 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
-import Link from "next/link";
 import { SparklesIcon } from "@heroicons/react/24/outline";
 import { RefreshCcw } from "lucide-react";
 import PricingSection from "@/components/PricingSection";
@@ -13,25 +12,10 @@ import {
 } from "@/api/postGeneratorApi";
 import { streamGenerateTexts } from "@/api/textGeneratorApi";
 import PostPopup from "@/components/PostPopup";
-import { Skeleton } from "@/components/ui/Skeleton";
 import { DEMO_POSTS } from "@/data/demo-posts";
 import { Testimonials } from "@/components/SocialProof";
 import { HomepageFAQ } from "@/components/FAQ";
 
-import {
-    FaFacebookF,
-    FaInstagram,
-    FaTwitter,
-    FaLinkedinIn,
-    FaYoutube,
-    FaTiktok,
-    FaPinterest,
-    FaSnapchatGhost,
-    FaRedditAlien,
-    FaTelegramPlane,
-    FaWhatsapp,
-    FaDiscord,
-} from "react-icons/fa";
 import FloatingChatBot from "@/components/FloatingChatBot";
 
 // Type definitions
@@ -59,7 +43,31 @@ interface Industry {
     subIndustries: SubIndustry[];
 }
 
-const MIN_BRAND_DESCRIPTION_CHARS = 10;
+const MIN_BRAND_DESCRIPTION_CHARS = 15;
+
+const WHO_WE_HELP = [
+    { key: "Health", emoji: "💪", title: "Health & Fitness", visible: [{ href: "/GYM.html", label: "Gym / Fitness Studio" }, { href: "/yoga-centre.html", label: "Yoga Centre" }, { href: "/zumba-aerobic-studio.html", label: "Zumba / Aerobic Studio" }, { href: "/Crossfit_Personal-Trainer.html", label: "CrossFit / Personal Trainer" }], extra: [{ href: "/physiotheraphy.html", label: "Physiotherapy Clinic" }, { href: "/Dieticians.html", label: "Dietician / Nutritionist" }, { href: "/wellness-supplements.html", label: "Wellness & Supplements" }, { href: "/weight-loss-body-transformation.html", label: "Weight Loss / Body Transformation" }] },
+    { key: "food", emoji: "🍔", title: "Food & Beverage", visible: [{ href: "/veg-multicuisine-restaurant.html", label: "Restaurants (veg / multicuisine)" }, { href: "/NV RESTAURANT.html", label: "Restaurants (non-veg / multicuisine)" }, { href: "/Cafe.html", label: "Cafes & Coffee Shops" }, { href: "/Juicebar_smoothiebar.html", label: "Juice Bars / Smoothie Bars" }], extra: [{ href: "/CAKE.html", label: "Bakery / Cake Shop" }, { href: "/Cloud-Kitchen.html", label: "Cloud Kitchen" }, { href: "/catering_.html", label: "Catering Services" }, { href: "/food-truck.html", label: "Food Trucks" }, { href: "/namkeen.html", label: "Sweets & Namkeen Stores" }, { href: "/organic-food.html", label: "Organic & Healthy Food Brands" }] },
+    { key: "fashion", emoji: "👗", title: "Fashion & Lifestyle", visible: [{ href: "/CLOTHING-AND-BOUTIQUE.html", label: "Clothing Store / Boutique" }, { href: "/FASHION-DESIGNER(1).html", label: "Fashion Designer" }, { href: "/textile.html", label: "Footwear" }, { href: "/watches-jewelry.html", label: "Watches / Jewelry" }], extra: [{ href: "/perfume.html", label: "Perfume / Fragrance Brand" }] },
+    { key: "real", emoji: "🏗️", title: "Real Estate & Construction", visible: [{ href: "/real-estate.html", label: "Real Estate Agents" }, { href: "/DEVELOPERS_AND_BUILDERS.html", label: "Developers / Builders" }, { href: "/GATED-COMMUNITIES.html", label: "Farm Plots / Gated Communities" }, { href: "/interior.html", label: "Interior Design" }], extra: [{ href: "/Architecture.html", label: "Architecture Firms" }, { href: "/PROPERTY-CONSULTANT.html", label: "Property Consultants" }, { href: "/Construction-materials.html", label: "Home Construction Materials" }] },
+    { key: "edu", emoji: "🎓", title: "Education & Coaching", visible: [{ href: "/SCHOOL-AND-CLG.html", label: "Schools & Colleges" }, { href: "/COACHING-INSTITUTE.html", label: "Coaching Institutes (NEET / JEE / UPSC / CAT)" }, { href: "/coding-academy.html", label: "Coding Academy / EdTech" }, { href: "/ONLINE-TUTOR.html", label: "Online Tutors" }, { href: "/Pre-school_Montessori.html", label: "Pre-School / Montessori" }], extra: [{ href: "/training-centers.html", label: "Skill Training Centres" }, { href: "/IELTS.html", label: "IELTS / Language Centres" }] },
+    { key: "finance", emoji: "💼", title: "Finance & Business Services", visible: [{ href: "/CA_GST.html", label: "CA / Tax / GST Services" }, { href: "/Insurance.html", label: "Insurance Agents" }, { href: "/mutual-fund.html", label: "Mutual Fund Advisors" }, { href: "/Cripto-and-Trading.html", label: "Stock & Crypto Trading Services" }], extra: [{ href: "/Business-Consultant.html", label: "Business Consultants" }, { href: "/accounting-firm.html", label: "Accounting Firms" }, { href: "/Loan.html", label: "Loan Agents" }] },
+    { key: "medical", emoji: "🩺", title: "Medical & Healthcare", visible: [{ href: "/physiotheraphy.html", label: "Hospitals & Clinics" }, { href: "/physiotheraphy.html", label: "Dentists" }, { href: "/physiotheraphy.html", label: "Dermatologists" }, { href: "/physiotheraphy.html", label: "Eye Clinics" }], extra: [{ href: "/physiotheraphy.html", label: "Pharmacy / Medical Stores" }, { href: "/physiotheraphy.html", label: "Diagnostic Laboratories" }, { href: "/physiotheraphy.html", label: "Home Nursing Services" }] },
+    { key: "tech", emoji: "💻", title: "Technology & IT Services", visible: [{ href: "/coding-academy.html", label: "SaaS Products" }, { href: "/website-development-social-media-automation.html", label: "Website Development" }, { href: "/coding-academy.html", label: "App Development" }, { href: "/coding-academy.html", label: "Digital Marketing Agencies" }], extra: [{ href: "/coding-academy.html", label: "AI Tools" }, { href: "/coding-academy.html", label: "Cyber Security" }, { href: "/coding-academy.html", label: "Tech Startups" }] },
+    { key: "hospitality", emoji: "🏨", title: "Hospitality & Tourism", visible: [{ href: "/hotels-resorts.html", label: "Hotels / Resorts" }, { href: "/travel-agencies.html", label: "Travel Agencies" }, { href: "/tour-packages.html", label: "Tour Packages" }, { href: "/homestays-airbnb-hosts.html", label: "Homestays / Airbnb Hosts" }], extra: [{ href: "/car-rentals.html", label: "Car Rentals" }, { href: "/adventure-tourism.html", label: "Adventure Tourism" }] },
+    { key: "auto", emoji: "🚗", title: "Automobile Industry", visible: [{ href: "/car-showrooms.html", label: "Car Showrooms" }, { href: "/two-wheeler-dealers.html", label: "Two-Wheeler Dealers" }, { href: "/auto-repair-workshops.html", label: "Auto Repair Workshops" }, { href: "/car-spa-detailing.html", label: "Car Spa / Detailing" }], extra: [{ href: "/car-accessories-and-parts.html", label: "Car Accessories & Parts" }] },
+    { key: "home", emoji: "💅", title: "Home & Lifestyle", visible: [{ href: "/furniture-store.html", label: "Furniture Store" }, { href: "/home-decor-brand.html", label: "Home Decor Brand" }, { href: "/kitchenware.html", label: "Kitchenware" }, { href: "/electronics-and-appliances.html", label: "Electronics & Appliances" }], extra: [{ href: "/cleaning-pest-control.html", label: "Cleaning / Pest Control" }] },
+    { key: "events", emoji: "🎉", title: "Events & Entertainment", visible: [{ href: "/catering_.html", label: "Event Planners" }, { href: "/catering_.html", label: "Wedding Photographers" }, { href: "/catering_.html", label: "Videography / Drone Shoots" }, { href: "/catering_.html", label: "DJs / Bands" }], extra: [{ href: "/catering_.html", label: "Stage Decor & Lighting" }, { href: "/catering_.html", label: "Corporate Event Organizers" }] },
+    { key: "sports", emoji: "🏔️", title: "Sports & Outdoor", visible: [{ href: "/Crossfit_Personal-Trainer.html", label: "Sports Academies" }, { href: "/Crossfit_Personal-Trainer.html", label: "Cricket Training" }, { href: "/Crossfit_Personal-Trainer.html", label: "Football Clubs" }, { href: "/Crossfit_Personal-Trainer.html", label: "Swimming Schools" }], extra: [{ href: "/Crossfit_Personal-Trainer.html", label: "Trekking & Adventure Gear" }] },
+    { key: "retail", emoji: "🛍️", title: "Retail & E-commerce", visible: [{ href: "/textile.html", label: "Accessories (Bags)" }, { href: "/textile.html", label: "Footwear" }, { href: "/textile.html", label: "Gift Shops" }, { href: "/textile.html", label: "Home Appliances" }], extra: [{ href: "/textile.html", label: "Kids Clothing" }, { href: "/textile.html", label: "Laptops & Computers" }, { href: "/textile.html", label: "Men's Clothing" }, { href: "/textile.html", label: "Online Stores" }, { href: "/textile.html", label: "Smartphones" }, { href: "/textile.html", label: "Supermarkets" }, { href: "/textile.html", label: "Toy Stores" }, { href: "/textile.html", label: "Wearables" }, { href: "/textile.html", label: "Women's Clothing" }] },
+    { key: "personal", emoji: "👤", title: "Personal Branding", visible: [{ href: "/Business-Consultant.html", label: "Coaches / Trainers" }, { href: "/Business-Consultant.html", label: "Influencers" }, { href: "/Business-Consultant.html", label: "Motivational Speakers" }, { href: "/Business-Consultant.html", label: "Consultants" }], extra: [{ href: "/Business-Consultant.html", label: "Podcasters / Content Creators" }] },
+    { key: "ser", emoji: "🏠", title: "Home Services", visible: [{ href: "/interior.html", label: "Electrician / Plumber" }, { href: "/cleaning-pest-control.html", label: "Cleaning Services" }, { href: "/interior.html", label: "Solar Panels" }, { href: "/interior.html", label: "Water Purifier Dealers" }], extra: [{ href: "/interior.html", label: "Interior Woodwork / Modular Kitchen" }] },
+    { key: "ngo", emoji: "🤝", title: "NGOs & Foundations", visible: [{ href: "/Business-Consultant.html", label: "Charitable Trusts" }, { href: "/Business-Consultant.html", label: "Women & Child Welfare" }, { href: "/Business-Consultant.html", label: "Environmental Campaigns" }, { href: "/Business-Consultant.html", label: "Social Causes" }], extra: [] },
+    { key: "manu", emoji: "🏭", title: "Manufacturing & Industrial", visible: [{ href: "/machinery.html", label: "Machinery Industries" }, { href: "/textile.html", label: "Textile Production" }, { href: "/package.html", label: "Packaging & Printing" }, { href: "/wholesale-distribution.html", label: "Wholesale Distribution" }], extra: [] },
+    { key: "beauty", emoji: "✨", title: "Beauty, Salon & Wellness", visible: [{ href: "/perfume.html", label: "Ayurvedic & Holistic" }, { href: "/perfume.html", label: "Beauty Courses" }, { href: "/perfume.html", label: "Grooming Services" }, { href: "/perfume.html", label: "Hair Care Men" }], extra: [{ href: "/perfume.html", label: "Hair Care Women" }, { href: "/perfume.html", label: "Makeup Services" }, { href: "/perfume.html", label: "Nail Care & Art" }, { href: "/perfume.html", label: "Skin Care Services" }, { href: "/perfume.html", label: "Spa & Wellness" }] },
+    { key: "entre", emoji: "🚀", title: "Entrepreneurs & Startup Founders", visible: [{ href: "/Business-Consultant.html", label: "Startup Founders" }, { href: "/Business-Consultant.html", label: "Business Owners" }, { href: "/Business-Consultant.html", label: "Solopreneurs" }, { href: "/Business-Consultant.html", label: "Digital Entrepreneurs" }], extra: [{ href: "/Business-Consultant.html", label: "Women Entrepreneurs" }, { href: "/Business-Consultant.html", label: "Young Entrepreneurs" }] },
+];
+
 const LOCAL_TEMPLATE_FALLBACKS = [
     "/templates/template-1.jpg",
     "/templates/template-2.jpg",
@@ -67,21 +75,64 @@ const LOCAL_TEMPLATE_FALLBACKS = [
     "/templates/template-4.jpg",
 ];
 
+// ── Isolated typing-effect hook (module scope so it doesn't re-render the whole page) ──
+function useTypingEffect(words: string[], speed: number = 50, pause: number = 2000) {
+    const [index, setIndex] = React.useState(0);
+    const [subIndex, setSubIndex] = React.useState(0);
+    const [reverse, setReverse] = React.useState(false);
+
+    React.useEffect(() => {
+        let timeout: ReturnType<typeof setTimeout> | undefined;
+        if (subIndex === words[index].length + 1 && !reverse) {
+            timeout = setTimeout(() => setReverse(true), pause);
+            return () => clearTimeout(timeout);
+        }
+        if (subIndex === 0 && reverse) {
+            setReverse(false);
+            setIndex((prev) => (prev + 1) % words.length);
+            return;
+        }
+        timeout = setTimeout(
+            () => setSubIndex((prev) => prev + (reverse ? -1 : 1)),
+            reverse ? 1 : 15,
+        );
+        return () => clearTimeout(timeout);
+    }, [subIndex, index, reverse, words, pause]);
+
+    return words[index].substring(0, subIndex);
+}
+
+const TYPING_PLACEHOLDERS = [
+    "Promote my coffee shop in Bangalore. Cozy vibe, cold brew specialist...",
+    "Real estate agent in Austin. Luxury homes, modern architecture...",
+    "Personal trainer for busy CEOs. 15-min workouts, high energy...",
+];
+
+// Isolated component — only this re-renders on every typing tick, not the whole page
+const AnimatedTextarea = React.memo(function AnimatedTextarea({
+    value,
+    onChange,
+    minLength,
+    className,
+}: {
+    value: string;
+    onChange: (v: string) => void;
+    minLength?: number;
+    className?: string;
+}) {
+    const placeholder = useTypingEffect(TYPING_PLACEHOLDERS);
+    return (
+        <textarea
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            minLength={minLength}
+            className={className}
+            placeholder={placeholder}
+        />
+    );
+});
+
 export default function LandingPage() {
-    const icons = [
-        FaFacebookF,
-        FaInstagram,
-        FaTwitter,
-        FaLinkedinIn,
-        FaYoutube,
-        FaTiktok,
-        FaPinterest,
-        FaSnapchatGhost,
-        FaRedditAlien,
-        FaTelegramPlane,
-        FaWhatsapp,
-        FaDiscord,
-    ];
     function more(id: string, id2: string, id3: string) {
         document.getElementById(id)!.style.display = "block";
         document.getElementById(id)!.style.animationDuration = "2s";
@@ -93,42 +144,6 @@ export default function LandingPage() {
         document.getElementById(id)!.style.animationDuration = "2s";
         document.getElementById(id2)!.style.display = "block";
         document.getElementById(id3)!.style.display = "none";
-    }
-    function useTypingEffect(
-        words: string[],
-        speed: number = 50,
-        pause: number = 2000,
-    ) {
-        const [index, setIndex] = React.useState(0);
-        const [subIndex, setSubIndex] = React.useState(0);
-        const [reverse, setReverse] = React.useState(false);
-
-        // Typing logic
-        React.useEffect(() => {
-            let timeout: ReturnType<typeof setTimeout> | undefined;
-
-            if (subIndex === words[index].length + 1 && !reverse) {
-                timeout = setTimeout(() => setReverse(true), pause);
-                return () => clearTimeout(timeout);
-            }
-
-            if (subIndex === 0 && reverse) {
-                setReverse(false);
-                setIndex((prev) => (prev + 1) % words.length);
-                return;
-            }
-
-            timeout = setTimeout(
-                () => {
-                    setSubIndex((prev) => prev + (reverse ? -1 : 1));
-                },
-                reverse ? 1 : 15,
-            );
-
-            return () => clearTimeout(timeout);
-        }, [subIndex, index, reverse, words, speed, pause]);
-
-        return words[index].substring(0, subIndex);
     }
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -205,6 +220,9 @@ export default function LandingPage() {
     const [libraryImages, setLibraryImages] = useState<ImageItem[]>([]);
     const [libraryLoadingImages, setLibraryLoadingImages] = useState(false);
     const [libraryFilterTerm, setLibraryFilterTerm] = useState("");
+    const [activeLibraryImageId, setActiveLibraryImageId] = useState<string | number | null>(null);
+    const [libraryContentType, setLibraryContentType] = useState<"photos" | "reels">("photos");
+    const [showAllIndustries, setShowAllIndustries] = useState(false);
     const imageCacheRef = React.useRef<Record<string, ImageItem[]>>({});
     const imageFetchInFlightRef = React.useRef<Record<string, Promise<ImageItem[]>>>({});
 
@@ -307,6 +325,8 @@ export default function LandingPage() {
     }, [generateSelectedSubIndustry]);
 
     useEffect(() => {
+        if (!librarySelectedSubIndustry) return;
+        setActiveLibraryImageId(null);
         const loadLibraryImages = async () => {
             await getImagesWithCache(
                 "library",
@@ -707,13 +727,6 @@ export default function LandingPage() {
         };
         loadIndustries();
     }, []);
-    const placeholderOptions = [
-        "Promote my coffee shop in Bangalore. Cozy vibe, cold brew specialist...",
-        "Real estate agent in Austin. Luxury homes, modern architecture...",
-        "Personal trainer for busy CEOs. 15-min workouts, high energy...",
-    ];
-
-    const animatedPlaceholder = useTypingEffect(placeholderOptions);
     
     // Hero mosaic setup - PERFECTLY MATCHED images with correct titles
 const INDUSTRY_PHOTOS = [
@@ -833,33 +846,12 @@ const directions = ['scrollUp', 'scrollDown', 'scrollUp', 'scrollDown', 'scrollU
 const speeds = [120, 160, 110, 150, 130];
 
     return (
-        <div className="relative bg-white dark:bg-gray-950 font-arial min-h-screen text-gray-900 dark:text-white selection:text-white overflow-hidden">
-            {/* GLOBAL FLOATING AI + SOCIAL MEDIA BUBBLES */}
-            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-                {icons.map((Icon, i) => {
-                    return (
-                        <div key={i} className="absolute">
-                            <div className="text-gray-400/30 text-2xl md:text-3xl bg-white/40 backdrop-blur-md p-4 rounded-full shadow-lg">
-                                <Icon />
-                            </div>
-                        </div>
-                    );
-                })}
-
-                {/* AI SPARK BUBBLES */}
-                {[...Array(10)].map((_, i) => (
-                    <div key={i} className="absolute">
-                        <div className="p-3 rounded-full bg-gradient-to-r from-blue-400/30 to-purple-500/30 backdrop-blur-md">
-                            <SparklesIcon className="w-6 h-6 text-purple-500/40" />
-                        </div>
-                    </div>
-                ))}
-            </div>
+        <div className="relative bg-white font-arial min-h-screen text-gray-900 overflow-hidden">
 
             {/* HERO SECTION WITH MOSAIC */}
-            <section className="relative overflow-hidden min-h-screen flex items-center pt-16 bg-gradient-to-b from-slate-950 via-slate-900 to-white">
+            <section className="relative overflow-hidden min-h-screen flex items-center bg-gradient-to-b from-slate-950 via-slate-900 to-white">
                 {/* Orbs */}
-                <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full blur-3xl opacity-10 -ml-48 -mt-32 animate-pulse" style={{animation: "f1 20s ease-in-out infinite alternate"}}></div>
+                <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-orange-500 to-red-600 rounded-full blur-3xl opacity-10 -ml-48 -mt-32 animate-pulse" style={{animation: "f1 20s ease-in-out infinite alternate"}}></div>
                 <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-full blur-3xl opacity-10 -mr-40 -mt-20 animate-pulse" style={{animation: "f2 24s ease-in-out infinite alternate"}}></div>
                 
                 {/* Grid Background */}
@@ -874,15 +866,15 @@ const speeds = [120, 160, 110, 150, 130];
                     {/* Left Content */}
                     <div className="flex flex-col gap-6">
                         {/* Pill Badge */}
-                        <div className="inline-flex items-center gap-2 w-fit px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/30">
-                            <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></span>
-                            <span className="text-xs font-bold uppercase tracking-wider text-blue-400">AI Social Media Automation</span>
+                        <div className="inline-flex items-center gap-2 w-fit px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/30">
+                            <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse"></span>
+                            <span className="text-xs font-bold uppercase tracking-wider text-orange-400">AI Social Media Automation</span>
                         </div>
 
                         {/* Heading */}
                         <h1 className="text-5xl md:text-6xl font-black tracking-tight text-white leading-tight">
                             One Prompt.<br />
-                            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">365 Days</span>
+                            <span className="bg-gradient-to-r from-orange-400 via-red-400 to-rose-400 bg-clip-text text-transparent">365 Days</span>
                             <br />
                             of Content.<br />
                             Zero Effort.
@@ -895,7 +887,7 @@ const speeds = [120, 160, 110, 150, 130];
 
                         {/* CTAs */}
                         <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                            <button onClick={() => scrollToSectionInOneSecond('industry-cards')} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold hover:shadow-lg hover:shadow-blue-500/50 transition-all">
+                            <button onClick={() => scrollToSectionInOneSecond('industry-cards')} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold hover:shadow-lg hover:shadow-orange-500/50 transition-all">
                                 Start Free Trial
                                 <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
                                     <path d="M2.5 7h9M8 3.5 11.5 7 8 10.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -968,68 +960,41 @@ const speeds = [120, 160, 110, 150, 130];
 
             <section
                 id="generator"
-                className="py-14 sm:py-24 bg-white text-slate-900 overflow-hidden relative"
+                className="py-16 sm:py-28 text-slate-900 overflow-hidden relative"
+                style={{ background: "linear-gradient(135deg, #fff7f0 0%, #ffffff 40%, #fff3ee 100%)" }}
             >
-                {/* Background Banner */}
+                {/* Background decoration */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-orange-100/40 to-red-100/20 rounded-full blur-3xl -mr-48 -mt-48"></div>
-                    <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-blue-100/30 to-purple-100/20 rounded-full blur-3xl -ml-40 -mb-40"></div>
-                    <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600">
-                        <defs>
-                            <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
-                                <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(100,116,139,0.05)" strokeWidth="1"/>
-                            </pattern>
-                        </defs>
-                        <rect width="1200" height="600" fill="url(#grid)" />
-                    </svg>
+                    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-orange-200/30 to-transparent rounded-full blur-3xl -mr-60 -mt-60"></div>
+                    <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-red-100/20 to-transparent rounded-full blur-3xl -ml-40 -mb-40"></div>
+                    <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(circle, rgba(249,115,22,0.04) 1px, transparent 1px)", backgroundSize: "40px 40px" }}></div>
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-                    <div className="banner hidden relative rounded-3xl px-8 py-10 sm:py-12 mb-8 overflow-hidden border border-slate-300/40 shadow-[0_24px_60px_rgba(10,20,35,0.28)] transition-all duration-300">
-                        <div className="absolute inset-0 pointer-events-none">
-                            <div
-                                className="absolute inset-0 bg-cover bg-center"
-                                style={{ backgroundImage: "url('/images/banner.png')" }}
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-br from-slate-950/85 via-cyan-950/65 to-teal-900/75" />
-                            <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:44px_44px] opacity-35" />
-                            <div className="absolute -top-20 -right-16 h-64 w-64 rounded-full bg-cyan-300/15 blur-3xl" />
-                            <div className="absolute -bottom-24 -left-10 h-72 w-72 rounded-full bg-amber-300/15 blur-3xl" />
-                            <div className="absolute inset-0 rounded-3xl border border-white/10" />
+                    {/* Section Header */}
+                    <div className="text-center mb-12 sm:mb-16">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold uppercase tracking-widest shadow-lg shadow-orange-200 mb-5">
+                            <SparklesIcon className="w-3.5 h-3.5" />
+                            3 Simple Steps
                         </div>
-
-                        <div className="relative z-10">
-                            <div className="flex justify-center mb-6 sm:mb-8">
-                                <div className="inline-flex items-center gap-2 rounded-full border border-cyan-100/30 bg-cyan-100/10 px-5 py-2.5 text-xs sm:text-sm font-black tracking-[0.18em] uppercase text-cyan-50 shadow-lg backdrop-blur-md">
-                                    <span>3 Simple Steps</span>
-                                </div>
-                            </div>
-
-                            <h1 className="text-3xl sm:text-4xl md:text-6xl text-center mb-4 sm:mb-5 font-black tracking-tighter text-white">
-                                Generate Your{" "}
-                                <span className="bg-gradient-to-r from-cyan-100 via-amber-100 to-lime-100 bg-clip-text text-transparent">
-                                    Year of Content
-                                </span>
-                            </h1>
-
-                            <p className="text-center text-cyan-50 text-sm sm:text-base max-w-2xl mx-auto mb-3 px-2 font-semibold">
-                                One prompt, 365 days of posts. Including local festivals
-                                & events.
-                            </p>
-
-                            <p className="text-center text-slate-100/90 text-sm sm:text-base max-w-4xl mx-auto mb-2 px-2 leading-relaxed">
-                                Shoutly AI is a social media automation and AI content generator that helps you build a complete social media calendar with branded posts, reels, captions, and hashtags in minutes.
-                            </p>
-                        </div>
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
+                            Generate Your{" "}
+                            <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+                                Year of Content
+                            </span>
+                        </h2>
+                        <p className="text-slate-500 max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
+                            One prompt, 365 days of posts — including local festivals &amp; events.
+                        </p>
                     </div>
 
                     {/* Cards Row */}
                     <div id="industry-cards" className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
                         {/* CARD 1 - Industry Selection */}
-                        <div className="border border-slate-200 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm relative overflow-hidden bg-slate-50/50">
+                        <div className="border border-orange-100 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-xl shadow-orange-100/40 relative overflow-hidden bg-white">
+                            <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-orange-50 to-transparent rounded-full -mr-16 -mt-16 pointer-events-none"></div>
                             <div className="flex items-center gap-3 mb-5 sm:mb-6">
-                                {/* Step Number - Changed to Brand Slate */}
-                                <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center text-sm font-black">
+                                <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 text-white flex items-center justify-center text-sm font-black shadow-md shadow-orange-200">
                                     1
                                 </span>
                                 <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
@@ -1113,12 +1078,11 @@ const speeds = [120, 160, 110, 150, 130];
                         </div>
 
                         {/* CARD 2 - Prompt/Brand Description */}
-                        <div className="border border-slate-200 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm bg-slate-50 relative overflow-hidden">
-                            {/* Subtle Brand Glow */}
-                            <div className="absolute -top-20 -right-20 w-60 h-60 bg-orange-200 rounded-full blur-3xl opacity-20" />
+                        <div className="border border-orange-100 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-xl shadow-orange-100/40 relative overflow-hidden bg-white">
+                            <div className="absolute -top-20 -right-20 w-60 h-60 bg-gradient-to-br from-orange-100 to-red-50 rounded-full blur-3xl opacity-60 pointer-events-none" />
 
                             <div className="flex items-center gap-3 mb-5 sm:mb-6">
-                                <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center text-sm font-black">
+                                <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 text-white flex items-center justify-center text-sm font-black shadow-md shadow-orange-200">
                                     2
                                 </span>
                                 <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
@@ -1128,12 +1092,11 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* ... existing code ... */}
 
-                            <textarea
+                            <AnimatedTextarea
                                 value={brandDescription}
-                                onChange={(e) => setBrandDescription(e.target.value)}
+                                onChange={setBrandDescription}
                                 minLength={MIN_BRAND_DESCRIPTION_CHARS}
                                 className="w-full min-h-[140px] sm:min-h-[180px] p-4 bg-white rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none text-sm sm:text-base mb-4 font-medium text-slate-700 shadow-inner"
-                                placeholder={animatedPlaceholder}
                             />
 
                             <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -1143,11 +1106,13 @@ const speeds = [120, 160, 110, 150, 130];
                                 <button
                                     type="button"
                                     onClick={handleRegenerateBrandDescription}
-                                    disabled={isRegeneratingBrand}
+                                    disabled={isRegeneratingBrand || brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS}
                                     className={`inline-flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-xs sm:text-sm font-bold transition-all ${
                                         isRegeneratingBrand
                                             ? "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400"
-                                            : "border-slate-200 bg-white text-slate-700 hover:border-orange-500 hover:text-orange-600"
+                                            : brandDescription.trim().length >= MIN_BRAND_DESCRIPTION_CHARS
+                                                ? "border-orange-500 bg-gradient-to-r from-orange-500 to-red-500 text-white hover:brightness-110 cursor-pointer"
+                                                : "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400"
                                     }`}
                                 >
                                     <RefreshCcw className={`h-4 w-4 ${isRegeneratingBrand ? "animate-spin" : ""}`} />
@@ -1190,12 +1155,12 @@ const speeds = [120, 160, 110, 150, 130];
                             </p>
 
                             {/* Power CTA Button - Changed to Brand Black/Orange */}
-                            <button 
+                            <button
                                 onClick={handleGenerateClick}
-                                className={`w-full py-3 sm:py-4 rounded-2xl text-white text-base sm:text-lg font-black tracking-tight transition-all active:scale-95 shadow-xl uppercase ${
+                                className={`w-full py-3 sm:py-4 rounded-2xl text-base sm:text-lg font-black tracking-tight transition-all active:scale-95 uppercase border-2 ${
                                     isGenerateReady
-                                        ? "bg-gradient-to-r from-orange-500 to-red-600 hover:brightness-110 cursor-pointer"
-                                        : "bg-slate-500 hover:bg-slate-600 cursor-pointer"
+                                        ? "bg-white text-red-500 border-red-300 hover:border-red-400 hover:bg-red-50 cursor-pointer"
+                                        : "bg-white text-slate-400 border-slate-200 cursor-not-allowed"
                                 }`}
                             >
                                 Generate 365 Days of Content
@@ -1209,18 +1174,25 @@ const speeds = [120, 160, 110, 150, 130];
                     </div>
                 </div>
             </section>
-            <section id="gcontent" className="py-14 sm:py-24 bg-white overflow-hidden">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <section id="gcontent" className="py-16 sm:py-28 overflow-hidden relative" style={{ background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 50%, #ffffff 100%)" }}>
+                <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "radial-gradient(circle, rgba(15,23,42,0.03) 1px, transparent 1px)", backgroundSize: "32px 32px" }}></div>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
                     {/* Title */}
-                    <h2 className="text-2xl sm:text-3xl md:text-5xl text-center text-black mb-3 sm:mb-4">
-                        Preview AI-Generated Posts Tailored for Your Business
-                    </h2>
-
-                    {/* Subtitle */}
-                    <p className="text-center text-gray-600 text-sm sm:text-base max-w-2xl mx-auto mb-10 sm:mb-16 px-2">
-                        Industry-specific templates that update instantly based
-                        on your selection
-                    </p>
+                    <div className="text-center mb-12 sm:mb-16">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold uppercase tracking-widest shadow-lg shadow-orange-200 mb-5">
+                            <SparklesIcon className="w-3.5 h-3.5" />
+                            Live AI Preview
+                        </div>
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
+                            AI-Generated Posts for{" "}
+                            <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+                                Your Business
+                            </span>
+                        </h2>
+                        <p className="text-slate-500 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+                            Industry-specific templates that update instantly based on your selection
+                        </p>
+                    </div>
 
                     {shouldShowFirstLoadMsg && (
                         <div className="max-w-2xl mx-auto mb-8 rounded-xl border border-orange-200 bg-orange-50 px-4 py-3 text-center text-sm font-medium text-orange-700">
@@ -1230,37 +1202,6 @@ const speeds = [120, 160, 110, 150, 130];
 
                     {/* Main Card */}
                     <div className="relative bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg border border-gray-100">
-                        {/* Top Controls */}
-                        <div className="flex flex-col gap-6 mb-8 sm:mb-10">
-                            {/* Tabs */}
-                            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-                                {[
-                                    { label: "Photos", value: "photos" },
-                                    { label: "Reels", value: "reels" },
-                                ].map((tab) => (
-                                    <button
-                                        key={tab.value}
-                                        onClick={() =>
-                                            setSelectedContent(
-                                                selectedContent === tab.value
-                                                    ? null
-                                                    : (tab.value as
-                                                          | "photos"
-                                                          | "reels"),
-                                            )
-                                        }
-                                        className={`whitespace-nowrap px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200
-                                            ${
-                                                selectedContent === tab.value
-                                                    ? "bg-black text-white shadow-md"
-                                                    : "bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100"
-                                            }`}
-                                    >
-                                        {tab.label}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
 
                         <div className="space-y-8">
                             {streamError && (
@@ -1372,15 +1313,19 @@ const speeds = [120, 160, 110, 150, 130];
                                         }
 
                                         // Post arrived — show image
+                                        const isActivePost = selectedPreviewPost?.imageUrl === imageUrl;
                                         return (
                                             <div
                                                 key={`r1-post-${i}`}
-                                                className="relative group aspect-square rounded-xl overflow-hidden bg-gray-50 cursor-pointer hover:ring-2 hover:ring-orange-500 transition-all"
+                                                className={`relative group aspect-square rounded-xl overflow-hidden bg-gray-50 cursor-pointer transition-all duration-200 ${
+                                                    isActivePost
+                                                        ? "ring-4 ring-orange-500 ring-offset-2 scale-[1.03]"
+                                                        : "hover:ring-2 hover:ring-orange-300 hover:ring-offset-1 hover:scale-[1.02]"
+                                                }`}
                                                 onClick={() =>
-                                                    setSelectedPreviewPost({
-                                                        imageUrl,
-                                                        caption: post.text || "",
-                                                    })
+                                                    setSelectedPreviewPost(
+                                                        isActivePost ? null : { imageUrl, caption: post.text || "" }
+                                                    )
                                                 }
                                             >
                                                 <img
@@ -1394,7 +1339,15 @@ const speeds = [120, 160, 110, 150, 130];
                                                         e.currentTarget.src = getSubIndustryFallbackImage(i);
                                                     }}
                                                 />
-                                                {post.source && (
+                                                {isActivePost && (
+                                                    <>
+                                                        <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                                                            <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                                        </div>
+                                                        <div className="absolute inset-0 bg-orange-500/10 pointer-events-none" />
+                                                    </>
+                                                )}
+                                                {post.source && !isActivePost && (
                                                     <span className={`absolute top-2 right-2 px-2 py-0.5 text-xs font-bold rounded-full ${post.source === "LLM" ? "bg-orange-500 text-white" : "bg-black/60 text-white"}`}>
                                                         {post.source === "LLM" ? "AI" : "Stock"}
                                                     </span>
@@ -1420,16 +1373,21 @@ const speeds = [120, 160, 110, 150, 130];
                                             No stock templates found
                                         </p>
                                     ) : (
-                                        previewPrimaryStockImages.map((img, index) => (
+                                        previewPrimaryStockImages.map((img, index) => {
+                                            const url = img.file || img.url || "";
+                                            const isActiveStock = selectedPreviewPost?.imageUrl === url;
+                                            return (
                                             <div
                                                 key={img.id || `r2-stock-${index}`}
-                                                className="relative group aspect-square rounded-xl overflow-hidden bg-gray-50 cursor-pointer hover:ring-2 hover:ring-orange-500 transition-all"
+                                                className={`relative group aspect-square rounded-xl overflow-hidden bg-gray-50 cursor-pointer transition-all duration-200 ${
+                                                    isActiveStock
+                                                        ? "ring-4 ring-orange-500 ring-offset-2 scale-[1.03]"
+                                                        : "hover:ring-2 hover:ring-orange-300 hover:ring-offset-1 hover:scale-[1.02]"
+                                                }`}
                                                 onClick={() => {
-                                                    const url = img.file || img.url || "";
-                                                    setSelectedPreviewPost({
-                                                        imageUrl: url,
-                                                        caption: img.name || img.title || "",
-                                                    });
+                                                    setSelectedPreviewPost(
+                                                        isActiveStock ? null : { imageUrl: url, caption: img.name || img.title || "" }
+                                                    );
                                                 }}
                                             >
                                                 <img
@@ -1443,12 +1401,22 @@ const speeds = [120, 160, 110, 150, 130];
                                                         e.currentTarget.src = getSubIndustryFallbackImage(index);
                                                     }}
                                                 />
+                                                {isActiveStock && (
+                                                    <>
+                                                        <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                                                            <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                                        </div>
+                                                        <div className="absolute inset-0 bg-orange-500/10 pointer-events-none" />
+                                                    </>
+                                                )}
                                                 <span className="absolute bottom-2 left-2 text-white bg-black/60 backdrop-blur-sm px-2 py-1 text-xs rounded-md font-medium">
                                                     {img.name || img.title || `Stock ${index + 1}`}
                                                 </span>
                                             </div>
-                                        ))
-                                    )}
+                                            );
+                                        })
+                                        )
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -1457,1136 +1425,147 @@ const speeds = [120, 160, 110, 150, 130];
                 </div>
             </section>
 
-            {/*<AIPapersSection />*/}
-            {/* See It In Action Section */}
-            <section className="py-14 sm:py-20 bg-white overflow-hidden">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
-                    {/* Feature Cards */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
-                        {[
-                            { emoji: "⚡", title: "2-Minutes Setup" },
-                            { emoji: "🎨", title: "Auto-Branded" },
-                            { emoji: "📅", title: "365 Days Filled" },
-                            { emoji: "🌍", title: "Multi-Platform" },
-                        ].map((item) => (
-                            <div
-                                key={item.title}
-                                className="bg-gray-100 border border-gray-200 rounded-2xl p-6 sm:p-8 text-center shadow-sm hover:shadow-xl transition-all"
-                            >
-                                <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">
-                                    {item.emoji}
-                                </div>
-
-                                <h3 className="text-base sm:text-lg font-semibold text-black">
-                                    {item.title}
-                                </h3>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
             <Calender selectedIndustry={
                 industries.find(ind => String(ind.id) === String(generateSelectedIndustry))?.name
             } />
 
             <section
                 id="who-we-help"
-                className="py-12 bg-white overflow-hidden"
+                className="py-16 sm:py-28 overflow-hidden relative"
+                style={{ background: "linear-gradient(180deg, #fff7f0 0%, #ffffff 60%, #f8fafc 100%)" }}
             >
-                <div className="max-w-7xl mx-auto px-6 text-center">
-                    {/* Gradient Badge with Floating Particle Motion */}
-                    <div className="flex justify-center mb-6">
-                        <span className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-sm font-semibold shadow-lg">
-                            <div>
-                                <SparklesIcon className="w-4 h-4 text-white" />
-                            </div>
+                <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-orange-100/30 to-transparent rounded-full blur-3xl"></div>
+                </div>
+                <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
+                    {/* Badge */}
+                    <div className="flex justify-center mb-5">
+                        <span className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold uppercase tracking-widest shadow-lg shadow-orange-200">
+                            <SparklesIcon className="w-3.5 h-3.5" />
                             Built for Every Industry
                         </span>
                     </div>
 
                     {/* Title + Subtitle */}
-                    <h2 className="text-4xl md:text-5xl text-black mb-4">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
                         Who We Help
                     </h2>
 
-                    <p className="text-gray-600 max-w-2xl mx-auto mb-16">
-                        Industry-specific content automation for businesses of
-                        all sizes
+                    <p className="text-slate-500 max-w-2xl mx-auto mb-14 text-sm sm:text-base leading-relaxed">
+                        Industry-specific content automation for businesses of all sizes
                     </p>
 
                     {/* Cards Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-                        {/*[
-                            { title: "Health & Fitness", emoji: "💪" },
-                            { title: "Food & Beverage", emoji: "🍔" },
-                            { title: "Fashion & Lifestyle", emoji: "👗" },
-                            { title: "Real Estate & Construction", emoji: "🏗️" },
-                            { title: "Education & Coaching", emoji: "🎓" },
-                            { title: "Finance & Business Services", emoji: "💼" },
-                            { title: "Medical & Healthcare", emoji: "🩺" },
-                            { title: "Technology & IT Services", emoji: "💻" },
-                            { title: "Hospitality & Tourism", emoji: "🏨" },
-                            { title: "Automobile Industry", emoji: "🚗" },
-                            { title: "Beauty, Salon & Wellness", emoji: "💅" },
-                            { title: "Retail & E-Commerce", emoji: "🛒" },
-                        ].map((item, index) => (
-                            <div key={item.title || index*/}
-
-                        <div className="rounded-3xl p-6 bg-white border border-gray-200 text-left cursor-pointer relative overflow-hidden">
-                            {/* Emoji with micro-pulse */}
-                            <div className="text-4xl mb-4">
-                                {/*item.emoji*/}
-                                💪
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="text-black mb-4">
-                                {/*item.title*/}
-                                Health & Fitness
-                            </h3>
-
-                            {/* List */}
-                            <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li><a href="/GYM.html" className="hover:text-blue-600 transition-colors">• Gym / Fitness Studio</a></li>
-                                <li><a href="/yoga-centre.html" className="hover:text-blue-600 transition-colors">• Yoga Centre</a></li>
-                                <li><a href="/zumba-aerobic-studio.html" className="hover:text-blue-600 transition-colors">• Zumba / Aerobic Studio</a></li>
-                                <li><a href="/Crossfit_Personal-Trainer.html" className="hover:text-blue-600 transition-colors">• CrossFit / Personal Trainer</a></li>
-                                <div
-                                    style={{ display: "none" }}
-                                    id="Health"
-                                    className="text-sm text-gray-600 space-y-2 mb-4"
-                                >
-                                    <li><a href="/physiotheraphy.html" className="hover:text-blue-600 transition-colors">• Physiotherapy Clinic</a></li>
-                                    <li><a href="/Dieticians.html" className="hover:text-blue-600 transition-colors">• Dietician / Nutritionist</a></li>
-                                    <li><a href="/wellness-supplements.html" className="hover:text-blue-600 transition-colors">• Wellness & Supplements</a></li>
-                                    <li><a href="/weight-loss-body-transformation.html" className="hover:text-blue-600 transition-colors">• Weight Loss / Body Transformation</a></li>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        {(showAllIndustries ? WHO_WE_HELP : WHO_WE_HELP.slice(0, 4)).map((item, idx) => {
+                            const moreId = `more${idx + 1}`;
+                            const lessId = `less${idx + 1}`;
+                            return (
+                                <div key={item.key} className="group rounded-2xl p-5 bg-white border border-orange-100 text-left relative overflow-hidden shadow-sm hover:shadow-xl hover:shadow-orange-100/50 hover:-translate-y-1 transition-all duration-300">
+                                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-orange-50 to-transparent rounded-bl-full pointer-events-none"></div>
+                                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-orange-50 to-red-50 border border-orange-100 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                                        {item.emoji}
+                                    </div>
+                                    <h3 className="font-bold text-slate-900 text-sm mb-3">{item.title}</h3>
+                                    <ul className="text-xs text-slate-500 space-y-1.5 mb-3">
+                                        {item.visible.map((li, i) => (
+                                            <li key={i}><a href={li.href} className="hover:text-orange-500 transition-colors">• {li.label}</a></li>
+                                        ))}
+                                        {item.extra.length > 0 && (
+                                            <div style={{ display: "none" }} id={item.key} className="space-y-1.5">
+                                                {item.extra.map((li, i) => (
+                                                    <li key={i}><a href={li.href} className="hover:text-orange-500 transition-colors">• {li.label}</a></li>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </ul>
+                                    {item.extra.length > 0 && (
+                                        <>
+                                            <a id={moreId} onClick={() => more(item.key, moreId, lessId)} className="text-xs font-semibold text-orange-500 hover:text-orange-700 cursor-pointer">+ show more</a>
+                                            <a id={lessId} style={{ display: "none" }} onClick={() => less(item.key, moreId, lessId)} className="text-xs font-semibold text-orange-500 hover:text-orange-700 cursor-pointer">− show less</a>
+                                        </>
+                                    )}
                                 </div>
-                            </ul>
-                            {/* More Link */}
-                            <a
-                                id="more1"
-                                onClick={() => more("Health", "more1", "less1")}
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show more
-                            </a>
-                            <a
-                                id="less1"
-                                style={{ display: "none" }}
-                                onClick={() => less("Health", "more1", "less1")}
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show less
-                            </a>
-                        </div>
-                        <div className="rounded-3xl p-6 bg-white border border-gray-200 text-left cursor-pointer relative overflow-hidden">
-                            {/* Emoji with micro-pulse */}
-                            <div className="text-4xl mb-4">
-                                {/*item.emoji*/}
-                                🍔
-                            </div>
+                            );
+                        })}
+                    </div>
 
-                            {/* Title */}
-                            <h3 className="text-black mb-4">
-                                {/*item.title*/}
-                                Food & Beverage
-                            </h3>
-
-                            {/* List */}
-                            <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li><a href="/veg-multicuisine-restaurant.html" className="hover:text-blue-600 transition-colors">• Restaurants (veg / multicuisine)</a></li>
-                                <li><a href="/NV RESTAURANT.html" className="hover:text-blue-600 transition-colors">• Restaurants (non-veg / multicuisine)</a></li>
-                                <li><a href="/Cafe.html" className="hover:text-blue-600 transition-colors">• Cafes & Coffee Shops</a></li>
-                                <li><a href="/Juicebar_smoothiebar.html" className="hover:text-blue-600 transition-colors">• Juice Bars / Smoothie Bars</a></li>
-                                <div
-                                    style={{ display: "none" }}
-                                    id="food"
-                                    className="text-sm text-gray-600 space-y-2 mb-4"
-                                >
-                                    <li><a href="/CAKE.html" className="hover:text-blue-600 transition-colors">• Bakery / Cake Shop</a></li>
-                                    <li><a href="/Cloud-Kitchen.html" className="hover:text-blue-600 transition-colors">• Cloud Kitchen</a></li>
-                                    <li><a href="/catering_.html" className="hover:text-blue-600 transition-colors">• Catering Services</a></li>
-                                    <li><a href="/food-truck.html" className="hover:text-blue-600 transition-colors">• Food Trucks</a></li>
-                                    <li><a href="/namkeen.html" className="hover:text-blue-600 transition-colors">• Sweets & Namkeen Stores</a></li>
-                                    <li><a href="/organic-food.html" className="hover:text-blue-600 transition-colors">• Organic & Healthy Food Brands</a></li>
-                                </div>
-                            </ul>
-
-                            {/* More Link */}
-                            <a
-                                id="more2"
-                                onClick={() => more("food", "more2", "less2")}
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show more
-                            </a>
-                            <a
-                                id="less2"
-                                style={{ display: "none" }}
-                                onClick={() => less("food", "more2", "less2")}
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show less
-                            </a>
-                        </div>
-                        {/* 3rd item */}
-                        <div className="rounded-3xl p-6 bg-white border border-gray-200 text-left cursor-pointer relative overflow-hidden">
-                            {/* Emoji with micro-pulse */}
-                            <div className="text-4xl mb-4">
-                                {/*item.emoji*/}
-                                👗
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="text-black mb-4">
-                                {/*item.title*/}
-                                Fashion & Lifestyle
-                            </h3>
-
-                            {/* List */}
-                            <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li><a href="/CLOTHING-AND-BOUTIQUE.html" className="hover:text-blue-600 transition-colors">• Clothing Store / Boutique</a></li>
-                                <li><a href="/FASHION-DESIGNER(1).html" className="hover:text-blue-600 transition-colors">• Fashion Designer</a></li>
-                                <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Footwear</a></li>
-                                <li><a href="/watches-jewelry.html" className="hover:text-blue-600 transition-colors">• Watches / Jewelry</a></li>
-                                <div
-                                    style={{ display: "none" }}
-                                    id="fashion"
-                                    className="text-sm text-gray-600 space-y-2 mb-4"
-                                >
-                                    <li><a href="/perfume.html" className="hover:text-blue-600 transition-colors">• Perfume / Fragrance Brand</a></li>
-                                </div>
-                            </ul>
-
-                            {/* More Link */}
-                            <a
-                                id="more3"
-                                onClick={() =>
-                                    more("fashion", "more3", "less3")
-                                }
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show more
-                            </a>
-                            <a
-                                id="less3"
-                                style={{ display: "none" }}
-                                onClick={() =>
-                                    less("fashion", "more3", "less3")
-                                }
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show less
-                            </a>
-                        </div>
-                        {/* 4th item */}
-                        <div className="rounded-3xl p-6 bg-white border border-gray-200 text-left cursor-pointer relative overflow-hidden">
-                            {/* Emoji with micro-pulse */}
-                            <div className="text-4xl mb-4">
-                                {/*item.emoji*/}
-                                🏗️
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="text-black mb-4">
-                                {/*item.title*/}
-                                Real Estate & Construction
-                            </h3>
-
-                            {/* List */}
-                            <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li><a href="/real-estate.html" className="hover:text-blue-600 transition-colors">• Real Estate Agents</a></li>
-                                <li><a href="/DEVELOPERS_AND_BUILDERS.html" className="hover:text-blue-600 transition-colors">• Developers / Builders</a></li>
-                                <li><a href="/GATED-COMMUNITIES.html" className="hover:text-blue-600 transition-colors">• Farm Plots / Gated Communities</a></li>
-                                <li><a href="/interior.html" className="hover:text-blue-600 transition-colors">• Interior Design</a></li>
-                                <div
-                                    style={{ display: "none" }}
-                                    id="real"
-                                    className="text-sm text-gray-600 space-y-2 mb-4"
-                                >
-                                    <li><a href="/Architecture.html" className="hover:text-blue-600 transition-colors">• Architecture Firms</a></li>
-                                    <li><a href="/PROPERTY-CONSULTANT.html" className="hover:text-blue-600 transition-colors">• Property Consultants</a></li>
-                                    <li><a href="/Construction-materials.html" className="hover:text-blue-600 transition-colors">• Home Construction Materials</a></li>
-                                </div>
-                            </ul>
-
-                            {/* More Link */}
-                            <a
-                                id="more4"
-                                onClick={() => more("real", "more4", "less4")}
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show more
-                            </a>
-                            <a
-                                id="less4"
-                                style={{ display: "none" }}
-                                onClick={() => less("real", "more4", "less4")}
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show less
-                            </a>
-                        </div>
-                        {/* 5th item */}
-                        <div className="rounded-3xl p-6 bg-white border border-gray-200 text-left cursor-pointer relative overflow-hidden">
-                            {/* Emoji with micro-pulse */}
-                            <div className="text-4xl mb-4">
-                                {/*item.emoji*/}
-                                🎓
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="text-black mb-4">
-                                {/*item.title*/}
-                                Education & Coaching
-                            </h3>
-
-                            {/* List */}
-                            <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li><a href="/SCHOOL-AND-CLG.html" className="hover:text-blue-600 transition-colors">• Schools & Colleges</a></li>
-                                <li>
-                                    <a href="/COACHING-INSTITUTE.html" className="hover:text-blue-600 transition-colors">
-                                        • Coaching Institutes (NEET / JEE / UPSC /
-                                        CAT etc.)
-                                    </a>
-                                </li>
-                                <li><a href="/coding-academy.html" className="hover:text-blue-600 transition-colors">• Coding Academy / EdTech</a></li>
-                                <li><a href="/ONLINE-TUTOR.html" className="hover:text-blue-600 transition-colors">• Online Tutors</a></li>
-                                <li><a href="/Pre-school_Montessori.html" className="hover:text-blue-600 transition-colors">• Pre-School / Montessori</a></li>
-                                <div
-                                    style={{ display: "none" }}
-                                    id="edu"
-                                    className="text-sm text-gray-600 space-y-2 mb-4"
-                                >
-                                    <li><a href="/training-centers.html" className="hover:text-blue-600 transition-colors">• Skill Training Centres</a></li>
-                                    <li><a href="/IELTS.html" className="hover:text-blue-600 transition-colors">• IELTS / Language Centres</a></li>
-                                </div>
-                            </ul>
-
-                            {/* More Link */}
-                            <a
-                                id="more5"
-                                onClick={() => more("edu", "more5", "less5")}
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show more
-                            </a>
-                            <a
-                                id="less5"
-                                style={{ display: "none" }}
-                                onClick={() => less("edu", "more5", "less5")}
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show less
-                            </a>
-                        </div>
-                        {/* 6th item */}
-                        <div className="rounded-3xl p-6 bg-white border border-gray-200 text-left cursor-pointer relative overflow-hidden">
-                            {/* Emoji with micro-pulse */}
-                            <div className="text-4xl mb-4">
-                                {/*item.emoji*/}
-                                💼
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="text-black mb-4">
-                                {/*item.title*/}
-                                Finance & Business Services
-                            </h3>
-
-                            {/* List */}
-                            <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li><a href="/CA_GST.html" className="hover:text-blue-600 transition-colors">• CA / Tax / GST Services</a></li>
-                                <li><a href="/Insurance.html" className="hover:text-blue-600 transition-colors">• Insurance Agents</a></li>
-                                <li><a href="/mutual-fund.html" className="hover:text-blue-600 transition-colors">• Mutual Fund Advisors</a></li>
-                                <li><a href="/Cripto-and-Trading.html" className="hover:text-blue-600 transition-colors">• Stock & Crypto Trading Services</a></li>
-                                <div
-                                    style={{ display: "none" }}
-                                    id="finance"
-                                    className="text-sm text-gray-600 space-y-2 mb-4"
-                                >
-                                    <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Business Consultants</a></li>
-                                    <li><a href="/accounting-firm.html" className="hover:text-blue-600 transition-colors">• Accounting Firms</a></li>
-                                    <li><a href="/Loan.html" className="hover:text-blue-600 transition-colors">• Loan Agents</a></li>
-                                </div>
-                            </ul>
-
-                            {/* More Link */}
-                            <a
-                                id="more6"
-                                onClick={() =>
-                                    more("finance", "more6", "less6")
-                                }
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show more
-                            </a>
-                            <a
-                                id="less6"
-                                style={{ display: "none" }}
-                                onClick={() =>
-                                    less("finance", "more6", "less6")
-                                }
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show less
-                            </a>
-                        </div>
-                        {/* 7th item */}
-                        <div className="rounded-3xl p-6 bg-white border border-gray-200 text-left cursor-pointer relative overflow-hidden">
-                            {/* Emoji with micro-pulse */}
-                            <div className="text-4xl mb-4">
-                                {/*item.emoji*/}
-                                🩺
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="text-black mb-4">
-                                {/*item.title*/}
-                                Medical & Healthcare
-                            </h3>
-
-                            {/* List */}
-                            <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li><a href="/physiotheraphy.html" className="hover:text-blue-600 transition-colors">• Hospitals & Clinics</a></li>
-                                <li><a href="/physiotheraphy.html" className="hover:text-blue-600 transition-colors">• Dentists</a></li>
-                                <li><a href="/physiotheraphy.html" className="hover:text-blue-600 transition-colors">• Dermatologists</a></li>
-                                <li><a href="/physiotheraphy.html" className="hover:text-blue-600 transition-colors">• Eye Clinics</a></li>
-                                <div
-                                    style={{ display: "none" }}
-                                    id="medical"
-                                    className="text-sm text-gray-600 space-y-2 mb-4"
-                                >
-                                    <li><a href="/physiotheraphy.html" className="hover:text-blue-600 transition-colors">• Pharmacy / Medical Stores</a></li>
-                                    <li><a href="/physiotheraphy.html" className="hover:text-blue-600 transition-colors">• Diagnostic Laboratories</a></li>
-                                    <li><a href="/physiotheraphy.html" className="hover:text-blue-600 transition-colors">• Home Nursing Services</a></li>
-                                </div>
-                            </ul>
-
-                            {/* More Link */}
-                            <a
-                                id="more7"
-                                onClick={() =>
-                                    more("medical", "more7", "less7")
-                                }
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show more
-                            </a>
-                            <a
-                                id="less7"
-                                style={{ display: "none" }}
-                                onClick={() =>
-                                    less("medical", "more7", "less7")
-                                }
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show less
-                            </a>
-                        </div>
-                        {/* 8th item */}
-                        <div className="rounded-3xl p-6 bg-white border border-gray-200 text-left cursor-pointer relative overflow-hidden">
-                            {/* Emoji with micro-pulse */}
-                            <div className="text-4xl mb-4">
-                                {/*item.emoji*/}
-                                💻
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="text-black mb-4">
-                                {/*item.title*/}
-                                Technology & IT Services
-                            </h3>
-
-                            {/* List */}
-                            <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li><a href="/coding-academy.html" className="hover:text-blue-600 transition-colors">• SaaS Products</a></li>
-                                <li><a href="/website-development-social-media-automation.html" className="hover:text-blue-600 transition-colors">• Website Development</a></li>
-                                <li><a href="/coding-academy.html" className="hover:text-blue-600 transition-colors">• App Development</a></li>
-                                <li><a href="/coding-academy.html" className="hover:text-blue-600 transition-colors">• Digital Marketing Agencies</a></li>
-                                <div
-                                    style={{ display: "none" }}
-                                    id="tech"
-                                    className="text-sm text-gray-600 space-y-2 mb-4"
-                                >
-                                    <li><a href="/coding-academy.html" className="hover:text-blue-600 transition-colors">• AI Tools</a></li>
-                                    <li><a href="/coding-academy.html" className="hover:text-blue-600 transition-colors">• Cyber Security</a></li>
-                                    <li><a href="/coding-academy.html" className="hover:text-blue-600 transition-colors">• Tech Startups</a></li>
-                                </div>
-                            </ul>
-
-                            {/* More Link */}
-                            <a
-                                id="more8"
-                                onClick={() => more("tech", "more8", "less8")}
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show more
-                            </a>
-                            <a
-                                id="less8"
-                                style={{ display: "none" }}
-                                onClick={() => less("tech", "more8", "less8")}
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show less
-                            </a>
-                        </div>
-                        {/* 9th item */}
-                        <div className="rounded-3xl p-6 bg-white border border-gray-200 text-left cursor-pointer relative overflow-hidden">
-                            {/* Emoji with micro-pulse */}
-                            <div className="text-4xl mb-4">
-                                {/*item.emoji*/}
-                                🏨
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="text-black mb-4">
-                                {/*item.title*/}
-                                Hospitality & Tourism
-                            </h3>
-
-                            {/* List */}
-                            <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li><a href="/hotels-resorts.html" className="hover:text-blue-600 transition-colors">• Hotels / Resorts</a></li>
-                                <li><a href="/travel-agencies.html" className="hover:text-blue-600 transition-colors">• Travel Agencies</a></li>
-                                <li><a href="/tour-packages.html" className="hover:text-blue-600 transition-colors">• Tour Packages</a></li>
-                                <li><a href="/homestays-airbnb-hosts.html" className="hover:text-blue-600 transition-colors">• Homestays / Airbnb Hosts</a></li>
-                                <div
-                                    style={{ display: "none" }}
-                                    id="hospitality"
-                                    className="text-sm text-gray-600 space-y-2 mb-4"
-                                >
-                                    <li><a href="/car-rentals.html" className="hover:text-blue-600 transition-colors">• Car Rentals</a></li>
-                                    <li><a href="/adventure-tourism.html" className="hover:text-blue-600 transition-colors">• Adventure Tourism</a></li>
-                                </div>
-                            </ul>
-
-                            {/* More Link */}
-                            <a
-                                id="more9"
-                                onClick={() =>
-                                    more("hospitality", "more9", "less9")
-                                }
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show more
-                            </a>
-                            <a
-                                id="less9"
-                                style={{ display: "none" }}
-                                onClick={() =>
-                                    less("hospitality", "more9", "less9")
-                                }
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show less
-                            </a>
-                        </div>
-                        {/* 10th item */}
-                        <div className="rounded-3xl p-6 bg-white border border-gray-200 text-left cursor-pointer relative overflow-hidden">
-                            {/* Emoji with micro-pulse */}
-                            <div className="text-4xl mb-4">
-                                {/*item.emoji*/}
-                                🚗
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="text-black mb-4">
-                                {/*item.title*/}
-                                Automobile Industry
-                            </h3>
-
-                            {/* List */}
-                            <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li><a href="/car-showrooms.html" className="hover:text-blue-600 transition-colors">• Car Showrooms</a></li>
-                                <li><a href="/two-wheeler-dealers.html" className="hover:text-blue-600 transition-colors">• Two-Wheeler Dealers</a></li>
-                                <li><a href="/auto-repair-workshops.html" className="hover:text-blue-600 transition-colors">• Auto Repair Workshops</a></li>
-                                <li><a href="/car-spa-detailing.html" className="hover:text-blue-600 transition-colors">• Car Spa / Detailing</a></li>
-                                <div
-                                    style={{ display: "none" }}
-                                    id="auto"
-                                    className="text-sm text-gray-600 space-y-2 mb-4"
-                                >
-                                    <li><a href="/car-accessories-and-parts.html" className="hover:text-blue-600 transition-colors">• Car Accessories & Parts</a></li>
-                                </div>
-                            </ul>
-
-                            {/* More Link */}
-                            <a
-                                id="more10"
-                                onClick={() => more("auto", "more10", "less10")}
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show more
-                            </a>
-                            <a
-                                id="less10"
-                                style={{ display: "none" }}
-                                onClick={() => less("auto", "more10", "less10")}
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show less
-                            </a>
-                        </div>
-                        {/* 11th item */}
-                        <div className="rounded-3xl p-6 bg-white border border-gray-200 text-left cursor-pointer relative overflow-hidden">
-                            {/* Emoji with micro-pulse */}
-                            <div className="text-4xl mb-4">
-                                {/*item.emoji*/}
-                                💅
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="text-black mb-4">
-                                {/*item.title*/}
-                                Home & Lifestyle
-                            </h3>
-
-                            {/* List */}
-                            <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li><a href="/furniture-store.html" className="hover:text-blue-600 transition-colors">• Furniture Store</a></li>
-                                <li><a href="/home-decor-brand.html" className="hover:text-blue-600 transition-colors">• Home Decor Brand</a></li>
-                                <li><a href="/kitchenware.html" className="hover:text-blue-600 transition-colors">• Kitchenware</a></li>
-                                <li><a href="/electronics-and-appliances.html" className="hover:text-blue-600 transition-colors">• Electronics & Appliances</a></li>
-                                <div
-                                    style={{ display: "none" }}
-                                    id="home"
-                                    className="text-sm text-gray-600 space-y-2 mb-4"
-                                >
-                                    <li><a href="/cleaning-pest-control.html" className="hover:text-blue-600 transition-colors">• Cleaning / Pest Control</a></li>
-                                </div>
-                            </ul>
-
-                            {/* More Link */}
-                            <a
-                                id="more11"
-                                onClick={() => more("home", "more11", "less11")}
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show more
-                            </a>
-                            <a
-                                id="less11"
-                                style={{ display: "none" }}
-                                onClick={() => less("home", "more11", "less11")}
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show less
-                            </a>
-                        </div>
-                        {/* 12th item */}
-                        <div className="rounded-3xl p-6 bg-white border border-gray-200 text-left cursor-pointer relative overflow-hidden">
-                            {/* Emoji with micro-pulse */}
-                            <div className="text-4xl mb-4">
-                                {/*item.emoji*/}
-                                🎉
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="text-black mb-4">
-                                {/*item.title*/}
-                                Events & Entertainment
-                            </h3>
-
-                            {/* List */}
-                            <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li><a href="/catering_.html" className="hover:text-blue-600 transition-colors">• Event Planners</a></li>
-                                <li><a href="/catering_.html" className="hover:text-blue-600 transition-colors">• Wedding Photographers</a></li>
-                                <li><a href="/catering_.html" className="hover:text-blue-600 transition-colors">• Videography / Drone Shoots</a></li>
-                                <li><a href="/catering_.html" className="hover:text-blue-600 transition-colors">• DJs / Bands</a></li>
-                                <div
-                                    style={{ display: "none" }}
-                                    id="events"
-                                    className="text-sm text-gray-600 space-y-2 mb-4"
-                                >
-                                    <li><a href="/catering_.html" className="hover:text-blue-600 transition-colors">• Stage Decor & Lighting</a></li>
-                                    <li><a href="/catering_.html" className="hover:text-blue-600 transition-colors">• Corporate Event Organizers</a></li>
-                                </div>
-                            </ul>
-
-                            {/* More Link */}
-                            <a
-                                id="more12"
-                                onClick={() =>
-                                    more("events", "more12", "less12")
-                                }
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show more
-                            </a>
-                            <a
-                                id="less12"
-                                style={{ display: "none" }}
-                                onClick={() =>
-                                    less("events", "more12", "less12")
-                                }
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show less
-                            </a>
-                        </div>
-
-                        {/* 13th item */}
-                        <div className="rounded-3xl p-6 bg-white border border-gray-200 text-left cursor-pointer relative overflow-hidden">
-                            {/* Emoji with micro-pulse */}
-                            <div className="text-4xl mb-4">
-                                {/*item.emoji*/}
-                                🏔️
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="text-black mb-4">
-                                {/*item.title*/}
-                                Sports & Outdoor
-                            </h3>
-
-                            {/* List */}
-                            <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li><a href="/Crossfit_Personal-Trainer.html" className="hover:text-blue-600 transition-colors">• Sports Academies</a></li>
-                                <li><a href="/Crossfit_Personal-Trainer.html" className="hover:text-blue-600 transition-colors">• Cricket Training</a></li>
-                                <li><a href="/Crossfit_Personal-Trainer.html" className="hover:text-blue-600 transition-colors">• Football Clubs</a></li>
-                                <li><a href="/Crossfit_Personal-Trainer.html" className="hover:text-blue-600 transition-colors">• Swimming Schools</a></li>
-                                <div
-                                    style={{ display: "none" }}
-                                    id="sports"
-                                    className="text-sm text-gray-600 space-y-2 mb-4"
-                                >
-                                    <li><a href="/Crossfit_Personal-Trainer.html" className="hover:text-blue-600 transition-colors">• Trekking & Adventure Gear</a></li>
-                                </div>
-                            </ul>
-
-                            {/* More Link */}
-                            <a
-                                id="more13"
-                                onClick={() =>
-                                    more("sports", "more13", "less13")
-                                }
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show more
-                            </a>
-                            <a
-                                id="less13"
-                                style={{ display: "none" }}
-                                onClick={() =>
-                                    less("sports", "more13", "less13")
-                                }
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show less
-                            </a>
-                        </div>
-                        {/* 14th item */}
-                        <div className="rounded-3xl p-6 bg-white border border-gray-200 text-left cursor-pointer relative overflow-hidden">
-                            {/* Emoji with micro-pulse */}
-                            <div className="text-4xl mb-4">
-                                {/*item.emoji*/}
-                                🛍️
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="text-black mb-4">
-                                {/*item.title*/}
-                                Retail & E-commerce
-                            </h3>
-
-                            {/* List */}
-                            <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Accessories (Bags)</a></li>
-                                <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Footwear</a></li>
-                                <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Gift Shops</a></li>
-                                <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Home Appliances</a></li>
-                                <div
-                                    style={{ display: "none" }}
-                                    id="retail"
-                                    className="text-sm text-gray-600 space-y-2 mb-4"
-                                >
-                                    <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Kids Clothing</a></li>
-                                    <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Laptops & Computers</a></li>
-                                    <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Men&apos;s Clothing</a></li>
-                                    <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Online Stores</a></li>
-                                    <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Smartphones</a></li>
-                                    <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Supermarkets</a></li>
-                                    <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Toy Stores</a></li>
-                                    <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Wearables</a></li>
-                                    <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Women&apos;s Clothing</a></li>
-                                </div>
-                            </ul>
-
-                            {/* More Link */}
-                            <a
-                                id="more14"
-                                onClick={() =>
-                                    more("retail", "more14", "less14")
-                                }
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show more
-                            </a>
-                            <a
-                                id="less14"
-                                style={{ display: "none" }}
-                                onClick={() =>
-                                    less("retail", "more14", "less14")
-                                }
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show less
-                            </a>
-                        </div>
-                        {/* 15th item */}
-                        <div className="rounded-3xl p-6 bg-white border border-gray-200 text-left cursor-pointer relative overflow-hidden">
-                            {/* Emoji with micro-pulse */}
-                            <div className="text-4xl mb-4">
-                                {/*item.emoji*/}
-                                👤
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="text-black mb-4">
-                                {/*item.title*/}
-                                Personal Branding
-                            </h3>
-
-                            {/* List */}
-                            <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Coaches / Trainers</a></li>
-                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Influencers</a></li>
-                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Motivational Speakers</a></li>
-                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Consultants</a></li>
-                                <div
-                                    style={{ display: "none" }}
-                                    id="personal"
-                                    className="text-sm text-gray-600 space-y-2 mb-4"
-                                >
-                                    <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Podcasters / Content Creators</a></li>
-                                </div>
-                            </ul>
-
-                            {/* More Link */}
-                            <a
-                                id="more15"
-                                onClick={() =>
-                                    more("personal", "more15", "less15")
-                                }
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show more
-                            </a>
-                            <a
-                                id="less15"
-                                style={{ display: "none" }}
-                                onClick={() =>
-                                    less("personal", "more15", "less15")
-                                }
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show less
-                            </a>
-                        </div>
-                        {/* 16th item */}
-                        <div className="rounded-3xl p-6 bg-white border border-gray-200 text-left cursor-pointer relative overflow-hidden">
-                            {/* Emoji with micro-pulse */}
-                            <div className="text-4xl mb-4">
-                                {/*item.emoji*/}
-                                🏠
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="text-black mb-4">
-                                {/*item.title*/}
-                                Home Services
-                            </h3>
-
-                            {/* List */}
-                            <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li><a href="/interior.html" className="hover:text-blue-600 transition-colors">• Electrician / Plumber</a></li>
-                                <li><a href="/cleaning-pest-control.html" className="hover:text-blue-600 transition-colors">• Cleaning Services</a></li>
-                                <li><a href="/interior.html" className="hover:text-blue-600 transition-colors">• Solar Panels</a></li>
-                                <li><a href="/interior.html" className="hover:text-blue-600 transition-colors">• Water Purifier Dealers</a></li>
-                                <div
-                                    style={{ display: "none" }}
-                                    id="ser"
-                                    className="text-sm text-gray-600 space-y-2 mb-4"
-                                >
-                                    <li>
-                                        <a href="/interior.html" className="hover:text-blue-600 transition-colors">
-                                            • Interior Woodwork / Modular Kitchen
-                                        </a>
-                                    </li>
-                                </div>
-                            </ul>
-
-                            {/* More Link */}
-                            <a
-                                id="more16"
-                                onClick={() => more("ser", "more16", "less16")}
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show more
-                            </a>
-                            <a
-                                id="less16"
-                                style={{ display: "none" }}
-                                onClick={() => less("ser", "more16", "less16")}
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show less
-                            </a>
-                        </div>
-                        {/* 17th item */}
-                        <div className="rounded-3xl p-6 bg-white border border-gray-200 text-left cursor-pointer relative overflow-hidden">
-                            {/* Emoji with micro-pulse */}
-                            <div className="text-4xl mb-4">
-                                {/*item.emoji*/}
-                                🤝
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="text-black mb-4">
-                                {/*item.title*/}
-                                NGOs & Foundations
-                            </h3>
-
-                            {/* List */}
-                            <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Charitable Trusts</a></li>
-                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Women & Child Welfare</a></li>
-                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Environmental Campaigns</a></li>
-                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Social Causes</a></li>
-                                <div
-                                    style={{ display: "none" }}
-                                    id="ngo"
-                                    className="text-sm text-gray-600 space-y-2 mb-4"
-                                ></div>
-                            </ul>
-
-                            {/* More Link */}
-                            <a
-                                id="more17"
-                                style={{ display: "none" }}
-                                onClick={() => more("ngo", "more17", "less17")}
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show more
-                            </a>
-                            <a
-                                id="less17"
-                                style={{ display: "none" }}
-                                onClick={() => less("ngo", "more17", "less17")}
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show less
-                            </a>
-                        </div>
-                        {/* 18th item */}
-                        <div className="rounded-3xl p-6 bg-white border border-gray-200 text-left cursor-pointer relative overflow-hidden">
-                            {/* Emoji with micro-pulse */}
-                            <div className="text-4xl mb-4">
-                                {/*item.emoji*/}
-                                🏭
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="text-black mb-4">
-                                {/*item.title*/}
-                                Manufacturing & Industrial
-                            </h3>
-
-                            {/* List */}
-                            <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li><a href="/machinery.html" className="hover:text-blue-600 transition-colors">• Machinery Industries</a></li>
-                                <li><a href="/textile.html" className="hover:text-blue-600 transition-colors">• Textile Production</a></li>
-                                <li><a href="/package.html" className="hover:text-blue-600 transition-colors">• Packaging & Printing</a></li>
-                                <li><a href="/wholesale-distribution.html" className="hover:text-blue-600 transition-colors">• Wholesale Distribution</a></li>
-                                <div
-                                    style={{ display: "none" }}
-                                    id="manu"
-                                    className="text-sm text-gray-600 space-y-2 mb-4"
-                                ></div>
-                            </ul>
-
-                            {/* More Link */}
-                            <a
-                                id="more18"
-                                style={{ display: "none" }}
-                                onClick={() => more("manu", "more18", "less18")}
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show more
-                            </a>
-                            <a
-                                id="less18"
-                                style={{ display: "none" }}
-                                onClick={() => less("manu", "more18", "less18")}
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show less
-                            </a>
-                        </div>
-                        {/* 19th item */}
-                        <div className="rounded-3xl p-6 bg-white border border-gray-200 text-left cursor-pointer relative overflow-hidden">
-                            {/* Emoji with micro-pulse */}
-                            <div className="text-4xl mb-4">
-                                {/*item.emoji*/}✨
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="text-black mb-4">
-                                {/*item.title*/}
-                                Beauty, Salon and Wellness
-                            </h3>
-
-                            {/* List */}
-                            <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li><a href="/perfume.html" className="hover:text-blue-600 transition-colors">• Ayurvedic & Holis</a></li>
-                                <li><a href="/perfume.html" className="hover:text-blue-600 transition-colors">• Beauty Courses</a></li>
-                                <li><a href="/perfume.html" className="hover:text-blue-600 transition-colors">• Grooming Services</a></li>
-                                <li><a href="/perfume.html" className="hover:text-blue-600 transition-colors">• Hair Care Men</a></li>
-                                <div
-                                    style={{ display: "none" }}
-                                    id="beauty"
-                                    className="text-sm text-gray-600 space-y-2 mb-4"
-                                >
-                                    <li><a href="/perfume.html" className="hover:text-blue-600 transition-colors">• Hair Care Women</a></li>
-                                    <li><a href="/perfume.html" className="hover:text-blue-600 transition-colors">• Makeup Services</a></li>
-                                    <li><a href="/perfume.html" className="hover:text-blue-600 transition-colors">• Nail Care & Art</a></li>
-                                    <li><a href="/perfume.html" className="hover:text-blue-600 transition-colors">• Skin Care Services</a></li>
-                                    <li><a href="/perfume.html" className="hover:text-blue-600 transition-colors">• Spa & Wellness</a></li>
-                                </div>
-                            </ul>
-
-                            {/* More Link */}
-                            <a
-                                id="more19"
-                                onClick={() =>
-                                    more("beauty", "more19", "less19")
-                                }
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show more
-                            </a>
-                            <a
-                                id="less19"
-                                style={{ display: "none" }}
-                                onClick={() =>
-                                    less("beauty", "more19", "less19")
-                                }
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show less
-                            </a>
-                        </div>
-                        {/* 20th item */}
-                        <div className="rounded-3xl p-6 bg-white border border-gray-200 text-left cursor-pointer relative overflow-hidden">
-                            {/* Emoji with micro-pulse */}
-                            <div className="text-4xl mb-4">
-                                {/*item.emoji*/}
-                                🚀
-                            </div>
-
-                            {/* Title */}
-                            <h3 className="text-black mb-4">
-                                {/*item.title*/}
-                                Entrepreneurs & Startup Founders
-                            </h3>
-
-                            {/* List */}
-                            <ul className="text-sm text-gray-600 space-y-2 mb-4">
-                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Startup Founders</a></li>
-                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Business Owners</a></li>
-                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Solopreneurs</a></li>
-                                <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Digital Entrepreneurs</a></li>
-                                <div
-                                    style={{ display: "none" }}
-                                    id="entre"
-                                    className="text-sm text-gray-600 space-y-2 mb-4"
-                                >
-                                    <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Women Entrepreneurs</a></li>
-                                    <li><a href="/Business-Consultant.html" className="hover:text-blue-600 transition-colors">• Young Entrepreneurs</a></li>
-                                </div>
-                            </ul>
-
-                            {/* More Link */}
-                            <a
-                                id="more20"
-                                onClick={() =>
-                                    more("entre", "more20", "less20")
-                                }
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show more
-                            </a>
-                            <a
-                                id="less20"
-                                style={{ display: "none" }}
-                                onClick={() =>
-                                    less("entre", "more20", "less20")
-                                }
-                                className="text-sm font-medium text-blue-500 hover:text-black-600"
-                            >
-                                show less
-                            </a>
-                        </div>
-
-                        {/*))*/}
+                    {/* See more / See less */}
+                    <div className="flex justify-center mt-10">
+                        <button
+                            onClick={() => setShowAllIndustries((prev) => !prev)}
+                            className="inline-flex items-center gap-2 px-7 py-3 rounded-full border-2 border-orange-500 text-orange-500 font-semibold text-sm hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 hover:text-white hover:border-transparent transition-all duration-200"
+                        >
+                            {showAllIndustries ? (
+                                <>
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                                    </svg>
+                                    See less
+                                </>
+                            ) : (
+                                <>
+                                    See more
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                    <span className="text-xs opacity-70">({WHO_WE_HELP.length - 4} more industries)</span>
+                                </>
+                            )}
+                        </button>
                     </div>
                 </div>
             </section>
             <section
                 id="library"
-                className="pt-2 pb-5 sm:pt-2 sm:pb-5 bg-white overflow-hidden"
+                className="py-16 sm:py-28 overflow-hidden relative"
+                style={{ background: "linear-gradient(180deg, #f8fafc 0%, #ffffff 50%, #fff7f0 100%)" }}
             >
-                <div className="max-w-7xl mx-auto px-4 sm:px-6">
-                    {/* Floating Badge */}
-                    <div className="flex justify-center mb-5 sm:mb-6">
-                        <span className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 rounded-full bg-gradient-to-r from-orange-500 to-red-600 text-white text-xs sm:text-sm font-semibold shadow-lg">
-                            <SparklesIcon className="w-4 h-4 text-white" />
+                <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute bottom-0 right-0 w-[600px] h-[400px] bg-gradient-to-tl from-orange-100/20 to-transparent rounded-full blur-3xl"></div>
+                </div>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+                    {/* Badge */}
+                    <div className="flex justify-center mb-5">
+                        <span className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold uppercase tracking-widest shadow-lg shadow-orange-200">
+                            <SparklesIcon className="w-3.5 h-3.5" />
                             10,000+ Professional Templates
                         </span>
                     </div>
 
                     {/* Title */}
-                    <h2 className="text-2xl sm:text-3xl md:text-5xl text-center text-black mb-3 sm:mb-4">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-center text-slate-900 tracking-tight mb-4">
                         Browse Our Library
                     </h2>
 
                     {/* Subtitle */}
-                    <p className="text-center text-gray-600 text-sm sm:text-base max-w-2xl mx-auto mb-10 sm:mb-16 px-2">
-                        Industry-specific templates that update instantly based
-                        on your selection
+                    <p className="text-center text-slate-500 text-sm sm:text-base max-w-2xl mx-auto mb-12 sm:mb-16 px-2 leading-relaxed">
+                        Industry-specific templates that update instantly based on your selection
                     </p>
 
                     {/* Main Card */}
-                    <div className="relative bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-xl border border-gray-200 overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                    <div className="relative bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-orange-100 overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-orange-50/80 to-transparent rounded-full pointer-events-none"></div>
 
                         {/* Top Controls */}
                         <div className="flex flex-col gap-6 mb-8 sm:mb-10 relative z-10">
                             {/* Tabs */}
                             <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                                 {[
-                                    { label: "Photos", value: "photos" },
-                                    { label: "Reels", value: "reels" },
+                                    { label: "Photos", value: "photos" as const },
+                                    { label: "Reels", value: "reels" as const },
                                 ].map((tab) => (
                                     <button
                                         key={tab.value}
-                                        onClick={() =>
-                                            setSelectedContent(
-                                                selectedContent === tab.value
-                                                    ? null
-                                                    : (tab.value as
-                                                          | "photos"
-                                                          | "reels"),
-                                            )
-                                        }
-                                        className={`whitespace-nowrap px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition
-                    ${
-                        selectedContent === tab.value
-                            ? "bg-black text-white shadow-lg"
-                            : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
-                    }`}
+                                        onClick={() => {
+                                            setLibraryContentType(tab.value);
+                                            setActiveLibraryImageId(null);
+                                        }}
+                                        className={`whitespace-nowrap px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 ${
+                                            libraryContentType === tab.value
+                                                ? "bg-gradient-to-r from-orange-500 to-red-500 text-white"
+                                                : "bg-white text-gray-600 border border-gray-300 hover:border-orange-300 hover:text-orange-500"
+                                        }`}
                                     >
                                         {tab.label}
                                     </button>
@@ -2598,7 +1577,7 @@ const speeds = [120, 160, 110, 150, 130];
                                 <input
                                     type="text"
                                     placeholder="Search templates"
-                                    className="w-full px-4 py-2 rounded-xl bg-white text-gray-800 placeholder-gray-400 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                                    className="w-full px-4 py-2 rounded-xl bg-white text-gray-800 placeholder-gray-400 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
                                     value={libraryFilterTerm}
                                     onChange={(e) =>
                                         setLibraryFilterTerm(e.target.value)
@@ -2720,32 +1699,96 @@ const speeds = [120, 160, 110, 150, 130];
                         </div>
 
                         {/* Templates Grid */}
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-8 gap-4">
+                        <div className={`grid gap-4 ${
+                            libraryContentType === "reels"
+                                ? "grid-cols-2 sm:grid-cols-4 md:grid-cols-8"
+                                : "grid-cols-2 sm:grid-cols-3 md:grid-cols-8"
+                        }`}>
                             {libraryLoadingImages ? (
-                                <p className="col-span-full text-center text-gray-400 py-12">
-                                    Loading templates... (may take up to 60s on
-                                    first load)
-                                </p>
+                                /* Skeleton placeholders while fetching */
+                                Array.from({ length: 8 }).map((_, i) => (
+                                    <div
+                                        key={i}
+                                        className={`w-full rounded-xl bg-gray-100 animate-pulse ${
+                                            libraryContentType === "reels" ? "aspect-[9/16]" : "h-48"
+                                        }`}
+                                    />
+                                ))
                             ) : libraryFilteredImages.length === 0 ? (
                                 <p className="col-span-full text-center text-gray-400 py-12">
                                     No images found
                                 </p>
                             ) : (
-                                libraryFilteredImages.slice(0, 8).map((img, index) => (
-                                    <div
-                                        key={img.id || index}
-                                        className="relative w-full h-48 rounded-xl overflow-hidden"
-                                    >
-                                        <img
-                                            src={img.file || img.url}
-                                            alt={`${img.name || img.title || "Social media content"} library template preview for ${librarySelectedIndustry || "your industry"}`}
-                                            className="w-full h-full object-cover rounded-xl sm:rounded-2xl"
-                                        />
-                                        <span className="absolute bottom-2 left-2 text-white bg-black/50 px-2 py-1 text-xs rounded">
-                                            {img.name}
-                                        </span>
-                                    </div>
-                                ))
+                                libraryFilteredImages.slice(0, 8).map((img, index) => {
+                                    const imgId = img.id ?? index;
+                                    const isActive = activeLibraryImageId === imgId;
+                                    const isReels = libraryContentType === "reels";
+                                    const src = img.file || img.url || "";
+                                    return (
+                                        <div
+                                            key={imgId}
+                                            onClick={() => setActiveLibraryImageId(isActive ? null : imgId)}
+                                            className={`relative w-full rounded-xl overflow-hidden cursor-pointer transition-all duration-200 bg-gray-100 ${
+                                                isReels ? "aspect-[9/16]" : "h-48"
+                                            } ${
+                                                isActive
+                                                    ? "ring-4 ring-orange-500 ring-offset-2 scale-[1.03]"
+                                                    : "hover:ring-2 hover:ring-orange-300 hover:ring-offset-1 hover:scale-[1.02]"
+                                            }`}
+                                        >
+                                            {src ? (
+                                                <img
+                                                    src={src}
+                                                    alt={img.name || img.title || "Social media template"}
+                                                    loading="lazy"
+                                                    className={`w-full h-full rounded-xl ${
+                                                        isReels ? "object-cover object-top" : "object-cover"
+                                                    }`}
+                                                    onError={(e) => {
+                                                        const target = e.currentTarget;
+                                                        target.style.display = "none";
+                                                        const fallback = target.nextElementSibling as HTMLElement | null;
+                                                        if (fallback) fallback.style.display = "flex";
+                                                    }}
+                                                />
+                                            ) : null}
+                                            {/* Fallback icon shown when image fails or src is empty */}
+                                            <div
+                                                style={{ display: src ? "none" : "flex" }}
+                                                className="absolute inset-0 flex-col items-center justify-center gap-2 bg-gray-50"
+                                            >
+                                                <svg className="w-10 h-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}>
+                                                    <rect x="3" y="3" width="18" height="18" rx="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="m3 16 5-5 4 4 3-3 6 6"/>
+                                                    <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/>
+                                                </svg>
+                                                <span className="text-[10px] text-gray-400 font-medium">No preview</span>
+                                            </div>
+                                            {/* Reels badge */}
+                                            {isReels && (
+                                                <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-[10px] font-bold uppercase tracking-wide">
+                                                    Reel
+                                                </div>
+                                            )}
+                                            {/* Active checkmark */}
+                                            {isActive && (
+                                                <>
+                                                    <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                                                        <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    </div>
+                                                    <div className="absolute inset-0 bg-orange-500/10 rounded-xl pointer-events-none" />
+                                                </>
+                                            )}
+                                            {(img.name || img.title) && (
+                                                <span className="absolute bottom-2 left-2 text-white bg-black/50 px-2 py-1 text-xs rounded">
+                                                    {img.name || img.title}
+                                                </span>
+                                            )}
+                                        </div>
+                                    );
+                                })
                             )}
                         </div>
                     </div>
@@ -2759,46 +1802,45 @@ const speeds = [120, 160, 110, 150, 130];
 
             <Testimonials />
 
-            <section className="py-14 sm:py-20 bg-white overflow-hidden">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
-                    {/* Title */}
-                    <div className="text-2xl sm:text-3xl md:text-5xl text-black font-arial mb-10 sm:mb-12">
-                        See it in Action
+            <section className="py-16 sm:py-28 overflow-hidden relative" style={{ background: "linear-gradient(180deg, #f8fafc 0%, #ffffff 40%, #fff7f0 100%)" }}>
+                <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-gradient-to-r from-orange-100/20 via-transparent to-red-100/20 rounded-full blur-3xl"></div>
+                </div>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center relative z-10">
+                    {/* Badge */}
+                    <div className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold uppercase tracking-widest shadow-lg shadow-orange-200 mb-5">
+                        <SparklesIcon className="w-3.5 h-3.5" />
+                        How It Works
                     </div>
+                    {/* Title */}
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-10 sm:mb-12">
+                        See it in{" "}
+                        <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">Action</span>
+                    </h2>
 
                     {/* Flow Steps */}
-                    <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 mb-12 sm:mb-16">
+                    <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 mb-12 sm:mb-16">
                         {[
-                            { label: "Select Industry", color: "bg-blue-500" },
-                            { label: "Enter Prompt", color: "bg-violet-500" },
-                            { label: "AI Generates", color: "bg-pink-500" },
-                            { label: "Auto Schedule", color: "bg-green-500" },
+                            { label: "Select Industry", step: "01" },
+                            { label: "Enter Prompt", step: "02" },
+                            { label: "AI Generates", step: "03" },
+                            { label: "Auto Schedule", step: "04" },
                         ].map((step, index) => (
-                            <div
-                                key={index}
-                                className="flex items-center gap-3"
-                            >
-                                <div className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-gray-300 text-xs sm:text-sm font-medium text-black bg-gray-100 shadow-sm backdrop-blur-md">
-                                    {/* Animated Dot */}
-                                    <div
-                                        className={`w-2.5 h-2.5 rounded-full ${step.color}`}
-                                    />
-
+                            <div key={index} className="flex items-center gap-3">
+                                <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-orange-200 text-xs sm:text-sm font-semibold text-slate-700 bg-white shadow-sm">
+                                    <span className="w-5 h-5 rounded-full bg-gradient-to-br from-orange-500 to-red-500 text-white text-[10px] font-black flex items-center justify-center">{step.step}</span>
                                     {step.label}
                                 </div>
-
-                                {/* Animated Arrow */}
                                 {index !== 3 && (
-                                    <div className="hidden sm:inline text-gray-400 text-xl">
-                                        →
-                                    </div>
+                                    <div className="hidden sm:inline text-orange-300 text-lg font-bold">→</div>
                                 )}
                             </div>
                         ))}
                     </div>
                     {/* Video Section */}
                     <div className="relative max-w-4xl mx-auto mb-14 sm:mb-20">
-                        <div className="relative aspect-video rounded-2xl sm:rounded-3xl overflow-hidden border border-gray-200 shadow-xl bg-black group">
+                        <div className="absolute -inset-4 bg-gradient-to-r from-orange-200/30 via-transparent to-red-200/30 rounded-3xl blur-2xl pointer-events-none"></div>
+                        <div className="relative aspect-video rounded-2xl sm:rounded-3xl overflow-hidden border border-orange-100 shadow-2xl shadow-orange-100/40 bg-black group">
                             <video
                                 ref={videoRef}
                                 className="w-full h-full object-cover cursor-pointer"
