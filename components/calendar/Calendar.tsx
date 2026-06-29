@@ -1,271 +1,312 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
+
+import React, { useState } from "react";
 import {
-    EventInput,
-    DateSelectArg,
-    EventClickArg,
-    EventContentArg,
-} from "@fullcalendar/core";
-import { useModal } from "@/hooks/useModal";
-import { Modal } from "@/components/ui/modal";
-import { Star, Clock } from "lucide-react";
+  Facebook,
+  Twitter,
+  Instagram,
+  Linkedin,
+  Youtube,
+  Send,
+  Clock,
+} from "lucide-react";
 
+// Using a "Threads" style icon alternative since Lucide doesn't have it natively
+const ThreadsIcon = ({ size }: { size: number }) => (
+  <Send size={size} className="rotate-45" />
+);
 
-interface CalendarEvent extends EventInput {
-    extendedProps: {
-        calendar: string;
-        isAutoScheduled?: boolean;
-    };
+interface ContentDay {
+  day: number;
+  caption: string;
+  hashtags: string;
+  time: string;
+  image: string;
+  type: string;
+  badgeClass: string;
 }
 
-const Calendar: React.FC = () => {
-    const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
-        null
-    );
-    const [eventTitle, setEventTitle] = useState("");
-    const [eventStartDate, setEventStartDate] = useState("");
-    const [eventStartTime, setEventStartTime] = useState("");
-    const [eventEndDate, setEventEndDate] = useState("");
-    const [eventLevel, setEventLevel] = useState("Primary");
-    const [isAutoSchedule, setIsAutoSchedule] = useState(false);
+const SocialMediaCalendar = ({ selectedIndustry }: { selectedIndustry?: string }) => {
+  // 1. Data Setup from original source
+  const captions = [
+    "Boost your Monday productivity with smart marketing habits.",
+    "Top 5 tools every startup should use.",
+    "Level up your daily vibe with consistent and loving pet care routines.",
+    "Start your day right with a smooth coffee and chill vibes.",
+    "Craving something fire? Grab a juicy burger and fix your mood.",
+    "Drip at the best price without compromising your everyday style.",
+    "Step up your style game with fresh kicks and everyday drip.",
+    "Shine brighter every day with timeless diamonds that elevate your style.",
+    "Upgrade your lifestyle with advanced smartwatches built for everyday performance.",
+    "Elevate your everyday vibe with aroma fragrances that feel truly you.",
+    "Build the future with infrastructure that powers growth and modern living.",
+    "Elevate your space with luxury interiors designed for comfort and elegance.",
+    "Design iconic spaces with luxury architects shaping modern lifestyle experiences.",
+    "Keep your smile fresh and confident with modern dental care solutions.",
+    "See the world clearly with advanced eye care for everyday vision.",
+    "Upgrade your space with furniture that blends comfort, style, and function.",
+    "Make every moment special with decor crafted for every celebration vibe.",
+    "Experience sound like never before with powerful and immersive audio devices.",
+    "Escape to beach resorts where chill vibes and luxury meet the ocean.",
+    "Sail into pure luxury with cruises designed for unforgettable ocean experiences.",
+    "Train like a pro with end to end sports academy programs built for champions.",
+    "Escape the routine with camping adventures that reset your vibe and energy.",
+    "Dress your little ones in ethnic styles that blend tradition with cute vibes.",
+    "Stay ahead every day with smartphones designed for speed, style, and performance.",
+    "Celebrate colors and happiness with Holi vibes full of joy and energy.",
+    "Share the love and good vibes with Valentine’s Day made for special moments.",
+    "Celebrate the festive vibes with Durga Puja full of devotion and joy.",
+    "Welcome positive energy with Ganesha celebrations full of joy and blessings.",
+    "Embrace the spiritual vibes with Ramadan celebrations full of reflection and devotion.",
+    "Feel the pride and freedom with Independence Day celebrations full of energy.",
+    "Honor peace and truth with Gandhi Jayanti reflecting values that still inspire.",
+  ];
 
-    const [events, setEvents] = useState<CalendarEvent[]>([]);
-    const calendarRef = useRef<FullCalendar>(null);
-    const { isOpen, openModal, closeModal } = useModal();
+  const hashtags = [
+    "#MarketingTips #GrowthStrategy",
+    "#StartupTools #DigitalMarketing",
+    "#PetCareTips #PetLife",
+    "#CoffeeTime #DailyBrew",
+    "#BurgerLove #FoodCravings",
+    "#AffordableFashion #StyleOnBudget",
+    "#SneakerCulture #StreetStyle",
+    "#DiamondJewelry #LuxuryStyle",
+    "#Smartwatch #TechLifestyle",
+    "#AromaFragrance #ScentLife",
+    "#Infrastructure #UrbanDevelopment",
+    "#LuxuryInteriors #ElegantLiving",
+    "#LuxuryArchitecture #DesignExcellence",
+    "#DentalCare #HealthySmile",
+    "#EyeCare #VisionHealth",
+    "#FurnitureDesign #HomeUpgrade",
+    "#EventDecor #CelebrateInStyle",
+    "#AudioTech #SoundExperience",
+    "#BeachResort #TravelVibes",
+    "#LuxuryCruise #OceanVibes",
+    "#SportsAcademy #TrainLikeAPro",
+    "#CampingLife #OutdoorVibes",
+    "#KidsEthnicWear #TraditionalStyle",
+    "#SmartphoneLife #TechUpgrade",
+    "#Holi #FestivalOfColors",
+    "#ValentinesDay #LoveVibes",
+    "#DurgaPuja #FestiveVibes",
+    "#GaneshChaturthi #DivineVibes",
+    "#Ramadan #SpiritualVibes",
+    "#IndependenceDay #ProudNation",
+    "#GandhiJayanti #PeaceAndTruth",
+  ];
 
-    const calendarsEvents = {
-        Danger: "danger",
-        Success: "success",
-        Primary: "primary",
-        Warning: "warning",
+  const times = [
+    "9:00 AM EST",
+    "6:30 PM CET",
+    "7:30 PM IST",
+    "8:15 PM GMT",
+    "11:00 AM PST",
+  ];
+
+  const types = [
+    { name: "Educational", color: "bg-[#f97316]" },
+    { name: "Reels", color: "bg-[#e64980]" },
+    { name: "Engagement", color: "bg-[#f03e3e]" },
+    { name: "Educational", color: "bg-[#f97316]" },
+    { name: "Reels", color: "bg-[#e64980]" },
+    { name: "Engagement", color: "bg-[#f03e3e]" },
+    { name: "Educational", color: "bg-[#f97316]" },
+    { name: "Reels", color: "bg-[#e64980]" },
+    { name: "Engagement", color: "bg-[#f03e3e]" },
+    { name: "Educational", color: "bg-[#f97316]" },
+    { name: "Reels", color: "bg-[#e64980]" },
+    { name: "Engagement", color: "bg-[#f03e3e]" },
+    { name: "Educational", color: "bg-[#f97316]" },
+    { name: "Reels", color: "bg-[#e64980]" },
+    { name: "Engagement", color: "bg-[#f03e3e]" },
+    { name: "Educational", color: "bg-[#f97316]" },
+    { name: "Reels", color: "bg-[#e64980]" },
+    { name: "Engagement", color: "bg-[#f03e3e]" },
+    { name: "Educational", color: "bg-[#f97316]" },
+    { name: "Reels", color: "bg-[#e64980]" },
+    { name: "Engagement", color: "bg-[#f03e3e]" },
+    { name: "Reels", color: "bg-[#e64980]" },
+    { name: "Reels", color: "bg-[#e64980]" },
+    { name: "Engagement", color: "bg-[#f03e3e]" },
+    { name: "Cultural Day", color: "bg-[#f97316]" },
+    { name: "Cultural Day", color: "bg-[#e64980]" },
+    { name: "Festival", color: "bg-[#f03e3e]" },
+    { name: "Festival", color: "bg-[#f97316]" },
+    { name: "Festival", color: "bg-[#f97316]" },
+    { name: "National Day", color: "bg-[#f97316]" },
+    { name: "National Day", color: "bg-[#f97316]" },
+  ];
+
+  // Your local images from the /public folder
+  const images = [
+    "/images/img1.jpeg",
+    "/images/img2.jpeg", 
+    "/images/3.png",
+    "/images/4.png",
+    "/images/5.png",
+    "/images/6.png",
+    "/images/7.png",
+    "/images/8.png",
+    "/images/9.png",
+    "/images/10.png",
+    "/images/11.png",
+    "/images/12.png",
+    "/images/13.png",
+    "/images/14.png",
+    "/images/15.png",
+    "/images/16.png",
+    "/images/17.png",
+    "/images/18.png",
+    "/images/19.png",
+    "/images/20.png",
+    "/images/21.png",
+    "/images/23.png",
+    "/images/26.png",
+    "/images/27.png",
+    "/images/holi.jpg",
+    "/images/valintine.png",
+    "/images/durga.jpg",
+    "/images/ganesha.png",
+    "/images/Eid.jpg",
+    "/images/Indep.jpg",
+    "/images/ghandhi.jpg",
+  ];
+
+  // 2. Generating the 31 days base content (day number is fixed per slot)
+  const baseContents = Array.from({ length: 31 }, (_, i) => {
+    const typeObj = types[i % types.length];
+    return {
+      caption: captions[i],
+      hashtags: hashtags[i],
+      time: times[i % times.length],
+      image: images[i % images.length],
+      type: typeObj.name,
+      badgeClass: typeObj.color,
     };
+  });
 
-    useEffect(() => {
-        // Initialize with some events
-        setEvents([
-            {
-                id: "1",
-                title: "Morning Brew Promo",
-                start: new Date().toISOString().split("T")[0] + "T09:00:00",
-                extendedProps: { calendar: "Primary", isAutoScheduled: true },
-            },
-            {
-                id: "2",
-                title: "Tech Vision Update",
-                start: new Date(Date.now() + 86400000).toISOString().split("T")[0] + "T14:00:00",
-                extendedProps: { calendar: "Success", isAutoScheduled: false },
-            },
-        ]);
-    }, []);
+  const allDays: ContentDay[] = baseContents.map((content, i) => ({
+    day: i + 1,
+    ...content,
+  }));
 
-    const handleDateSelect = (selectInfo: DateSelectArg) => {
-        resetModalFields();
-        setEventStartDate(selectInfo.startStr.split("T")[0]);
-        // Default time if not provided
-        setEventStartTime("09:00");
-        setEventEndDate(selectInfo.endStr ? selectInfo.endStr.split("T")[0] : selectInfo.startStr.split("T")[0]);
-        openModal();
-    };
+  const [view, setView] = useState<"weekly" | "monthly">("weekly");
 
-    const handleEventClick = (clickInfo: EventClickArg) => {
-        const event = clickInfo.event;
-        setSelectedEvent(event as unknown as CalendarEvent);
-        setEventTitle(event.title);
+  const days = view === "weekly" ? allDays.slice(0, 7) : allDays;
 
-        // Parse start date and time
-        const startObj = event.start || new Date();
-        setEventStartDate(startObj.toISOString().split("T")[0]);
-        setEventStartTime(startObj.toTimeString().slice(0, 5));
+  return (
+    <div className="py-16 sm:py-28 px-6 md:px-10 font-sans" style={{ background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 50%, #fff7f0 100%)" }}>
+      <header className="mb-10 sm:mb-14 text-center">
+        {/* Badge */}
+        <div className="flex justify-center mb-5">
+          <span className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold uppercase tracking-widest">
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 3l14 9-14 9V3z" />
+            </svg>
+            Content Calendar
+          </span>
+        </div>
 
-        setEventEndDate(event.end?.toISOString().split("T")[0] || startObj.toISOString().split("T")[0]);
-        setEventLevel(event.extendedProps.calendar);
-        setIsAutoSchedule(event.extendedProps.isAutoScheduled || false);
-        openModal();
-    };
+        {/* Heading */}
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
+          Social Media{" "}
+          <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+            Calendar Preview
+          </span>
+        </h2>
 
-    const handleAddOrUpdateEvent = () => {
-        const start = `${eventStartDate}T${eventStartTime}:00`;
-        const end = eventEndDate ? `${eventEndDate}T${eventStartTime}:00` : undefined;
+        {/* Subtitle */}
+        <p className="text-slate-500 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed px-2 mb-8">
+          A sample monthly content plan showing how posts, reels, and campaigns
+          can be scheduled for consistent growth.
+        </p>
 
-        if (selectedEvent) {
-            // Update existing event
-            setEvents((prevEvents) =>
-                prevEvents.map((event) =>
-                    event.id === selectedEvent.id
-                        ? {
-                            ...event,
-                            title: eventTitle,
-                            start: start,
-                            end: end,
-                            extendedProps: { calendar: eventLevel, isAutoScheduled: isAutoSchedule },
-                        }
-                        : event
-                )
-            );
-        } else {
-            // Add new event
-            const newEvent: CalendarEvent = {
-                // eslint-disable-next-line
-                id: Date.now().toString(),
-                title: eventTitle,
-                start: start,
-                end: end,
-                allDay: false,
-                extendedProps: { calendar: eventLevel, isAutoScheduled: isAutoSchedule },
-            };
-            setEvents((prevEvents) => [...prevEvents, newEvent]);
-        }
-        closeModal();
-        resetModalFields();
-    };
-
-    const resetModalFields = () => {
-        setEventTitle("");
-        setEventStartDate("");
-        setEventStartTime("");
-        setEventEndDate("");
-        setEventLevel("Primary");
-        setIsAutoSchedule(false);
-        setSelectedEvent(null);
-    };
-
-    return (
-        <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-            <div className="custom-calendar">
-                <FullCalendar
-                    ref={calendarRef}
-                    plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                    initialView="dayGridMonth"
-                    headerToolbar={{
-                        left: "prev,next today",
-                        center: "title",
-                        right: "dayGridMonth,timeGridWeek,timeGridDay",
-                    }}
-                    events={events}
-                    selectable={true}
-                    select={handleDateSelect}
-                    eventClick={handleEventClick}
-                    eventContent={renderEventContent}
-                    editable={true}
-                    droppable={true}
-                    height="800px"
-                />
-            </div>
-            <Modal
-                isOpen={isOpen}
-                onClose={closeModal}
-                className="max-w-[600px] p-0 overflow-hidden rounded-[32px]"
+        {/* Weekly / Monthly toggle */}
+        <div className="inline-flex items-center gap-1 p-1 rounded-full bg-gray-100 border border-gray-200">
+          {(["weekly", "monthly"] as const).map((v) => (
+            <button
+              key={v}
+              onClick={() => setView(v)}
+              className={`px-6 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                view === v
+                  ? "bg-gradient-to-r from-orange-500 to-red-500 text-white"
+                  : "text-gray-500 hover:text-orange-500"
+              }`}
             >
-                <div className="p-8">
-                    <div className="flex justify-between items-start mb-6">
-                        <div>
-                            <h5 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight leading-none mb-2">
-                                {selectedEvent ? "Edit Schedule" : "New Schedule"}
-                            </h5>
-                            <p className="text-sm font-medium text-gray-500">Manage your publication timing</p>
-                        </div>
-                        <button onClick={closeModal} className="p-2 bg-gray-50 rounded-full hover:bg-gray-100 transition-colors">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"></path></svg>
-                        </button>
-                    </div>
-
-                    <div className="space-y-6">
-                        <div>
-                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Post Title</label>
-                            <input
-                                type="text"
-                                value={eventTitle}
-                                onChange={(e) => setEventTitle(e.target.value)}
-                                placeholder="e.g., Summer Sale Announcement"
-                                className="w-full h-12 bg-gray-50 dark:bg-gray-900 border-none rounded-xl px-4 text-sm font-bold text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-500 placeholder:font-medium placeholder:text-gray-400"
-                            />
-                        </div>
-
-                        {/* Smart Scheduling Toggle */}
-                        <div
-                            onClick={() => setIsAutoSchedule(!isAutoSchedule)}
-                            className={`p-4 rounded-2xl border-2 cursor-pointer transition-all flex items-center justify-between group ${isAutoSchedule ? 'border-brand-500 bg-brand-50/50' : 'border-gray-100 dark:border-gray-700 hover:border-gray-200'}`}
-                        >
-                            <div className="flex items-center gap-4">
-                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${isAutoSchedule ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-400'}`}>
-                                    <Star className="w-5 h-5" />
-                                </div>
-                                <div>
-                                    <p className={`font-bold text-sm ${isAutoSchedule ? 'text-gray-900 dark:text-white' : 'text-gray-500'}`}>Smart Scheduling</p>
-                                    <p className="text-xs text-gray-400 font-medium">Auto-pick the best engagement time</p>
-                                </div>
-                            </div>
-                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${isAutoSchedule ? 'border-brand-500' : 'border-gray-200'}`}>
-                                {isAutoSchedule && <div className="w-3 h-3 bg-brand-500 rounded-full" />}
-                            </div>
-                        </div>
-
-                        {/* Manual Time Selection (shown if not auto) */}
-                        <div className={`space-y-4 transition-all duration-300 ${isAutoSchedule ? 'opacity-50 pointer-events-none grayscale' : 'opacity-100'}`}>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Date</label>
-                                    <input
-                                        type="date"
-                                        value={eventStartDate}
-                                        onChange={(e) => setEventStartDate(e.target.value)}
-                                        className="w-full h-12 bg-gray-50 dark:bg-gray-900 border-none rounded-xl px-4 text-sm font-bold text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-500"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Time</label>
-                                    <div className="relative">
-                                        <input
-                                            type="time"
-                                            value={eventStartTime}
-                                            onChange={(e) => setEventStartTime(e.target.value)}
-                                            className="w-full h-12 bg-gray-50 dark:bg-gray-900 border-none rounded-xl px-4 text-sm font-bold text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-500"
-                                        />
-                                        <Clock className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Auto Schedule Message */}
-                        {isAutoSchedule && (
-                            <div className="p-4 bg-green-50 dark:bg-green-900/10 rounded-xl flex items-center gap-3">
-                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                                <p className="text-xs font-bold text-green-700 dark:text-green-400">
-                                    AI detected optimum time: Tomorrow at 09:30 AM
-                                </p>
-                            </div>
-                        )}
-
-                        <button
-                            onClick={handleAddOrUpdateEvent}
-                            className="w-full h-14 bg-black text-white font-black rounded-2xl text-sm shadow-xl shadow-black/10 hover:bg-gray-800 transition-all hover:-translate-y-0.5"
-                        >
-                            {selectedEvent ? "Save Changes" : "Schedule Post"}
-                        </button>
-                    </div>
-                </div>
-            </Modal>
+              {v === "weekly" ? "Weekly" : "Monthly"}
+            </button>
+          ))}
         </div>
-    );
-};
+      </header>
 
-const renderEventContent = (eventInfo: EventContentArg) => {
-    const isAuto = eventInfo.event.extendedProps.isAutoScheduled;
-    return (
-        <div className={`flex flex-col p-1.5 rounded-lg w-full h-full overflow-hidden ${isAuto ? 'bg-gradient-to-br from-brand-500 to-purple-600 border-0' : 'bg-white border-l-4 border-blue-500 shadow-sm'}`}>
-            <div className="flex items-center gap-1 mb-0.5">
-                {isAuto && <Star className="w-3 h-3 text-white" />}
-                <span className={`text-[10px] font-bold ${isAuto ? 'text-white' : 'text-gray-500'}`}>{eventInfo.timeText}</span>
+      {/* Day-of-week header row */}
+      <div className="hidden lg:grid grid-cols-7 mb-4 text-center font-bold text-gray-400 text-xs uppercase tracking-wider">
+        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+          <div key={day}>{day}</div>
+        ))}
+      </div>
+
+      {/* Calendar Grid */}
+      <div className={`grid gap-4 ${
+        view === "weekly"
+          ? "grid-cols-1 sm:grid-cols-3 lg:grid-cols-7"
+          : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7"
+      }`}>
+        {days.map((item) => (
+          <div
+            key={item.day}
+            className="bg-white rounded-xl p-3 shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col h-full"
+          >
+            <div className="flex justify-between items-start mb-2">
+              <span className="font-bold text-lg text-gray-700 leading-none">
+                {item.day}
+              </span>
+              <span
+                className={`text-[9px] px-2 py-0.5 rounded-full text-white font-bold uppercase ${item.badgeClass}`}
+              >
+                {item.type}
+              </span>
             </div>
-            <div className={`text-xs font-bold truncate leading-tight ${isAuto ? 'text-white' : 'text-gray-900'}`}>{eventInfo.event.title}</div>
-        </div>
-    );
+
+            {/* Platform Icons */}
+            <div className="flex gap-1.5 text-gray-300 mb-2">
+              <Facebook size={12} />
+              <Instagram size={12} />
+              <Twitter size={12} />
+              <Linkedin size={12} />
+              <Youtube size={12} />
+              <ThreadsIcon size={12} />
+            </div>
+
+            {/* Image from local folder */}
+            <img
+              src={item.image}
+              alt={`AI-generated social media post preview for day ${item.day}`}
+              className="w-full h-24 object-cover rounded-md mb-2 bg-gray-100"
+              loading="lazy"
+            />
+
+            <div className="flex-grow">
+              <p className="text-[11px] leading-tight text-gray-800 font-medium mb-1 line-clamp-2">
+                {item.caption}
+              </p>
+              <p className="text-[10px] text-orange-500 font-medium truncate">
+                {item.hashtags}
+              </p>
+            </div>
+
+            <div className="mt-3 pt-2 border-t border-gray-50 flex items-center text-gray-400 gap-1">
+              <Clock size={10} />
+              <span className="text-[10px] font-bold uppercase tracking-tighter">
+                {item.time}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
-export default Calendar;
-
+export default SocialMediaCalendar;
