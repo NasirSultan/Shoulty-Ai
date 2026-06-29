@@ -860,34 +860,122 @@ export default function PricingSection() {
             </div>
           </section>
 
-          {/* CAPABILITY GRID */}
+          {/* CAPABILITY MATRIX */}
           <section className="section">
-            <div className="sec-head">
-              <h2>What's included, <span className="acc">per platform</span></h2>
-              <p>Every plan unlocks the full capability set across all ten networks — post, schedule, analytics, media, and comments.</p>
+            <div style={{ textAlign: "center", marginBottom: "44px" }}>
+              {/* Badge */}
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}>
+                <span style={{
+                  display: "inline-flex", alignItems: "center", gap: "8px",
+                  padding: "6px 20px", borderRadius: "999px",
+                  background: "linear-gradient(135deg,#f97316,#ef4444)",
+                  color: "#fff", fontSize: "11px", fontWeight: 800,
+                  textTransform: "uppercase", letterSpacing: "0.1em",
+                }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+                  </svg>
+                  Platform Matrix
+                </span>
+              </div>
+              {/* Heading */}
+              <h2 style={{
+                fontSize: "clamp(28px,4.5vw,48px)", fontWeight: 800,
+                letterSpacing: "-0.025em", lineHeight: 1.08,
+                color: "#0f172a", marginBottom: "14px",
+              }}>
+                {"What's included, "}
+                <span style={{
+                  background: "linear-gradient(135deg,#f97316,#ef4444)",
+                  WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}>per platform</span>
+              </h2>
+              {/* Subtitle */}
+              <p style={{
+                color: "#64748b", fontSize: "clamp(14px,1.5vw,17px)",
+                maxWidth: "600px", margin: "0 auto", lineHeight: 1.6,
+              }}>
+                Every plan unlocks the full capability set across all ten networks — post, schedule, analytics, media, and comments.
+              </p>
             </div>
 
-            <div className="plat-grid">
-              {PLATFORMS.map((p, idx) => (
-                <div key={idx} className="pl">
-                  <div className="pl-head">
-                    <div className="pl-ico" style={{ background: p.bg }}>
-                      <svg viewBox="0 0 24 24" aria-hidden="true">{p.svg}</svg>
-                    </div>
-                    <div className="pl-name">{p.name}</div>
-                  </div>
-                  <div className="caps">
-                    {ORDER.map((cap) => (
-                      <span key={cap} className={`cap ${(p.caps as any)[cap] ? '' : 'off'}`}>{cap}</span>
+            <div style={{ overflowX: "auto", borderRadius: "16px", border: "1px solid #f1f1f1" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
+                <thead>
+                  <tr style={{ borderBottom: "2px solid #f5f5f5" }}>
+                    <th style={{ padding: "14px 18px", textAlign: "left", fontWeight: 700, color: "#888", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.08em", minWidth: "110px", background: "#fafafa" }}>
+                      Feature
+                    </th>
+                    {PLATFORMS.map((p) => (
+                      <th key={p.name} style={{ padding: "14px 10px", textAlign: "center", background: "#fafafa", minWidth: "72px" }}>
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px" }}>
+                          <div style={{
+                            width: 32, height: 32, borderRadius: 8, background: p.bg,
+                            display: "flex", alignItems: "center", justifyContent: "center",
+                            flexShrink: 0,
+                          }}>
+                            <svg viewBox="0 0 24 24" aria-hidden="true" style={{ width: 16, height: 16, fill: "#fff" }}>{p.svg}</svg>
+                          </div>
+                          <span style={{ fontWeight: 600, fontSize: "11px", color: "#444", whiteSpace: "nowrap" }}>{p.name}</span>
+                        </div>
+                      </th>
                     ))}
-                  </div>
-                </div>
-              ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {ORDER.map((cap, rowIdx) => {
+                    const labels: Record<string, { label: string; desc: string }> = {
+                      post:      { label: "Post",      desc: "Publish AI-generated posts" },
+                      schedule:  { label: "Schedule",  desc: "Auto-schedule to best times" },
+                      analytics: { label: "Analytics", desc: "Reach, clicks & engagement" },
+                      media:     { label: "Media",     desc: "Images, videos & carousels" },
+                      comments:  { label: "Comments",  desc: "Monitor & reply to comments" },
+                    };
+                    return (
+                      <tr key={cap} style={{ borderBottom: rowIdx < ORDER.length - 1 ? "1px solid #f5f5f5" : "none", background: rowIdx % 2 === 0 ? "#fff" : "#fafafa" }}>
+                        <td style={{ padding: "14px 18px" }}>
+                          <div style={{ fontWeight: 600, color: "#222", marginBottom: 2 }}>{labels[cap].label}</div>
+                          <div style={{ fontSize: "11px", color: "#999" }}>{labels[cap].desc}</div>
+                        </td>
+                        {PLATFORMS.map((p) => {
+                          const supported = !!(p.caps as any)[cap];
+                          return (
+                            <td key={p.name} style={{ textAlign: "center", padding: "14px 10px" }}>
+                              {supported ? (
+                                <span style={{
+                                  display: "inline-flex", alignItems: "center", justifyContent: "center",
+                                  width: 24, height: 24, borderRadius: "50%",
+                                  background: "linear-gradient(135deg,#f97316,#ef4444)",
+                                }}>
+                                  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 13, height: 13 }}>
+                                    <path d="M5 13l4 4L19 7" />
+                                  </svg>
+                                </span>
+                              ) : (
+                                <span style={{ color: "#d1d5db", fontSize: "18px", fontWeight: 300 }}>—</span>
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
 
-            <div className="legend">
-              <span><span className="sw"></span> Included</span>
-              <span><span className="sw off"></span> Not yet supported by platform API</span>
+            <div style={{ display: "flex", gap: "24px", marginTop: "16px", fontSize: "12px", color: "#888", justifyContent: "flex-end", flexWrap: "wrap" }}>
+              <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 18, height: 18, borderRadius: "50%", background: "linear-gradient(135deg,#f97316,#ef4444)" }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ width: 10, height: 10 }}><path d="M5 13l4 4L19 7"/></svg>
+                </span>
+                Included
+              </span>
+              <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <span style={{ color: "#d1d5db", fontSize: "16px" }}>—</span>
+                Not yet supported by platform API
+              </span>
             </div>
           </section>
 
