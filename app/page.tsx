@@ -222,6 +222,7 @@ export default function LandingPage() {
     const [libraryFilterTerm, setLibraryFilterTerm] = useState("");
     const [activeLibraryImageId, setActiveLibraryImageId] = useState<string | number | null>(null);
     const [libraryContentType, setLibraryContentType] = useState<"photos" | "reels">("photos");
+    const [showReelsComingSoon, setShowReelsComingSoon] = useState(false);
     const [showAllIndustries, setShowAllIndustries] = useState(false);
     const imageCacheRef = React.useRef<Record<string, ImageItem[]>>({});
     const imageFetchInFlightRef = React.useRef<Record<string, Promise<ImageItem[]>>>({});
@@ -862,7 +863,7 @@ const speeds = [120, 160, 110, 150, 130];
                     maskImage: "radial-gradient(ellipse 90% 80% at 50% 40%, black 30%, transparent 100%)"
                 }}></div>
 
-                <div className="relative z-10 w-full max-w-6xl mx-auto px-8 sm:px-12 py-20 grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+                <div className="relative z-10 w-full max-w-6xl mx-auto px-8 sm:px-12 pb-10 grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
                     {/* Left Content */}
                     <div className="flex flex-col gap-6">
                         {/* Pill Badge */}
@@ -1547,45 +1548,51 @@ const speeds = [120, 160, 110, 150, 130];
                     <div className="relative bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-orange-100 overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-orange-50/80 to-transparent rounded-full pointer-events-none"></div>
 
-                        {/* Top Controls */}
-                        <div className="flex flex-col gap-6 mb-8 sm:mb-10 relative z-10">
+                        {/* Top Controls — single row */}
+                        <div className="flex items-center gap-3 mb-8 sm:mb-10 relative z-10 flex-wrap">
                             {/* Tabs */}
-                            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-                                {[
-                                    { label: "Photos", value: "photos" as const },
-                                    { label: "Reels", value: "reels" as const },
-                                ].map((tab) => (
-                                    <button
-                                        key={tab.value}
-                                        onClick={() => {
-                                            setLibraryContentType(tab.value);
-                                            setActiveLibraryImageId(null);
-                                        }}
-                                        className={`whitespace-nowrap px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 ${
-                                            libraryContentType === tab.value
-                                                ? "bg-gradient-to-r from-orange-500 to-red-500 text-white"
-                                                : "bg-white text-gray-600 border border-gray-300 hover:border-orange-300 hover:text-orange-500"
-                                        }`}
-                                    >
-                                        {tab.label}
-                                    </button>
-                                ))}
-                            </div>
+                            <button
+                                onClick={() => { setLibraryContentType("photos"); setActiveLibraryImageId(null); }}
+                                className={`whitespace-nowrap px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 ${
+                                    libraryContentType === "photos"
+                                        ? "bg-gradient-to-r from-orange-500 to-red-500 text-white"
+                                        : "bg-white text-gray-600 border border-gray-300 hover:border-orange-300 hover:text-orange-500"
+                                }`}
+                            >
+                                Photos
+                            </button>
+                            <button
+                                onClick={() => setShowReelsComingSoon(true)}
+                                className="whitespace-nowrap px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 bg-white text-gray-600 border border-gray-300 hover:border-orange-300 hover:text-orange-500"
+                            >
+                                Reels
+                            </button>
 
-                            {/* Search + Dropdown */}
-                            <div className="flex flex-col sm:flex-row gap-4 items-center">
-                                <input
-                                    type="text"
-                                    placeholder="Search templates"
-                                    className="w-full px-4 py-2 rounded-xl bg-white text-gray-800 placeholder-gray-400 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
-                                    value={libraryFilterTerm}
-                                    onChange={(e) =>
-                                        setLibraryFilterTerm(e.target.value)
-                                    }
-                                />
+                            {/* Spacer pushes dropdown + refresh to right */}
+                            <div className="flex-1" />
 
-                                
+                            {/* Coming Soon Popup */}
+                            {showReelsComingSoon && (
+                                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setShowReelsComingSoon(false)}>
+                                    <div className="bg-white rounded-2xl shadow-2xl p-8 flex flex-col items-center gap-4 max-w-xs mx-4" onClick={(e) => e.stopPropagation()}>
+                                        <div className="w-14 h-14 rounded-full flex items-center justify-center text-3xl" style={{ background: "linear-gradient(135deg,#f97316,#ef4444)" }}>
+                                            🎬
+                                        </div>
+                                        <h3 className="text-xl font-bold text-gray-900">Coming Soon!</h3>
+                                        <p className="text-sm text-gray-500 text-center">Reels generation is under development. Stay tuned for this exciting feature!</p>
+                                        <button
+                                            onClick={() => setShowReelsComingSoon(false)}
+                                            className="mt-2 px-6 py-2 rounded-full text-sm font-semibold text-white"
+                                            style={{ background: "linear-gradient(135deg,#f97316,#ef4444)" }}
+                                        >
+                                            Got it
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
 
+                            {/* Industry Dropdown + Refresh on right */}
+                            <div className="flex items-center gap-3">
                             <select
                                 value={librarySelectedIndustry}
                                 // REPLACE WITH:

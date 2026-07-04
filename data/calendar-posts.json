@@ -1,3 +1,49 @@
 {
-  "posts": []
+  "posts": [
+    {
+      "id": 1783165195178,
+      "date": "2026-07-04T00:00:00.000Z",
+      "caption": "Believe in yourself and you will be unstoppable. 🌟🔥 #Motivation #Successdsfasdf",
+      "hashtags": [
+        "#Startup",
+        "#Entrepreneurship",
+        "#VentureCapital",
+        "#Founder",
+        "#TechStartup"
+      ],
+      "plats": [
+        "ig"
+      ],
+      "type": "image",
+      "timeStr": "5:45 PM",
+      "timesOptions": [
+        {
+          "t": "9:00 AM",
+          "e": "7.6%",
+          "best": false
+        },
+        {
+          "t": "12:30 PM",
+          "e": "8.2%",
+          "best": true
+        },
+        {
+          "t": "5:45 PM",
+          "e": "9.8%",
+          "best": true
+        },
+        {
+          "t": "8:30 PM",
+          "e": "7.1%",
+          "best": false
+        }
+      ],
+      "img": "/images/motivation.jpg",
+      "score": 92,
+      "status": "scheduled",
+      "reach": 0,
+      "engRate": "8.2%",
+      "isAI": true
+    }
+  ]
 }

@@ -11,6 +11,8 @@ interface Message {
     timestamp: Date;
 }
 
+import { API_ENDPOINTS } from "@/api/configApi";
+
 const STORAGE_KEY = "shoutly_chat_history";
 
 const INITIAL_MESSAGE: Message = {
@@ -39,6 +41,37 @@ function saveMessages(messages: Message[]) {
 
 function formatTime(date: Date) {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+}
+
+function formatMessage(text: string) {
+    // Split on numbered patterns like "1)" "2)" "1." "2." or "\n"
+    const lines = text
+        .replace(/([.!?])\s+(\d+[\)\.]\s)/g, "$1\n$2") // break before numbers mid-sentence
+        .split(/\n/)
+        .map((l) => l.trim())
+        .filter(Boolean);
+
+    if (lines.length <= 1) return <span>{text}</span>;
+
+    return (
+        <span>
+            {lines.map((line, i) => {
+                const isNumbered = /^\d+[\)\.]\s/.test(line);
+                return (
+                    <span key={i} className={`block ${isNumbered ? "mt-1" : i > 0 ? "mt-1" : ""}`}>
+                        {isNumbered ? (
+                            <span className="flex gap-1.5">
+                                <span className="font-bold text-orange-500 flex-shrink-0">
+                                    {line.match(/^\d+[\)\.]/)?.[0]}
+                                </span>
+                                <span>{line.replace(/^\d+[\)\.]\s*/, "")}</span>
+                            </span>
+                        ) : line}
+                    </span>
+                );
+            })}
+        </span>
+    );
 }
 
 export default function FloatingChatBot() {
@@ -88,7 +121,7 @@ export default function FloatingChatBot() {
             const controller = new AbortController();
             const timeout = setTimeout(() => controller.abort(), 12000);
 
-            const response = await fetch("/api/rag/chat", {
+            const response = await fetch(API_ENDPOINTS.ragChat, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ query: userMessage.content, topK: 5 }),
@@ -208,7 +241,12 @@ export default function FloatingChatBot() {
 
                     {/* ── Messages ── */}
                     <div className="flex-1 overflow-y-auto bg-white px-3 py-2.5 space-y-3">
-                        {messages.map((msg) => (
+                        {messages.filter((msg) => {
+                            // Hide the initial greeting once the user has sent at least one message
+                            const hasUserMessage = messages.some((m) => m.type === "user");
+                            if (hasUserMessage && msg.id === messages[0]?.id && msg.type === "bot") return false;
+                            return true;
+                        }).map((msg) => (
                             <div key={msg.id} className={`flex gap-1.5 ${msg.type === "user" ? "flex-row-reverse" : "flex-row"}`}>
                                 {/* Avatar */}
                                 {msg.type === "bot" && (
@@ -227,7 +265,7 @@ export default function FloatingChatBot() {
                                         }`}
                                         style={msg.type === "user" ? { background: "linear-gradient(135deg,#f97316,#ef4444)" } : {}}
                                     >
-                                        {msg.content}
+                                        {msg.type === "bot" ? formatMessage(msg.content) : msg.content}
                                     </div>
                                     <span className="text-[9px] text-gray-400 px-1">{formatTime(msg.timestamp)}</span>
                                 </div>
@@ -288,13 +326,13 @@ export default function FloatingChatBot() {
                 <button
                     onClick={() => setIsOpen(!isOpen)}
                     title={isOpen ? "Close chat" : "Chat with us"}
-                    className="w-14 h-14 rounded-full flex items-center justify-center text-white transition-all duration-200 hover:scale-110 active:scale-95"
+                    className="w-11 h-11 rounded-full flex items-center justify-center text-white transition-all duration-200 hover:scale-110 active:scale-95"
                     style={{
                         background: isOpen ? "#6b7280" : "linear-gradient(135deg,#f97316,#ef4444)",
                         boxShadow: isOpen ? "none" : "0 8px 24px rgba(249,115,22,0.4)",
                     }}
                 >
-                    {isOpen ? <FiX size={22} /> : <FiMessageCircle size={22} />}
+                    {isOpen ? <FiX size={18} /> : <FiMessageCircle size={18} />}
                 </button>
             </div>
         </div>

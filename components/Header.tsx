@@ -138,7 +138,7 @@ export default function Header() {
 
     return (
         <header className={`sticky top-0 z-50 bg-white transition-shadow duration-200${isScrolled ? " shadow-sm" : ""}`}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 h-12 sm:h-14 flex items-center justify-between">
                     {/* Logo */}
                     <div className="relative flex-shrink-0 w-24 h-8 sm:w-36 sm:h-12">
                         <a href="/">
