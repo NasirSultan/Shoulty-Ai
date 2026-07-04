@@ -1,10 +1,14 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { UserIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
-import { GoogleLogin, GoogleOAuthProvider, CredentialResponse } from "@react-oauth/google";
+import dynamic from "next/dynamic";
+import type { CredentialResponse } from "@react-oauth/google";
+
+const GoogleSignInButton = dynamic(() => import("@/components/GoogleSignInButton"), { ssr: false });
 import { registerUser, savePendingAuthFlow } from "@/api/authApi";
 
 type GoogleProfile = {
@@ -24,12 +28,14 @@ const decodeGoogleProfile = (credential: string): GoogleProfile | null => {
     }
 };
 
-function CreateAccountContent() {
+export default function CreateAccountPage() {
     const router = useRouter();
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => { setMounted(true); }, []);
 
     const showRegisterError = (message?: string) => {
         if (message === "Email already exists") {
@@ -124,13 +130,12 @@ function CreateAccountContent() {
                     Create Account
                 </h1>
 
-                {/* Google Sign Up Button */}
+                {/* Google Sign Up Button — loaded client-side only */}
                 <div className="w-full flex justify-center mb-6 md:mb-8 overflow-hidden">
                     <div className="w-full max-w-full flex justify-center">
-                        <GoogleLogin
+                        <GoogleSignInButton
                             onSuccess={handleGoogleSuccess}
                             onError={() => setError("Google sign-up failed. Please try again.")}
-                            width="320"
                             text="signup_with"
                         />
                     </div>
@@ -207,10 +212,3 @@ function CreateAccountContent() {
     );
 }
 
-export default function CreateAccountPage() {
-    return (
-        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}>
-            <CreateAccountContent />
-        </GoogleOAuthProvider>
-    );
-}

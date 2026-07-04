@@ -27,6 +27,7 @@ export interface GeneratedSavedPostChunk extends GeneratedPostChunk {
 export interface GeneratePostsRequest {
   subIndustryId: string;
   prompt: string;
+  industryId?: string;
 }
 
 export interface PromptOnlyImagesRequest {

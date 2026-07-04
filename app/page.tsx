@@ -636,13 +636,11 @@ export default function LandingPage() {
         const completedAttempts = new Set<number>();
         let lastStreamError: string | null = null;
 
-        const handleChunk = (chunk: Record<string, unknown>) => {
+        const handleChunk = (chunk: GeneratedPost & { post?: GeneratedPost }) => {
             console.log("[Stream] Chunk received:", JSON.stringify(chunk).slice(0, 300));
 
             // Normalise: API may return the post directly at root or nested under "post"
-            const rawPost =
-                (chunk.post as GeneratedPost | undefined) ??
-                (chunk.image ? (chunk as unknown as GeneratedPost) : undefined);
+            const rawPost: GeneratedPost = chunk.post ?? chunk;
 
             if (!rawPost?.image?.imageUrl) return;
 
@@ -1199,16 +1197,31 @@ const speeds = [120, 160, 110, 150, 130];
                                     <Image className="w-4 h-4" /> Create Photos
                                 </button>
                                 <button
-                                    onClick={() => setSelectedContent(selectedContent === "reels" ? null : "reels")}
-                                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 text-sm font-bold transition-all duration-200 ${
-                                        selectedContent === "reels"
-                                            ? "bg-gradient-to-r from-orange-500 to-red-500 border-transparent text-white"
-                                            : "bg-white border-slate-200 text-slate-600 hover:border-orange-400 hover:text-orange-500"
-                                    }`}
+                                    onClick={() => setShowReelsComingSoon(true)}
+                                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 text-sm font-bold transition-all duration-200 bg-white border-slate-200 text-slate-600 hover:border-orange-400 hover:text-orange-500"
                                 >
                                     <Film className="w-4 h-4" /> Create Reels
                                 </button>
                             </div>
+
+                            {showReelsComingSoon && (
+                                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setShowReelsComingSoon(false)}>
+                                    <div className="bg-white rounded-2xl shadow-2xl p-8 flex flex-col items-center gap-4 max-w-xs mx-4" onClick={(e) => e.stopPropagation()}>
+                                        <div className="w-14 h-14 rounded-full flex items-center justify-center text-3xl" style={{ background: "linear-gradient(135deg,#f97316,#ef4444)" }}>
+                                            🎬
+                                        </div>
+                                        <h3 className="text-xl font-bold text-gray-900">Coming Soon!</h3>
+                                        <p className="text-sm text-gray-500 text-center">Reels generation is under development. Stay tuned for this exciting feature!</p>
+                                        <button
+                                            onClick={() => setShowReelsComingSoon(false)}
+                                            className="mt-2 px-6 py-2 rounded-full text-sm font-semibold text-white"
+                                            style={{ background: "linear-gradient(135deg,#f97316,#ef4444)" }}
+                                        >
+                                            Got it
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
 
                             {/* CTA Button */}
                             <button

@@ -1,11 +1,14 @@
 "use client";
 
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
-import { GoogleLogin, GoogleOAuthProvider, CredentialResponse } from "@react-oauth/google";
+import type { CredentialResponse } from "@react-oauth/google";
+
+const GoogleSignInButton = dynamic(() => import("@/components/GoogleSignInButton"), { ssr: false });
 import { useEffect, useState } from "react";
 import { emailLogin, fetchProfile, googleLogin } from "@/api/authApi";
 
@@ -13,6 +16,8 @@ function SignInAccountContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const googleError = searchParams.get("error");
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => { setMounted(true); }, []);
     const nextPath = searchParams.get("next");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -147,13 +152,12 @@ function SignInAccountContent() {
                     Sign in to continue to your dashboard
                 </p>
 
-                {/* Google Sign-in */}
+                {/* Google Sign-in — loaded client-side only */}
                 <div className="w-full flex justify-center mb-6 overflow-hidden">
                     <div className="w-full max-w-full flex justify-center">
-                        <GoogleLogin
+                        <GoogleSignInButton
                             onSuccess={handleGoogleSuccess}
                             onError={() => console.error("Google login failed")}
-                            width="320"
                         />
                     </div>
                 </div>
@@ -242,10 +246,8 @@ function SignInAccountContent() {
 
 export default function SignInAccountPage() {
     return (
-        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}>
-            <Suspense fallback={null}>
-                <SignInAccountContent />
-            </Suspense>
-        </GoogleOAuthProvider>
+        <Suspense fallback={null}>
+            <SignInAccountContent />
+        </Suspense>
     );
 }

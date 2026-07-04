@@ -7,8 +7,8 @@ export default function ContactPage() {
             <div className="max-w-7xl mx-auto px-6 py-16">
                 {/* Header */}
                 <section className="mb-16">
-                    <span className="inline-block bg-gray-200 text-orange-500 px-4 py-1 rounded-full font-semibold text-sm mb-6">
-                        🌍 GLOBAL HEADQUARTERS
+                    <span className="inline-block bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-1.5 rounded-full font-bold uppercase tracking-widest text-xs shadow-lg shadow-orange-200 mb-6">
+                        🌍 Global Headquarters
                     </span>
 
                     <h1 className="text-5xl md:text-7xl font-black leading-tight uppercase">
@@ -27,7 +27,7 @@ export default function ContactPage() {
                         infrastructure for AI-powered brand growth.
                     </p>
 
-                    <div className="mt-6 flex items-center gap-3 bg-white border px-4 py-2 rounded-full w-fit shadow-sm">
+                    <div className="mt-6 flex items-center gap-3 bg-white border border-orange-100 px-4 py-2 rounded-full w-fit shadow-sm">
                         <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
                         <span className="text-sm">
                             24/7 Global Operations — Bangalore · New York · Singapore · London
@@ -41,7 +41,7 @@ export default function ContactPage() {
 
                     <div className="grid md:grid-cols-2 gap-8">
                         {/* Bangalore */}
-                        <div className="bg-white p-8 rounded-3xl border hover:border-orange-500 hover:bg-orange-50 transition">
+                        <div className="bg-white p-8 rounded-3xl border border-orange-100 shadow-xl shadow-orange-100/40 hover:border-orange-500 hover:bg-orange-50 hover:-translate-y-1 transition-all duration-300">
                             <h3 className="text-2xl font-bold mb-2 flex items-center gap-2">
                                 🇮🇳 Bangalore
                             </h3>
@@ -65,7 +65,7 @@ export default function ContactPage() {
                         </div>
 
                         {/* New York */}
-                        <div className="bg-white p-8 rounded-3xl border hover:border-orange-500 hover:bg-orange-50 transition">
+                        <div className="bg-white p-8 rounded-3xl border border-orange-100 shadow-xl shadow-orange-100/40 hover:border-orange-500 hover:bg-orange-50 hover:-translate-y-1 transition-all duration-300">
                             <h3 className="text-2xl font-bold mb-2 flex items-center gap-2">
                                 🇺🇸 New York
                             </h3>
@@ -84,7 +84,7 @@ export default function ContactPage() {
                 </section>
 
                 {/* Global Contact */}
-                <section className="bg-white border rounded-[32px] p-10 shadow-sm mb-20">
+                <section className="bg-white border border-orange-100 rounded-[32px] p-10 shadow-xl shadow-orange-100/40 mb-20">
                     <div className="grid md:grid-cols-3 gap-10">
                         {/* Emails */}
                         <div className="md:col-span-2">
@@ -160,7 +160,7 @@ export default function ContactPage() {
                 </section>
 
                 {/* Footer */}
-                <footer className="border-t mt-20 pt-8 flex flex-col md:flex-row justify-between gap-4 text-sm text-gray-500">
+                <footer className="border-t border-orange-100 mt-20 pt-8 flex flex-col md:flex-row justify-between gap-4 text-sm text-gray-500">
                     <div className="flex gap-6 flex-wrap">
                         <span className="text-orange-500 font-semibold">BANGALORE</span>
                         <span className="text-orange-500 font-semibold">NEW YORK</span>
@@ -186,7 +186,7 @@ function ContactRow({
     value: string;
 }) {
     return (
-        <div className="flex items-center gap-4 border-b pb-4">
+        <div className="flex items-center gap-4 border-b border-orange-100 pb-4">
             <div className="w-12 h-12 bg-orange-50 text-orange-500 rounded-xl flex items-center justify-center text-xl">
                 {icon}
             </div>
@@ -218,7 +218,7 @@ function CTA({
     highlight?: boolean;
 }) {
     return (
-        <div className="bg-white border rounded-3xl p-8 hover:shadow-xl transition">
+        <div className="bg-white border border-orange-100 rounded-3xl p-8 shadow-xl shadow-orange-100/40 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
             <div className="text-4xl mb-3">{icon}</div>
 
             <h3 className="text-xl font-bold mb-2">{title}</h3>
@@ -226,9 +226,9 @@ function CTA({
 
             <a
                 href={`mailto:${email}`}
-                className={`px-6 py-3 rounded-full font-semibold ${highlight
-                        ? "bg-black text-white hover:bg-orange-500"
-                        : "border hover:border-orange-500"
+                className={`px-6 py-3 rounded-full font-semibold transition-all duration-200 ${highlight
+                        ? "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:brightness-110 shadow-md shadow-orange-200"
+                        : "border border-slate-200 text-slate-600 hover:border-orange-300 hover:text-orange-500"
                     }`}
             >
                 {email}

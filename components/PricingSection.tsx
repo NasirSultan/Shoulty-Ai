@@ -996,7 +996,7 @@ export default function PricingSection() {
               <h3>Need volume, SSO or a custom SLA?</h3>
               <p>Talk to our team about enterprise deployments, dedicated infrastructure, custom integrations and procurement-ready contracts.</p>
             </div>
-            <a href="mailto:support@shoutlyai.com" className="cta">Contact Sales →</a>
+            <a href="/contact-us" className="cta">Contact Sales →</a>
           </section>
 
           <div className="trust">

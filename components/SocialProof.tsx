@@ -70,7 +70,7 @@ const FAQS = [
     id: 12, cat: "billing",
     q: "Can I manage multiple brands under one account?",
     a: `Our standard plan is built for one main brand with unlimited posting across all 10 platforms. If you need to manage multiple brands or need white-label capabilities for an agency, please contact our sales team for custom enterprise options.`,
-    cta: { text: "Contact Sales →", href: "mailto:support@shoutlyai.com" }
+    cta: { text: "Contact Sales →", href: "/contact-us" }
   },
   {
     id: 13, cat: "billing",
