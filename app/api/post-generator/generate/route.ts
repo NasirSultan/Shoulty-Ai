@@ -5,6 +5,7 @@ const UPSTREAM_FALLBACK = "https://backend.shoutlyai.com/api/generator/posts";
 
 export async function POST(request: Request) {
     const rawBody = await request.text();
+    const clientSignal = request.signal;
 
     const forward = async (url: string) => {
         return fetch(url, {
@@ -15,31 +16,24 @@ export async function POST(request: Request) {
                 "ngrok-skip-browser-warning": "true",
             },
             body: rawBody,
+            signal: clientSignal,
         });
     };
 
     let upstream: Response | null = null;
     let lastError: string = "";
 
-    // 4 attempts: 3 to Render, 1 to Fallback
     for (let i = 0; i < 4; i++) {
         const url = i === 3 ? UPSTREAM_FALLBACK : UPSTREAM_URL;
         try {
-            console.log(`[Proxy] Attempt ${i + 1}/4 to ${url}`);
             upstream = await forward(url);
-            
-            if (upstream.ok) {
-                console.log(`[Proxy] Success from ${url} (Status: ${upstream.status})`);
-                break;
-            }
-            
+            if (upstream.ok) break;
             lastError = `Status ${upstream.status}`;
-            if (upstream.status < 500) break; // Client error, don't retry
-        } catch (err) {
+            if (upstream.status < 500) break;
+        } catch (err: any) {
+            if (err?.name === "AbortError" || clientSignal.aborted) return new Response(null, { status: 499 });
             lastError = err instanceof Error ? err.message : "Fetch failed";
-            console.warn(`[Proxy] Attempt ${i + 1} failed: ${lastError}`);
         }
-        
         if (i < 3) await new Promise(r => setTimeout(r, 1000 * Math.pow(2, i)));
     }
 
@@ -49,10 +43,16 @@ export async function POST(request: Request) {
         });
     }
 
-    // Manual stream pipe to ensure compatibility and stability
     const { readable, writable } = new TransformStream();
-    upstream.body?.pipeTo(writable).catch(err => {
-        console.error("[Proxy] Stream pipe error:", err);
+    upstream.body?.pipeTo(writable).catch((err: any) => {
+        const msg: string = err?.message ?? String(err);
+        if (
+            err?.name === "AbortError" ||
+            msg.includes("ResponseAborted") ||
+            msg.includes("aborted") ||
+            msg.includes("ECONNRESET")
+        ) return;
+        console.error("[Proxy] Stream error:", msg);
     });
 
     return new Response(readable, {
