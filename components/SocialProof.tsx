@@ -166,11 +166,11 @@ export function FAQ() {
     const homeFAQs = FAQS.filter(f => [1, 2, 3, 4, 16, 21, 18, 23, 17, 26].includes(f.id));
 
     return (
-        <section className="py-24 bg-[#F8F9FD] dark:bg-gray-950">
+        <section className="py-24 bg-[#F8F9FD]">
             <div className="max-w-3xl mx-auto px-6">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white" style={{ fontFamily: "'Sora', sans-serif" }}>Everything you need to know</h2>
-                    <p className="mt-4 text-gray-600 dark:text-gray-400">
+                    <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900" style={{ fontFamily: "'Sora', sans-serif" }}>Everything you need to know</h2>
+                    <p className="mt-4 text-gray-600">
                         Still curious? <a href="/help-center" className="text-blue-600 font-semibold hover:underline">View all 28 FAQs →</a>
                     </p>
                 </div>
@@ -178,23 +178,23 @@ export function FAQ() {
                     {homeFAQs.map((faq) => {
                         const isOpen = openId === faq.id;
                         return (
-                            <div key={faq.id} className={`bg-white dark:bg-gray-900 border ${isOpen ? "border-blue-600" : "border-gray-200 dark:border-gray-800"} rounded-xl overflow-hidden transition-all duration-200`}>
+                            <div key={faq.id} className={`bg-white border ${isOpen ? "border-orange-500" : "border-gray-200"} rounded-xl overflow-hidden transition-all duration-200`}>
                                 <button
-                                    className="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+                                    className="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition"
                                     onClick={() => setOpenId(isOpen ? null : faq.id)}
                                 >
-                                    <span className="font-semibold text-gray-900 dark:text-white leading-relaxed">{faq.q}</span>
-                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-200 ${isOpen ? "bg-blue-600 text-white rotate-45" : "bg-gray-100 text-gray-500"}`}>
+                                    <span className="font-semibold text-gray-900 leading-relaxed">{faq.q}</span>
+                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-200 ${isOpen ? "bg-orange-500 text-white rotate-45" : "bg-gray-100 text-gray-500"}`}>
                                         +
                                     </div>
                                 </button>
                                 {isOpen && (
-                                    <div className="px-5 pb-5 border-t border-gray-50 dark:border-gray-800">
-                                        <div className="pt-4 text-sm text-gray-600 dark:text-gray-400 leading-relaxed whitespace-pre-line">
+                                    <div className="px-5 pb-5 border-t border-gray-100">
+                                        <div className="pt-4 text-sm text-gray-600 leading-relaxed whitespace-pre-line">
                                             {faq.a}
                                         </div>
                                         {faq.cta && (
-                                            <a href={faq.cta.href} className="inline-block mt-3 text-sm font-bold text-blue-600 hover:underline">
+                                            <a href={faq.cta.href} className="inline-block mt-3 text-sm font-bold text-orange-500 hover:underline">
                                                 {faq.cta.text}
                                             </a>
                                         )}
@@ -240,32 +240,32 @@ const testimonials = [
 
 export function Testimonials() {
     return (
-        <section className="py-24 bg-gray-50 dark:bg-gray-900 border-y border-gray-200 dark:border-gray-800">
+        <section className="py-24 bg-gray-50 border-y border-gray-200">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Loved by Creators</h2>
-                    <p className="mt-4 text-gray-600 dark:text-gray-400">Don&apos;t just take our word for it.</p>
+                    <h2 className="text-3xl font-bold text-gray-900">Loved by Creators</h2>
+                    <p className="mt-4 text-gray-600">Don&apos;t just take our word for it.</p>
                 </div>
                 <div className="grid md:grid-cols-3 gap-8">
                     {testimonials.map((t, i) => (
-                        <div key={i} className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <div key={i} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
                             <div className="flex items-center gap-1 mb-6 text-yellow-400">
                                 {[...Array(5)].map((_, i) => (
                                     <svg key={i} className="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
                                 ))}
                             </div>
-                            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6 italic">&quot;{t.quote}&quot;</p>
+                            <p className="text-lg text-gray-700 mb-6 italic">&quot;{t.quote}&quot;</p>
                             <div className="flex items-center gap-4">
                                 <div className="relative w-12 h-12 rounded-full overflow-hidden">
-                                    <Image 
-                                        src={t.avatar} 
-                                        alt={t.author} 
+                                    <Image
+                                        src={t.avatar}
+                                        alt={t.author}
                                         fill
-                                        className="object-cover" 
+                                        className="object-cover"
                                     />
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-gray-900 dark:text-white">{t.author}</h4>
+                                    <h4 className="font-bold text-gray-900">{t.author}</h4>
                                     <p className="text-sm text-gray-500">{t.role}</p>
                                 </div>
                             </div>
