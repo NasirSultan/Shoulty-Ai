@@ -6,8 +6,11 @@ import Link from "next/link";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import ShoutlyLogo from "../common/ShoutlyLogo";
 import AuthBackground from "./AuthBackground";
-import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
+import dynamic from "next/dynamic";
+import type { CredentialResponse } from "@react-oauth/google";
 import { emailLogin, googleLogin } from "@/api/authApi";
+
+const GoogleSignInButton = dynamic(() => import("@/components/GoogleSignInButton"), { ssr: false });
 
 export default function SignInForm() {
     const router = useRouter();
@@ -85,10 +88,9 @@ export default function SignInForm() {
 
                     {/* Google Login */}
                     <div className="w-full flex justify-center mb-8">
-                        <GoogleLogin
+                        <GoogleSignInButton
                             onSuccess={handleGoogleSuccess}
                             onError={() => console.error("Google login failed")}
-                            width="400"
                         />
                     </div>
 

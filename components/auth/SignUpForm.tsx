@@ -4,7 +4,10 @@ import React, { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
-import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
+import dynamic from "next/dynamic";
+import type { CredentialResponse } from "@react-oauth/google";
+
+const GoogleSignInButton = dynamic(() => import("@/components/GoogleSignInButton"), { ssr: false });
 import ShoutlyLogo from "../common/ShoutlyLogo";
 import AuthBackground from "./AuthBackground";
 
@@ -136,10 +139,9 @@ export default function SignUpForm() {
 
                     {/* Google Login */}
                     <div className="w-full flex justify-center mb-8">
-                        <GoogleLogin
+                        <GoogleSignInButton
                             onSuccess={handleGoogleSuccess}
                             onError={() => setError("Google sign-up failed. Please try again.")}
-                            width="400"
                             text="signup_with"
                         />
                     </div>
