@@ -8,18 +8,11 @@ export default function Providers({
 }: {
     children: React.ReactNode;
 }) {
-    const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-    const content = (
-        <SessionProvider refetchOnWindowFocus={false}>{children}</SessionProvider>
-    );
-
-    if (!googleClientId) {
-        return content;
-    }
+    const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
 
     return (
         <GoogleOAuthProvider clientId={googleClientId}>
-            {content}
+            <SessionProvider refetchOnWindowFocus={false}>{children}</SessionProvider>
         </GoogleOAuthProvider>
     );
 }
