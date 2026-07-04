@@ -7,10 +7,10 @@ const aspectRatioToSize: Record<string, string> = {
 };
 
 const BACKEND_FALLBACK_IMAGES_URL =
-    "https://ai-shoutly-backend.onrender.com/api/display-images";
+    "https://backend.shoutlyai.com/api/display-images";
 const BACKEND_GENERATE_URLS = [
-    "https://ai-shoutly-backend.onrender.com/api/gemeini-image/generate",
-    "https://ai-shoutly-backend.onrender.com/api/gemini-image/generate",
+    "https://backend.shoutlyai.com/api/gemeini-image/generate",
+    "https://backend.shoutlyai.com/api/gemini-image/generate",
     "https://backend.shoutlyai.com/api/gemeini-image/generate",
     "https://backend.shoutlyai.com/api/gemini-image/generate",
 ];

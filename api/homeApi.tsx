@@ -78,10 +78,11 @@ export const fetchImages = async (subIndustryId?: string | null) => {
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "true",
             },
             cache: "no-store",
         });
-        
+
         if (!res.ok) {
             const errorText = await res.text().catch(() => "Unknown error");
             console.error(`❌ API Error ${res.status}:`, errorText);
@@ -91,7 +92,7 @@ export const fetchImages = async (subIndustryId?: string | null) => {
             }
             throw new Error(`HTTP error! status: ${res.status} - ${errorText}`);
         }
-        
+
         const data = await res.json();
         console.log("📸 Images response:", data);
         const images = Array.isArray(data)
@@ -137,7 +138,10 @@ export const fetchIndustries = async () => {
             try {
                 res = await fetch(url, {
                     signal: controller.signal,
-                    cache: "force-cache",
+                    headers: {
+                        "ngrok-skip-browser-warning": "true",
+                        "Content-Type": "application/json",
+                    },
                 });
             } finally {
                 clearTimeout(timeoutId);

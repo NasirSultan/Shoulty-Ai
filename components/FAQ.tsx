@@ -29,8 +29,7 @@ export const FAQS: FAQItem[] = [
   {
     id: 2, cat: "start",
     q: "Is there a free trial? Do I need a credit card?",
-    a: `Yes — we offer a 14-day free trial with full access to all features. No credit card required. You get to experience the full power of ShoutlyAI: AI-generated posts, scheduling across 10 platforms, and unified analytics. Upgrade to the paid plan when you're ready.`,
-    cta: { text: "Start free →", href: "/signup" }
+    a: `No, we currently do not offer a free trial. You can choose the plan that best fits your needs and get started immediately. There are no hidden charges, and you'll have instant access to ShoutlyAI's powerful features, including AI-generated content, scheduling across 10+ social media platforms, and unified analytics.\n\nIf you're unsure which plan is right for you, our team is happy to help you choose the best option for your business.`,
   },
   {
     id: 3, cat: "start",
@@ -379,15 +378,12 @@ export function PricingFAQ() {
 
 export function HomepageFAQ() {
   const [openId, setOpenId] = useState<number | null>(null);
-  const homeFAQs = FAQS.filter(f => [1, 2, 3, 4, 16, 21, 18, 23, 17, 26].includes(f.id));
+  const homeFAQs = FAQS.filter(f => [1, 2, 3, 4, 16].includes(f.id));
 
   return (
     <div style={{ background: "#F8F9FD", padding: "64px 20px" }}>
       <div style={{ maxWidth: 720, margin: "0 auto" }}>
-        <h2 style={{ fontFamily: "'Sora',system-ui,sans-serif", fontSize: "clamp(22px,3.5vw,36px)", fontWeight: 800, color: "#111827", textAlign: "center", marginBottom: 6 }}>Everything you need to know</h2>
-        <p style={{ fontSize: 14, color: "#6B7280", textAlign: "center", marginBottom: 36, lineHeight: 1.6 }}>
-          Still curious? <a href="/help-center" style={{ color: "#2563EB", fontWeight: 600, textDecoration: "none" }}>View all 28 FAQs →</a>
-        </p>
+        <h2 style={{ fontFamily: "'Sora',system-ui,sans-serif", fontSize: "clamp(22px,3.5vw,36px)", fontWeight: 800, color: "#111827", textAlign: "center", marginBottom: 36 }}>Everything you need to know</h2>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {homeFAQs.map((faq: FAQItem) => {
             const isOpen = openId === faq.id;
@@ -408,7 +404,7 @@ export function HomepageFAQ() {
           })}
         </div>
         <div style={{ textAlign: "center", marginTop: 32 }}>
-          <a href="/help-center" style={{ display: "inline-block", border: "1.5px solid #2563EB", color: "#2563EB", borderRadius: 10, padding: "12px 28px", fontSize: 13, fontWeight: 700, textDecoration: "none", fontFamily: "'Sora',system-ui,sans-serif" }}>View all 28 FAQs →</a>
+          <a href="/help-center" style={{ display: "inline-block", border: "1.5px solid #2563EB", color: "#2563EB", borderRadius: 10, padding: "12px 28px", fontSize: 13, fontWeight: 700, textDecoration: "none", fontFamily: "'Sora',system-ui,sans-serif" }}>View all FAQs →</a>
         </div>
       </div>
     </div>

@@ -18,7 +18,7 @@ const STORAGE_KEY = "shoutly_chat_history";
 const INITIAL_MESSAGE: Message = {
     id: "1",
     type: "bot",
-    content: "👋 Hi! I'm ShoutlyAI's assistant. Ask me anything about pricing, features, or getting started!",
+    content: "👋 Welcome to Shoutly AI\nCreate • Schedule • Publish • Grow\nI can help you with:\n💰 Pricing & Plans\n🚀 Product Features\n📱 Platform Integrations\n🎨 AI Content Creation\n📅 Book a Demo\n❓ Product Support\nWhat would you like to explore?",
     timestamp: new Date(),
 };
 
@@ -123,7 +123,7 @@ export default function FloatingChatBot() {
 
             const response = await fetch(API_ENDPOINTS.ragChat, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", "ngrok-skip-browser-warning": "true" },
                 body: JSON.stringify({ query: userMessage.content, topK: 5 }),
                 signal: controller.signal,
             });
@@ -173,10 +173,8 @@ export default function FloatingChatBot() {
             {/* Chat Window */}
             {isOpen && (
                 <div
-                    className="mb-4 flex flex-col rounded-2xl overflow-hidden border border-gray-100"
+                    className="mb-4 flex flex-col rounded-2xl overflow-hidden border border-gray-100 w-[320px] max-w-[calc(100vw-2rem)] h-[440px] max-h-[70vh]"
                     style={{
-                        width: 320,
-                        height: 440,
                         boxShadow: "0 24px 60px rgba(0,0,0,0.15), 0 8px 20px rgba(249,115,22,0.08)",
                         animation: "chatSlideUp 0.25s ease-out",
                     }}

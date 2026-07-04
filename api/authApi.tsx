@@ -1,6 +1,6 @@
 // api/authApi.tsx
 import axios from "axios";
-import { SHOUTLY_API_BASE_URL, API_ENDPOINTS } from "./configApi";
+import { API_BASE_URL, API_ENDPOINTS } from "./configApi";
 
 type PendingAuthFlow = {
     email: string;
@@ -13,7 +13,7 @@ const PENDING_AUTH_KEY = "shoutly_pending_auth";
 
 // Axios instance with base URL — token is attached automatically via interceptor
 const shoutlyClient = axios.create({
-    baseURL: SHOUTLY_API_BASE_URL,
+    baseURL: API_BASE_URL,
 });
 
 shoutlyClient.interceptors.request.use((config) => {

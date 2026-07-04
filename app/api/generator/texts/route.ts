@@ -1,7 +1,7 @@
 export const runtime = "nodejs";
 
 const UPSTREAM_URLS = [
-    "https://ai-shoutly-backend.onrender.com/api/generator/texts",
+    "https://backend.shoutlyai.com/api/generator/texts",
     "https://backend.shoutlyai.com/api/generator/texts",
 ];
 

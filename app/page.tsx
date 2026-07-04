@@ -1,16 +1,16 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
 import { SparklesIcon } from "@heroicons/react/24/outline";
-import { RefreshCcw } from "lucide-react";
+import { RefreshCcw, Image, Film, Zap, Lock } from "lucide-react";
 import PricingSection from "@/components/PricingSection";
 import Calender from "@/components/calender";
 import { fetchImages, fetchIndustries } from "@/api/homeApi";
+import { API_ENDPOINTS } from "@/api/configApi";
 import {
     streamGeneratePosts,
     generatePromptOnlyImages,
     GeneratedPost,
 } from "@/api/postGeneratorApi";
-import { streamGenerateTexts } from "@/api/textGeneratorApi";
 import PostPopup from "@/components/PostPopup";
 import { DEMO_POSTS } from "@/data/demo-posts";
 import { Testimonials } from "@/components/SocialProof";
@@ -43,7 +43,12 @@ interface Industry {
     subIndustries: SubIndustry[];
 }
 
-const MIN_BRAND_DESCRIPTION_CHARS = 15;
+const MIN_BRAND_DESCRIPTION_CHARS = 30;
+const MAX_BRAND_DESCRIPTION_CHARS = 300;
+const MAX_REGENERATIONS_PER_DAY = 3;
+const REGEN_STORAGE_KEY = "shoutly_regen_limit";
+const GENERATE_STORAGE_KEY = "shoutly_generate_limit";
+const GENERATED_POSTS_KEY = "shoutly_generated_posts";
 
 const WHO_WE_HELP = [
     { key: "Health", emoji: "💪", title: "Health & Fitness", visible: [{ href: "/GYM.html", label: "Gym / Fitness Studio" }, { href: "/yoga-centre.html", label: "Yoga Centre" }, { href: "/zumba-aerobic-studio.html", label: "Zumba / Aerobic Studio" }, { href: "/Crossfit_Personal-Trainer.html", label: "CrossFit / Personal Trainer" }], extra: [{ href: "/physiotheraphy.html", label: "Physiotherapy Clinic" }, { href: "/Dieticians.html", label: "Dietician / Nutritionist" }, { href: "/wellness-supplements.html", label: "Wellness & Supplements" }, { href: "/weight-loss-body-transformation.html", label: "Weight Loss / Body Transformation" }] },
@@ -113,19 +118,22 @@ const AnimatedTextarea = React.memo(function AnimatedTextarea({
     value,
     onChange,
     minLength,
+    maxLength,
     className,
 }: {
     value: string;
     onChange: (v: string) => void;
     minLength?: number;
+    maxLength?: number;
     className?: string;
 }) {
     const placeholder = useTypingEffect(TYPING_PLACEHOLDERS);
     return (
         <textarea
             value={value}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(e) => onChange(e.target.value.slice(0, maxLength))}
             minLength={minLength}
+            maxLength={maxLength}
             className={className}
             placeholder={placeholder}
         />
@@ -207,6 +215,8 @@ export default function LandingPage() {
     const [generatePendingSubIndustry, setGeneratePendingSubIndustry] =
         useState<string | null>(null);
     const [brandDescription, setBrandDescription] = useState("");
+    const [regenCount, setRegenCount] = useState<number>(0);
+    const [hasGeneratedToday, setHasGeneratedToday] = useState<boolean>(false);
 
     const [libraryShowSubIndustries, setLibraryShowSubIndustries] =
         useState(false);
@@ -229,6 +239,15 @@ export default function LandingPage() {
 
     const [industries, setIndustries] = useState<Industry[]>([]);
     const [loadingIndustries, setLoadingIndustries] = useState(true);
+    const handleSelectGenerateIndustry = (id: string) => {
+        setGenerateSelectedIndustry(id);
+        setGenerateSelectedSubIndustry(null);
+        setGeneratePendingSubIndustry(null);
+        const selected = industries.find(
+            (ind: Industry) => String(ind.id) === String(id),
+        );
+        setGenerateSubIndustries(selected?.subIndustries || []);
+    };
     const [selectedContent, setSelectedContent] = useState<"photos" | "reels" | null>(null);
     const [isRegeneratingBrand, setIsRegeneratingBrand] = useState(false);
     const [regenerateBrandError, setRegenerateBrandError] = useState<string | null>(null);
@@ -312,6 +331,25 @@ export default function LandingPage() {
             true,
         );
     };
+    useEffect(() => {
+        const today = new Date().toDateString();
+        try {
+            const stored = JSON.parse(localStorage.getItem(REGEN_STORAGE_KEY) || "{}");
+            setRegenCount(stored.date === today ? (stored.count ?? 0) : 0);
+        } catch { /* ignore */ }
+        try {
+            const genStored = JSON.parse(localStorage.getItem(GENERATE_STORAGE_KEY) || "{}");
+            if (genStored.date === today) {
+                setHasGeneratedToday(true);
+                // Restore previously generated posts so user can see them
+                const savedPosts = JSON.parse(localStorage.getItem(GENERATED_POSTS_KEY) || "[]");
+                if (Array.isArray(savedPosts) && savedPosts.length > 0) {
+                    setStreamedPosts(savedPosts);
+                }
+            }
+        } catch { /* ignore */ }
+    }, []);
+
     useEffect(() => {
         const loadGenerateImages = async () => {
             if (!generateSelectedSubIndustry) return;
@@ -440,6 +478,11 @@ export default function LandingPage() {
     };
 
     const handleGenerateClick = async () => {
+        if (hasGeneratedToday) {
+            setGenerateValidationError("You have already generated content today. Come back tomorrow!");
+            return;
+        }
+
         const missing = getGenerateMissingFields();
         if (missing.length > 0) {
             setGenerateValidationError(`Please select/fill: ${missing.join(", ")}.`);
@@ -476,98 +519,86 @@ export default function LandingPage() {
 
         setGenerateSubIndustries(selectedIndustryObj?.subIndustries || []);
         setGenerateSelectedSubIndustry(effectiveSubIndustryId);
+
+        // Mark as generated for today
+        setHasGeneratedToday(true);
+        try {
+            localStorage.setItem(GENERATE_STORAGE_KEY, JSON.stringify({ date: new Date().toDateString() }));
+        } catch { /* ignore */ }
+
         scrollToSectionInOneSecond("gcontent");
         await generateStreamPreview(effectiveIndustryId, effectiveSubIndustryId);
     };
 
     const handleRegenerateBrandDescription = async () => {
         if (isRegeneratingBrand) return;
+        if (regenCount >= MAX_REGENERATIONS_PER_DAY) {
+            setRegenerateBrandError(`Daily limit reached. You can regenerate ${MAX_REGENERATIONS_PER_DAY} times per day. Try again tomorrow.`);
+            return;
+        }
+
+        const newCount = regenCount + 1;
+        setRegenCount(newCount);
+        try {
+            localStorage.setItem(REGEN_STORAGE_KEY, JSON.stringify({ date: new Date().toDateString(), count: newCount }));
+        } catch {}
 
         setRegenerateBrandError(null);
         setIsRegeneratingBrand(true);
+        setBrandDescription("");
 
         regenerateBrandAbortRef.current?.abort();
         const controller = new AbortController();
         regenerateBrandAbortRef.current = controller;
 
-        const selectedIndustryObj = industries.find(
-            (industry: Industry) => String(industry.id) === String(generateSelectedIndustry),
-        );
-        const selectedSubIndustryObj = selectedIndustryObj?.subIndustries.find(
-            (sub: SubIndustry) => String(sub.id) === String(generatePendingSubIndustry),
-        );
-
-        const normalizedBrandContext = brandDescription.replace(/\s+/g, " ").trim();
-        const fullPrompt = [
-            "Generate one concise brand description for social media content planning.",
-            selectedIndustryObj?.name ? `Industry: ${selectedIndustryObj.name}.` : "",
-            selectedSubIndustryObj?.name ? `Sub-industry: ${selectedSubIndustryObj.name}.` : "",
-            selectedContent ? `Content preference: ${selectedContent}.` : "",
-            normalizedBrandContext
-                ? `Use this as context and improve it: \"${normalizedBrandContext.slice(0, 260)}\".`
-                : "No prior description provided by user.",
-            `Length: ${MIN_BRAND_DESCRIPTION_CHARS} to 220 characters.`,
-            "Tone: clear, marketing-ready, brand-safe.",
-            "Return plain text only.",
-        ]
-            .filter(Boolean)
-            .join(" ");
-
-        const compactPrompt = [
-            "Write one brand description.",
-            selectedIndustryObj?.name ? `Industry: ${selectedIndustryObj.name}.` : "",
-            selectedSubIndustryObj?.name ? `Sub-industry: ${selectedSubIndustryObj.name}.` : "",
-            `Length: ${MIN_BRAND_DESCRIPTION_CHARS} to 180 characters.`,
-            "Return plain text only.",
-        ]
-            .filter(Boolean)
-            .join(" ");
-
-        const runPrompt = async (promptText: string) => {
-            const byIndex = new Map<number, string>();
-
-            await streamGenerateTexts(
-                { prompt: promptText },
-                {
-                    signal: controller.signal,
-                    onChunk: (chunk) => {
-                        const text = typeof chunk?.text === "string" ? chunk.text.trim() : "";
-                        if (!text) return;
-
-                        byIndex.set(chunk.index, text);
-                    },
-                },
-            );
-
-            const finalText = [...byIndex.entries()].sort((a, b) => a[0] - b[0])[0]?.[1];
-            if (!finalText) {
-                throw new Error("No regenerated brand description received.");
-            }
-
-            return finalText.slice(0, 220);
-        };
-
         try {
-            let regenerated: string;
-            try {
-                regenerated = await runPrompt(fullPrompt);
-            } catch (firstError) {
-                if (firstError instanceof Error && firstError.name === "AbortError") {
-                    throw firstError;
+            const response = await fetch(API_ENDPOINTS.textGeneratorGenerateDirect, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "ngrok-skip-browser-warning": "true" },
+                body: JSON.stringify({ prompt: brandDescription.trim() || "Generate a brand description" }),
+                signal: controller.signal,
+            });
+
+            if (!response.ok || !response.body) {
+                throw new Error(`Request failed (${response.status})`);
+            }
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = "";
+            let accumulated = "";
+
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split("\n");
+                buffer = lines.pop() ?? "";
+
+                for (const line of lines) {
+                    const trimmed = line.trim();
+                    if (!trimmed.startsWith("data:")) continue;
+                    const raw = trimmed.slice(5).trim();
+                    if (!raw || raw === "[DONE]") continue;
+                    try {
+                        const parsed = JSON.parse(raw) as { text?: string; done?: boolean };
+                        if (parsed.done) break;
+                        if (parsed.text) {
+                            accumulated += parsed.text;
+                            setBrandDescription(accumulated);
+                        }
+                    } catch {
+                        // skip malformed chunk
+                    }
                 }
-                regenerated = await runPrompt(compactPrompt);
             }
 
-            setBrandDescription(regenerated);
+            if (!accumulated) throw new Error("No text received from API.");
         } catch (error) {
-            if (error instanceof Error && error.name === "AbortError") {
-                return;
-            }
-
+            if (error instanceof Error && error.name === "AbortError") return;
             setRegenerateBrandError(
-                error instanceof Error
-                    ? error.message
-                    : "Could not regenerate brand description. Please try again.",
+                error instanceof Error ? error.message : "Could not regenerate. Please try again.",
             );
         } finally {
             if (regenerateBrandAbortRef.current === controller) {
@@ -597,30 +628,27 @@ export default function LandingPage() {
         setStreamError(null);
 
         const requestBody = {
-            industryId: String(effectiveIndustryId),
             subIndustryId: String(effectiveSubIndustryId),
             prompt: brandDescription.trim(),
         };
 
-        // Collect LLM (AI) posts using up to 2 stream attempts.
-        // Running attempts sequentially avoids backend overload from simultaneous requests.
-        const collectedAI: GeneratedPost[] = [];
+        const collectedPosts: GeneratedPost[] = [];
         const completedAttempts = new Set<number>();
         let lastStreamError: string | null = null;
 
-        const handleChunk = (chunk: { post: GeneratedPost }) => {
-            // Only collect LLM (AI) posts — skip DB posts
-            if (chunk.post?.source === "DB") {
-                console.log("[Stream] Skipping DB post...");
-                return;
-            }
-            
-            collectedAI.push(chunk.post);
-            console.log(`[Stream] AI post collected (${collectedAI.length}/4): hasImage=${!!chunk.post?.image?.imageUrl}`);
-            setStreamedPosts([...collectedAI]);
-            
-            if (collectedAI.length >= 4) {
-                console.log("[Stream] Got 4 AI posts, aborting both streams");
+        const handleChunk = (chunk: Record<string, unknown>) => {
+            console.log("[Stream] Chunk received:", JSON.stringify(chunk).slice(0, 300));
+
+            // Normalise: API may return the post directly at root or nested under "post"
+            const rawPost =
+                (chunk.post as GeneratedPost | undefined) ??
+                (chunk.image ? (chunk as unknown as GeneratedPost) : undefined);
+
+            if (!rawPost?.image?.imageUrl) return;
+
+            collectedPosts.push(rawPost);
+            setStreamedPosts([...collectedPosts]);
+            if (collectedPosts.length >= 7) {
                 controller.abort();
             }
         };
@@ -628,12 +656,7 @@ export default function LandingPage() {
         const markStreamDone = (attempt: number) => {
             if (completedAttempts.has(attempt)) return;
             completedAttempts.add(attempt);
-            const completedStreams = completedAttempts.size;
-            console.log(`[Stream] Stream done (${completedStreams}/2), AI posts so far: ${collectedAI.length}`);
-            if (completedStreams >= 2) {
-                console.log(`[Stream] Both streams done. Final AI posts: ${collectedAI.length}`);
-                setStreamLoading(false);
-            }
+            setStreamLoading(false);
         };
 
         const runStream = async (attempt: number) => {
@@ -658,11 +681,8 @@ export default function LandingPage() {
         };
 
         await runStream(1);
-        if (!controller.signal.aborted && collectedAI.length < 4) {
-            await runStream(2);
-        }
 
-        if (collectedAI.length > 0) {
+        if (collectedPosts.length > 0) {
             setStreamError(null);
         } else {
             const fallbackPrompt = brandDescription.trim() || "Generate social media post ideas for a business";
@@ -707,7 +727,13 @@ export default function LandingPage() {
             }
         }
 
-        console.log(`[Stream] All settled. Final AI posts: ${collectedAI.length}`);
+        console.log(`[Stream] All settled. Final AI posts: ${collectedPosts.length}`);
+        // Persist generated posts so they can be restored if the user revisits today
+        if (collectedPosts.length > 0) {
+            try {
+                localStorage.setItem(GENERATED_POSTS_KEY, JSON.stringify(collectedPosts));
+            } catch { /* ignore quota errors */ }
+        }
         setStreamLoading(false);
     };
     useEffect(() => {
@@ -899,15 +925,15 @@ const speeds = [120, 160, 110, 150, 130];
 
                     {/* Right - Mosaic Gallery with Perfectly Matched Labels */}
 <div className="relative">
-  <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur p-4" style={{height: "480px"}}>
+  <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur p-4 h-[340px] sm:h-[400px] lg:h-[480px]">
     {/* Badge */}
-    <div className="w-max absolute top-4 left-1/2 -translate-x-1/2 z-20 px-4 py-2 rounded-full bg-slate-900/80 border border-white/10 backdrop-blur flex items-center justify-center gap-2 text-xs font-bold text-slate-300 whitespace-nowrap">
-      <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+    <div className="w-max max-w-[90%] absolute top-4 left-1/2 -translate-x-1/2 z-20 px-3 sm:px-4 py-2 rounded-full bg-slate-900/80 border border-white/10 backdrop-blur flex items-center justify-center gap-2 text-[10px] sm:text-xs font-bold text-slate-300 whitespace-nowrap overflow-hidden text-ellipsis">
+      <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shrink-0"></span>
       155+ Industries • Authentic Matching Photos
     </div>
 
     {/* Mosaic Grid */}
-    <div className="grid grid-cols-5 gap-1 h-full overflow-hidden" style={{
+    <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-1 h-full overflow-hidden" style={{
       WebkitMaskImage: "linear-gradient(180deg, transparent 0%, black 8%, black 90%, transparent 100%)",
       maskImage: "linear-gradient(180deg, transparent 0%, black 8%, black 90%, transparent 100%)"
     }}>
@@ -919,20 +945,22 @@ const speeds = [120, 160, 110, 150, 130];
         const allItems = [...columnItems, ...columnItems, ...columnItems];
         const direction = directions[colIndex];
         const speed = speeds[colIndex];
-        
+        const columnVisibility =
+          colIndex === 3 ? "hidden sm:flex" : colIndex === 4 ? "hidden lg:flex" : "flex";
+
         return (
-          <div 
-            key={colIndex} 
-            className="flex flex-col gap-1"
+          <div
+            key={colIndex}
+            className={`${columnVisibility} flex-col gap-1`}
             style={{
               animation: `${direction === 'scrollUp' ? 'scrollUp' : 'scrollDown'} ${speed}s linear infinite`,
             }}
           >
             {allItems.map((item, idx) => (
-              <div 
-                key={`${colIndex}-${idx}`} 
-                className="relative flex-shrink-0 rounded-lg overflow-hidden border border-white/10 hover:border-white/30 hover:scale-110 transition-all cursor-pointer group"
-                style={{height: "90px", zIndex: "auto"}}
+              <div
+                key={`${colIndex}-${idx}`}
+                className="relative flex-shrink-0 rounded-lg overflow-hidden border border-white/10 hover:border-white/30 hover:scale-110 transition-all cursor-pointer group h-[60px] sm:h-[75px] lg:h-[90px]"
+                style={{zIndex: "auto"}}
               >
                 <img 
                   src={item.url} 
@@ -1006,20 +1034,8 @@ const speeds = [120, 160, 110, 150, 130];
                             <select
                                 value={generateSelectedIndustry}
                                 // REPLACE WITH:
-                                onChange={(e) => {
-                                    const id = e.target.value;
-                                    setGenerateSelectedIndustry(id);
-                                    setGenerateSelectedSubIndustry(null);
-                                    setGeneratePendingSubIndustry(null);
-                                    const selected = industries.find(
-                                        (ind: Industry) =>
-                                            String(ind.id) === String(id),
-                                    );
-                                    setGenerateSubIndustries(
-                                        selected?.subIndustries || [],
-                                    );
-                                }}
-                                className="w-full mb-6 sm:mb-8 px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm sm:text-base font-medium text-slate-700"
+                                onChange={(e) => handleSelectGenerateIndustry(e.target.value)}
+                                className="w-full mb-4 px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm sm:text-base font-medium text-slate-700"
                             >
                                 <option value="">Choose your industry</option>
                                 {loadingIndustries ? (
@@ -1036,6 +1052,42 @@ const speeds = [120, 160, 110, 150, 130];
                                 )}
                             </select>
 
+                            {!loadingIndustries && industries.length > 0 && !generateSelectedIndustry && (
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
+                                    {industries.slice(0, 6).map((industry: Industry, i) => {
+                                        const isActive = String(generateSelectedIndustry) === String(industry.id);
+                                        return (
+                                            <div
+                                                key={industry.id}
+                                                onClick={() => handleSelectGenerateIndustry(String(industry.id))}
+                                                className={`group cursor-pointer relative overflow-hidden rounded-2xl p-4 border-2 transition-all duration-200 flex flex-col items-center gap-2 ${
+                                                    isActive
+                                                        ? "border-orange-500 bg-gradient-to-br from-orange-50 to-red-50 shadow-lg shadow-orange-100"
+                                                        : "border-slate-200 bg-white hover:border-orange-300 hover:shadow-md hover:bg-orange-50/40"
+                                                }`}
+                                            >
+                                                {/* Number badge */}
+                                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-sm transition-all duration-200 ${
+                                                    isActive
+                                                        ? "bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-md shadow-orange-200"
+                                                        : "bg-slate-100 text-slate-500 group-hover:bg-orange-500 group-hover:text-white"
+                                                }`}>
+                                                    {i + 1}
+                                                </div>
+                                                <span className={`text-xs sm:text-sm text-center font-semibold leading-tight transition-colors duration-200 ${
+                                                    isActive ? "text-orange-600" : "text-slate-600 group-hover:text-slate-900"
+                                                }`}>
+                                                    {industry.name}
+                                                </span>
+                                                {isActive && (
+                                                    <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-orange-500 shadow shadow-orange-300" />
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+
                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                                 {generateSubIndustries.length === 0 ? (
                                     <p className="text-sm text-slate-400 col-span-full text-center py-10 font-medium">
@@ -1043,33 +1095,32 @@ const speeds = [120, 160, 110, 150, 130];
                                     </p>
                                 ) : (
                                     generateSubIndustries.map((sub, i) => {
-                                        const isActive =
-                                            generatePendingSubIndustry ===
-                                            String(sub.id);
+                                        const isActive = generatePendingSubIndustry === String(sub.id);
                                         return (
                                             <div
                                                 key={sub.id || i}
-                                                onClick={() => {
-                                                    setGeneratePendingSubIndustry(String(sub.id));
-                                                    
-                                                }}
-                                                className={`group cursor-pointer relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-5 border transition-all duration-300
-                                                ${
+                                                onClick={() => setGeneratePendingSubIndustry(String(sub.id))}
+                                                className={`group cursor-pointer relative overflow-hidden rounded-2xl p-4 border-2 transition-all duration-200 flex flex-col items-center gap-2 ${
                                                     isActive
-                                                        ? "border-orange-500 bg-white shadow-lg shadow-orange-100 scale-[1.02] ring-1 ring-orange-500"
-                                                        : "border-slate-200 bg-white hover:border-orange-300 hover:shadow-md"
+                                                        ? "border-orange-500 bg-gradient-to-br from-orange-50 to-red-50 shadow-lg shadow-orange-100"
+                                                        : "border-slate-200 bg-white hover:border-orange-300 hover:shadow-md hover:bg-orange-50/40"
                                                 }`}
                                             >
-                                                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-100 flex items-center justify-center mb-2 sm:mb-3 mx-auto group-hover:bg-orange-500 group-hover:text-white transition-colors duration-300">
-                                                    <span className="text-xs sm:text-sm font-bold">
-                                                        {i + 1}
-                                                    </span>
+                                                {/* Number badge */}
+                                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-sm transition-all duration-200 ${
+                                                    isActive
+                                                        ? "bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-md shadow-orange-200"
+                                                        : "bg-slate-100 text-slate-500 group-hover:bg-orange-500 group-hover:text-white"
+                                                }`}>
+                                                    {i + 1}
                                                 </div>
-                                                <span className="text-xs sm:text-sm text-center block font-bold text-slate-600 group-hover:text-slate-900">
+                                                <span className={`text-xs sm:text-sm text-center font-semibold leading-tight transition-colors duration-200 ${
+                                                    isActive ? "text-orange-600" : "text-slate-600 group-hover:text-slate-900"
+                                                }`}>
                                                     {sub.name}
                                                 </span>
                                                 {isActive && (
-                                                    <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-orange-500" />
+                                                    <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-orange-500 shadow shadow-orange-300" />
                                                 )}
                                             </div>
                                         );
@@ -1097,27 +1148,35 @@ const speeds = [120, 160, 110, 150, 130];
                                 value={brandDescription}
                                 onChange={setBrandDescription}
                                 minLength={MIN_BRAND_DESCRIPTION_CHARS}
-                                className="w-full min-h-[140px] sm:min-h-[180px] p-4 bg-white rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none text-sm sm:text-base mb-4 font-medium text-slate-700 shadow-inner"
+                                maxLength={MAX_BRAND_DESCRIPTION_CHARS}
+                                className="w-full min-h-[140px] sm:min-h-[180px] p-4 bg-white rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none text-sm sm:text-base mb-3 font-medium text-slate-700 shadow-inner"
                             />
 
-                            <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                <p className="text-xs sm:text-sm text-slate-500 font-medium">
-                                    Minimum {MIN_BRAND_DESCRIPTION_CHARS} characters required ({brandDescription.trim().length}/{MIN_BRAND_DESCRIPTION_CHARS})
+                            {/* Char counter */}
+                            <div className="flex items-center justify-between mb-4">
+                                <p className={`text-xs font-medium ${brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS ? "text-red-400" : "text-slate-400"}`}>
+                                    {brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS
+                                        ? `Min ${MIN_BRAND_DESCRIPTION_CHARS} chars (${brandDescription.trim().length}/${MIN_BRAND_DESCRIPTION_CHARS})`
+                                        : `${brandDescription.trim().length}/${MAX_BRAND_DESCRIPTION_CHARS}`}
                                 </p>
+                                <p className="text-xs text-slate-400">
+                                    Regenerate: <span className={regenCount >= MAX_REGENERATIONS_PER_DAY ? "text-red-500 font-bold" : "text-orange-500 font-bold"}>{MAX_REGENERATIONS_PER_DAY - regenCount}/{MAX_REGENERATIONS_PER_DAY}</span> left today
+                                </p>
+                            </div>
+
+                            <div className="mb-6 flex justify-end">
                                 <button
                                     type="button"
                                     onClick={handleRegenerateBrandDescription}
-                                    disabled={isRegeneratingBrand || brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS}
-                                    className={`inline-flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-xs sm:text-sm font-bold transition-all ${
-                                        isRegeneratingBrand
-                                            ? "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400"
-                                            : brandDescription.trim().length >= MIN_BRAND_DESCRIPTION_CHARS
-                                                ? "border-orange-500 bg-gradient-to-r from-orange-500 to-red-500 text-white hover:brightness-110 cursor-pointer"
-                                                : "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400"
+                                    disabled={isRegeneratingBrand || brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS || regenCount >= MAX_REGENERATIONS_PER_DAY}
+                                    className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition-all ${
+                                        isRegeneratingBrand || brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS || regenCount >= MAX_REGENERATIONS_PER_DAY
+                                            ? "cursor-not-allowed bg-slate-100 text-slate-400"
+                                            : "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:brightness-110 cursor-pointer shadow-md shadow-orange-200"
                                     }`}
                                 >
                                     <RefreshCcw className={`h-4 w-4 ${isRegeneratingBrand ? "animate-spin" : ""}`} />
-                                    {isRegeneratingBrand ? "Regenerating..." : "Regenerate"}
+                                    {isRegeneratingBrand ? "Regenerating..." : regenCount >= MAX_REGENERATIONS_PER_DAY ? "Limit Reached" : "Regenerate"}
                                 </button>
                             </div>
                             {regenerateBrandError && (
@@ -1128,43 +1187,43 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* ... rest of the buttons and CTA ... */}
 
-                            <div className="flex flex-col sm:flex-row gap-3 mb-8">
+                            <div className="flex gap-3 mb-6">
                                 <button
                                     onClick={() => setSelectedContent(selectedContent === "photos" ? null : "photos")}
-                                    className={`px-4 py-2 rounded-lg border text-xs sm:text-sm font-bold transition-all ${
+                                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 text-sm font-bold transition-all duration-200 ${
                                         selectedContent === "photos"
-                                            ? "bg-orange-500 border-orange-500 text-white"
-                                            : "bg-white border-slate-200 text-slate-700 hover:border-orange-500 hover:text-orange-500"
+                                            ? "bg-gradient-to-r from-orange-500 to-red-500 border-transparent text-white"
+                                            : "bg-white border-slate-200 text-slate-600 hover:border-orange-400 hover:text-orange-500"
                                     }`}
                                 >
-                                    Create Photos
+                                    <Image className="w-4 h-4" /> Create Photos
                                 </button>
                                 <button
                                     onClick={() => setSelectedContent(selectedContent === "reels" ? null : "reels")}
-                                    className={`px-4 py-2 rounded-lg border text-xs sm:text-sm font-bold transition-all ${
+                                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 text-sm font-bold transition-all duration-200 ${
                                         selectedContent === "reels"
-                                            ? "bg-orange-500 border-orange-500 text-white"
-                                            : "bg-white border-slate-200 text-slate-700 hover:border-orange-500 hover:text-orange-500"
+                                            ? "bg-gradient-to-r from-orange-500 to-red-500 border-transparent text-white"
+                                            : "bg-white border-slate-200 text-slate-600 hover:border-orange-400 hover:text-orange-500"
                                     }`}
                                 >
-                                    Create Reels
+                                    <Film className="w-4 h-4" /> Create Reels
                                 </button>
                             </div>
-                            <p className="text-center text-xs sm:text-sm text-slate-900 mb-8 font-medium">
-                                No credit card required • 14-day free trial <br />
-                                Trusted by 5,000+ businesses automating their social media
-                            </p>
 
-                            {/* Power CTA Button - Changed to Brand Black/Orange */}
+                            {/* CTA Button */}
                             <button
                                 onClick={handleGenerateClick}
-                                className={`w-full py-3 sm:py-4 rounded-2xl text-base sm:text-lg font-black tracking-tight transition-all active:scale-95 uppercase border-2 ${
-                                    isGenerateReady
-                                        ? "bg-white text-red-500 border-red-300 hover:border-red-400 hover:bg-red-50 cursor-pointer"
-                                        : "bg-white text-slate-400 border-slate-200 cursor-not-allowed"
+                                disabled={hasGeneratedToday}
+                                className={`w-full py-4 rounded-2xl text-base font-black tracking-wide transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 ${
+                                    hasGeneratedToday
+                                        ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                                        : isGenerateReady
+                                        ? "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:brightness-110 cursor-pointer"
+                                        : "bg-slate-100 text-slate-400 cursor-not-allowed"
                                 }`}
                             >
-                                Generate 365 Days of Content
+                                <Lock className="w-4 h-4" />
+                                {hasGeneratedToday ? "Daily Limit Reached — Try Again Tomorrow" : "Generate 7 Days of Content"}
                             </button>
                             {generateValidationError && (
                                 <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-700">
@@ -1191,7 +1250,7 @@ const speeds = [120, 160, 110, 150, 130];
                             </span>
                         </h2>
                         <p className="text-slate-500 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
-                            Industry-specific templates that update instantly based on your selection
+                            Real AI-generated images crafted uniquely for your business — powered by advanced AI trained on your industry
                         </p>
                     </div>
 
@@ -1228,139 +1287,8 @@ const speeds = [120, 160, 110, 150, 130];
                                 </div>
                             )}
 
-                            {/* Row 1 — first 4 streamed posts (arrival order) */}
-                            <div>
-                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-                                    {Array.from({ length: 4 }).map((_, i) => {
-                                        const post = streamedPosts[i];
-                                        const imageUrl = post?.image?.imageUrl;
-
-                                        // Before stream starts: show stock placeholders (use different images than row 2)
-                                        if (!streamLoading && streamedPosts.length === 0) {
-                                            const fallback = previewSecondaryStockImages[i];
-                                            if (!fallback) {
-                                                return (
-                                                    <div
-                                                        key={`r1-empty-${i}`}
-                                                        className="aspect-square rounded-xl bg-gray-50"
-                                                    />
-                                                );
-                                            }
-                                            return (
-                                                <div
-                                                    key={fallback.id || `r1-stock-${i}`}
-                                                    className="relative group aspect-square rounded-xl overflow-hidden bg-gray-50 cursor-pointer hover:ring-2 hover:ring-orange-500 transition-all"
-                                                    onClick={() => {
-                                                        const url = fallback.file || fallback.url || "";
-                                                        setSelectedPreviewPost({
-                                                            imageUrl: url,
-                                                            caption: fallback.name || fallback.title || "",
-                                                        });
-                                                    }}
-                                                >
-                                                    <img
-                                                        src={fallback.file || fallback.url}
-                                                        alt={fallback.name || fallback.title || `Stock ${i + 5}`}
-                                                        loading="lazy"
-                                                        decoding="async"
-                                                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                                        onError={(e) => {
-                                                            e.currentTarget.onerror = null;
-                                                            e.currentTarget.src = getSubIndustryFallbackImage(i + 4);
-                                                        }}
-                                                    />
-                                                    <span className="absolute bottom-2 left-2 text-white bg-black/60 backdrop-blur-sm px-2 py-1 text-xs rounded-md font-medium">
-                                                        {fallback.name || fallback.title || `Stock ${i + 5}`}
-                                                    </span>
-                                                </div>
-                                            );
-                                        }
-
-                                        // Slot not yet filled — enhanced loading skeleton
-                                        if (!imageUrl) {
-                                            return (
-                                                <div
-                                                    key={`r1-loading-${i}`}
-                                                    className="aspect-square rounded-xl overflow-hidden relative bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 border border-orange-200"
-                                                >
-                                                    {/* Animated Background Gradient */}
-                                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer-fast"></div>
-                                                    
-                                                    {/* Loading Content */}
-                                                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white/20">
-                                                        {/* Animated Spinner */}
-                                                        <div className="relative w-12 h-12">
-                                                            <svg className="w-full h-full text-orange-500 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="3">
-                                                                <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor"></circle>
-                                                                <path className="opacity-100" fill="none" stroke="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                            </svg>
-                                                        </div>
-                                                        
-                                                        {/* Text Label */}
-                                                        <div className="text-center">
-                                                            <p className="text-sm font-bold text-gray-800">Generating</p>
-                                                            <p className="text-xs text-gray-600 mt-0.5">AI Magic...</p>
-                                                        </div>
-                                                        
-                                                        {/* Animated Dots */}
-                                                        <div className="flex gap-1">
-                                                            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-400 to-orange-600 animate-bounce" style={{ animationDelay: '0s' }}></div>
-                                                            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-400 to-orange-600 animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                                                            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-400 to-orange-600 animate-bounce" style={{ animationDelay: '0.4s' }}></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            );
-                                        }
-
-                                        // Post arrived — show image
-                                        const isActivePost = selectedPreviewPost?.imageUrl === imageUrl;
-                                        return (
-                                            <div
-                                                key={`r1-post-${i}`}
-                                                className={`relative group aspect-square rounded-xl overflow-hidden bg-gray-50 cursor-pointer transition-all duration-200 ${
-                                                    isActivePost
-                                                        ? "ring-4 ring-orange-500 ring-offset-2 scale-[1.03]"
-                                                        : "hover:ring-2 hover:ring-orange-300 hover:ring-offset-1 hover:scale-[1.02]"
-                                                }`}
-                                                onClick={() =>
-                                                    setSelectedPreviewPost(
-                                                        isActivePost ? null : { imageUrl, caption: post.text || "" }
-                                                    )
-                                                }
-                                            >
-                                                <img
-                                                    src={imageUrl}
-                                                    alt={post.text?.slice(0, 40) || `Post ${i + 1}`}
-                                                    loading="lazy"
-                                                    decoding="async"
-                                                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                                    onError={(e) => {
-                                                        e.currentTarget.onerror = null;
-                                                        e.currentTarget.src = getSubIndustryFallbackImage(i);
-                                                    }}
-                                                />
-                                                {isActivePost && (
-                                                    <>
-                                                        <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
-                                                            <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                                        </div>
-                                                        <div className="absolute inset-0 bg-orange-500/10 pointer-events-none" />
-                                                    </>
-                                                )}
-                                                {post.source && !isActivePost && (
-                                                    <span className={`absolute top-2 right-2 px-2 py-0.5 text-xs font-bold rounded-full ${post.source === "LLM" ? "bg-orange-500 text-white" : "bg-black/60 text-white"}`}>
-                                                        {post.source === "LLM" ? "AI" : "Stock"}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-
-                            {/* Row 2 — always 4 stock images */}
-                            <div>
+                            {/* Stock Templates — shown only before generation starts */}
+                            {!streamLoading && streamedPosts.length === 0 && <div>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
                                     {generateLoadingImages ? (
                                         Array.from({ length: 4 }).map((_, i) => (
@@ -1419,7 +1347,87 @@ const speeds = [120, 160, 110, 150, 130];
                                         )
                                     }
                                 </div>
+                            </div>}
+
+                            {/* AI Generated Posts — shown below stock, only when streaming or posts available */}
+                            {(streamLoading || streamedPosts.length > 0) && (
+                            <div>
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                                    {Array.from({ length: 7 }).map((_, i) => {
+                                        const post = streamedPosts[i];
+                                        const imageUrl = post?.image?.imageUrl;
+
+                                        // During streaming show spinner; after done skip empty slots
+                                        if (!imageUrl) {
+                                            if (!streamLoading) return null;
+                                            return (
+                                                <div
+                                                    key={`r1-loading-${i}`}
+                                                    className="aspect-square rounded-xl overflow-hidden relative bg-gradient-to-br from-gray-100 via-white to-gray-100 border border-orange-200"
+                                                >
+                                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer-fast" />
+                                                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                                                        <div className="relative w-12 h-12">
+                                                            <svg className="w-full h-full text-orange-500 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="3">
+                                                                <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" />
+                                                                <path className="opacity-100" fill="none" stroke="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                                            </svg>
+                                                        </div>
+                                                        <div className="text-center">
+                                                            <p className="text-sm font-bold text-gray-800">Generating</p>
+                                                            <p className="text-xs text-gray-500 mt-0.5">AI Magic...</p>
+                                                        </div>
+                                                        <div className="flex gap-1">
+                                                            {[0, 0.2, 0.4].map((delay, d) => (
+                                                                <div key={d} className="w-2 h-2 rounded-full bg-orange-500 animate-bounce" style={{ animationDelay: `${delay}s` }} />
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        }
+
+                                        // Post arrived — show image
+                                        const isActivePost = selectedPreviewPost?.imageUrl === imageUrl;
+                                        return (
+                                            <div
+                                                key={`r1-post-${i}`}
+                                                className={`relative group aspect-square rounded-xl overflow-hidden bg-gray-50 cursor-pointer transition-all duration-200 ${
+                                                    isActivePost
+                                                        ? "ring-4 ring-orange-500 ring-offset-2 scale-[1.03]"
+                                                        : "hover:ring-2 hover:ring-orange-300 hover:ring-offset-1 hover:scale-[1.02]"
+                                                }`}
+                                                onClick={() =>
+                                                    setSelectedPreviewPost(
+                                                        isActivePost ? null : { imageUrl, caption: post.text || "" }
+                                                    )
+                                                }
+                                            >
+                                                <img
+                                                    src={imageUrl}
+                                                    alt={post.text?.slice(0, 40) || `Post ${i + 1}`}
+                                                    loading="lazy"
+                                                    decoding="async"
+                                                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                                    onError={(e) => {
+                                                        e.currentTarget.onerror = null;
+                                                        e.currentTarget.src = getSubIndustryFallbackImage(i);
+                                                    }}
+                                                />
+                                                {isActivePost && (
+                                                    <>
+                                                        <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                                                            <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                                        </div>
+                                                        <div className="absolute inset-0 bg-orange-500/10 pointer-events-none" />
+                                                    </>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
                             </div>
+                            )}
                         </div>
 
                     </div>
@@ -1592,7 +1600,7 @@ const speeds = [120, 160, 110, 150, 130];
                             )}
 
                             {/* Industry Dropdown + Refresh on right */}
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3 w-full sm:w-auto">
                             <select
                                 value={librarySelectedIndustry}
                                 // REPLACE WITH:
@@ -1609,7 +1617,7 @@ const speeds = [120, 160, 110, 150, 130];
                                     );
                                     setLibraryShowSubIndustries(true);
                                 }}
-                                className="w-full sm:w-auto px-4 py-2 rounded-xl bg-white text-gray-800 border border-gray-300 focus:outline-none text-sm"
+                                className="flex-1 min-w-0 sm:flex-none sm:w-auto px-4 py-2 rounded-xl bg-white text-gray-800 border border-gray-300 focus:outline-none text-sm"
                             >
                                 <option value="">Choose your industry</option>
                                 {loadingIndustries ? (
@@ -1622,7 +1630,7 @@ const speeds = [120, 160, 110, 150, 130];
                                         >
                                             {industry.name}
                                         </option>
-                                        
+
                                     ))
                                 )}
                             </select>
@@ -1709,11 +1717,10 @@ const speeds = [120, 160, 110, 150, 130];
                         <div className={`grid gap-4 ${
                             libraryContentType === "reels"
                                 ? "grid-cols-2 sm:grid-cols-4 md:grid-cols-8"
-                                : "grid-cols-2 sm:grid-cols-3 md:grid-cols-8"
+                                : "grid-cols-2 sm:grid-cols-3 md:grid-cols-7"
                         }`}>
                             {libraryLoadingImages ? (
-                                /* Skeleton placeholders while fetching */
-                                Array.from({ length: 8 }).map((_, i) => (
+                                Array.from({ length: 7 }).map((_, i) => (
                                     <div
                                         key={i}
                                         className={`w-full rounded-xl bg-gray-100 animate-pulse ${
@@ -1726,7 +1733,7 @@ const speeds = [120, 160, 110, 150, 130];
                                     No images found
                                 </p>
                             ) : (
-                                libraryFilteredImages.slice(0, 8).map((img, index) => {
+                                libraryFilteredImages.slice(0, 7).map((img, index) => {
                                     const imgId = img.id ?? index;
                                     const isActive = activeLibraryImageId === imgId;
                                     const isReels = libraryContentType === "reels";
@@ -1759,7 +1766,6 @@ const speeds = [120, 160, 110, 150, 130];
                                                     }}
                                                 />
                                             ) : null}
-                                            {/* Fallback icon shown when image fails or src is empty */}
                                             <div
                                                 style={{ display: src ? "none" : "flex" }}
                                                 className="absolute inset-0 flex-col items-center justify-center gap-2 bg-gray-50"
@@ -1771,13 +1777,11 @@ const speeds = [120, 160, 110, 150, 130];
                                                 </svg>
                                                 <span className="text-[10px] text-gray-400 font-medium">No preview</span>
                                             </div>
-                                            {/* Reels badge */}
                                             {isReels && (
                                                 <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-[10px] font-bold uppercase tracking-wide">
                                                     Reel
                                                 </div>
                                             )}
-                                            {/* Active checkmark */}
                                             {isActive && (
                                                 <>
                                                     <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">

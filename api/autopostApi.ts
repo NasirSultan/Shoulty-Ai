@@ -1,8 +1,8 @@
 import axios from "axios";
-import { SHOUTLY_API_BASE_URL } from "./configApi";
+import { API_BASE_URL } from "./configApi";
 
 const autopostClient = axios.create({
-    baseURL: SHOUTLY_API_BASE_URL,
+    baseURL: API_BASE_URL,
 });
 
 autopostClient.interceptors.request.use((config) => {

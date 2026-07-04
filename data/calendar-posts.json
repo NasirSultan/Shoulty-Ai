@@ -44,6 +44,149 @@
       "reach": 0,
       "engRate": "8.2%",
       "isAI": true
+    },
+    {
+      "id": 1783171337295,
+      "date": "2026-07-04T00:00:00.000Z",
+      "caption": "Believe in yourself and you will be unstoppable. 🌟🔥 #Motivation #Success",
+      "hashtags": [
+        "#Startup",
+        "#Entrepreneurship",
+        "#VentureCapital",
+        "#Founder",
+        "#TechStartup"
+      ],
+      "plats": [
+        "ig",
+        "tw",
+        "yt",
+        "th"
+      ],
+      "type": "image",
+      "timeStr": "5:45 PM",
+      "timesOptions": [
+        {
+          "t": "9:00 AM",
+          "e": "7.6%",
+          "best": false
+        },
+        {
+          "t": "12:30 PM",
+          "e": "8.2%",
+          "best": true
+        },
+        {
+          "t": "5:45 PM",
+          "e": "9.8%",
+          "best": true
+        },
+        {
+          "t": "8:30 PM",
+          "e": "7.1%",
+          "best": false
+        }
+      ],
+      "img": "/images/motivation.jpg",
+      "score": 92,
+      "status": "scheduled",
+      "reach": 0,
+      "engRate": "8.2%",
+      "isAI": true
+    },
+    {
+      "id": 1783171974829,
+      "date": "2026-07-17T00:00:00.000Z",
+      "caption": "Modern aesthetics for modern homes. 🏠✨ #InteriorDesign #HomeDecor",
+      "hashtags": [
+        "#Startup",
+        "#Entrepreneurship",
+        "#VentureCapital",
+        "#Founder",
+        "#TechStartup"
+      ],
+      "plats": [
+        "ig",
+        "th"
+      ],
+      "type": "image",
+      "timeStr": "5:45 PM",
+      "timesOptions": [
+        {
+          "t": "9:00 AM",
+          "e": "7.6%",
+          "best": false
+        },
+        {
+          "t": "12:30 PM",
+          "e": "8.2%",
+          "best": true
+        },
+        {
+          "t": "5:45 PM",
+          "e": "9.8%",
+          "best": true
+        },
+        {
+          "t": "8:30 PM",
+          "e": "7.1%",
+          "best": false
+        }
+      ],
+      "img": "/images/img1.jpeg",
+      "score": 92,
+      "status": "scheduled",
+      "reach": 0,
+      "engRate": "8.2%",
+      "isAI": true
+    },
+    {
+      "id": 1783171273619,
+      "date": "2026-07-30T00:00:00.000Z",
+      "caption": "Believe in yourself and you will be unstoppable. 🌟🔥 #Motivation #Success",
+      "hashtags": [
+        "#Startup",
+        "#Entrepreneurship",
+        "#VentureCapital",
+        "#Founder",
+        "#TechStartup"
+      ],
+      "plats": [
+        "ig",
+        "fb",
+        "tw",
+        "yt",
+        "th"
+      ],
+      "type": "image",
+      "timeStr": "5:45 PM",
+      "timesOptions": [
+        {
+          "t": "9:00 AM",
+          "e": "7.6%",
+          "best": false
+        },
+        {
+          "t": "12:30 PM",
+          "e": "8.2%",
+          "best": true
+        },
+        {
+          "t": "5:45 PM",
+          "e": "9.8%",
+          "best": true
+        },
+        {
+          "t": "8:30 PM",
+          "e": "7.1%",
+          "best": false
+        }
+      ],
+      "img": "/images/motivation.jpg",
+      "score": 92,
+      "status": "scheduled",
+      "reach": 0,
+      "engRate": "8.2%",
+      "isAI": true
     }
   ]
 }

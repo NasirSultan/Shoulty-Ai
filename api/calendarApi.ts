@@ -1,9 +1,9 @@
 // Calendar APIs Integration
-// Base URL: https://ai-shoutly-backend.onrender.com
+// Base URL: https://backend.shoutlyai.com
 
 import axios from "axios";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://ai-shoutly-backend.onrender.com";
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://backend.shoutlyai.com";
 
 // Create axios instance with automatic token injection
 const calendarClient = axios.create({

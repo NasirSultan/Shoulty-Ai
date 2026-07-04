@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 const OPENAI_IMAGE_URL = "https://api.openai.com/v1/images/generations";
 const UPSTREAM_CANDIDATES = [
-  "https://ai-shoutly-backend.onrender.com/api/gemeini-image/generate",
-  "https://ai-shoutly-backend.onrender.com/api/gemini-image/generate",
   "https://backend.shoutlyai.com/api/gemeini-image/generate",
   "https://backend.shoutlyai.com/api/gemini-image/generate",
-  "https://ai-shoutly-backend.onrender.com/api/display-images",
+  "https://backend.shoutlyai.com/api/gemeini-image/generate",
+  "https://backend.shoutlyai.com/api/gemini-image/generate",
+  "https://backend.shoutlyai.com/api/display-images",
   "https://backend.shoutlyai.com/api/display-images",
 ];
 

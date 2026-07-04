@@ -1,6 +1,6 @@
 export const runtime = "nodejs";
 
-const UPSTREAM_BASE = "https://ai-shoutly-backend.onrender.com/api/display-images";
+const UPSTREAM_BASE = "https://backend.shoutlyai.com/api/display-images";
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);

@@ -1,6 +1,6 @@
 export const runtime = "edge";
 
-const UPSTREAM_URL = "https://ai-shoutly-backend.onrender.com/api/generator/posts";
+const UPSTREAM_URL = "https://backend.shoutlyai.com/api/generator/posts";
 const UPSTREAM_FALLBACK = "https://backend.shoutlyai.com/api/generator/posts";
 
 export async function POST(request: Request) {
@@ -12,6 +12,7 @@ export async function POST(request: Request) {
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "text/event-stream",
+                "ngrok-skip-browser-warning": "true",
             },
             body: rawBody,
         });

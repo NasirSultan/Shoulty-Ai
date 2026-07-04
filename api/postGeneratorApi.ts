@@ -25,7 +25,6 @@ export interface GeneratedSavedPostChunk extends GeneratedPostChunk {
 }
 
 export interface GeneratePostsRequest {
-  industryId: string;
   subIndustryId: string;
   prompt: string;
 }
@@ -84,14 +83,18 @@ const parseErrorMessage = (text: string, status: number): string => {
 };
 
 const parseSseEventData = (rawEvent: string): string | null => {
-  const dataLines = rawEvent
-    .split(/\r?\n/)
-    .map((line) => line.trim())
+  const lines = rawEvent.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+
+  // Standard SSE format: lines starting with "data:"
+  const dataLines = lines
     .filter((line) => line.startsWith("data:"))
     .map((line) => line.slice(5).trim());
 
-  if (!dataLines.length) return null;
-  return dataLines.join("\n");
+  if (dataLines.length) return dataLines.join("\n");
+
+  // Fallback: raw JSON line (NDJSON — no "data:" prefix)
+  const jsonLine = lines.find((l) => l.startsWith("{") || l.startsWith("["));
+  return jsonLine ?? null;
 };
 
 const streamPostGenerator = async <TChunk>(
@@ -146,8 +149,9 @@ const streamPostGenerator = async <TChunk>(
   let doneCalled = false;
 
   const processRawEvent = (rawEvent: string) => {
+    console.log("[SSE raw]", rawEvent.slice(0, 400));
     const dataString = parseSseEventData(rawEvent);
-    if (!dataString) return;
+    if (!dataString) { console.log("[SSE] skipped — no data line"); return; }
 
     let parsed: unknown;
     try {

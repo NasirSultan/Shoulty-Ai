@@ -229,6 +229,7 @@ export default function PricingSection() {
           display: flex;
           align-items: center;
           justify-content: space-between;
+          flex-wrap: wrap;
           gap: 12px;
           margin-bottom: 34px;
         }
@@ -774,6 +775,16 @@ export default function PricingSection() {
         @media (max-width: 460px) {
           .plat-grid {
             grid-template-columns: 1fr;
+          }
+          .bp-amt {
+            font-size: 46px;
+          }
+          .bp-cur {
+            font-size: 24px;
+            margin-top: 6px;
+          }
+          .bp-per {
+            font-size: 14px;
           }
         }
       `}</style>

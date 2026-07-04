@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { UserIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
-import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
+import { GoogleLogin, GoogleOAuthProvider, CredentialResponse } from "@react-oauth/google";
 import { registerUser, savePendingAuthFlow } from "@/api/authApi";
 
 type GoogleProfile = {
@@ -24,7 +24,7 @@ const decodeGoogleProfile = (credential: string): GoogleProfile | null => {
     }
 };
 
-export default function CreateAccountPage() {
+function CreateAccountContent() {
     const router = useRouter();
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -204,5 +204,13 @@ export default function CreateAccountPage() {
                 </p>
             </div>
         </div>
+    );
+}
+
+export default function CreateAccountPage() {
+    return (
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}>
+            <CreateAccountContent />
+        </GoogleOAuthProvider>
     );
 }

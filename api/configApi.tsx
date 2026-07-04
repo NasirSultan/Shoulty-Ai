@@ -18,7 +18,7 @@ export const API_ENDPOINTS = {
     sendOtp: `${API_BASE_URL}/api/auth/send-otp`,
     verifyOtpReset: `${API_BASE_URL}/api/auth/verify-otp-reset`,
     resetPassword: `${API_BASE_URL}/api/auth/reset-password`,
-    googleLogin: `/api/auth/verify-token`,
+    googleLogin: `${API_BASE_URL}/api/auth/google/login`,
     emailLogin: `${API_BASE_URL}/api/auth/login`,
     userProfile: `${API_BASE_URL}/api/users/profile`,
     profileUpdate: `${API_BASE_URL}/api/users/profile-update`,

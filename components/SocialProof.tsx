@@ -222,21 +222,51 @@ const testimonials = [
         quote: "Shoutly has completely saved my sanity. I used to spend Sundays stressed about content for my online store. Now it's all done in 10 minutes.",
         author: "Arjun Kapur",
         role: "E-commerce Founder, Mumbai",
-        avatar: "images/user/user-02.jpg"
+        avatar: "/images/user/user-02.jpg"
     },
     {
         quote: "The brand voice feature is incredible. It actually sounds like me, not a robot. My real estate agency's engagement has doubled.",
         author: "Vikram Malhotra",
         role: "Real Estate Consultant, Delhi",
-        avatar: "images/user/owner.jpg"
+        avatar: "/images/user/owner.jpg"
     },
     {
         quote: "I manage 5 clients for my agency and Shoutly is the only reason I can sleep at night. Best investment for Indian marketers.",
         author: "Priya Iyer",
         role: "Agency Founder, Bangalore",
-        avatar: "images/user/user-03.jpg"
+        avatar: "/images/user/user-03.jpg"
     }
 ];
+
+function TestimonialAvatar({ avatar, author }: { avatar: string; author: string }) {
+    const [failed, setFailed] = useState(false);
+
+    if (failed) {
+        const initials = author
+            .split(" ")
+            .map((part) => part[0])
+            .join("")
+            .slice(0, 2)
+            .toUpperCase();
+        return (
+            <div className="relative w-12 h-12 rounded-full overflow-hidden bg-orange-100 text-orange-600 font-bold flex items-center justify-center">
+                {initials}
+            </div>
+        );
+    }
+
+    return (
+        <div className="relative w-12 h-12 rounded-full overflow-hidden">
+            <Image
+                src={avatar}
+                alt={author}
+                fill
+                className="object-cover"
+                onError={() => setFailed(true)}
+            />
+        </div>
+    );
+}
 
 export function Testimonials() {
     return (
@@ -256,14 +286,7 @@ export function Testimonials() {
                             </div>
                             <p className="text-lg text-gray-700 mb-6 italic">&quot;{t.quote}&quot;</p>
                             <div className="flex items-center gap-4">
-                                <div className="relative w-12 h-12 rounded-full overflow-hidden">
-                                    <Image
-                                        src={t.avatar}
-                                        alt={t.author}
-                                        fill
-                                        className="object-cover"
-                                    />
-                                </div>
+                                <TestimonialAvatar avatar={t.avatar} author={t.author} />
                                 <div>
                                     <h4 className="font-bold text-gray-900">{t.author}</h4>
                                     <p className="text-sm text-gray-500">{t.role}</p>

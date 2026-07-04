@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
-import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
+import { GoogleLogin, GoogleOAuthProvider, CredentialResponse } from "@react-oauth/google";
 import { useEffect, useState } from "react";
 import { emailLogin, fetchProfile, googleLogin } from "@/api/authApi";
 
@@ -242,8 +242,10 @@ function SignInAccountContent() {
 
 export default function SignInAccountPage() {
     return (
-        <Suspense fallback={null}>
-            <SignInAccountContent />
-        </Suspense>
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}>
+            <Suspense fallback={null}>
+                <SignInAccountContent />
+            </Suspense>
+        </GoogleOAuthProvider>
     );
 }
