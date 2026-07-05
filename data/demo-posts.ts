@@ -10,34 +10,6 @@ export interface DemoPost {
 
 export const DEMO_POSTS: DemoPost[] = [
     {
-        id: "demo-1",
-        text: "Start your day with a perfect cup of coffee. ☕️✨ #CoffeeLovers #MorningVibes",
-        image: { imageUrl: "/images/coffee.jpg" },
-        source: "STOCK",
-        industry: "Food & Beverage"
-    },
-    {
-        id: "demo-2",
-        text: "Push your limits and achieve your goals. 🏋️‍♂️💪 #FitnessMotivation #NoExcuses",
-        image: { imageUrl: "/images/sport.jpg" },
-        source: "STOCK",
-        industry: "Fitness"
-    },
-    {
-        id: "demo-3",
-        text: "Collaboration is the key to success. 🤝🚀 #TeamWork #OfficeLife",
-        image: { imageUrl: "/images/team-office.png" },
-        source: "STOCK",
-        industry: "Business"
-    },
-    {
-        id: "demo-4",
-        text: "Reach for the stars. 🌌✨ #Inspiration #SkyGazing",
-        image: { imageUrl: "/images/sky.jpg" },
-        source: "STOCK",
-        industry: "Travel"
-    },
-    {
         id: "demo-5",
         text: "Believe in yourself and you will be unstoppable. 🌟🔥 #Motivation #Success",
         image: { imageUrl: "/images/motivation.jpg" },

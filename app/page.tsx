@@ -12,7 +12,6 @@ import {
     GeneratedPost,
 } from "@/api/postGeneratorApi";
 import PostPopup from "@/components/PostPopup";
-import { DEMO_POSTS } from "@/data/demo-posts";
 import { Testimonials } from "@/components/SocialProof";
 import { HomepageFAQ } from "@/components/FAQ";
 
@@ -78,6 +77,19 @@ const LOCAL_TEMPLATE_FALLBACKS = [
     "/templates/template-3.jpg",
     "/templates/template-4.jpg",
 ];
+
+// Numbered poster templates in public/images (3.png ... 27.png) used to seed
+// the homepage preview grid with 7 random images before any industry is picked.
+const PREVIEW_TEMPLATE_IMAGES = Array.from({ length: 25 }, (_, i) => `/images/${i + 3}.png`);
+
+const getRandomPreviewImages = (count: number): ImageItem[] => {
+    const shuffled = [...PREVIEW_TEMPLATE_IMAGES];
+    for (let i = shuffled.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled.slice(0, count).map((url) => ({ id: url, url }));
+};
 
 // ── Isolated typing-effect hook (module scope so it doesn't re-render the whole page) ──
 function useTypingEffect(words: string[], speed: number = 50, pause: number = 2000) {
@@ -202,8 +214,14 @@ export default function LandingPage() {
     const [generateImages, setGenerateImages] = useState<ImageItem[]>([]);
     const [generateLoadingImages, setGenerateLoadingImages] = useState(false);
     const [previewStockImages, setPreviewStockImages] = useState<ImageItem[]>(
-        DEMO_POSTS.map(p => ({ id: p.id, url: p.image.imageUrl, name: p.text }))
+        PREVIEW_TEMPLATE_IMAGES.slice(0, 7).map((url) => ({ id: url, url }))
     );
+
+    // Randomize the 7 preview templates once mounted (kept deterministic above for SSR).
+    useEffect(() => {
+        setPreviewStockImages(getRandomPreviewImages(7));
+    }, []);
+
     const [streamedPosts, setStreamedPosts] = useState<GeneratedPost[]>([]);
     const [streamLoading, setStreamLoading] = useState(false);
     const [streamError, setStreamError] = useState<string | null>(null);
@@ -396,7 +414,7 @@ export default function LandingPage() {
         });
 
         if (!uniqueImages.length) {
-            // If no unique images from API, don't clear. This preserves DEMO_POSTS fallback.
+            // If no unique images from API, don't clear. This preserves the random template fallback.
             return;
         }
 
@@ -449,14 +467,11 @@ export default function LandingPage() {
         setPreviewStockImages(nextImages);
     }, [generateImages, generateSelectedSubIndustry]);
 
-    const previewPrimaryStockImages = previewStockImages.slice(0, 4);
-    const previewSecondaryStockImages = previewStockImages.slice(4, 8);
+    const previewPrimaryStockImages = previewStockImages.slice(0, 7);
     const shouldShowFirstLoadMsg =
         !streamLoading &&
         streamedPosts.length === 0 &&
-        (generateLoadingImages ||
-            previewPrimaryStockImages.length < 4 ||
-            previewSecondaryStockImages.length < 4);
+        (generateLoadingImages || previewPrimaryStockImages.length < 7);
     const isGenerateReady =
         !!generateSelectedIndustry &&
         !!generatePendingSubIndustry &&
@@ -1262,7 +1277,7 @@ const speeds = [120, 160, 110, 150, 130];
                             </span>
                         </h2>
                         <p className="text-slate-500 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
-                            Real AI-generated images crafted uniquely for your business — powered by advanced AI trained on your industry
+                            Real AI-generated images crafted uniquely for your business — click any image to see the full post view
                         </p>
                     </div>
 
@@ -1303,7 +1318,7 @@ const speeds = [120, 160, 110, 150, 130];
                             {!streamLoading && streamedPosts.length === 0 && <div>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
                                     {generateLoadingImages ? (
-                                        Array.from({ length: 4 }).map((_, i) => (
+                                        Array.from({ length: 7 }).map((_, i) => (
                                             <div
                                                 key={`r2-loading-${i}`}
                                                 className="aspect-square rounded-xl bg-gray-100 animate-pulse"
@@ -1350,9 +1365,6 @@ const speeds = [120, 160, 110, 150, 130];
                                                         <div className="absolute inset-0 bg-orange-500/10 pointer-events-none" />
                                                     </>
                                                 )}
-                                                <span className="absolute bottom-2 left-2 text-white bg-black/60 backdrop-blur-sm px-2 py-1 text-xs rounded-md font-medium">
-                                                    {img.name || img.title || `Stock ${index + 1}`}
-                                                </span>
                                             </div>
                                             );
                                         })

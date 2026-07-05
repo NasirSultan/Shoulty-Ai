@@ -260,9 +260,9 @@ export function FAQSection() {
               onClick={() => { setActiveCat(cat.id); setSearch(""); setOpenId(null); }}
               style={{
                 padding: "7px 16px", borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: "pointer",
-                background: activeCat === cat.id ? "#2563EB" : "#fff",
+                background: activeCat === cat.id ? "#F97316" : "#fff",
                 color: activeCat === cat.id ? "#fff" : "#6B7280",
-                border: `1.5px solid ${activeCat === cat.id ? "#2563EB" : "#E5E7EB"}`,
+                border: `1.5px solid ${activeCat === cat.id ? "#F97316" : "#E5E7EB"}`,
               }}
             >
               {cat.label}
@@ -286,7 +286,7 @@ export function FAQSection() {
             <div style={{ textAlign: "center", padding: "40px 20px", color: "#6B7280", fontSize: 13 }}>
               <div style={{ fontSize: 32, marginBottom: 8 }}>🔍</div>
               No questions found for <strong>"{search}"</strong><br />
-              <a href="/contact" style={{ color: "#2563EB", fontWeight: 600 }}>Ask us directly →</a>
+              <a href="/contact" style={{ color: "#F97316", fontWeight: 600 }}>Ask us directly →</a>
             </div>
           ) : visible.map((faq: FAQItem) => {
             const isOpen = openId === faq.id;
@@ -294,7 +294,7 @@ export function FAQSection() {
               <div
                 key={faq.id}
                 className="faq-item"
-                style={{ background: "#fff", border: `1.5px solid ${isOpen ? "#2563EB" : "#E5E7EB"}`, borderRadius: 12, overflow: "hidden" }}
+                style={{ background: "#fff", border: `1.5px solid ${isOpen ? "#F97316" : "#E5E7EB"}`, borderRadius: 12, overflow: "hidden" }}
               >
                 {/* Question row */}
                 <div
@@ -304,7 +304,7 @@ export function FAQSection() {
                   <div style={{ fontSize: 13, fontWeight: 600, color: "#111827", lineHeight: 1.4 }}>{faq.q}</div>
                   <div
                     className="faq-icon"
-                    style={{ width: 22, height: 22, borderRadius: "50%", background: isOpen ? "#2563EB" : "#F3F4F6", color: isOpen ? "#fff" : "#6B7280", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, flexShrink: 0, transform: isOpen ? "rotate(45deg)" : "none" }}
+                    style={{ width: 22, height: 22, borderRadius: "50%", background: isOpen ? "#F97316" : "#F3F4F6", color: isOpen ? "#fff" : "#6B7280", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, flexShrink: 0, transform: isOpen ? "rotate(45deg)" : "none" }}
                   >
                     +
                   </div>
@@ -317,7 +317,7 @@ export function FAQSection() {
                       {faq.a}
                     </div>
                     {faq.cta && (
-                      <a href={faq.cta.href} style={{ display: "inline-block", marginTop: 12, fontSize: 12, fontWeight: 700, color: "#2563EB", textDecoration: "none" }}>
+                      <a href={faq.cta.href} style={{ display: "inline-block", marginTop: 12, fontSize: 12, fontWeight: 700, color: "#F97316", textDecoration: "none" }}>
                         {faq.cta.text}
                       </a>
                     )}
@@ -334,7 +334,7 @@ export function FAQSection() {
           <div style={{ fontSize: "clamp(18px,2.5vw,26px)", fontWeight: 800, marginBottom: 8 }}>Our team is here to help</div>
           <p style={{ fontSize: 13, color: "#94A3B8", marginBottom: 24, lineHeight: 1.6 }}>We typically respond within 2 hours on business days (Mon–Sat, 9am–7pm IST)</p>
           <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap", marginBottom: 16 }}>
-            <button style={{ background: "#2563EB", color: "#fff", border: "none", borderRadius: 10, padding: "12px 24px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>💬 Chat with us</button>
+            <button style={{ background: "#F97316", color: "#fff", border: "none", borderRadius: 10, padding: "12px 24px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>💬 Chat with us</button>
             <button style={{ background: "transparent", color: "#94A3B8", border: "1.5px solid rgba(255,255,255,.15)", borderRadius: 10, padding: "11px 24px", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>📧 Email support</button>
             <a href="/signup" style={{ display: "inline-block", background: "#059669", color: "#fff", border: "none", borderRadius: 10, padding: "12px 24px", fontSize: 13, fontWeight: 700, textDecoration: "none" }}>🚀 Start free trial</a>
           </div>
@@ -357,15 +357,15 @@ export function PricingFAQ() {
         {pricingFAQs.map((faq: FAQItem) => {
           const isOpen = openId === faq.id;
           return (
-            <div key={faq.id} style={{ background: "#fff", border: `1.5px solid ${isOpen ? "#2563EB" : "#E5E7EB"}`, borderRadius: 12, overflow: "hidden", fontFamily: "'Sora',system-ui,sans-serif" }}>
+            <div key={faq.id} style={{ background: "#fff", border: `1.5px solid ${isOpen ? "#F97316" : "#E5E7EB"}`, borderRadius: 12, overflow: "hidden", fontFamily: "'Sora',system-ui,sans-serif" }}>
               <div onClick={() => setOpenId(prev => prev === faq.id ? null : faq.id)} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "15px 18px", cursor: "pointer", gap: 12 }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "#111827", lineHeight: 1.4 }}>{faq.q}</div>
-                <div style={{ width: 20, height: 20, borderRadius: "50%", background: isOpen ? "#2563EB" : "#F3F4F6", color: isOpen ? "#fff" : "#6B7280", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, flexShrink: 0, transform: isOpen ? "rotate(45deg)" : "none", transition: "all .2s" }}>+</div>
+                <div style={{ width: 20, height: 20, borderRadius: "50%", background: isOpen ? "#F97316" : "#F3F4F6", color: isOpen ? "#fff" : "#6B7280", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, flexShrink: 0, transform: isOpen ? "rotate(45deg)" : "none", transition: "all .2s" }}>+</div>
               </div>
               {isOpen && (
                 <div style={{ padding: "0 18px 14px", borderTop: "1px solid #F3F4F6" }}>
                   <div style={{ fontSize: 12, color: "#4B5563", lineHeight: 1.75, marginTop: 10, whiteSpace: "pre-line" }}>{faq.a}</div>
-                  {faq.cta && <a href={faq.cta.href} style={{ display: "inline-block", marginTop: 10, fontSize: 12, fontWeight: 700, color: "#2563EB", textDecoration: "none" }}>{faq.cta.text}</a>}
+                  {faq.cta && <a href={faq.cta.href} style={{ display: "inline-block", marginTop: 10, fontSize: 12, fontWeight: 700, color: "#F97316", textDecoration: "none" }}>{faq.cta.text}</a>}
                 </div>
               )}
             </div>
@@ -388,15 +388,15 @@ export function HomepageFAQ() {
           {homeFAQs.map((faq: FAQItem) => {
             const isOpen = openId === faq.id;
             return (
-              <div key={faq.id} style={{ background: "#fff", border: `1.5px solid ${isOpen ? "#2563EB" : "#E5E7EB"}`, borderRadius: 12, overflow: "hidden", fontFamily: "'Sora',system-ui,sans-serif" }}>
+              <div key={faq.id} style={{ background: "#fff", border: `1.5px solid ${isOpen ? "#F97316" : "#E5E7EB"}`, borderRadius: 12, overflow: "hidden", fontFamily: "'Sora',system-ui,sans-serif" }}>
                 <div onClick={() => setOpenId(prev => prev === faq.id ? null : faq.id)} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "15px 18px", cursor: "pointer", gap: 12 }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: "#111827", lineHeight: 1.4 }}>{faq.q}</div>
-                  <div style={{ width: 20, height: 20, borderRadius: "50%", background: isOpen ? "#2563EB" : "#F3F4F6", color: isOpen ? "#fff" : "#6B7280", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, flexShrink: 0, transform: isOpen ? "rotate(45deg)" : "none", transition: "all .2s" }}>+</div>
+                  <div style={{ width: 20, height: 20, borderRadius: "50%", background: isOpen ? "#F97316" : "#F3F4F6", color: isOpen ? "#fff" : "#6B7280", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, flexShrink: 0, transform: isOpen ? "rotate(45deg)" : "none", transition: "all .2s" }}>+</div>
                 </div>
                 {isOpen && (
                   <div style={{ padding: "0 18px 14px", borderTop: "1px solid #F3F4F6" }}>
                     <div style={{ fontSize: 12, color: "#4B5563", lineHeight: 1.75, marginTop: 10, whiteSpace: "pre-line" }}>{faq.a}</div>
-                    {faq.cta && <a href={faq.cta.href} style={{ display: "inline-block", marginTop: 10, fontSize: 12, fontWeight: 700, color: "#2563EB", textDecoration: "none" }}>{faq.cta.text}</a>}
+                    {faq.cta && <a href={faq.cta.href} style={{ display: "inline-block", marginTop: 10, fontSize: 12, fontWeight: 700, color: "#F97316", textDecoration: "none" }}>{faq.cta.text}</a>}
                   </div>
                 )}
               </div>
@@ -404,7 +404,7 @@ export function HomepageFAQ() {
           })}
         </div>
         <div style={{ textAlign: "center", marginTop: 32 }}>
-          <a href="/help-center" style={{ display: "inline-block", border: "1.5px solid #2563EB", color: "#2563EB", borderRadius: 10, padding: "12px 28px", fontSize: 13, fontWeight: 700, textDecoration: "none", fontFamily: "'Sora',system-ui,sans-serif" }}>View all FAQs →</a>
+          <a href="/help-center" style={{ display: "inline-block", border: "1.5px solid #F97316", color: "#F97316", borderRadius: 10, padding: "12px 28px", fontSize: 13, fontWeight: 700, textDecoration: "none", fontFamily: "'Sora',system-ui,sans-serif" }}>View all FAQs →</a>
         </div>
       </div>
     </div>

@@ -74,6 +74,12 @@ const NAV_GROUPS = [
         href: "/dashboards/notifications",
         badge: "3",
       },
+      {
+        icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>,
+        label: "Back to Website",
+        href: "/",
+        exact: true,
+      },
     ],
   },
 ];
