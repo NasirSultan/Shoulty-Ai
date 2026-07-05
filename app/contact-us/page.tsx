@@ -44,7 +44,7 @@ function ContactForm() {
     };
 
     return (
-        <section className="mb-20 rounded-[40px] overflow-hidden shadow-2xl shadow-orange-100/60 border border-orange-100">
+        <section className="mt-16 mb-20 rounded-[40px] overflow-hidden shadow-2xl shadow-orange-100/60 border border-orange-100">
             <div className="grid lg:grid-cols-5">
 
                 {/* Left panel */}
