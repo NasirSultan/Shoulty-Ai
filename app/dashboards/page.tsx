@@ -1,819 +1,595 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import Sidebar from "./Sidebar";
-import AdminHeader from "./AdminHeader";
-import { UserProfile, useUserProfile } from "@/hooks/useUserProfile";
-import { useSidebarState } from "@/hooks/useSidebarState";
-import { Platform, connectPlatform, handleCallback } from "@/api/autopostApi";
-import {
-  resolveGeneratorProfileFields,
-  streamGeneratePosts,
-} from "@/api/postGeneratorApi";
+import { API_ENDPOINTS } from "@/api/configApi";
 
-// ── Types ──────────────────────────────────────────────────────────────────
-interface Post {
-  img: string;
-  name: string;
-  plat: string;
-  platC: string;
-  date: string;
-  time: string;
-  reach: string;
-  eng: string;
-  status: "scheduled" | "draft" | "published";
-}
+// ── Orange / white palette (matches homepage) ──────────────────────────────
+const GRAD = "linear-gradient(115deg,#F97316,#EA580C)";
+const GRAD_R = "linear-gradient(115deg,#EA580C,#F97316)";
 
-interface Idea {
-  icon: string;
-  bg: string;
-  title: string;
-  sub: string;
-  score: number;
-  sc: string;
-  sb: string;
-}
-
-interface Tag {
-  name: string;
-  pct: number;
-}
-
-interface WFStep {
-  c: string;
-  tc: string;
-  dot: string;
-  title: string;
-  sub: string;
-}
-
-interface TeamMember {
-  av: string;
-  bg: string;
-  name: string;
-  action: string;
-  time: string;
-  status: string;
-}
-
-// ── Data ───────────────────────────────────────────────────────────────────
-const posts: Post[] = [
-  { img: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=80&q=60", name: "3 viral growth hacks that tripled our reach", plat: "Instagram", platC: "#E1306C", date: "Today", time: "7:30 PM", reach: "82K", eng: "11.3%", status: "scheduled" },
-  { img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=80&q=60", name: "New menu drop — truffle risotto is here", plat: "Facebook", platC: "#1877F2", date: "Mar 9", time: "12:00 PM", reach: "28K", eng: "6.8%", status: "scheduled" },
-  { img: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=80&q=60", name: "30-day transformation: Meet Alex", plat: "LinkedIn", platC: "#0A66C2", date: "Mar 10", time: "9:00 AM", reach: "45K", eng: "8.4%", status: "draft" },
-  { img: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=80&q=60", name: "Just listed — 4-bed Victorian in prime location", plat: "Instagram", platC: "#E1306C", date: "Mar 11", time: "8:00 AM", reach: "19K", eng: "5.7%", status: "scheduled" },
-  { img: "https://images.unsplash.com/photo-1607083206968-13611e3d76db?w=80&q=60", name: "✨ Happy Diwali from our entire team", plat: "Multi-platform", platC: "#F59E0B", date: "Mar 12", time: "8:00 AM", reach: "67K", eng: "9.2%", status: "published" },
-];
-
-const ideas: Idea[] = [
-  { icon: "🔥", bg: "#FEF2F2", title: "Behind-the-scenes reel", sub: "High virality potential · Est. 12% eng", score: 94, sc: "#EF4444", sb: "#FEF2F2" },
-  { icon: "💡", bg: "#FFFBEB", title: "Industry myth-busting thread", sub: "Educational · Best for LinkedIn & Twitter", score: 88, sc: "#F59E0B", sb: "#FFFBEB" },
-  { icon: "📊", bg: "#EFF6FF", title: "Market update carousel", sub: "High saves · Peak: Wednesday 9 AM", score: 82, sc: "#3B82F6", sb: "#EFF6FF" },
-  { icon: "✨", bg: "#ECFDF5", title: "Customer transformation story", sub: "Trust builder · Works all platforms", score: 79, sc: "#10B981", sb: "#ECFDF5" },
-  { icon: "🎯", bg: "#EEEEFF", title: "Poll: What content do you want?", sub: "Quick engagement boost · Stories", score: 71, sc: "#5B5BD6", sb: "#EEEEFF" },
-];
-
-const tags: Tag[] = [
-  { name: "#GrowthHacks", pct: 92 },
-  { name: "#ContentStrategy", pct: 78 },
-  { name: "#AIMarketing", pct: 85 },
-  { name: "#SocialMedia2026", pct: 70 },
-  { name: "#DigitalMarketing", pct: 65 },
-];
-
-const wfSteps: WFStep[] = [
-  { c: "#ECFDF5", tc: "#10B981", dot: "✓", title: "Content Brief Created", sub: "AI generated 5 post ideas" },
-  { c: "#EEEEFF", tc: "#5B5BD6", dot: "2", title: "Caption Writing", sub: "In progress · 3 of 5 done" },
-  { c: "#FFFBEB", tc: "#F59E0B", dot: "3", title: "Design & Visuals", sub: "Pending approval" },
-  { c: "#F0F1F8", tc: "#9496B5", dot: "4", title: "Schedule & Publish", sub: "Not started" },
-];
-
-const team: TeamMember[] = [
-  { av: "AM", bg: "#5B5BD6", name: "Alex Morgan", action: "Scheduled 3 posts", time: "2m ago", status: "#10B981" },
-  { av: "SR", bg: "#E1306C", name: "Sam Rivera", action: "Edited brand settings", time: "18m ago", status: "#10B981" },
-  { av: "KL", bg: "#F59E0B", name: "Kim Lee", action: "Added new hashtag set", time: "1h ago", status: "#F59E0B" },
-  { av: "JP", bg: "#06B6D4", name: "Jordan Park", action: "Reviewed analytics", time: "3h ago", status: "#9496B5" },
-];
-
-const captions: Record<string, string[]> = {
-  ig: ["New drop just hit different 🔥 Our latest collection is giving everything — swipe to see the full range. Link in bio to shop before it's gone. ✨", "Stop scrolling — this one's for you 👀 3 content hacks that literally doubled our engagement in 30 days. Save this. You'll need it."],
-  li: ["Excited to share that after 18 months of building in public, we've crossed 100K users organically. Zero paid acquisition. Here's the full breakdown of what worked and what didn't 🧵", "The most underrated skill in 2026? Clear written communication. I've reviewed 200+ job applications this year. The gap is enormous. Here's how to fix it in 30 days."],
-  tw: ["hot take: the brands winning on social in 2026 aren't posting more. they're posting with more intention. less content, more craft.", "thread: everything we got wrong in year 1 (and what saved us in year 2) 🧵👇"],
-  fb: ["We've been getting this question every week: 'How do you consistently create content without burning out?' We sat down and mapped out our entire content system. Here's the full breakdown 👇", "BIG NEWS: After months of work, our new product is finally here. We're so proud of what the team built. Here's what it does and why we think it'll change the game for you ⬇️"],
-  tk: ["POV: you finally figured out the algorithm 👀 #contentcreator #socialmediatips #fyp", "Come with me to plan a month of content in 2 hours ✨ this system changed everything for me #contentplanning #smallbusiness"],
+// ── SVG Icons ──────────────────────────────────────────────────────────────
+const Icon = {
+  star:     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3 1.9 4.6L18.5 9l-4.6 1.4L12 15l-1.9-4.6L5.5 9l4.6-1.4L12 3Z"/></svg>,
+  bell:     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>,
+  check:    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"   strokeLinecap="round" strokeLinejoin="round"><path d="m4 12 5 5L20 6"/></svg>,
+  trend:    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"   strokeLinecap="round" strokeLinejoin="round"><path d="M22 7 13.5 15.5 8.5 10.5 2 17"/><path d="M16 7h6v6"/></svg>,
+  chat:     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"   strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5Z"/></svg>,
+  clock:    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"   strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>,
+  calendar: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"   strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4m8-4v4"/></svg>,
+  img:      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"   strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="2"/><path d="m3 17 5-4 3 2 5-5 5 5"/></svg>,
+  reel:     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"   strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m10 9 5 3-5 3V9Z"/></svg>,
+  link:     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"   strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>,
+  brand:    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"   strokeLinecap="round" strokeLinejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M17 11.5c3 0 4 2 4 4 0 3-2.5 5.5-8 5.5S3 18 3 12.5 7 3 12 3"/></svg>,
+  campaign: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"   strokeLinecap="round" strokeLinejoin="round"><path d="M3 11 21 3l-8 18-2.5-7.5L3 11Z"/></svg>,
+  book:     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"   strokeLinecap="round" strokeLinejoin="round"><path d="M4 19V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v13"/><path d="M4 19a2 2 0 0 0 2 2h14M9 8h6"/></svg>,
 };
 
-const hashtagMap: Record<string, string[]> = {
-  ig: ["#ContentCreator", "#SocialMediaTips", "#GrowthHacks", "#MarketingStrategy", "#InstagramGrowth", "#DigitalMarketing"],
-  li: ["#LinkedIn", "#CareerGrowth", "#Leadership", "#Marketing", "#BuildInPublic", "#Startup"],
-  tw: ["#Marketing", "#GrowthHacking", "#ContentStrategy", "#SocialMedia", "#DigitalMarketing"],
-  fb: ["#SmallBusiness", "#Marketing", "#ContentMarketing", "#FacebookMarketing", "#BusinessTips"],
-  tk: ["#ContentCreator", "#TikTokMarketing", "#FYP", "#SocialMediaTips", "#BusinessTok"],
-};
+const PLATS = [
+  { nm: "LinkedIn",   ch: "in", cls: "#0A66C2", on: true,  posts: 18, next: "Tue 11:00" },
+  { nm: "Facebook",   ch: "f",  cls: "#1877F2", on: false, posts: 12, next: "—" },
+  { nm: "Instagram",  ch: "IG", cls: "radial-gradient(circle at 30% 110%,#FDB750 0%,#D53692 55%,#743BC8 100%)", on: true, posts: 26, next: "Today 21:00" },
+  { nm: "X",          ch: "𝕏", cls: "#111",    on: true,  posts: 14, next: "Tue 11:00" },
+  { nm: "TikTok",     ch: "TT", cls: "#0F0F14", on: true,  posts: 16, next: "Today 21:00" },
+  { nm: "YouTube",    ch: "▶",  cls: "#FF0000", on: true,  posts: 4,  next: "Tomorrow 18:45" },
+  { nm: "Pinterest",  ch: "P",  cls: "#E60023", on: true,  posts: 7,  next: "Wed 12:30" },
+  { nm: "Threads",    ch: "@",  cls: "#1A1A1A", on: true,  posts: 9,  next: "Wed 10:00" },
+  { nm: "G Business", ch: "G",  cls: "#4285F4", on: true,  posts: 6,  next: "Thu 09:00" },
+  { nm: "Bluesky",    ch: "B",  cls: "#1185FE", on: true,  posts: 8,  next: "Fri 17:00" },
+];
 
-const platColors: Record<string, string> = {
-  ig: "#E1306C", li: "#0A66C2", tw: "#1DA1F2", fb: "#1877F2", tk: "#111",
-};
+const QUICK = [
+  { label: "Generate content",  icon: Icon.star,     grad: GRAD,                                              href: "/" },
+  { label: "Generate images",   icon: Icon.img,      grad: "linear-gradient(125deg,#F97316,#DC2626)",        href: "/dashboards/library" },
+  { label: "Generate reel",     icon: Icon.reel,     grad: "linear-gradient(125deg,#EA580C,#7C3AED)",        href: "/dashboards/library" },
+  { label: "Schedule posts",    icon: Icon.calendar, grad: "linear-gradient(125deg,#16A34A,#F97316)",        href: "/dashboards/calendar" },
+  { label: "Browse library",    icon: Icon.book,     grad: "linear-gradient(125deg,#0E7490,#F97316)",        href: "/dashboards/library" },
+  { label: "Create campaign",   icon: Icon.campaign, grad: "linear-gradient(125deg,#1D4ED8,#F97316)",        href: "/dashboards/calendar" },
+  { label: "Connect account",   icon: Icon.link,     grad: "linear-gradient(125deg,#F97316,#EA580C)",        href: "/dashboards/settings/accounts" },
+  { label: "Brand kit",         icon: Icon.brand,    grad: "linear-gradient(125deg,#7C3AED,#F97316)",        href: "/dashboards/settings/brand" },
+];
 
-const platLabels: Record<string, string> = {
-  ig: "Instagram", li: "LinkedIn", tw: "Twitter", fb: "Facebook", tk: "TikTok",
-};
+const CREATIONS = [
+  { cls: GRAD },
+  { cls: "linear-gradient(125deg,#F97316,#DC2626)" },
+  { cls: "linear-gradient(160deg,#EA580C,#7C3AED)" },
+  { cls: "linear-gradient(125deg,#16A34A,#F97316)" },
+  { cls: "linear-gradient(140deg,#F97316,#D53692)" },
+  { cls: "linear-gradient(125deg,#0E7490,#EA580C)" },
+];
 
-// ── Social Accounts Section ──────────────────────────────────────────────
-function SocialAccountsSection({ user, showToast, refreshUser }: { user: UserProfile | null, showToast: (msg: string) => void, refreshUser: () => void }) {
-  const [connecting, setConnecting] = useState<Platform | null>(null);
-
-  const platforms: { id: Platform; name: string; icon: string; color: string; publish: boolean }[] = [
-    { id: "instagram", name: "Instagram", icon: "fa-brands fa-instagram", color: "#E1306C", publish: true },
-    { id: "facebook", name: "Facebook", icon: "fa-brands fa-facebook", color: "#1877F2", publish: true },
-    { id: "linkedin", name: "LinkedIn", icon: "fa-brands fa-linkedin", color: "#0A66C2", publish: true },
-    { id: "youtube", name: "YouTube", icon: "fa-brands fa-youtube", color: "#FF0000", publish: false },
-  ];
-
-  const handleConnect = async (platform: Platform) => {
-    if (connecting) return;
-    setConnecting(platform);
-    try {
-      const { redirectUrl } = await connectPlatform(platform);
-      if (redirectUrl) {
-        window.location.href = redirectUrl;
-      } else {
-        throw new Error("No redirect URL received from server.");
-      }
-    } catch (err: any) {
-      console.error(`Failed to connect ${platform}:`, err);
-      const msg = err.response?.data?.message || `Failed to start connection for ${platform}.`;
-      showToast(msg);
-      setConnecting(null);
-    }
-  };
-
-  const isConnected = (id: Platform) => {
-    return user?.connectedSocials?.some(s => s.toLowerCase() === id.toLowerCase());
-  };
-
-  return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
-      {platforms.map((p) => {
-        const connected = isConnected(p.id);
-        const isThisConnecting = connecting === p.id;
-
-        return (
-          <div key={p.id} style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 20, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-              <div style={{ width: 44, height: 44, borderRadius: 10, background: p.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 20 }}>
-                <i className={p.icon} />
-              </div>
-              <div style={{ display: "flex", gap: 6 }}>
-                {!p.publish && (
-                  <span style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", padding: "2px 8px", borderRadius: 20, background: "#F0F1F8", color: "#9496B5" }}>Connect Only</span>
-                )}
-                {connected && (
-                  <span style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", padding: "2px 8px", borderRadius: 20, background: "#ECFDF5", color: "#10B981" }}>Connected</span>
-                )}
-              </div>
-            </div>
-            <div style={{ fontSize: 16, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 4 }}>{p.name}</div>
-            <div style={{ fontSize: 13, color: "#9496B5", marginBottom: 20 }}>
-              {p.publish ? "Publish images, reels, and stories directly." : "Connect your channel to sync channel analytics."}
-            </div>
-            <button
-              onClick={() => handleConnect(p.id)}
-              disabled={connected || !!connecting}
-              style={{ 
-                width: "100%", padding: "10px", borderRadius: 8, 
-                background: connected ? "#F8F9FD" : "#F0F1F8", 
-                color: connected ? "#C8CADF" : "#0D0E1A", 
-                fontSize: 13, fontWeight: 700, 
-                cursor: (connected || !!connecting) ? "default" : "pointer", 
-                border: "none", transition: "all 0.2s",
-                display: "flex", alignItems: "center", justifyContent: "center", gap: 8
-              }}
-              onMouseOver={(e) => { if(!connected && !connecting) e.currentTarget.style.background = "#E4E5EF" }}
-              onMouseOut={(e) => { if(!connected && !connecting) e.currentTarget.style.background = "#F0F1F8" }}
-            >
-              {isThisConnecting && <i className="fa-solid fa-circle-notch fa-spin" style={{ fontSize: 12 }} />}
-              {connected ? "Account Connected" : isThisConnecting ? "Redirecting..." : "Connect Account"}
-            </button>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-// ── Toast Hook ─────────────────────────────────────────────────────────────
-function useToast() {
-  const [toast, setToast] = useState({ visible: false, msg: "" });
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const show = (msg: string) => {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    setToast({ visible: true, msg });
-    timerRef.current = setTimeout(() => setToast({ visible: false, msg: "" }), 2800);
-  };
-  return { toast, show };
-}
-
-// ── Mini Calendar ──────────────────────────────────────────────────────────
-function MiniCalendar() {
-  const days = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
-  const hasPosts = [3, 5, 8, 10, 12, 14, 17, 19, 21, 24, 26, 28];
-  return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 2, marginTop: 8 }}>
-      {days.map((d) => (
-        <div key={d} style={{ fontSize: 10, fontWeight: 700, textAlign: "center", color: "#C8CADF", padding: "4px 0", textTransform: "uppercase" }}>{d}</div>
-      ))}
-      {[26, 27, 28, 29, 30].map((n) => (
-        <div key={`prev-${n}`} style={{ aspectRatio: "1", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11.5, borderRadius: 6, color: "#C8CADF" }}>{n}</div>
-      ))}
-      {Array.from({ length: 31 }, (_, i) => i + 1).map((i) => {
-        const isToday = i === 8;
-        const hasPost = hasPosts.includes(i);
-        return (
-          <div
-            key={i}
-            style={{
-              aspectRatio: "1", display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 11.5, borderRadius: isToday ? 8 : 6, cursor: "pointer", position: "relative",
-              background: isToday ? "#5B5BD6" : undefined,
-              color: isToday ? "#fff" : "#9496B5",
-              fontWeight: isToday ? 700 : 400,
-            }}
-          >
-            {i}
-            {hasPost && (
-              <span style={{
-                position: "absolute", bottom: 2, left: "50%", transform: "translateX(-50%)",
-                width: 4, height: 4, borderRadius: "50%",
-                background: isToday ? "#fff" : "#10B981",
-              }} />
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-// ── Dashboard Page ─────────────────────────────────────────────────────────
 export default function DashboardPage() {
-  const { sidebarSlim, setSidebarSlim } = useSidebarState();
-  const [activeTab, setActiveTab] = useState("Overview");
-  const [activePlat, setActivePlat] = useState("ig");
-  const [generating, setGenerating] = useState(false);
-  const [promptInput, setPromptInput] = useState("");
-  const [caption, setCaption] = useState("");
-  const [tags2, setTags2] = useState<string[]>([]);
-  const { toast, show: showToast } = useToast();
-  const { user, initials, refresh: refreshUser } = useUserProfile();
-  const [processingCallback, setProcessingCallback] = useState(false);
+  const { user, initials } = useUserProfile();
+  const [ringAnimated, setRingAnimated] = useState(false);
+  const [counts, setCounts] = useState({ posts: 0, scheduled: 0, platforms: 0 });
+  const ringRef = useRef<SVGCircleElement>(null);
+
+  const firstName = user?.name?.split(" ")[0] || "there";
+  const userInitials = initials || "U";
+  const today = new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("status") === "connecting") {
-      setActiveTab("Automation"); // Ensure user sees the progress
-      const sessionToken = params.get("session_token");
-      const accountId = params.get("account_id");
+    const targets = { posts: 214, scheduled: 151, platforms: 9 };
+    const dur = 800;
+    let start: number | null = null;
+    const step = (ts: number) => {
+      if (!start) start = ts;
+      const p = Math.min(1, (ts - start) / dur);
+      const e = 1 - Math.pow(1 - p, 3);
+      setCounts({ posts: Math.round(targets.posts * e), scheduled: Math.round(targets.scheduled * e), platforms: Math.round(targets.platforms * e) });
+      if (p < 1) requestAnimationFrame(step);
+    };
+    setTimeout(() => requestAnimationFrame(step), 300);
+  }, []);
 
-      const processCallback = async () => {
-        setProcessingCallback(true);
-        try {
-          if (sessionToken) {
-            await handleCallback({ sessionToken });
-          } else if (accountId) {
-            await handleCallback({
-              account_id: accountId,
-              network_unique_id: params.get("network_unique_id") || "",
-              username: params.get("username") || "",
-              network: params.get("network") || "INSTAGRAM",
-            });
-          }
-          showToast("Social account connected successfully!");
-          await refreshUser();
-          // Clean up URL
-          window.history.replaceState({}, document.title, window.location.pathname + "?status=connected");
-        } catch (err: any) {
-          console.error("Callback handling failed:", err);
-          const msg = err.response?.data?.message || "Failed to connect social account.";
-          showToast(msg);
-        } finally {
-          setProcessingCallback(false);
-        }
-      };
+  useEffect(() => {
+    const t = setTimeout(() => setRingAnimated(true), 500);
+    return () => clearTimeout(t);
+  }, []);
 
-      processCallback();
-    }
-  }, [showToast, refreshUser]);
+  const SCORE = 92;
+  const R = 64;
+  const C = 2 * Math.PI * R;
+  const offset = ringAnimated ? C * (1 - SCORE / 100) : C;
 
-  const generateCaption = async () => {
-    const { industryId, subIndustryId } = resolveGeneratorProfileFields(
-      (user ?? null) as Record<string, unknown> | null
-    );
+  // Inline chat state
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatMsgs, setChatMsgs] = useState<{type:"bot"|"user";text:string}[]>([
+    { type: "bot", text: "👋 Hi! I'm Shoutly AI. Ask me anything about your account, features, or content strategy." },
+  ]);
+  const [chatInput, setChatInput] = useState("");
+  const [chatLoading, setChatLoading] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
 
-    if (!industryId || !subIndustryId) {
-      showToast("Set your industry and sub-industry in profile first.");
-      return;
-    }
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMsgs, chatLoading]);
 
-    const prompt = promptInput.trim();
-    if (!prompt) {
-      showToast("Add a prompt before generating.");
-      return;
-    }
-
-    setCaption("");
-    setTags2([]);
-    setGenerating(true);
-    let applied = false;
-
+  const sendChat = async () => {
+    if (!chatInput.trim() || chatLoading) return;
+    const q = chatInput.trim();
+    setChatInput("");
+    setChatMsgs(p => [...p, { type: "user", text: q }]);
+    setChatLoading(true);
     try {
-      await streamGeneratePosts(
-        {
-          industryId,
-          subIndustryId,
-          prompt,
-        },
-        {
-          onChunk: (chunk) => {
-            const text = chunk.post?.text?.trim();
-            if (!text) return;
-            if (applied && chunk.post?.source !== "LLM") return;
-
-            setCaption(text);
-            setTags2(chunk.post?.hashtags || []);
-
-            // Prefer LLM output when it arrives, but allow DB output as fallback.
-            if (!applied || chunk.post?.source === "LLM") {
-              applied = true;
-              setGenerating(false);
-            }
-          },
-          onDone: () => {
-            if (!applied) {
-              showToast("No generated post received from stream.");
-            }
-            setGenerating(false);
-          },
-        }
-      );
-    } catch (error) {
-      console.error("Dashboard generate stream failed:", error);
-      setGenerating(false);
-      showToast(
-        error instanceof Error
-          ? error.message
-          : "Failed to generate caption from API."
-      );
+      const r = await fetch(API_ENDPOINTS.ragChat, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "ngrok-skip-browser-warning": "true" },
+        body: JSON.stringify({ query: q, topK: 5 }),
+      });
+      const d = await r.json();
+      setChatMsgs(p => [...p, { type: "bot", text: r.ok && d.success ? d.answer : "Sorry, something went wrong. Please try again." }]);
+    } catch {
+      setChatMsgs(p => [...p, { type: "bot", text: "Couldn't connect. Please try again." }]);
+    } finally {
+      setChatLoading(false);
     }
   };
-
-  const copyCaption = () => {
-    navigator.clipboard?.writeText(caption).catch(() => {});
-    showToast("📋 Caption copied to clipboard!");
-  };
-
-  const tabs = ["Overview", "Posts", "Analytics", "Automation", "Team"];
 
   return (
     <>
-      {/* Global Styles */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13.5px; background: #F5F6FA; color: #0D0E1A; overflow: hidden; }
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #E4E5EF; border-radius: 4px; }
-        @keyframes gradMove { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-        @keyframes shimmer { 0%{background-position:-600px 0} 100%{background-position:600px 0} }
-        @keyframes cardIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
-        .skel-line {
-          height: 12px; border-radius: 6px; margin-bottom: 8px;
-          background: linear-gradient(90deg,#F0F1F8 0%,#ECEDF5 50%,#F0F1F8 100%);
-          background-size: 600px; animation: shimmer 1.5s infinite;
-        }
-        .ai-banner-anim {
-          background: linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4338ca 70%,#6d28d9 100%);
-          background-size: 200% 200%; animation: gradMove 6s ease infinite;
-        }
-        .row-actions { opacity: 0; transition: opacity .13s; display: flex; gap: 5px; }
-        tr:hover .row-actions { opacity: 1; }
-        tr:hover td { background: #F0F1F8; }
-        .sb-item-hover:hover { background: #1E1F2E; color: #F1F2FF; }
-        .tb-icon-hover:hover { background: #F0F1F8; color: #0D0E1A; }
-        .row-btn-hover:hover { background: #EEEEFF; border-color: #5B5BD6; color: #5B5BD6; }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+        .db-body { font-family:'Inter',system-ui,sans-serif; background:#F9FAFB; color:#111827; font-size:14.5px; line-height:1.55; min-height:100vh; }
+        .font-display { font-family:'Space Grotesk',system-ui,sans-serif; font-weight:700; }
+        .grad-text { background:${GRAD}; -webkit-background-clip:text; background-clip:text; color:transparent; }
+        .ring-fg { transition:stroke-dashoffset 1.2s cubic-bezier(.22,1,.36,1); }
+        @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(22,163,74,.4)}55%{box-shadow:0 0 0 6px transparent}}
+        .pulse-dot{animation:pulse 2s infinite}
+        .qa-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px -4px rgba(249,115,22,.18);border-color:rgba(249,115,22,.35);}
+        .ichip:hover{border-color:rgba(249,115,22,.5);background:#FFF7ED!important;transform:translateY(-1px);}
+        .uitem:hover{background:#FFF7ED}
+        @keyframes typingDot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+        .chat-scroll::-webkit-scrollbar{width:3px}.chat-scroll::-webkit-scrollbar-thumb{background:rgba(249,115,22,.25);border-radius:3px}
       `}</style>
 
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+      <div className="db-body" style={{ display: "flex", minHeight: "100vh" }}>
 
-      {/* Shell: Sidebar + Main side by side */}
-      <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
+        {/* ── SIDEBAR ── */}
+        <Sidebar />
 
-        {/* ── Sidebar (separate component) ── */}
-        <Sidebar slim={sidebarSlim} onToggle={() => setSidebarSlim((s) => !s)} />
+        {/* ── MAIN ── */}
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
 
-        {/* ── Main Content ── */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0, background: "#F5F6FA" }}>
-
-          {/* Topbar */}
-          <AdminHeader
-            pageTitle="Dashboard"
-            slim={sidebarSlim}
-            onToggle={() => setSidebarSlim((s) => !s)}
-            searchPlaceholder="Search posts, analytics…"
-            userName={user?.name}
-            userInitials={initials}
-            actionButton={
-              <button
-                onClick={() => showToast("✦ Opening Post Composer…")}
-                style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 7, background: "#5B5BD6", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(91,91,214,.28)" }}
-              >
-                <i className="fa-solid fa-plus" style={{ fontSize: 11 }} /> New Post
+          {/* TOPBAR */}
+          <div style={{
+            position: "sticky", top: 0, zIndex: 50,
+            background: "rgba(255,255,255,.9)", backdropFilter: "blur(12px)",
+            borderBottom: "1px solid #F3F4F6",
+            padding: "0 28px", height: 56,
+            display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14,
+          }}>
+            <nav style={{ fontSize: ".75rem", color: "#9CA3AF" }}>
+              Workspace&nbsp;<span>/</span>&nbsp;<b style={{ color: "#111827", fontWeight: 500 }}>Dashboard</b>
+            </nav>
+            <div style={{ display: "flex", gap: 9, alignItems: "center" }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 7, border: "1px solid #FED7AA", background: "#FFF7ED", borderRadius: 99, padding: "5px 13px", fontSize: ".75rem", color: "#6B7280" }}>
+                <span style={{ width: 13, height: 13, color: "#F97316" }}>{Icon.star}</span>
+                <b style={{ color: "#111827" }}>1,240</b>&nbsp;credits
+              </span>
+              <button style={{ width: 34, height: 34, borderRadius: 9, border: "1px solid #E5E7EB", background: "#fff", color: "#6B7280", display: "grid", placeItems: "center", cursor: "pointer", position: "relative" }}>
+                <span style={{ position: "absolute", top: 7, right: 8, width: 7, height: 7, borderRadius: "50%", background: "#DC2626", border: "1.5px solid #fff" }} />
+                <span style={{ width: 16, height: 16 }}>{Icon.bell}</span>
               </button>
-            }
-          />
-
-          {/* Tab Bar */}
-          <div style={{ display: "flex", alignItems: "center", padding: "0 22px", background: "#fff", borderBottom: "1px solid #E4E5EF", flexShrink: 0 }}>
-            {tabs.map((t) => (
-              <div
-                key={t}
-                onClick={() => setActiveTab(t)}
-                style={{
-                  padding: "14px 18px", fontSize: 13,
-                  fontWeight: activeTab === t ? 700 : 600,
-                  color: activeTab === t ? "#5B5BD6" : "#9496B5",
-                  cursor: "pointer", position: "relative", whiteSpace: "nowrap",
-                }}
-              >
-                {t}
-                {t === "Posts" && (
-                  <span style={{ marginLeft: 6, padding: "1px 6px", borderRadius: 10, fontSize: 10.5, fontWeight: 700, background: activeTab === t ? "#EEEEFF" : "#F0F1F8", color: activeTab === t ? "#5B5BD6" : "#9496B5" }}>68</span>
-                )}
-                {activeTab === t && (
-                  <span style={{ position: "absolute", bottom: -1, left: 0, right: 0, height: 2, background: "#5B5BD6", borderRadius: "2px 2px 0 0" }} />
-                )}
-              </div>
-            ))}
+              <Link href="/dashboards/settings/billing" style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "6px 14px", borderRadius: 8, fontSize: ".79rem", fontWeight: 600, textDecoration: "none", background: GRAD, color: "#fff", boxShadow: "0 4px 12px -3px rgba(249,115,22,.45)" }}>
+                Upgrade
+              </Link>
+              <span style={{ width: 32, height: 32, borderRadius: "50%", background: GRAD, color: "#fff", display: "grid", placeItems: "center", fontWeight: 700, fontSize: ".72rem", cursor: "pointer", boxShadow: "0 2px 8px -2px rgba(249,115,22,.5)" }}>
+                {userInitials}
+              </span>
+            </div>
           </div>
 
-          {/* Scrollable Content */}
-          <div style={{ flex: 1, overflowY: "auto", padding: "20px 22px" }}>
+          {/* CONTENT */}
+          <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) 280px", gap: 24, padding: "28px 28px 0", maxWidth: 1360, margin: "0 auto", width: "100%" }}>
 
-            {activeTab === "Automation" ? (
-              <>
-                <div style={{ marginBottom: 18 }}>
-                  <div style={{ fontSize: 20, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.3px" }}>
-                    Social Account Connections 🔗
-                  </div>
-                  <div style={{ fontSize: 13, color: "#9496B5", marginTop: 3 }}>
-                    Connect your brand's social profiles to enable AI-powered auto posting and analytics.
-                  </div>
-                </div>
-                <SocialAccountsSection user={user} showToast={showToast} refreshUser={refreshUser} />
-              </>
-            ) : (
-              <>
-                {/* Welcome greeting */}
-                <div style={{ marginBottom: 18 }}>
-                  <div style={{ fontSize: 20, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.3px" }}>
-                    Welcome back{user?.name ? `, ${user.name.split(" ")[0]}` : ""} 👋
-                  </div>
-                  {user?.brandName && (
-                    <div style={{ fontSize: 13, color: "#9496B5", marginTop: 3 }}>
-                      Managing <strong style={{ color: "#5B5BD6" }}>{user.brandName}</strong>
-                      {user.connectedSocials && user.connectedSocials.length > 0 && (
-                        <> · {user.connectedSocials.length} platform{user.connectedSocials.length > 1 ? "s" : ""} connected</>
-                      )}
-                    </div>
-                  )}
-                </div>
+            {/* ── MAIN COLUMN ── */}
+            <div style={{ minWidth: 0, display: "flex", flexDirection: "column", gap: 24 }}>
 
-                {/* KPI Cards */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14, marginBottom: 18 }}>
+              {/* Hello */}
+              <div>
+                <h1 className="font-display" style={{ fontSize: "1.55rem", letterSpacing: "-.02em", color: "#111827" }}>
+                  Welcome back, {firstName} 👋
+                </h1>
+                <p style={{ fontSize: ".78rem", color: "#9CA3AF", marginTop: 3 }}>
+                  {today} · next post in <b style={{ color: "#111827" }}>2h 14m</b>
+                </p>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 10, background: "#FFF7ED", border: "1px solid #FED7AA", color: "#6B7280", fontSize: ".84rem", padding: "7px 13px", borderRadius: 99 }}>
+                  <span style={{ width: 13, height: 13, color: "#F97316", flexShrink: 0 }}>{Icon.star}</span>
+                  Your engagement grew 18% this week — your audience loves the tips series. Keep it going!
+                </span>
+              </div>
+
+              {/* HERO */}
+              <section style={{
+                position: "relative", borderRadius: 20, overflow: "hidden",
+                background: "linear-gradient(135deg,#FFF7ED 0%,#FFEDD5 50%,#FEF3C7 100%)",
+                border: "1px solid #FED7AA",
+                boxShadow: "0 4px 16px -4px rgba(249,115,22,.12)",
+                padding: "28px 30px",
+              }}>
+                {/* Decorative blobs */}
+                <span style={{ position: "absolute", right: -40, top: -40, width: 200, height: 200, borderRadius: "50%", background: "rgba(249,115,22,.08)", pointerEvents: "none" }} />
+                <span style={{ position: "absolute", right: 60, bottom: -60, width: 160, height: 160, borderRadius: "50%", background: "rgba(234,88,12,.06)", pointerEvents: "none" }} />
+
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: ".68rem", letterSpacing: ".13em", textTransform: "uppercase", color: "#16A34A", background: "#DCFCE7", padding: "5px 12px", borderRadius: 99, border: "1px solid #86EFAC" }}>
+                  <span className="pulse-dot" style={{ width: 7, height: 7, borderRadius: "50%", background: "#16A34A", display: "inline-block" }} />
+                  Autopilot active
+                </span>
+                <h2 className="font-display" style={{ fontSize: "clamp(1.4rem,2.5vw,1.8rem)", letterSpacing: "-.02em", margin: "12px 0 18px", color: "#111827" }}>
+                  Your social media is running on autopilot 🚀
+                </h2>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 11, marginBottom: 20 }}>
                   {[
-                    { icon: "fa-solid fa-users", iconBg: "#EEEEFF", iconC: "#5B5BD6", val: "147.2K", lbl: "Total Followers", delta: "+12.4%", up: true },
-                    { icon: "fa-solid fa-chart-line", iconBg: "#ECFDF5", iconC: "#10B981", val: "8.7%", lbl: "Avg Engagement", delta: "+2.1%", up: true },
-                    { icon: "fa-solid fa-calendar-check", iconBg: "#FFFBEB", iconC: "#F59E0B", val: "68", lbl: "Posts This Month", delta: "+8", up: true },
-                    { icon: "fa-solid fa-eye", iconBg: "#FDF2F8", iconC: "#EC4899", val: "2.1M", lbl: "Total Reach", delta: "+18.3%", up: true },
-                  ].map((k, i) => (
-                    <div key={i} style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: "16px 18px", boxShadow: "0 1px 4px rgba(13,14,26,.07)", animation: `cardIn .3s ease ${i * 0.05 + 0.05}s both` }}>
-                      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 10 }}>
-                        <div style={{ width: 36, height: 36, borderRadius: 10, background: k.iconBg, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <i className={k.icon} style={{ color: k.iconC }} />
-                        </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: 3, padding: "3px 7px", borderRadius: 20, background: k.up ? "#ECFDF5" : "#FEF2F2", color: k.up ? "#10B981" : "#EF4444", fontSize: 11.5, fontWeight: 700, fontFamily: "JetBrains Mono,monospace" }}>
-                          <i className={`fa-solid fa-arrow-${k.up ? "up" : "down"}`} style={{ fontSize: 9 }} />{k.delta}
-                        </div>
+                    { k: "Posts generated",     v: counts.posts,     suffix: "" },
+                    { k: "Posts scheduled",     v: counts.scheduled, suffix: "" },
+                    { k: "Platforms connected", v: counts.platforms, suffix: " / 10" },
+                    { k: "Next scheduled post", v: "9:00", suffix: " PM today", raw: true },
+                  ].map(({ k, v, suffix, raw }) => (
+                    <div key={k} style={{ background: "rgba(255,255,255,.8)", backdropFilter: "blur(8px)", border: "1px solid #FED7AA", borderRadius: 12, padding: "12px 14px" }}>
+                      <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: ".65rem", letterSpacing: ".1em", textTransform: "uppercase", color: "#9CA3AF" }}>
+                        <span style={{ width: 11, height: 11, color: "#16A34A" }}>{Icon.check}</span>
+                        {k}
+                      </span>
+                      <div className="font-display" style={{ fontSize: "1.3rem", letterSpacing: "-.02em", marginTop: 4, color: "#111827" }}>
+                        {v}<small style={{ fontSize: ".75rem", color: "#9CA3AF", fontWeight: 600 }}>{suffix}</small>
                       </div>
-                      <div style={{ fontSize: 26, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.5px", lineHeight: 1 }}>{k.val}</div>
-                      <div style={{ fontSize: 12.5, color: "#9496B5", marginTop: 4, fontWeight: 500 }}>{k.lbl}</div>
                     </div>
                   ))}
                 </div>
-
-                {/* AI Banner */}
-                <div className="ai-banner-anim" style={{ borderRadius: 14, padding: "16px 20px", marginBottom: 18, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, boxShadow: "0 4px 20px rgba(91,91,214,.3)" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                    <div style={{ width: 42, height: 42, borderRadius: 12, background: "rgba(255,255,255,.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>✦</div>
-                    <div>
-                      <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", fontFamily: "Sora,sans-serif", marginBottom: 3 }}>Shoutly AI Insight — Your best time to post is TODAY at 7:30 PM</div>
-                      <div style={{ fontSize: 12.5, color: "rgba(255,255,255,.65)" }}>Based on your audience activity patterns across Instagram & LinkedIn · Predicted +34% higher engagement vs your avg</div>
-                    </div>
-                  </div>
-                  <button onClick={() => showToast("✦ Opening full AI insights…")} style={{ padding: "9px 18px", borderRadius: 7, background: "rgba(255,255,255,.15)", border: "1px solid rgba(255,255,255,.2)", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", fontFamily: "Sora,sans-serif", flexShrink: 0 }}>View Details →</button>
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                  <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "8px 16px", borderRadius: 10, fontWeight: 600, fontSize: ".85rem", textDecoration: "none", background: GRAD, color: "#fff", boxShadow: "0 4px 14px -3px rgba(249,115,22,.45)" }}>
+                    <span style={{ width: 14, height: 14 }}>{Icon.star}</span>Generate more content
+                  </Link>
+                  <Link href="/dashboards/calendar" style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "8px 16px", borderRadius: 10, fontWeight: 600, fontSize: ".85rem", textDecoration: "none", background: "#fff", border: "1px solid #E5E7EB", color: "#374151" }}>
+                    Open calendar
+                  </Link>
                 </div>
+              </section>
 
-                {/* Charts + AI Generator */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 18 }}>
-                  {/* Engagement Chart Placeholder */}
-                  <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-                      <div>
-                        <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.2px" }}>Engagement Overview</div>
-                        <div style={{ fontSize: 12, color: "#9496B5", marginTop: 2 }}>Cross-platform performance · Last 30 days</div>
-                      </div>
-                      <div style={{ display: "flex", gap: 4 }}>
-                        {["7D", "30D", "90D"].map((ct, i) => (
-                          <div key={ct} style={{ padding: "4px 10px", borderRadius: 20, fontSize: 11.5, fontWeight: 700, cursor: "pointer", background: i === 0 ? "#EEEEFF" : undefined, color: i === 0 ? "#5B5BD6" : "#9496B5" }}>{ct}</div>
-                        ))}
-                      </div>
-                    </div>
-                    <div style={{ position: "relative" }}>
-                      <div style={{ position: "absolute", top: -4, right: 0, padding: "2px 8px", borderRadius: 20, background: "#ECFDF5", border: "1px solid rgba(16,185,129,.2)", color: "#10B981", fontSize: 11, fontWeight: 700 }}>↑ +208% vs last month</div>
-                      <div style={{ height: 160, background: "#F0F1F8", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", color: "#9496B5", fontSize: 12 }}>📊 Chart renders here (Chart.js)</div>
-                    </div>
-                  </div>
-
-                  {/* AI Post Generator */}
-                  <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
-                    <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 2 }}>AI Post Generator</div>
-                    <div style={{ fontSize: 12, color: "#9496B5", marginBottom: 14 }}>Generate captions with a single click ✦</div>
-                    <div style={{ display: "flex", gap: 5, marginBottom: 14, flexWrap: "wrap" }}>
-                      {Object.entries(platLabels).map(([key, label]) => {
-                        const active = activePlat === key;
-                        return (
-                          <div
-                            key={key}
-                            onClick={() => { setActivePlat(key); setCaption(""); setTags2([]); }}
-                            style={{ display: "flex", alignItems: "center", gap: 5, padding: "5px 11px", borderRadius: 20, border: `1.5px solid ${active ? platColors[key] : "#E4E5EF"}`, fontSize: 12, fontWeight: 700, cursor: "pointer", background: active ? platColors[key] : "#fff", color: active ? "#fff" : "#4B4D6B" }}
-                          >
-                            <div style={{ width: 7, height: 7, borderRadius: "50%", background: active ? "rgba(255,255,255,.4)" : platColors[key] }} />
-                            {label}
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <textarea
-                      placeholder="Describe your post topic… e.g. 'new product launch, summer vibe, call to action'"
-                      value={promptInput}
-                      onChange={(e) => setPromptInput(e.target.value)}
-                      style={{ width: "100%", padding: "11px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#F0F1F8", color: "#0D0E1A", fontSize: 13.5, outline: "none", resize: "none", height: 70, fontFamily: "inherit", lineHeight: 1.6 }}
-                    />
-                    {generating && (
-                      <div style={{ marginBottom: 12 }}>
-                        <div className="skel-line" style={{ width: "100%" }} />
-                        <div className="skel-line" style={{ width: "85%" }} />
-                        <div className="skel-line" style={{ width: "70%" }} />
-                      </div>
-                    )}
-                    {caption && !generating && (
-                      <div style={{ background: "linear-gradient(135deg,#EEEEFF,rgba(236,233,255,.5))", border: "1px solid rgba(91,91,214,.2)", borderRadius: 7, padding: "12px 14px", fontSize: 13.5, color: "#0D0E1A", lineHeight: 1.7, marginBottom: 12 }}>
-                        {caption}
-                      </div>
-                    )}
-                    {tags2.length > 0 && !generating && (
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 12 }}>
-                        {tags2.map((t) => (
-                          <span key={t} style={{ padding: "3px 9px", borderRadius: 6, background: "#EEEEFF", border: "1px solid #E0E0FA", color: "#5B5BD6", fontSize: 11.5, fontWeight: 600, fontFamily: "JetBrains Mono,monospace", cursor: "pointer" }}>{t}</span>
-                        ))}
-                      </div>
-                    )}
-                    <div style={{ display: "flex", gap: 7 }}>
-                      <button onClick={generateCaption} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "7px 13px", borderRadius: 7, background: "#5B5BD6", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: "pointer", border: "none" }}>
-                        <i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 11 }} /> Generate
-                      </button>
-                      {caption && !generating && (
-                        <>
-                          <button onClick={generateCaption} style={{ display: "flex", alignItems: "center", gap: 5, padding: "7px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#fff", color: "#4B4D6B", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
-                            <i className="fa-solid fa-rotate-right" style={{ fontSize: 11 }} /> Regen
-                          </button>
-                          <button onClick={copyCaption} style={{ display: "flex", alignItems: "center", gap: 5, padding: "7px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#fff", color: "#4B4D6B", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
-                            <i className="fa-regular fa-copy" style={{ fontSize: 11 }} /> Copy
-                          </button>
-                          <button onClick={() => showToast("📅 Added to calendar!")} style={{ display: "flex", alignItems: "center", gap: 5, padding: "7px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#fff", color: "#4B4D6B", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
-                            <i className="fa-solid fa-calendar-plus" style={{ fontSize: 11 }} /> Schedule
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </div>
+              {/* QUICK ACTIONS */}
+              <section>
+                <h2 className="font-display" style={{ fontSize: "1rem", marginBottom: 12, color: "#111827" }}>Quick actions</h2>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 11 }}>
+                  {QUICK.map(({ label, icon, grad, href }) => (
+                    <Link key={label} href={href} className="qa-card" style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 12, padding: "15px 13px", display: "flex", flexDirection: "column", gap: 10, textDecoration: "none", color: "#111827", transition: "all .2s", boxShadow: "0 1px 2px rgba(0,0,0,.04)" }}>
+                      <span style={{ width: 34, height: 34, borderRadius: 10, background: grad, display: "grid", placeItems: "center", color: "#fff" }}>
+                        <span style={{ width: 16, height: 16 }}>{icon}</span>
+                      </span>
+                      <b style={{ fontSize: ".84rem", fontWeight: 600 }}>{label}</b>
+                    </Link>
+                  ))}
                 </div>
+              </section>
 
-                {/* Scheduled Posts Table */}
-                <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, boxShadow: "0 1px 4px rgba(13,14,26,.07)", marginBottom: 18 }}>
-                  <div style={{ padding: "16px 18px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <div>
-                      <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif" }}>Scheduled Posts</div>
-                      <div style={{ fontSize: 12, color: "#9496B5" }}>Upcoming content across all platforms</div>
-                    </div>
-                    <button onClick={() => showToast("Opening full post manager…")} style={{ display: "flex", alignItems: "center", gap: 5, padding: "7px 13px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#fff", color: "#4B4D6B", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
-                      View all <i className="fa-solid fa-arrow-right" style={{ fontSize: 11 }} />
-                    </button>
+              {/* ACTIVITY + UPCOMING */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+                <section style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 16, boxShadow: "0 1px 2px rgba(0,0,0,.04)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", padding: "16px 18px 0" }}>
+                    <h2 className="font-display" style={{ fontSize: "1rem", color: "#111827" }}>Today's activity</h2>
+                    <a href="#" style={{ color: "#F97316", fontWeight: 600, fontSize: ".8rem", textDecoration: "none" }}>All →</a>
                   </div>
-                  <div style={{ padding: "10px 0" }}>
-                    <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                      <thead>
-                        <tr>
-                          {["Post", "Scheduled", "Est. Reach", "Status", "Actions"].map((h, i) => (
-                            <th key={h} style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: "#9496B5", padding: "8px 12px", textAlign: "left", borderBottom: "1px solid #E4E5EF", paddingLeft: i === 0 ? 18 : 12, paddingRight: i === 4 ? 18 : 12 }}>{h}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {posts.map((p, i) => {
-                          const statusStyles: Record<string, { bg: string; color: string; icon: string }> = {
-                            scheduled: { bg: "#EFF6FF", color: "#3B82F6", icon: "🕐" },
-                            draft: { bg: "#FFFBEB", color: "#F59E0B", icon: "✏️" },
-                            published: { bg: "#ECFDF5", color: "#10B981", icon: "✅" },
-                          };
-                          const ss = statusStyles[p.status];
-                          return (
-                            <tr key={i}>
-                              <td style={{ padding: "10px 12px 10px 18px", borderBottom: "1px solid #ECEDF5", verticalAlign: "middle" }}>
-                                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                                  <img src={p.img} alt="" style={{ width: 44, height: 44, borderRadius: 7, objectFit: "cover", display: "block" }} />
-                                  <div style={{ minWidth: 0 }}>
-                                    <div style={{ fontSize: 13, fontWeight: 600, color: "#0D0E1A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 200 }}>{p.name}</div>
-                                    <div style={{ fontSize: 11.5, color: "#9496B5", display: "flex", alignItems: "center", gap: 4, marginTop: 2 }}>
-                                      <div style={{ width: 6, height: 6, borderRadius: "50%", background: p.platC }} />{p.plat}
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td style={{ padding: "10px 12px", borderBottom: "1px solid #ECEDF5", verticalAlign: "middle" }}>
-                                <div style={{ fontSize: 12.5, fontWeight: 600, color: "#0D0E1A", fontFamily: "JetBrains Mono,monospace" }}>{p.time}</div>
-                                <div style={{ fontSize: 11.5, color: "#9496B5" }}>{p.date}</div>
-                              </td>
-                              <td style={{ padding: "10px 12px", borderBottom: "1px solid #ECEDF5", verticalAlign: "middle" }}>
-                                <div style={{ fontSize: 13, fontWeight: 700, color: "#0D0E1A", fontFamily: "JetBrains Mono,monospace" }}>{p.reach}</div>
-                                <div style={{ fontSize: 11, color: "#9496B5", fontFamily: "JetBrains Mono,monospace" }}>{p.eng} eng</div>
-                              </td>
-                              <td style={{ padding: "10px 12px", borderBottom: "1px solid #ECEDF5", verticalAlign: "middle" }}>
-                                <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 9px", borderRadius: 20, fontSize: 11.5, fontWeight: 700, background: ss.bg, color: ss.color }}>
-                                  {ss.icon} {p.status.charAt(0).toUpperCase() + p.status.slice(1)}
-                                </span>
-                              </td>
-                              <td style={{ padding: "10px 18px 10px 12px", borderBottom: "1px solid #ECEDF5", verticalAlign: "middle" }}>
-                                <div className="row-actions">
-                                  <div className="row-btn-hover" onClick={() => showToast("Opening editor…")} style={{ width: 28, height: 28, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", color: "#9496B5", fontSize: 12, cursor: "pointer", border: "1px solid #E4E5EF" }}>
-                                    <i className="fa-solid fa-pen" style={{ fontSize: 11 }} />
-                                  </div>
-                                  <div className="row-btn-hover" onClick={() => showToast("More options…")} style={{ width: 28, height: 28, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", color: "#9496B5", fontSize: 12, cursor: "pointer", border: "1px solid #E4E5EF" }}>
-                                    <i className="fa-solid fa-ellipsis" style={{ fontSize: 11 }} />
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* Bottom Grid */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 2fr 1fr", gap: 14, marginBottom: 18 }}>
-
-                  {/* Mini Calendar */}
-                  <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
-                    <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 2 }}>Content Calendar</div>
-                    <div style={{ fontSize: 12, color: "#9496B5", marginBottom: 8 }}>March 2026</div>
-                    <MiniCalendar />
-                  </div>
-
-                  {/* AI Ideas */}
-                  <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-                      <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif" }}>AI Content Ideas</div>
-                      <span style={{ fontSize: 11, color: "#5B5BD6", fontWeight: 700, cursor: "pointer" }}>Refresh ↺</span>
-                    </div>
-                    {ideas.map((d, i) => (
-                      <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "9px 0", borderBottom: i < ideas.length - 1 ? "1px solid #ECEDF5" : undefined }}>
-                        <div style={{ width: 30, height: 30, borderRadius: 8, background: d.sb, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, flexShrink: 0 }}>{d.icon}</div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: "#0D0E1A", marginBottom: 2 }}>{d.title}</div>
-                          <div style={{ fontSize: 11.5, color: "#9496B5" }}>{d.sub}</div>
-                        </div>
-                        <div style={{ marginLeft: "auto", padding: "2px 8px", borderRadius: 20, fontSize: 11, fontWeight: 800, background: d.sb, color: d.sc, flexShrink: 0, fontFamily: "JetBrains Mono,monospace" }}>{d.score}</div>
+                  <div style={{ padding: "4px 18px 14px" }}>
+                    {[
+                      { ok: false, icon: Icon.star,  text: <>AI generated <b>14 images</b> for next week</>,   time: "6:00 AM" },
+                      { ok: true,  icon: Icon.check, text: <><b>9 posts</b> generated across 4 industries</>,  time: "6:05 AM" },
+                      { ok: true,  icon: Icon.check, text: <><b>5 posts</b> scheduled for optimal times</>,    time: "6:06 AM" },
+                      { ok: true,  icon: Icon.check, text: <><b>2 posts</b> published — LinkedIn completed</>, time: "9:30 AM" },
+                      { ok: false, icon: Icon.clock, text: <>Instagram Reel <b>queued</b> for 9:00 PM</>,      time: "just now" },
+                    ].map((item, i) => (
+                      <div key={i} style={{ display: "flex", gap: 12, padding: "10px 0", position: "relative" }}>
+                        {i < 4 && <span style={{ position: "absolute", left: 11, top: 34, bottom: -8, width: 2, background: "#F3F4F6" }} />}
+                        <span style={{ width: 24, height: 24, borderRadius: "50%", background: item.ok ? "#DCFCE7" : "#FFF7ED", color: item.ok ? "#16A34A" : "#F97316", display: "grid", placeItems: "center", flexShrink: 0, zIndex: 1 }}>
+                          <span style={{ width: 11, height: 11 }}>{item.icon}</span>
+                        </span>
+                        <span style={{ fontSize: ".85rem" }}>
+                          {item.text}
+                          <span style={{ display: "block", fontSize: ".69rem", color: "#9CA3AF", marginTop: 1 }}>{item.time}</span>
+                        </span>
                       </div>
                     ))}
                   </div>
+                </section>
 
-                  {/* Trending + Workflow */}
-                  <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                    <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
-                      <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 14 }}>Trending Hashtags</div>
-                      {tags.map((t, i) => (
-                        <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0", borderBottom: i < tags.length - 1 ? "1px solid #ECEDF5" : undefined }}>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: "#5B5BD6", fontFamily: "JetBrains Mono,monospace" }}>{t.name}</div>
-                          <div style={{ flex: 1, margin: "0 12px", height: 4, background: "#E4E5EF", borderRadius: 2, overflow: "hidden" }}>
-                            <div style={{ height: "100%", borderRadius: 2, background: "linear-gradient(90deg,#5B5BD6,#7C3AED)", width: `${t.pct}%` }} />
-                          </div>
-                          <div style={{ fontSize: 11.5, fontWeight: 700, color: "#10B981", fontFamily: "JetBrains Mono,monospace" }}>+{t.pct}%</div>
-                        </div>
-                      ))}
-                    </div>
-                    <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
-                      <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 8 }}>Active Workflow</div>
-                      {wfSteps.map((s, i) => (
-                        <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 0", position: "relative" }}>
-                          {i < wfSteps.length - 1 && <span style={{ position: "absolute", left: 13, top: 32, bottom: -8, width: 1.5, background: "#ECEDF5" }} />}
-                          <div style={{ width: 26, height: 26, borderRadius: "50%", flexShrink: 0, background: s.c, color: s.tc, fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center" }}>{s.dot}</div>
-                          <div>
-                            <div style={{ fontSize: 13, fontWeight: 600, color: "#0D0E1A" }}>{s.title}</div>
-                            <div style={{ fontSize: 11.5, color: "#9496B5", marginTop: 1 }}>{s.sub}</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                <section style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 16, boxShadow: "0 1px 2px rgba(0,0,0,.04)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", padding: "16px 18px 0" }}>
+                    <h2 className="font-display" style={{ fontSize: "1rem", color: "#111827" }}>Upcoming posts</h2>
+                    <Link href="/dashboards/calendar" style={{ color: "#F97316", fontWeight: 600, fontSize: ".8rem", textDecoration: "none" }}>Full calendar →</Link>
                   </div>
-
-                  {/* Team + Top Post */}
-                  <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                    <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
-                      <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 8 }}>Team Activity</div>
-                      {team.map((t, i) => (
-                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: i < team.length - 1 ? "1px solid #ECEDF5" : undefined }}>
-                          <div style={{ position: "relative" }}>
-                            <div style={{ width: 32, height: 32, borderRadius: 9, background: t.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, color: "#fff" }}>{t.av}</div>
-                            <div style={{ position: "absolute", bottom: -1, right: -1, width: 9, height: 9, borderRadius: "50%", background: t.status, border: "1.5px solid #fff" }} />
+                  <div style={{ padding: "4px 18px 14px" }}>
+                    {[
+                      { day: "Today",     items: [{ t: "9:00 PM", n: "3 mobility moves for desk workers",    chips: ["IG", "TT"] }] },
+                      { day: "Tomorrow",  items: [{ t: "9:30 AM", n: "Client win: Ritu's 12-week reset",    chips: ["IG", "f"] }, { t: "6:45 PM", n: "Myth: cardio kills gains", chips: ["▶", "TT"] }] },
+                      { day: "This week", items: [{ t: "Tue",     n: "Hiring: part-time trainer",           chips: ["in", "𝕏"] }, { t: "Wed", n: "Monsoon smoothie recipe drop", chips: ["IG", "P"] }] },
+                    ].map(({ day, items }) => (
+                      <div key={day}>
+                        <div style={{ fontSize: ".66rem", letterSpacing: ".11em", textTransform: "uppercase", color: "#9CA3AF", padding: "10px 0 5px" }}>{day}</div>
+                        {items.map(({ t, n, chips }) => (
+                          <div key={n} className="uitem" style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 8px", borderRadius: 9, cursor: "pointer", transition: "background .15s" }}>
+                            <span style={{ fontSize: ".72rem", color: "#6B7280", width: 48, flexShrink: 0 }}>{t}</span>
+                            <span style={{ flex: 1, fontSize: ".84rem", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{n}</span>
+                            {chips.map(c => (
+                              <span key={c} style={{ width: 19, height: 19, borderRadius: 6, background: c === "IG" ? "radial-gradient(circle at 30% 110%,#FDB750,#D53692 55%,#743BC8)" : c === "TT" ? "#0F0F14" : c === "f" ? "#1877F2" : c === "▶" ? "#FF0000" : c === "in" ? "#0A66C2" : c === "𝕏" ? "#111" : "#E60023", display: "grid", placeItems: "center", color: "#fff", fontSize: ".5rem", fontWeight: 700, flexShrink: 0 }}>{c}</span>
+                            ))}
                           </div>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: 13, fontWeight: 600, color: "#0D0E1A" }}>{t.name}</div>
-                            <div style={{ fontSize: 11.5, color: "#9496B5" }}>{t.action}</div>
-                          </div>
-                          <div style={{ fontSize: 11, color: "#C8CADF", whiteSpace: "nowrap", fontFamily: "JetBrains Mono,monospace" }}>{t.time}</div>
-                        </div>
-                      ))}
-                    </div>
-                    <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 14, padding: 18, boxShadow: "0 1px 4px rgba(13,14,26,.07)" }}>
-                      <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", marginBottom: 12 }}>Top Performing Post</div>
-                      <div style={{ borderRadius: 7, overflow: "hidden", background: "linear-gradient(135deg,#1e1b4b,#4338ca)", padding: 14 }}>
-                        <div style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "3px 9px", borderRadius: 20, background: "rgba(255,255,255,.15)", color: "rgba(255,255,255,.85)", fontSize: 11, fontWeight: 700, marginBottom: 8, fontFamily: "Sora,sans-serif" }}>🔥 #1 This Month</div>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,.9)", lineHeight: 1.5 }}>3 viral social media growth hacks that tripled our reach in 30 days…</div>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 10 }}>
-                          {[["82K", "Reach"], ["11.3%", "Engagement"], ["3.1K", "Saves"], ["940", "Shares"]].map(([v, l]) => (
-                            <div key={l} style={{ background: "rgba(255,255,255,.1)", borderRadius: 8, padding: 8, border: "1px solid rgba(255,255,255,.1)" }}>
-                              <div style={{ fontSize: 14, fontWeight: 800, color: "#fff", fontFamily: "Sora,sans-serif" }}>{v}</div>
-                              <div style={{ fontSize: 10.5, color: "rgba(255,255,255,.55)" }}>{l}</div>
-                            </div>
-                          ))}
-                        </div>
+                        ))}
                       </div>
-                    </div>
+                    ))}
                   </div>
+                </section>
+              </div>
 
+              {/* PLATFORMS */}
+              <section>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 11 }}>
+                  <h2 className="font-display" style={{ fontSize: "1rem", color: "#111827" }}>Connected platforms</h2>
+                  <Link href="/dashboards/settings/accounts" style={{ color: "#F97316", fontWeight: 600, fontSize: ".8rem", textDecoration: "none" }}>Manage →</Link>
                 </div>
-
-                {/* Platform Icons */}
-                <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", padding: "8px 0" }}>
-                  {[
-                    { cls: "fa-brands fa-instagram", color: "#E1306C" },
-                    { cls: "fa-brands fa-facebook", color: "#1877F2" },
-                    { cls: "fa-brands fa-linkedin", color: "#0A66C2" },
-                    { cls: "fa-brands fa-x-twitter", color: "#000" },
-                    { cls: "fa-brands fa-threads", color: "#000" },
-                    { cls: "fa-brands fa-tiktok", color: "#111" },
-                    { cls: "fa-brands fa-youtube", color: "#FF0000" },
-                  ].map((ic, i) => (
-                    <i key={i} className={ic.cls} style={{ color: ic.color, fontSize: 16 }} />
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 11 }}>
+                  {PLATS.map(p => (
+                    <div key={p.nm} style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 12, padding: "12px 13px", boxShadow: "0 1px 2px rgba(0,0,0,.04)" }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                        <span style={{ width: 25, height: 25, borderRadius: 8, background: p.cls, display: "grid", placeItems: "center", color: "#fff", fontSize: ".55rem", fontWeight: 700 }}>{p.ch}</span>
+                        <span style={{ fontSize: ".6rem", padding: "2px 7px", borderRadius: 99, background: p.on ? "#DCFCE7" : "#FEF3C7", color: p.on ? "#16A34A" : "#D97706" }}>{p.on ? "Connected" : "Reconnect"}</span>
+                      </div>
+                      <div style={{ fontSize: ".8rem", fontWeight: 600, color: "#111827" }}>{p.nm}</div>
+                      <div style={{ fontSize: ".65rem", color: "#9CA3AF", marginTop: 3, lineHeight: 1.6 }}>{p.posts} posts this month<br />Next: {p.next}</div>
+                    </div>
                   ))}
                 </div>
-              </>
-            )}
+              </section>
 
-          </div>{/* /content */}
-        </div>{/* /main */}
-      </div>{/* /shell */}
+              {/* PERFORMANCE SNAPSHOT */}
+              <section>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 11 }}>
+                  <h2 className="font-display" style={{ fontSize: "1rem", color: "#111827" }}>Performance snapshot</h2>
+                  <Link href="/dashboards/analytics" style={{ color: "#F97316", fontWeight: 600, fontSize: ".8rem", textDecoration: "none" }}>Analytics →</Link>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 11 }}>
+                  {[
+                    { k: "Reach · 30d",  v: "428k",       trend: "▲ 18.2%", up: true },
+                    { k: "Engagement",   v: "5.9%",        trend: "▲ 0.7 pts", up: true },
+                    { k: "Followers",    v: "+2,340",      trend: "▲ 9.4%", up: true },
+                    { k: "Top platform", v: "Instagram",   trend: "51% of reach", up: true },
+                  ].map(({ k, v, trend, up }) => (
+                    <div key={k} style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 12, padding: "14px 15px", boxShadow: "0 1px 2px rgba(0,0,0,.04)" }}>
+                      <span style={{ fontSize: ".65rem", letterSpacing: ".11em", textTransform: "uppercase", color: "#9CA3AF" }}>{k}</span>
+                      <div className="font-display" style={{ fontSize: "1.4rem", letterSpacing: "-.02em", margin: "5px 0 3px", color: "#111827" }}>{v}</div>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: ".7rem", padding: "2px 8px", borderRadius: 99, background: up ? "#DCFCE7" : "#FEF3C7", color: up ? "#16A34A" : "#D97706" }}>{trend}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
 
-      {/* Toast */}
-      <div style={{
-        position: "fixed", bottom: 22, right: 22, zIndex: 9999,
-        display: "flex", alignItems: "center", gap: 9,
-        padding: "11px 16px", borderRadius: 10,
-        background: "#0D0E1A", color: "#fff", fontSize: 13, fontWeight: 600,
-        boxShadow: "0 12px 32px rgba(13,14,26,.10)",
-        fontFamily: "Sora,sans-serif",
-        opacity: toast.visible ? 1 : 0,
-        transform: toast.visible ? "translateY(0)" : "translateY(8px)",
-        transition: "all .3s cubic-bezier(.4,0,.2,1)",
-        pointerEvents: "none",
-      }}>
-        <div style={{ width: 20, height: 20, borderRadius: "50%", background: "rgba(16,185,129,.2)", color: "#10B981", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10 }}>✓</div>
-        {toast.msg}
+              {/* AI SUGGESTIONS */}
+              <section>
+                <h2 className="font-display" style={{ fontSize: "1rem", marginBottom: 11, color: "#111827" }}>AI suggestions</h2>
+                <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
+                  {[
+                    { icon: Icon.star,     title: "International Coffee Day is tomorrow.", sub: "Cafés in your library are trending — want a 3-post campaign?",  btn: "Generate campaign", primary: true },
+                    { icon: Icon.trend,    title: "Your LinkedIn engagement increased 18%.", sub: "Carousel posts are driving it — double down next week?",        btn: "See what worked",   primary: false },
+                    { icon: Icon.calendar, title: "Instagram needs 3 more posts this week", sub: "to stay on your 5-per-week cadence.",                           btn: "Fill the slots",    primary: false },
+                    { icon: Icon.clock,    title: "Your audience engages best at 7 PM.",    sub: "Shift Thursday's post from 4 PM for ~22% more reach.",          btn: "Reschedule",        primary: false },
+                  ].map(({ icon, title, sub, btn, primary }) => (
+                    <div key={title} style={{ display: "flex", gap: 12, alignItems: "center", background: "#fff", border: "1px solid #E5E7EB", borderRadius: 12, padding: "12px 15px", boxShadow: "0 1px 2px rgba(0,0,0,.04)" }}>
+                      <span style={{ width: 32, height: 32, borderRadius: 10, background: GRAD, color: "#fff", display: "grid", placeItems: "center", flexShrink: 0 }}>
+                        <span style={{ width: 15, height: 15 }}>{icon}</span>
+                      </span>
+                      <span style={{ flex: 1, fontSize: ".87rem" }}>
+                        <b style={{ fontWeight: 600, color: "#111827" }}>{title}</b>
+                        <span style={{ display: "block", color: "#6B7280", fontSize: ".8rem" }}>{sub}</span>
+                      </span>
+                      <button style={{ display: "inline-flex", padding: "6px 12px", borderRadius: 8, fontWeight: 600, fontSize: ".79rem", cursor: "pointer", border: primary ? "none" : "1px solid #E5E7EB", background: primary ? GRAD : "#fff", color: primary ? "#fff" : "#374151", boxShadow: primary ? "0 4px 12px -3px rgba(249,115,22,.4)" : "none", whiteSpace: "nowrap" }}>
+                        {btn}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              {/* INDUSTRY INSPIRATION */}
+              <section>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 11 }}>
+                  <h2 className="font-display" style={{ fontSize: "1rem", color: "#111827" }}>Industry inspiration</h2>
+                  <Link href="/" style={{ color: "#F97316", fontWeight: 600, fontSize: ".8rem", textDecoration: "none" }}>All 155+ industries →</Link>
+                </div>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  {["Restaurants", "Healthcare", "Gyms", "Law Firms", "Real Estate", "Education", "Retail"].map(ind => (
+                    <Link key={ind} href="/" className="ichip" style={{ display: "inline-flex", alignItems: "center", gap: 8, border: "1px solid #E5E7EB", background: "#fff", borderRadius: 99, padding: "7px 14px", fontSize: ".83rem", fontWeight: 500, color: "#374151", textDecoration: "none", transition: "all .15s", boxShadow: "0 1px 2px rgba(0,0,0,.04)" }}>
+                      <span style={{ width: 8, height: 8, borderRadius: "50%", background: GRAD, display: "inline-block" }} />
+                      {ind}
+                    </Link>
+                  ))}
+                </div>
+              </section>
+
+              {/* BRAND HEALTH */}
+              <section style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 16, boxShadow: "0 1px 2px rgba(0,0,0,.04)", marginBottom: 0 }}>
+                <div style={{ padding: "16px 22px 0" }}>
+                  <h2 className="font-display" style={{ fontSize: "1rem", color: "#111827" }}>Brand health</h2>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "160px 1fr", gap: 24, alignItems: "center", padding: "20px 22px" }}>
+                  <div style={{ position: "relative", width: 150, height: 150, margin: "0 auto" }}>
+                    <svg width="150" height="150" viewBox="0 0 150 150" style={{ transform: "rotate(-90deg)" }}>
+                      <defs>
+                        <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
+                          <stop offset="0" stopColor="#F97316"/>
+                          <stop offset="1" stopColor="#EA580C"/>
+                        </linearGradient>
+                      </defs>
+                      <circle cx="75" cy="75" r={R} fill="none" stroke="#F3F4F6" strokeWidth="11" />
+                      <circle ref={ringRef} cx="75" cy="75" r={R} fill="none" stroke="url(#rg)" strokeWidth="11" strokeLinecap="round"
+                        className="ring-fg"
+                        style={{ strokeDasharray: C, strokeDashoffset: offset }} />
+                    </svg>
+                    <span style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", textAlign: "center" }}>
+                      <span>
+                        <b className="font-display" style={{ fontSize: "1.9rem", letterSpacing: "-.02em", color: "#111827", display: "block" }}>{SCORE}</b>
+                        <span style={{ fontSize: ".64rem", color: "#9CA3AF", textTransform: "uppercase", letterSpacing: ".1em" }}>/ 100</span>
+                      </span>
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 11 }}>
+                    {[
+                      { label: "Content consistency", w: 96 },
+                      { label: "Brand voice",          w: 94 },
+                      { label: "Posting frequency",    w: 88 },
+                      { label: "Profile completion",   w: 90 },
+                    ].map(({ label, w }) => (
+                      <div key={label} style={{ display: "grid", gridTemplateColumns: "150px 1fr 36px", gap: 12, alignItems: "center", fontSize: ".84rem", fontWeight: 500, color: "#374151" }}>
+                        <span>{label}</span>
+                        <span style={{ height: 7, borderRadius: 99, background: "#F3F4F6", overflow: "hidden" }}>
+                          <span style={{ display: "block", height: "100%", borderRadius: 99, background: GRAD, width: ringAnimated ? `${w}%` : "0%", transition: "width 1s cubic-bezier(.22,1,.36,1)" }} />
+                        </span>
+                        <span style={{ fontSize: ".72rem", color: "#9CA3AF", textAlign: "right" }}>{w}</span>
+                      </div>
+                    ))}
+                    <div style={{ display: "flex", gap: 9, alignItems: "center", background: "#FFF7ED", border: "1px solid #FED7AA", borderRadius: 10, padding: "9px 13px", fontSize: ".82rem", color: "#6B7280" }}>
+                      <span style={{ width: 14, height: 14, color: "#F97316", flexShrink: 0 }}>{Icon.star}</span>
+                      Add 2 more posts per week on TikTok to lift posting frequency above 90.
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+            </div>
+
+            {/* ── RIGHT SIDEBAR ── */}
+            <aside style={{ display: "flex", flexDirection: "column", gap: 14, position: "sticky", top: 70, alignSelf: "start" }}>
+
+              {/* Festival */}
+              <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 14, boxShadow: "0 1px 2px rgba(0,0,0,.04)", padding: "14px 16px" }}>
+                <h3 style={{ fontSize: ".65rem", letterSpacing: ".12em", textTransform: "uppercase", color: "#9CA3AF", marginBottom: 10 }}>Upcoming festival</h3>
+                <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                  <span style={{ width: 42, height: 42, borderRadius: 12, background: GRAD, display: "grid", placeItems: "center", fontSize: "1.15rem", flexShrink: 0 }}>☕</span>
+                  <span>
+                    <b style={{ fontSize: ".88rem", display: "block", color: "#111827" }}>Intl. Coffee Day</b>
+                    <span style={{ fontSize: ".7rem", color: "#9CA3AF" }}>Tomorrow · Jul 6</span>
+                  </span>
+                </div>
+                <button style={{ marginTop: 11, width: "100%", display: "flex", justifyContent: "center", padding: "7px 12px", borderRadius: 8, fontWeight: 600, fontSize: ".79rem", cursor: "pointer", border: "1px solid #FED7AA", background: "#FFF7ED", color: "#EA580C" }}>
+                  Prepare posts
+                </button>
+              </div>
+
+              {/* Hashtags */}
+              <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 14, boxShadow: "0 1px 2px rgba(0,0,0,.04)", padding: "14px 16px" }}>
+                <h3 style={{ fontSize: ".65rem", letterSpacing: ".12em", textTransform: "uppercase", color: "#9CA3AF", marginBottom: 10 }}>Trending hashtags</h3>
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                  {["#coffeeday", "#mondaymotivation", "#smallbusiness", "#reels", "#fitnessjourney", "#monsoon"].map(tag => (
+                    <button key={tag} style={{ fontSize: ".7rem", color: "#F97316", background: "#FFF7ED", padding: "3px 9px", borderRadius: 99, cursor: "pointer", border: "1px solid #FED7AA", fontWeight: 500 }}>{tag}</button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Notes */}
+              <div style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 14, boxShadow: "0 1px 2px rgba(0,0,0,.04)", padding: "14px 16px" }}>
+                <h3 style={{ fontSize: ".65rem", letterSpacing: ".12em", textTransform: "uppercase", color: "#9CA3AF", marginBottom: 10 }}>Quick notes</h3>
+                <textarea placeholder="Jot an idea for your next post…" style={{ width: "100%", border: "1px solid #E5E7EB", background: "#F9FAFB", borderRadius: 9, fontFamily: "inherit", fontSize: ".83rem", color: "#374151", padding: "9px 11px", resize: "vertical", minHeight: 64, outline: "none" }} />
+              </div>
+
+              {/* Support card — always visible, click opens floating chat */}
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => setChatOpen(true)}
+                onKeyDown={e => e.key === "Enter" && setChatOpen(true)}
+                style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 14, boxShadow: "0 1px 2px rgba(0,0,0,.04)", padding: "14px 16px", cursor: "pointer", transition: "border-color .15s, box-shadow .15s" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = "#FED7AA"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 16px rgba(249,115,22,.12)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = "#E5E7EB"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 1px 2px rgba(0,0,0,.04)"; }}
+              >
+                <h3 style={{ fontSize: ".65rem", letterSpacing: ".12em", textTransform: "uppercase", color: "#9CA3AF", marginBottom: 10 }}>Support</h3>
+                <div style={{ display: "flex", gap: 11, alignItems: "center" }}>
+                  <span style={{ width: 36, height: 36, borderRadius: 11, background: GRAD, color: "#fff", display: "grid", placeItems: "center", flexShrink: 0, boxShadow: "0 4px 10px -2px rgba(249,115,22,.4)" }}>
+                    <span style={{ width: 16, height: 16 }}>{Icon.chat}</span>
+                  </span>
+                  <span>
+                    <b style={{ fontSize: ".85rem", display: "block", color: "#111827" }}>Chat with AI</b>
+                    <span style={{ fontSize: ".75rem", color: "#9CA3AF" }}>Answers in seconds</span>
+                  </span>
+                </div>
+              </div>
+            </aside>
+          </div>
+
+          {/* FOOTER */}
+          <footer style={{ borderTop: "1px solid #F3F4F6", marginTop: 32, padding: "20px 28px 28px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+            <b style={{ fontSize: ".9rem", color: "#111827" }}>Need help?</b>
+            <nav style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+              {["Chat with AI", "Video tutorials", "Documentation", "Support"].map(l => (
+                <a key={l} href="#" style={{ color: "#6B7280", textDecoration: "none", fontSize: ".84rem", fontWeight: 500 }}>{l}</a>
+              ))}
+            </nav>
+          </footer>
+        </div>
       </div>
+
+      {/* ── FLOATING CHAT POPUP (fixed bottom-right, only when open) ── */}
+      {chatOpen && (
+        <div style={{ position: "fixed", bottom: 24, right: 28, zIndex: 999, width: 340, display: "flex", flexDirection: "column", borderRadius: 18, overflow: "hidden", boxShadow: "0 24px 60px rgba(0,0,0,.15), 0 8px 20px rgba(249,115,22,.1)", border: "1px solid #FED7AA", animation: "chatSlideUp .22s ease-out" }}>
+          <style>{`@keyframes chatSlideUp{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}`}</style>
+
+          {/* Header */}
+          <div style={{ background: GRAD, padding: "11px 14px", display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+            <span style={{ width: 30, height: 30, borderRadius: 9, background: "rgba(255,255,255,.2)", display: "grid", placeItems: "center", flexShrink: 0 }}>
+              <span style={{ width: 15, height: 15, color: "#fff" }}>{Icon.chat}</span>
+            </span>
+            <span style={{ flex: 1 }}>
+              <b style={{ fontSize: ".85rem", color: "#fff", display: "block", lineHeight: 1.2 }}>Shoutly AI</b>
+              <span style={{ fontSize: ".69rem", color: "rgba(255,255,255,.8)" }}>Online · replies instantly</span>
+            </span>
+            <button
+              onClick={() => setChatOpen(false)}
+              style={{ width: 26, height: 26, borderRadius: 7, background: "rgba(255,255,255,.2)", border: "none", color: "#fff", cursor: "pointer", fontSize: 18, lineHeight: 1, display: "grid", placeItems: "center" }}
+              title="Close"
+            >×</button>
+          </div>
+
+          {/* Messages */}
+          <div className="chat-scroll" style={{ height: 320, overflowY: "auto", padding: "12px 14px", display: "flex", flexDirection: "column", gap: 9, background: "#fff" }}>
+            {chatMsgs.map((m, i) => (
+              <div key={i} style={{ display: "flex", justifyContent: m.type === "user" ? "flex-end" : "flex-start" }}>
+                <div style={{ maxWidth: "82%", padding: "8px 11px", borderRadius: m.type === "user" ? "13px 13px 3px 13px" : "13px 13px 13px 3px", background: m.type === "user" ? GRAD : "#F3F4F6", color: m.type === "user" ? "#fff" : "#111827", fontSize: ".8rem", lineHeight: 1.55 }}>
+                  {m.text}
+                </div>
+              </div>
+            ))}
+            {chatLoading && (
+              <div style={{ display: "flex" }}>
+                <div style={{ padding: "9px 13px", borderRadius: "13px 13px 13px 3px", background: "#F3F4F6", display: "flex", gap: 5, alignItems: "center" }}>
+                  {[0,1,2].map(i => (
+                    <span key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: "#F97316", display: "inline-block", animation: `typingDot 1.2s ease-in-out ${i*0.2}s infinite` }} />
+                  ))}
+                </div>
+              </div>
+            )}
+            <div ref={chatEndRef} />
+          </div>
+
+          {/* Input */}
+          <div style={{ padding: "9px 11px", borderTop: "1px solid #F3F4F6", display: "flex", gap: 8, alignItems: "center", background: "#fff" }}>
+            <input
+              value={chatInput}
+              onChange={e => setChatInput(e.target.value)}
+              onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); } }}
+              placeholder="Type a message…"
+              disabled={chatLoading}
+              autoFocus
+              style={{ flex: 1, border: "1px solid #E5E7EB", borderRadius: 9, padding: "7px 11px", fontSize: ".8rem", fontFamily: "inherit", outline: "none", background: "#F9FAFB", color: "#111827", minWidth: 0 }}
+            />
+            <button
+              onClick={sendChat}
+              disabled={chatLoading || !chatInput.trim()}
+              style={{ width: 34, height: 34, borderRadius: 9, background: GRAD, border: "none", color: "#fff", cursor: "pointer", display: "grid", placeItems: "center", flexShrink: 0, opacity: chatLoading || !chatInput.trim() ? 0.45 : 1, transition: "opacity .15s" }}
+              title="Send"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 14, height: 14 }}><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9l20-7Z"/></svg>
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useCallback } from "react";
 import { useSidebarState } from "@/hooks/useSidebarState";
@@ -165,7 +165,7 @@ const NotificationsPage = () => {
                         padding: "6px 12px",
                         borderRadius: 6,
                         border: "1px solid #E2E4F0",
-                        background: filterType === filter.key ? "#5B5BD6" : "#fff",
+                        background: filterType === filter.key ? "#F97316" : "#fff",
                         color: filterType === filter.key ? "#fff" : "#3D3F60",
                         fontSize: 12,
                         fontWeight: 600,
@@ -289,7 +289,7 @@ const NotificationsPage = () => {
                                 width: 8,
                                 height: 8,
                                 borderRadius: "50%",
-                                background: "#5B5BD6",
+                                background: "linear-gradient(115deg,#F97316,#EA580C)",
                                 flexShrink: 0,
                               }}
                             />
@@ -308,7 +308,7 @@ const NotificationsPage = () => {
                               onClick={(e) => e.stopPropagation()}
                               style={{
                                 fontSize: 11,
-                                color: "#5B5BD6",
+                                color: "#F97316",
                                 fontWeight: 600,
                                 textDecoration: "none",
                                 padding: "4px 8px",

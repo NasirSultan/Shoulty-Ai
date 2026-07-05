@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { FiSend, FiX, FiMessageCircle, FiTrash2 } from "react-icons/fi";
 import { SparklesIcon } from "@heroicons/react/24/outline";
 
@@ -75,6 +76,7 @@ function formatMessage(text: string) {
 }
 
 export default function FloatingChatBot() {
+    const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
     const [input, setInput] = useState("");
@@ -167,6 +169,15 @@ export default function FloatingChatBot() {
             handleSendMessage();
         }
     };
+
+    if (
+        pathname === "/dashboard" ||
+        pathname.startsWith("/dashboard/") ||
+        pathname === "/dashboards" ||
+        pathname.startsWith("/dashboards/")
+    ) {
+        return null;
+    }
 
     return (
         <div className="fixed bottom-6 right-6 z-50">

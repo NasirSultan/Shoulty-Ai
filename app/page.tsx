@@ -16,7 +16,6 @@ import { DEMO_POSTS } from "@/data/demo-posts";
 import { Testimonials } from "@/components/SocialProof";
 import { HomepageFAQ } from "@/components/FAQ";
 
-import FloatingChatBot from "@/components/FloatingChatBot";
 
 // Type definitions
 interface SubIndustry {
@@ -1899,9 +1898,6 @@ const speeds = [120, 160, 110, 150, 130];
                     onClose={() => setSelectedPreviewPost(null)}
                 />
             )}
-
-            {/* Floating ChatBot */}
-            <FloatingChatBot />
         </div>
     );
 }

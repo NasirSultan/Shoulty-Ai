@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { 
+import { usePathname } from 'next/navigation';
+import {
   FaFacebook, 
   FaInstagram, 
   FaTwitter, 
@@ -11,6 +12,9 @@ import {
 } from 'react-icons/fa';
 
 const Footer = () => {
+  const pathname = usePathname();
+  if (pathname === "/dashboards" || pathname?.startsWith("/dashboards/")) return null;
+
   const currentYear = new Date().getFullYear();
 
   const legalLinks = [

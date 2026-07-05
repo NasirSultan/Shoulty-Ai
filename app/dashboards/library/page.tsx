@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
 import Sidebar from "../Sidebar";
@@ -46,7 +46,7 @@ const PLAT_ICONS: Record<PlatKey, string> = {
 const TYPE_META: Record<ContentType, { label: string; icon: string; bg: string; c: string }> = {
   image:    { label: "Image",    icon: "fa-image",             bg: "#3B82F6", c: "#3B82F6" },
   reel:     { label: "Reel",     icon: "fa-clapperboard",      bg: "#EC4899", c: "#EC4899" },
-  carousel: { label: "Carousel", icon: "fa-table-cells-large", bg: "#5B5BD6", c: "#5B5BD6" },
+  carousel: { label: "Carousel", icon: "fa-table-cells-large", bg: "#F97316", c: "#F97316" },
   festival: { label: "Festival", icon: "fa-cake-candles",      bg: "#F59E0B", c: "#F59E0B" },
 };
 
@@ -661,8 +661,8 @@ function ComposerModal({ card, onClose, showToast, industryId, subIndustryId }: 
         </div>
         {/* Tabs */}
         <div style={{ display:"flex",borderBottom:"1px solid #E4E5EF",flexShrink:0,padding:"0 20px",background:"#F0F1F8" }}>
-          {([["instant","fa-bolt","#10B981","Instant Post"],["schedule","fa-calendar","#5B5BD6","Schedule"]] as const).map(([t, icon, color, label]) => (
-            <div key={t} onClick={() => setTab(t)} style={{ padding:"11px 16px",fontSize:13,fontWeight:700,color:tab===t?"#5B5BD6":"#9496B5",cursor:"pointer",position:"relative",whiteSpace:"nowrap",display:"flex",alignItems:"center",gap:6,fontFamily:"Sora,sans-serif",borderBottom:`2px solid ${tab===t?"#5B5BD6":"transparent"}` }}>
+          {([["instant","fa-bolt","#10B981","Instant Post"],["schedule","fa-calendar","#F97316","Schedule"]] as const).map(([t, icon, color, label]) => (
+            <div key={t} onClick={() => setTab(t)} style={{ padding:"11px 16px",fontSize:13,fontWeight:700,color:tab===t?"#F97316":"#9496B5",cursor:"pointer",position:"relative",whiteSpace:"nowrap",display:"flex",alignItems:"center",gap:6,fontFamily:"Sora,sans-serif",borderBottom:`2px solid ${tab===t?"#F97316":"transparent"}` }}>
               <i className={`fa-solid ${icon} fa-xs`} style={{ color }} /> {label}
             </div>
           ))}
@@ -692,9 +692,9 @@ function ComposerModal({ card, onClose, showToast, industryId, subIndustryId }: 
           <div style={{ flex:1,overflowY:"auto",padding:"16px 18px",display:"flex",flexDirection:"column",gap:14 }}>
             {/* AI bar */}
             <div style={{ display:"flex",alignItems:"center",gap:8,padding:"10px 12px",borderRadius:7,background:"linear-gradient(135deg,#EEEEFF,rgba(236,233,255,.4))",border:"1px solid #E0E0FA" }}>
-              <i className="fa-solid fa-wand-magic-sparkles" style={{ color:"#5B5BD6",fontSize:14,flexShrink:0 }} />
-              <div style={{ flex:1,fontSize:12.5,color:"#4B4D6B" }}><strong style={{ color:"#5B5BD6" }}>AI ready</strong> — Rewrite this caption for your brand voice</div>
-              <button onClick={doAiRewrite} style={{ display:"flex",alignItems:"center",gap:5,padding:"6px 13px",borderRadius:7,background:"#5B5BD6",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer",border:"none",fontFamily:"Sora,sans-serif",flexShrink:0 }}>
+              <i className="fa-solid fa-wand-magic-sparkles" style={{ color:"#F97316",fontSize:14,flexShrink:0 }} />
+              <div style={{ flex:1,fontSize:12.5,color:"#4B4D6B" }}><strong style={{ color:"#F97316" }}>AI ready</strong> — Rewrite this caption for your brand voice</div>
+              <button onClick={doAiRewrite} style={{ display:"flex",alignItems:"center",gap:5,padding:"6px 13px",borderRadius:7,background:"linear-gradient(115deg,#F97316,#EA580C)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer",border:"none",fontFamily:"Sora,sans-serif",flexShrink:0 }}>
                 <i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize:11 }} /> Rewrite
               </button>
             </div>
@@ -703,7 +703,7 @@ function ComposerModal({ card, onClose, showToast, industryId, subIndustryId }: 
                 {aiLoading ? "Rewriting for your brand…" : (
                   <>
                     <div>{aiResult}</div>
-                    <button onClick={() => { setCaption(aiResult); setAiResult(""); showToast("✦ Caption applied!"); }} style={{ marginTop:8,padding:"5px 12px",borderRadius:6,background:"#5B5BD6",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"Sora,sans-serif",border:"none" }}>Use this →</button>
+                    <button onClick={() => { setCaption(aiResult); setAiResult(""); showToast("✦ Caption applied!"); }} style={{ marginTop:8,padding:"5px 12px",borderRadius:6,background:"linear-gradient(115deg,#F97316,#EA580C)",color:"#fff",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"Sora,sans-serif",border:"none" }}>Use this →</button>
                   </>
                 )}
               </div>
@@ -720,7 +720,7 @@ function ComposerModal({ card, onClose, showToast, industryId, subIndustryId }: 
               <div style={{ fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:".5px",color:"#9496B5",marginBottom:6,fontFamily:"Sora,sans-serif" }}>Hashtags</div>
               <div style={{ display:"flex",flexWrap:"wrap",gap:5,marginBottom:7 }}>
                 {tags.map((t, i) => (
-                  <div key={t+i} style={{ display:"flex",alignItems:"center",gap:4,padding:"3px 9px",borderRadius:5,background:"#EEEEFF",border:"1px solid #E0E0FA",color:"#5B5BD6",fontSize:11.5,fontWeight:600,fontFamily:"JetBrains Mono,monospace" }}>
+                  <div key={t+i} style={{ display:"flex",alignItems:"center",gap:4,padding:"3px 9px",borderRadius:5,background:"#EEEEFF",border:"1px solid #E0E0FA",color:"#F97316",fontSize:11.5,fontWeight:600,fontFamily:"JetBrains Mono,monospace" }}>
                     {t} <span onClick={() => setTags(prev => prev.filter((_, j) => j !== i))} style={{ fontSize:14,opacity:.5,cursor:"pointer" }}>×</span>
                   </div>
                 ))}
@@ -728,7 +728,7 @@ function ComposerModal({ card, onClose, showToast, industryId, subIndustryId }: 
               <div style={{ display:"flex",gap:6 }}>
                 <input value={tagInput} onChange={e => setTagInput(e.target.value)} onKeyDown={e => { if (e.key==="Enter"||e.key===",") { e.preventDefault(); addTag(); } }} placeholder="Add hashtag…"
                   style={{ flex:1,padding:"8px 11px",borderRadius:7,border:"1px solid #E4E5EF",background:"#F0F1F8",color:"#0D0E1A",fontSize:12.5,outline:"none",fontFamily:"inherit" }} />
-                <button onClick={addTag} style={{ padding:"8px 12px",borderRadius:7,background:"#EEEEFF",border:"1px solid #E0E0FA",color:"#5B5BD6",fontSize:12,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap" }}>+ Add</button>
+                <button onClick={addTag} style={{ padding:"8px 12px",borderRadius:7,background:"#EEEEFF",border:"1px solid #E0E0FA",color:"#F97316",fontSize:12,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap" }}>+ Add</button>
               </div>
             </div>
             {/* Instant panel */}
@@ -750,7 +750,7 @@ function ComposerModal({ card, onClose, showToast, industryId, subIndustryId }: 
                       <div style={{ fontSize:13,fontWeight:700,color:"#0D0E1A",fontFamily:"Sora,sans-serif" }}>{acc.name}</div>
                       <div style={{ fontSize:11.5,color:"#9496B5",marginTop:1 }}>{acc.sub}</div>
                     </div>
-                    <div style={{ padding:"3px 9px",borderRadius:20,fontSize:11,fontWeight:700,fontFamily:"Sora,sans-serif",background:acc.connected?"#ECFDF5":"#EEEEFF",color:acc.connected?"#10B981":"#5B5BD6" }}>
+                    <div style={{ padding:"3px 9px",borderRadius:20,fontSize:11,fontWeight:700,fontFamily:"Sora,sans-serif",background:acc.connected?"#ECFDF5":"#EEEEFF",color:acc.connected?"#10B981":"#F97316" }}>
                       {acc.connected ? "✓ Connected" : "+ Connect"}
                     </div>
                   </div>
@@ -768,7 +768,7 @@ function ComposerModal({ card, onClose, showToast, industryId, subIndustryId }: 
                       const eCls = eng >= 10 ? "#10B981" : eng >= 8 ? "#F59E0B" : "#EF4444";
                       const selected = selTimeIdx === i;
                       return (
-                        <div key={i} onClick={() => { setSelTimeIdx(i); setSchedTime("09:00"); }} style={{ padding:"7px 5px",borderRadius:7,border:`1.5px solid ${selected?(s.best?"#10B981":"#5B5BD6"):s.best?"rgba(16,185,129,.3)":"#E4E5EF"}`,background:selected?(s.best?"#ECFDF5":"#EEEEFF"):s.best?"#ECFDF5":"#F0F1F8",textAlign:"center",cursor:"pointer",transition:"all .14s" }}>
+                        <div key={i} onClick={() => { setSelTimeIdx(i); setSchedTime("09:00"); }} style={{ padding:"7px 5px",borderRadius:7,border:`1.5px solid ${selected?(s.best?"#10B981":"#F97316"):s.best?"rgba(16,185,129,.3)":"#E4E5EF"}`,background:selected?(s.best?"#ECFDF5":"#EEEEFF"):s.best?"#ECFDF5":"#F0F1F8",textAlign:"center",cursor:"pointer",transition:"all .14s" }}>
                           <div style={{ fontSize:12,fontWeight:800,color:"#0D0E1A",fontFamily:"Sora,sans-serif" }}>{s.t}</div>
                           <div style={{ fontSize:9.5,color:"#9496B5",fontFamily:"JetBrains Mono,monospace",marginTop:1 }}>{s.tz}</div>
                           <div style={{ fontSize:10.5,fontWeight:700,fontFamily:"JetBrains Mono,monospace",marginTop:2,color:eCls }}>{s.e}</div>
@@ -810,7 +810,7 @@ function ComposerModal({ card, onClose, showToast, industryId, subIndustryId }: 
             </button>
           )}
           {tab === "schedule" && (
-            <button onClick={schedPost} style={{ flex:1,padding:10,borderRadius:7,background:"#5B5BD6",color:"#fff",fontSize:14,fontWeight:800,cursor:"pointer",border:"none",fontFamily:"Sora,sans-serif",display:"flex",alignItems:"center",justifyContent:"center",gap:7,boxShadow:"0 4px 20px rgba(91,91,214,.28)" }}>
+            <button onClick={schedPost} style={{ flex:1,padding:10,borderRadius:7,background:"linear-gradient(115deg,#F97316,#EA580C)",color:"#fff",fontSize:14,fontWeight:800,cursor:"pointer",border:"none",fontFamily:"Sora,sans-serif",display:"flex",alignItems:"center",justifyContent:"center",gap:7,boxShadow:"0 4px 14px rgba(249,115,22,.4)" }}>
               <i className="fa-solid fa-calendar-check" /> Schedule Post
             </button>
           )}
@@ -833,7 +833,7 @@ function LibCardItem({ card, viewMode, isFav, onFav, onOpen, onCopy }: {
 
   return (
     <div onClick={onOpen} style={{ background:"#fff",border:"1px solid #E4E5EF",borderRadius:14,overflow:"hidden",cursor:"pointer",boxShadow:"0 1px 2px rgba(13,14,26,.05)",transition:"all .18s",display:isList?"flex":"block",position:"relative" }}
-      onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow="0 4px 12px rgba(13,14,26,.08),0 0 0 1.5px #5B5BD6"; (e.currentTarget as HTMLDivElement).style.borderColor="#5B5BD6"; (e.currentTarget as HTMLDivElement).style.transform="translateY(-3px)"; }}
+      onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow="0 4px 12px rgba(13,14,26,.08),0 0 0 1.5px #F97316"; (e.currentTarget as HTMLDivElement).style.borderColor="#F97316"; (e.currentTarget as HTMLDivElement).style.transform="translateY(-3px)"; }}
       onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow="0 1px 2px rgba(13,14,26,.05)"; (e.currentTarget as HTMLDivElement).style.borderColor="#E4E5EF"; (e.currentTarget as HTMLDivElement).style.transform="translateY(0)"; }}>
       {/* Thumbnail */}
       <div style={{ position:"relative",overflow:"hidden",background:"#F0F1F8",width:isList?130:undefined,flexShrink:isList?0:undefined,aspectRatio:isList?undefined:isReel?"9/16":"4/3",maxHeight:isReel&&!isList?260:undefined }}>
@@ -848,7 +848,7 @@ function LibCardItem({ card, viewMode, isFav, onFav, onOpen, onCopy }: {
         {/* Hover action overlay — only for grid view */}
         {!isList && (
           <div className="card-hover-actions" style={{ position:"absolute",bottom:0,left:0,right:0,zIndex:4,padding:8,display:"flex",gap:6,background:"linear-gradient(transparent,rgba(0,0,0,.5))" }}>
-            <div onClick={e => { e.stopPropagation(); onOpen(); }} style={{ flex:1,padding:7,borderRadius:7,background:"#5B5BD6",color:"#fff",fontSize:11.5,fontWeight:700,textAlign:"center",cursor:"pointer",fontFamily:"Sora,sans-serif" }}>
+            <div onClick={e => { e.stopPropagation(); onOpen(); }} style={{ flex:1,padding:7,borderRadius:7,background:"linear-gradient(115deg,#F97316,#EA580C)",color:"#fff",fontSize:11.5,fontWeight:700,textAlign:"center",cursor:"pointer",fontFamily:"Sora,sans-serif" }}>
               <i className="fa-solid fa-bolt fa-xs" /> Use This
             </div>
             <div onClick={e => { e.stopPropagation(); onCopy(); }} style={{ flex:1,padding:7,borderRadius:7,background:"rgba(255,255,255,.85)",color:"#0D0E1A",fontSize:11.5,fontWeight:700,textAlign:"center",cursor:"pointer",fontFamily:"Sora,sans-serif" }}>
@@ -865,7 +865,7 @@ function LibCardItem({ card, viewMode, isFav, onFav, onOpen, onCopy }: {
         </div>
         <div style={{ fontSize:12.5,color:"#4B4D6B",lineHeight:1.5,marginBottom:7,overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",fontWeight:500 }}>{card.cap}</div>
         <div style={{ display:"flex",flexWrap:"wrap",gap:4,marginBottom:8 }}>
-          {card.tags.slice(0,4).map(t => <span key={t} style={{ padding:"2px 7px",borderRadius:5,background:"#EEEEFF",border:"1px solid #E0E0FA",color:"#5B5BD6",fontSize:11,fontWeight:600,fontFamily:"JetBrains Mono,monospace",cursor:"pointer" }}>{t}</span>)}
+          {card.tags.slice(0,4).map(t => <span key={t} style={{ padding:"2px 7px",borderRadius:5,background:"#EEEEFF",border:"1px solid #E0E0FA",color:"#F97316",fontSize:11,fontWeight:600,fontFamily:"JetBrains Mono,monospace",cursor:"pointer" }}>{t}</span>)}
         </div>
         <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",gap:6 }}>
           <div style={{ display:"flex",gap:3 }}>
@@ -881,7 +881,7 @@ function LibCardItem({ card, viewMode, isFav, onFav, onOpen, onCopy }: {
         {/* List-view buttons */}
         {isList && (
           <div style={{ display:"flex",gap:6,marginTop:8 }}>
-            <button onClick={e => { e.stopPropagation(); onOpen(); }} style={{ display:"flex",alignItems:"center",gap:5,padding:"6px 12px",borderRadius:7,background:"#5B5BD6",color:"#fff",fontSize:12.5,fontWeight:700,cursor:"pointer",border:"none",fontFamily:"Sora,sans-serif" }}>
+            <button onClick={e => { e.stopPropagation(); onOpen(); }} style={{ display:"flex",alignItems:"center",gap:5,padding:"6px 12px",borderRadius:7,background:"linear-gradient(115deg,#F97316,#EA580C)",color:"#fff",fontSize:12.5,fontWeight:700,cursor:"pointer",border:"none",fontFamily:"Sora,sans-serif" }}>
               <i className="fa-solid fa-bolt fa-xs" /> Use This
             </button>
             <button onClick={e => { e.stopPropagation(); onCopy(); }} style={{ display:"flex",alignItems:"center",gap:5,padding:"6px 12px",borderRadius:7,border:"1px solid #E4E5EF",background:"#F0F1F8",color:"#4B4D6B",fontSize:12.5,fontWeight:700,cursor:"pointer",fontFamily:"Sora,sans-serif" }}>
@@ -1030,7 +1030,7 @@ export default function LibraryPage() {
 
   const gridCols = viewMode === "list" ? "1fr" : viewMode === 3 ? "repeat(3,1fr)" : "repeat(4,1fr)";
 
-  const toastColors: Record<string, string> = { green: "#10B981", brand: "#5B5BD6", red: "#EF4444" };
+  const toastColors: Record<string, string> = { green: "#10B981", brand: "#F97316", red: "#EF4444" };
   const toastCol = toastColors[toast.type] || toastColors.green;
 
   return (
@@ -1045,7 +1045,7 @@ export default function LibraryPage() {
         @keyframes cardIn { from{opacity:0;transform:translateY(14px) scale(.97)} to{opacity:1;transform:translateY(0) scale(1)} }
         @keyframes shimmer { 0%{background-position:-700px 0} 100%{background-position:700px 0} }
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
-        .tb-search-wrap:focus-within { width: 280px !important; border-color: #5B5BD6 !important; background: #fff !important; box-shadow: 0 0 0 3px rgba(91,91,214,.1) !important; }
+        .tb-search-wrap:focus-within { width: 280px !important; border-color: #F97316 !important; background: #fff !important; box-shadow: 0 0 0 3px rgba(249,115,22,.1) !important; }
         .sb-item-hover:hover { background: #1E1F2E; color: #F1F2FF; }
         #comp-overlay { animation: fadeIn .18s ease; }
         @keyframes fadeIn { from{opacity:0} to{opacity:1} }
@@ -1072,7 +1072,7 @@ export default function LibraryPage() {
             userName={user?.name}
             userInitials={initials}
             actionButton={
-              <button onClick={() => showToast("Opening post composer…")} style={{ display:"flex",alignItems:"center",gap:6,padding:"8px 16px",borderRadius:7,background:"#5B5BD6",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",border:"none",fontFamily:"Sora,sans-serif",boxShadow:"0 4px 20px rgba(91,91,214,.28)" }}>
+              <button onClick={() => showToast("Opening post composer…")} style={{ display:"flex",alignItems:"center",gap:6,padding:"8px 16px",borderRadius:7,background:"linear-gradient(115deg,#F97316,#EA580C)",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",border:"none",fontFamily:"Sora,sans-serif",boxShadow:"0 4px 14px rgba(249,115,22,.4)" }}>
                 <i className="fa-solid fa-plus" style={{ fontSize:11 }} /> New Post
               </button>
             }
@@ -1082,20 +1082,20 @@ export default function LibraryPage() {
           <div style={{ flexShrink:0,padding:"18px 22px 16px",background:"#fff",borderBottom:"1px solid #E4E5EF" }}>
             <div style={{ display:"flex",gap:20,alignItems:"flex-start" }}>
               <div style={{ flex:1,minWidth:0 }}>
-                <div style={{ display:"inline-flex",alignItems:"center",gap:6,padding:"3px 10px",borderRadius:20,background:"#EEEEFF",border:"1px solid #E0E0FA",color:"#5B5BD6",fontSize:11.5,fontWeight:700,marginBottom:7,fontFamily:"Sora,sans-serif" }}>✦ 10,000+ assets · Updated daily</div>
-                <div style={{ fontSize:22,fontWeight:800,color:"#0D0E1A",letterSpacing:"-.4px",marginBottom:3,fontFamily:"Sora,sans-serif" }}>Find content that <span style={{ color:"#5B5BD6" }}>converts</span></div>
+                <div style={{ display:"inline-flex",alignItems:"center",gap:6,padding:"3px 10px",borderRadius:20,background:"#EEEEFF",border:"1px solid #E0E0FA",color:"#F97316",fontSize:11.5,fontWeight:700,marginBottom:7,fontFamily:"Sora,sans-serif" }}>✦ 10,000+ assets · Updated daily</div>
+                <div style={{ fontSize:22,fontWeight:800,color:"#0D0E1A",letterSpacing:"-.4px",marginBottom:3,fontFamily:"Sora,sans-serif" }}>Find content that <span style={{ color:"#F97316" }}>converts</span></div>
                 <div style={{ fontSize:13,color:"#9496B5",marginBottom:13 }}>Search any industry — 30 real images, reels, captions & hashtags. Post instantly or schedule it all.</div>
                 <div style={{ display:"flex",alignItems:"center",gap:8,padding:"8px 8px 8px 14px",borderRadius:14,background:"#fff",border:"1.5px solid #E4E5EF",maxWidth:680,transition:"all .18s" }}>
                   <i className="fa-solid fa-magnifying-glass" style={{ color:"#9496B5",fontSize:14,flexShrink:0 }} />
                   <input value={searchInput} onChange={e => setSearchInput(e.target.value)} onKeyDown={e => e.key==="Enter" && doSearch()} placeholder="Search 'real estate', 'fitness', 'food', 'festival'…"
                     style={{ flex:1,background:"none",border:"none",outline:"none",fontSize:14,color:"#0D0E1A",fontWeight:500,fontFamily:"inherit" }} />
                   {searchInput && <i onClick={() => { setSearchInput(""); setIndustry(""); setAllCards([]); setFiltered([]); }} className="fa-solid fa-xmark" style={{ color:"#9496B5",cursor:"pointer" }} />}
-                  <button onClick={doSearch} style={{ padding:"8px 18px",borderRadius:7,background:"#5B5BD6",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",border:"none",whiteSpace:"nowrap",fontFamily:"Sora,sans-serif",flexShrink:0 }}>Search</button>
+                  <button onClick={doSearch} style={{ padding:"8px 18px",borderRadius:7,background:"linear-gradient(115deg,#F97316,#EA580C)",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",border:"none",whiteSpace:"nowrap",fontFamily:"Sora,sans-serif",flexShrink:0 }}>Search</button>
                 </div>
                 {/* Industry pills */}
                 <div style={{ display:"flex",gap:6,flexWrap:"wrap",marginTop:10 }}>
                   {INDUSTRY_PILLS.map(pill => (
-                    <div key={pill.k} onClick={() => selectIndustry(pill.k)} style={{ display:"flex",alignItems:"center",gap:5,padding:"5px 12px",borderRadius:20,border:`1.5px solid ${industry===pill.k||(!industry&&pill.k==="")?("#5B5BD6"):"#E4E5EF"}`,background:industry===pill.k||(!industry&&pill.k==="")?(!pill.k?"#5B5BD6":"#5B5BD6"):"#fff",color:industry===pill.k||(!industry&&pill.k==="")?pill.k?"#fff":"#fff":"#4B4D6B",fontSize:12.5,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap",fontFamily:"Sora,sans-serif",transition:"all .15s",boxShadow:(industry===pill.k||(!industry&&pill.k===""))?"0 4px 20px rgba(91,91,214,.28)":undefined }}>
+                    <div key={pill.k} onClick={() => selectIndustry(pill.k)} style={{ display:"flex",alignItems:"center",gap:5,padding:"5px 12px",borderRadius:20,border:`1.5px solid ${industry===pill.k||(!industry&&pill.k==="")?("#F97316"):"#E4E5EF"}`,background:industry===pill.k||(!industry&&pill.k==="")?(!pill.k?"#F97316":"#F97316"):"#fff",color:industry===pill.k||(!industry&&pill.k==="")?pill.k?"#fff":"#fff":"#4B4D6B",fontSize:12.5,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap",fontFamily:"Sora,sans-serif",transition:"all .15s",boxShadow:(industry===pill.k||(!industry&&pill.k===""))?"0 4px 14px rgba(249,115,22,.4)":undefined }}>
                       {pill.label}
                     </div>
                   ))}
@@ -1116,9 +1116,9 @@ export default function LibraryPage() {
           {/* Filter Bar */}
           <div style={{ flexShrink:0,display:"flex",alignItems:"center",gap:8,padding:"10px 22px",background:"#fff",borderBottom:"1px solid #E4E5EF",overflowX:"auto" }}>
             {([["all","fa-layer-group","All",counts.all],["image","fa-image","Images",counts.image],["reel","fa-instagram","Reels",counts.reel],["carousel","fa-table-cells-large","Carousel",counts.carousel],["festival","fa-cake-candles","Festival",counts.festival]] as const).map(([t,icon,label,cnt]) => (
-              <div key={t} onClick={() => { setFilterType(t); applyFilter(allCards, t, sort); }} style={{ display:"flex",alignItems:"center",gap:5,padding:"5px 12px",borderRadius:20,border:`1.5px solid ${filterType===t?"#5B5BD6":"#E4E5EF"}`,background:filterType===t?"#EEEEFF":"#fff",color:filterType===t?"#5B5BD6":"#9496B5",fontSize:12.5,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap",fontFamily:"Sora,sans-serif",transition:"all .13s" }}>
+              <div key={t} onClick={() => { setFilterType(t); applyFilter(allCards, t, sort); }} style={{ display:"flex",alignItems:"center",gap:5,padding:"5px 12px",borderRadius:20,border:`1.5px solid ${filterType===t?"#F97316":"#E4E5EF"}`,background:filterType===t?"#EEEEFF":"#fff",color:filterType===t?"#F97316":"#9496B5",fontSize:12.5,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap",fontFamily:"Sora,sans-serif",transition:"all .13s" }}>
                 <i className={`fa-solid ${icon} fa-xs`} /> {label}
-                <span style={{ padding:"1px 6px",borderRadius:10,background:filterType===t?"#E0E0FA":"#F0F1F8",fontSize:10.5,fontWeight:700,color:filterType===t?"#5B5BD6":"#9496B5" }}>{cnt}</span>
+                <span style={{ padding:"1px 6px",borderRadius:10,background:filterType===t?"#E0E0FA":"#F0F1F8",fontSize:10.5,fontWeight:700,color:filterType===t?"#F97316":"#9496B5" }}>{cnt}</span>
               </div>
             ))}
             <div style={{ width:1,height:22,background:"#E4E5EF",flexShrink:0 }} />
@@ -1129,7 +1129,7 @@ export default function LibraryPage() {
             </select>
             <div style={{ width:1,height:22,background:"#E4E5EF",flexShrink:0 }} />
             <span style={{ fontSize:12.5,color:"#9496B5",whiteSpace:"nowrap",fontFamily:"JetBrains Mono,monospace" }}>
-              <span style={{ color:"#5B5BD6",fontWeight:700 }}>{filtered.length}</span> results
+              <span style={{ color:"#F97316",fontWeight:700 }}>{filtered.length}</span> results
             </span>
             {/* View toggles */}
             <div style={{ display:"flex",background:"#F0F1F8",borderRadius:7,padding:3,border:"1px solid #E4E5EF",marginLeft:"auto" }}>

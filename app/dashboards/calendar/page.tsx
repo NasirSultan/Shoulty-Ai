@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -69,7 +69,7 @@ const PLAT_NAMES: Record<PlatKey, string> = {
 const TYPE_INFO: Record<PostType, { label: string; icon: string; bg: string }> = {
   image:    { label: "Image",    icon: "fa-image",             bg: "#3B82F6" },
   reel:     { label: "Reel",     icon: "fa-clapperboard",      bg: "#EC4899" },
-  carousel: { label: "Carousel", icon: "fa-table-cells-large", bg: "#5B5BD6" },
+  carousel: { label: "Carousel", icon: "fa-table-cells-large", bg: "#F97316" },
   story:    { label: "Story",    icon: "fa-mobile-screen",     bg: "#F59E0B" },
 };
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -353,7 +353,7 @@ const IDEAS_LIST = [
   { emoji:"💡", title:"Myth-busting thread", sub:"Educational · LinkedIn + X", score:88, col:"#F59E0B", bg:"#FFFBEB" },
   { emoji:"📊", title:"Market update carousel", sub:"High saves · Wed 9AM peak", score:83, col:"#3B82F6", bg:"#EFF6FF" },
   { emoji:"✨", title:"Transformation story", sub:"Trust-builder · All platforms", score:79, col:"#10B981", bg:"#ECFDF5" },
-  { emoji:"🎯", title:"Audience poll: next content?", sub:"Engagement spike · Stories", score:73, col:"#5B5BD6", bg:"#EEEEFF" },
+  { emoji:"🎯", title:"Audience poll: next content?", sub:"Engagement spike · Stories", score:73, col:"#F97316", bg:"#EEEEFF" },
   { emoji:"🚀", title:"Product launch countdown", sub:"3-part series · Instagram", score:91, col:"#EC4899", bg:"#FDF2F8" },
 ];
 const ACCOUNTS_DATA = [
@@ -593,7 +593,7 @@ function PostCard({ p, onOpen, onDup, onDel, onPublishNow }: { p: Post; onOpen: 
         </div>
         <div style={{ fontSize: 11.5, color: "#3D3F60", lineHeight: 1.45, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", marginBottom: 5 }}>{p.caption}</div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 3, marginBottom: 6 }}>
-          {p.hashtags.slice(0, 3).map(h => <span key={h} style={{ fontSize: 10, fontWeight: 600, color: "#5B5BD6", fontFamily: "JetBrains Mono,monospace", padding: "1px 5px", borderRadius: 3, background: "#EEEEFF" }}>{h}</span>)}
+          {p.hashtags.slice(0, 3).map(h => <span key={h} style={{ fontSize: 10, fontWeight: 600, color: "#F97316", fontFamily: "JetBrains Mono,monospace", padding: "1px 5px", borderRadius: 3, background: "#EEEEFF" }}>{h}</span>)}
         </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", gap: 3 }}>
@@ -1034,7 +1034,7 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "16px 20px", borderBottom: "1px solid #E2E4F0", flexShrink: 0 }}>
           <div style={{ width: 36, height: 36, borderRadius: 9, background: "#EEEEFF", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <i className="fa-solid fa-pen" style={{ color: "#5B5BD6" }} />
+            <i className="fa-solid fa-pen" style={{ color: "#F97316" }} />
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 16, fontWeight: 800, color: "#0B0C1A", fontFamily: "Sora,sans-serif" }}>{p ? "Edit Post" : "New Post"}</div>
@@ -1070,7 +1070,7 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
                 <i className="fa-solid fa-upload" style={{ fontSize: 10 }} /> Upload
               </button>
               <button onClick={e => { e.stopPropagation(); void browseStockImg(); }} disabled={isGeneratingImage}
-                style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "6px 8px", borderRadius: 7, border: "1px solid #DDDDFB", background: "#EEEEFF", color: "#5B5BD6", fontSize: 11.5, fontWeight: 700, cursor: isGeneratingImage ? "not-allowed" : "pointer", opacity: isGeneratingImage ? .6 : 1 }}>
+                style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "6px 8px", borderRadius: 7, border: "1px solid #DDDDFB", background: "#EEEEFF", color: "#F97316", fontSize: 11.5, fontWeight: 700, cursor: isGeneratingImage ? "not-allowed" : "pointer", opacity: isGeneratingImage ? .6 : 1 }}>
                 <i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 10 }} /> {isGeneratingImage ? "Generating..." : "Generate Another"}
               </button>
             </div>
@@ -1129,9 +1129,9 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
             </div>
             {/* AI Rewrite */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 12px", borderRadius: 7, background: "linear-gradient(135deg,#EEEEFF,rgba(238,238,255,.45))", border: "1px solid #DDDDFB" }}>
-              <i className="fa-solid fa-wand-magic-sparkles" style={{ color: "#5B5BD6", fontSize: 14, flexShrink: 0 }} />
-              <div style={{ flex: 1, fontSize: 12.5, color: "#3D3F60" }}><strong style={{ color: "#5B5BD6" }}>AI Rewrite</strong> — Optimise caption for your brand</div>
-              <button onClick={doAiRewrite} disabled={aiLoading} style={{ display: "flex", alignItems: "center", gap: 5, padding: "6px 13px", borderRadius: 7, background: aiLoading ? "#BFC1D9" : "#5B5BD6", color: "#fff", fontSize: 12, fontWeight: 700, cursor: aiLoading ? "not-allowed" : "pointer", border: "none", fontFamily: "Sora,sans-serif", flexShrink: 0 }}>
+              <i className="fa-solid fa-wand-magic-sparkles" style={{ color: "#F97316", fontSize: 14, flexShrink: 0 }} />
+              <div style={{ flex: 1, fontSize: 12.5, color: "#3D3F60" }}><strong style={{ color: "#F97316" }}>AI Rewrite</strong> — Optimise caption for your brand</div>
+              <button onClick={doAiRewrite} disabled={aiLoading} style={{ display: "flex", alignItems: "center", gap: 5, padding: "6px 13px", borderRadius: 7, background: aiLoading ? "#BFC1D9" : "#F97316", color: "#fff", fontSize: 12, fontWeight: 700, cursor: aiLoading ? "not-allowed" : "pointer", border: "none", fontFamily: "Sora,sans-serif", flexShrink: 0 }}>
                 <i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 10 }} /> {aiLoading ? "Generating..." : "Rewrite"}
               </button>
             </div>
@@ -1144,7 +1144,7 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
                       { label: "↺ Again", action: doAiRewrite },
                       { label: "✕", action: () => setAiResult("") }
                     ].map(btn => (
-                      <div key={btn.label} onClick={btn.action} style={{ display: "flex", alignItems: "center", gap: 4, padding: "5px 10px", borderRadius: 4, border: "1px solid #DDDDFB", background: "#fff", color: "#5B5BD6", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>{btn.label}</div>
+                      <div key={btn.label} onClick={btn.action} style={{ display: "flex", alignItems: "center", gap: 4, padding: "5px 10px", borderRadius: 4, border: "1px solid #DDDDFB", background: "#fff", color: "#F97316", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>{btn.label}</div>
                     ))}
                   </div>
                 )}
@@ -1166,11 +1166,11 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: "#8486AB", fontFamily: "Sora,sans-serif", marginBottom: 6, display: "flex", alignItems: "center" }}>
                 Hashtags
-                <span onClick={() => { setTags(buildRelevantHashtags(caption, img)); showToast("✦ Related hashtags added!", "brand"); }} style={{ marginLeft: "auto", fontSize: 11, color: "#5B5BD6", fontWeight: 700, cursor: "pointer", textTransform: "none", letterSpacing: 0 }}>✦ Refresh</span>
+                <span onClick={() => { setTags(buildRelevantHashtags(caption, img)); showToast("✦ Related hashtags added!", "brand"); }} style={{ marginLeft: "auto", fontSize: 11, color: "#F97316", fontWeight: 700, cursor: "pointer", textTransform: "none", letterSpacing: 0 }}>✦ Refresh</span>
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 5, padding: "8px 10px", borderRadius: 7, border: "1px solid #E2E4F0", background: "#F0F1F9", minHeight: 44 }}>
                 {tags.map((t, i) => (
-                  <div key={t + i} style={{ display: "flex", alignItems: "center", gap: 4, padding: "3px 8px", borderRadius: 5, background: "#EEEEFF", border: "1px solid #DDDDFB", color: "#5B5BD6", fontSize: 11.5, fontWeight: 600, fontFamily: "JetBrains Mono,monospace" }}>
+                  <div key={t + i} style={{ display: "flex", alignItems: "center", gap: 4, padding: "3px 8px", borderRadius: 5, background: "#EEEEFF", border: "1px solid #DDDDFB", color: "#F97316", fontSize: 11.5, fontWeight: 600, fontFamily: "JetBrains Mono,monospace" }}>
                     {t} <span onClick={() => setTags(prev => prev.filter((_, j) => j !== i))} style={{ fontSize: 14, opacity: 0.55, cursor: "pointer", lineHeight: 1 }}>×</span>
                   </div>
                 ))}
@@ -1198,14 +1198,14 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: "#8486AB", fontFamily: "Sora,sans-serif", marginBottom: 6, display: "flex", alignItems: "center", gap: 8 }}>
                 Best Posting Times
-                <span style={{ padding: "2px 7px", borderRadius: 8, background: "#EEEEFF", color: "#5B5BD6", fontSize: 10, fontWeight: 700, textTransform: "none", letterSpacing: 0 }}>AI Powered</span>
+                <span style={{ padding: "2px 7px", borderRadius: 8, background: "#EEEEFF", color: "#F97316", fontSize: 10, fontWeight: 700, textTransform: "none", letterSpacing: 0 }}>AI Powered</span>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 5 }}>
                 {timesOpts.map(s => {
                   const selected = s.t === selTime;
                   const engClass = parseFloat(s.e) > 9 ? "#10B981" : parseFloat(s.e) > 7 ? "#F59E0B" : "#EF4444";
                   return (
-                    <div key={s.t} onClick={() => setSelTime(s.t)} style={{ padding: "7px 5px", borderRadius: 7, border: `1.5px solid ${selected ? (s.best ? "#10B981" : "#5B5BD6") : s.best ? "rgba(16,185,129,.3)" : "#E2E4F0"}`, background: selected ? (s.best ? "#ECFDF5" : "#EEEEFF") : s.best ? "#ECFDF5" : "#F0F1F9", textAlign: "center", cursor: "pointer" }}>
+                    <div key={s.t} onClick={() => setSelTime(s.t)} style={{ padding: "7px 5px", borderRadius: 7, border: `1.5px solid ${selected ? (s.best ? "#10B981" : "#F97316") : s.best ? "rgba(16,185,129,.3)" : "#E2E4F0"}`, background: selected ? (s.best ? "#ECFDF5" : "#EEEEFF") : s.best ? "#ECFDF5" : "#F0F1F9", textAlign: "center", cursor: "pointer" }}>
                       <div style={{ fontSize: 11.5, fontWeight: 800, color: "#0B0C1A", fontFamily: "Sora,sans-serif" }}>{s.t}</div>
                       <div style={{ fontSize: 10, fontWeight: 700, fontFamily: "JetBrains Mono,monospace", marginTop: 2, color: engClass }}>{s.e}</div>
                       {s.best && <span style={{ display: "block", fontSize: 9, fontWeight: 800, color: "#10B981", marginTop: 1, fontFamily: "Sora,sans-serif" }}>⚡ Best</span>}
@@ -1242,7 +1242,7 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
               {isPublishingNow ? "Publishing..." : "Publish Now"}
             </button>
             <button onClick={() => onSave({ id: p?.id ?? null, caption, date: dateVal ? new Date(dateVal) : today, type: typeVal, plats: selPlats.length ? selPlats : ["ig"], hashtags: tags, status, timeStr: selTime, timesOptions: timesOpts, img, score, reach: rndInt(10, 80) * 1000, engRate: "8.5%", isAI: false })}
-              style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 20px", borderRadius: 7, background: "#5B5BD6", color: "#fff", fontSize: 13.5, fontWeight: 800, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(91,91,214,.32)" }}>
+              style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 20px", borderRadius: 7, background: "linear-gradient(115deg,#F97316,#EA580C)", color: "#fff", fontSize: 13.5, fontWeight: 800, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 14px rgba(249,115,22,.4)" }}>
               <i className="fa-solid fa-calendar-check" style={{ fontSize: 12 }} /> Save & Schedule
             </button>
           </div>
@@ -1284,7 +1284,7 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
                 >
                   Reset
                 </button>
-                <div style={{ minWidth: 56, textAlign: "center", fontSize: 11.5, fontWeight: 700, color: "#5B5BD6", fontFamily: "JetBrains Mono,monospace" }}>
+                <div style={{ minWidth: 56, textAlign: "center", fontSize: 11.5, fontWeight: 700, color: "#F97316", fontFamily: "JetBrains Mono,monospace" }}>
                   {Math.round(imageZoom * 100)}%
                 </div>
                 <button
@@ -1341,7 +1341,7 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
             <div style={{ marginTop: 14, display: "flex", justifyContent: "flex-end" }}>
               <button
                 onClick={() => setShowCaptionPromptPopup(false)}
-                style={{ padding: "7px 14px", borderRadius: 7, border: "none", background: "#5B5BD6", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "Sora,sans-serif" }}
+                style={{ padding: "7px 14px", borderRadius: 7, border: "none", background: "linear-gradient(115deg,#F97316,#EA580C)", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "Sora,sans-serif" }}
               >
                 OK
               </button>
@@ -1380,18 +1380,18 @@ function GenModal({
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(11,12,26,.55)", backdropFilter: "blur(8px)", zIndex: 600, display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div style={{ background: "#fff", borderRadius: 18, padding: "32px 38px", width: 380, textAlign: "center", boxShadow: "0 32px 80px rgba(11,12,26,.2)" }}>
-        <div style={{ width: 72, height: 72, borderRadius: 20, background: "linear-gradient(135deg,#5B5BD6,#7C3AED)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 32, margin: "0 auto 16px", boxShadow: "0 4px 20px rgba(91,91,214,.32)" }}>✦</div>
+        <div style={{ width: 72, height: 72, borderRadius: 20, background: "linear-gradient(135deg,#F97316,#EA580C)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 32, margin: "0 auto 16px", boxShadow: "0 4px 14px rgba(249,115,22,.4)" }}>✦</div>
         <div style={{ fontSize: 20, fontWeight: 800, color: "#0B0C1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.3px", marginBottom: 4 }}>AI Generating Posts</div>
         <div style={{ fontSize: 13, color: "#8486AB", lineHeight: 1.6, marginBottom: 20 }}>Streaming posts from backend and inserting them as they arrive.</div>
         <div style={{ background: "#F0F1F9", borderRadius: 6, height: 8, overflow: "hidden", marginBottom: 8 }}>
-          <div style={{ height: "100%", background: "linear-gradient(90deg,#5B5BD6,#7C3AED)", width: pct + "%", borderRadius: 6, transition: "width .4s ease" }} />
+          <div style={{ height: "100%", background: "linear-gradient(90deg,#F97316,#EA580C)", width: pct + "%", borderRadius: 6, transition: "width .4s ease" }} />
         </div>
         <div style={{ fontSize: 12, color: "#8486AB", fontFamily: "JetBrains Mono,monospace", marginBottom: 8 }}>{pct}% · {generatedCount}/7 posts</div>
-        <div style={{ fontSize: 12, color: "#5B5BD6", marginBottom: 14 }}>{statusText}</div>
+        <div style={{ fontSize: 12, color: "#F97316", marginBottom: 14 }}>{statusText}</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 8, textAlign: "left" }}>
           {steps.map((s, i) => (
-            <div key={s} style={{ display: "flex", alignItems: "center", gap: 9, fontSize: 12.5, color: i < stepIdx ? "#10B981" : i === stepIdx ? "#5B5BD6" : "#8486AB", fontWeight: i === stepIdx ? 700 : 400 }}>
-              <div style={{ width: 18, height: 18, borderRadius: "50%", border: `2px solid ${i < stepIdx ? "#10B981" : i === stepIdx ? "#5B5BD6" : "#8486AB"}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, flexShrink: 0, background: i < stepIdx ? "#10B981" : "transparent", color: i < stepIdx ? "#fff" : "inherit" }}>
+            <div key={s} style={{ display: "flex", alignItems: "center", gap: 9, fontSize: 12.5, color: i < stepIdx ? "#10B981" : i === stepIdx ? "#F97316" : "#8486AB", fontWeight: i === stepIdx ? 700 : 400 }}>
+              <div style={{ width: 18, height: 18, borderRadius: "50%", border: `2px solid ${i < stepIdx ? "#10B981" : i === stepIdx ? "#F97316" : "#8486AB"}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, flexShrink: 0, background: i < stepIdx ? "#10B981" : "transparent", color: i < stepIdx ? "#fff" : "inherit" }}>
                 {i < stepIdx && <i className="fa-solid fa-check" style={{ fontSize: 8 }} />}
               </div>
               {s}
@@ -1415,7 +1415,7 @@ function RightPanel({ rpTab, setRpTab, posts, onOpen, onAddIdea, showToast, onOp
     <div style={{ width: 272, flexShrink: 0, background: "#fff", borderLeft: "1px solid #E2E4F0", display: "flex", flexDirection: "column", overflow: "hidden" }}>
       <div style={{ display: "flex", borderBottom: "1px solid #E2E4F0", flexShrink: 0 }}>
         {(["accounts","ideas","analytics"] as RpTab[]).map(t => (
-          <div key={t} onClick={() => setRpTab(t)} style={{ flex: 1, padding: "12px 6px", textAlign: "center", fontSize: 12, fontWeight: 700, color: rpTab === t ? "#5B5BD6" : "#8486AB", cursor: "pointer", fontFamily: "Sora,sans-serif", position: "relative", borderBottom: rpTab === t ? "2px solid #5B5BD6" : "2px solid transparent" }}>
+          <div key={t} onClick={() => setRpTab(t)} style={{ flex: 1, padding: "12px 6px", textAlign: "center", fontSize: 12, fontWeight: 700, color: rpTab === t ? "#F97316" : "#8486AB", cursor: "pointer", fontFamily: "Sora,sans-serif", position: "relative", borderBottom: rpTab === t ? "2px solid #F97316" : "2px solid transparent" }}>
             {t.charAt(0).toUpperCase() + t.slice(1)}
           </div>
         ))}
@@ -1425,7 +1425,7 @@ function RightPanel({ rpTab, setRpTab, posts, onOpen, onAddIdea, showToast, onOp
           <>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
               <div style={{ fontSize: 10.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".6px", color: "#8486AB", fontFamily: "Sora,sans-serif" }}>Connected Accounts</div>
-              <div onClick={onOpenFacebookConnect} style={{ display: "flex", alignItems: "center", gap: 4, padding: "4px 10px", borderRadius: 20, background: "#EEEEFF", color: "#5B5BD6", fontSize: 11, fontWeight: 700, cursor: "pointer", border: "1px solid #DDDDFB" }}>
+              <div onClick={onOpenFacebookConnect} style={{ display: "flex", alignItems: "center", gap: 4, padding: "4px 10px", borderRadius: 20, background: "#EEEEFF", color: "#F97316", fontSize: 11, fontWeight: 700, cursor: "pointer", border: "1px solid #DDDDFB" }}>
                 <i className="fa-solid fa-plus" style={{ fontSize: 9 }} /> Add Account
               </div>
             </div>
@@ -1495,7 +1495,7 @@ function RightPanel({ rpTab, setRpTab, posts, onOpen, onAddIdea, showToast, onOp
                 <div style={{ fontSize: 12.5, fontWeight: 700, color: "#0B0C1A", marginBottom: 2 }}>{idea.title}</div>
                 <div style={{ fontSize: 11, color: "#8486AB" }}>{idea.sub}</div>
                 <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 6 }}>
-                  <div onClick={() => onAddIdea(idea)} style={{ display: "flex", alignItems: "center", gap: 4, padding: "4px 9px", borderRadius: 6, background: "#EEEEFF", color: "#5B5BD6", fontSize: 11, fontWeight: 700, fontFamily: "Sora,sans-serif", cursor: "pointer" }}>
+                  <div onClick={() => onAddIdea(idea)} style={{ display: "flex", alignItems: "center", gap: 4, padding: "4px 9px", borderRadius: 6, background: "#EEEEFF", color: "#F97316", fontSize: 11, fontWeight: 700, fontFamily: "Sora,sans-serif", cursor: "pointer" }}>
                     <i className="fa-solid fa-plus" style={{ fontSize: 10 }} /> Use Idea
                   </div>
                 </div>
@@ -1520,7 +1520,7 @@ function RightPanel({ rpTab, setRpTab, posts, onOpen, onAddIdea, showToast, onOp
               <div key={r.l} style={{ display: "flex", alignItems: "center", gap: 7, padding: "5px 0", borderBottom: "1px solid #ECEDF8" }}>
                 <div style={{ fontSize: 11.5, color: "#3D3F60", width: 68, flexShrink: 0 }}>{r.l}</div>
                 <div style={{ flex: 1, height: 5, background: "#E2E4F0", borderRadius: 3, overflow: "hidden" }}>
-                  <div style={{ height: "100%", borderRadius: 3, background: "linear-gradient(90deg,#5B5BD6,#7C3AED)", width: `${r.v * 7.5}%` }} />
+                  <div style={{ height: "100%", borderRadius: 3, background: "linear-gradient(90deg,#F97316,#EA580C)", width: `${r.v * 7.5}%` }} />
                 </div>
                 <div style={{ fontSize: 11, fontWeight: 700, color: "#0B0C1A", width: 32, textAlign: "right", fontFamily: "JetBrains Mono,monospace" }}>{r.v}%</div>
               </div>
@@ -2165,13 +2165,13 @@ export default function CalendarPage() {
           {/* Header */}
           <div style={{ padding: "10px 8px 8px", borderRight: "1px solid #ECEDF8", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, background: "#fff", position: "sticky", top: 0, zIndex: 10, borderBottom: "2px solid #E2E4F0" }}>
             <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".6px", color: "#8486AB" }}>{DAY_NAMES[d.getDay()]}</div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: isToday ? "#fff" : "#3D3F60", fontFamily: "Sora,sans-serif", lineHeight: 1.1, width: isToday ? 34 : undefined, height: isToday ? 34 : undefined, borderRadius: isToday ? "50%" : undefined, background: isToday ? "#5B5BD6" : undefined, display: isToday ? "flex" : undefined, alignItems: isToday ? "center" : undefined, justifyContent: isToday ? "center" : undefined, boxShadow: isToday ? "0 4px 20px rgba(91,91,214,.32)" : undefined }}>
+            <div style={{ fontSize: 20, fontWeight: 800, color: isToday ? "#fff" : "#3D3F60", fontFamily: "Sora,sans-serif", lineHeight: 1.1, width: isToday ? 34 : undefined, height: isToday ? 34 : undefined, borderRadius: isToday ? "50%" : undefined, background: isToday ? "#F97316" : undefined, display: isToday ? "flex" : undefined, alignItems: isToday ? "center" : undefined, justifyContent: isToday ? "center" : undefined, boxShadow: isToday ? "0 4px 20px rgba(249,115,22,.32)" : undefined }}>
               {isToday ? <span style={{ fontSize: 16 }}>{d.getDate()}</span> : d.getDate()}
             </div>
             <div style={{ fontSize: 10.5, color: "#BFC1D9", fontWeight: 500 }}>{dayPosts.length} post{dayPosts.length !== 1 ? "s" : ""}</div>
           </div>
           {/* Posts */}
-          <div style={{ borderRight: "1px solid #ECEDF8", padding: 8, minHeight: 600, background: isWE ? "rgba(235,236,248,.35)" : isToday ? "rgba(91,91,214,.025)" : undefined, display: "flex", flexDirection: "column" }}>
+          <div style={{ borderRight: "1px solid #ECEDF8", padding: 8, minHeight: 600, background: isWE ? "rgba(235,236,248,.35)" : isToday ? "rgba(249,115,22,.025)" : undefined, display: "flex", flexDirection: "column" }}>
             {dayPosts.map(p => <PostCard key={p.id} p={p} onOpen={() => openModal(p.id)} onDup={() => dupPost(p.id)} onDel={() => deletePost(p.id)} onPublishNow={() => { void publishExistingPostNow(p.id); }} />)}
             <button onClick={() => openModal(null, d)} style={{ marginTop: "auto", padding: 8, borderRadius: 7, border: "1.5px dashed #E2E4F0", color: "#BFC1D9", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 5, background: "transparent", width: "100%" }}>
               <i className="fa-solid fa-plus" style={{ fontSize: 11 }} /> Add Post
@@ -2197,12 +2197,12 @@ export default function CalendarPage() {
       const isFuture = d > today;
       const dayPosts = !isOther ? filtered.filter(p => sameDay(p.date, d)).sort((a, b) => a.timeStr.localeCompare(b.timeStr)) : [];
       cells.push(
-        <div key={d.toISOString()} style={{ borderRight: "1px solid #ECEDF8", borderBottom: "1px solid #ECEDF8", padding: 6, minHeight: 160, background: isOther ? "#F4F5FB" : isWE ? "rgba(235,236,248,.3)" : isToday ? "rgba(91,91,214,.03)" : "#fff", display: "flex", flexDirection: "column", gap: 5 }}>
+        <div key={d.toISOString()} style={{ borderRight: "1px solid #ECEDF8", borderBottom: "1px solid #ECEDF8", padding: 6, minHeight: 160, background: isOther ? "#F4F5FB" : isWE ? "rgba(235,236,248,.3)" : isToday ? "rgba(249,115,22,.03)" : "#fff", display: "flex", flexDirection: "column", gap: 5 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 2 }}>
-            <div style={{ fontWeight: 700, color: isOther ? "#BFC1D9" : isToday ? "#fff" : "#3D3F60", width: 26, height: 26, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", background: isToday ? "#5B5BD6" : undefined, boxShadow: isToday ? "0 4px 20px rgba(91,91,214,.32)" : undefined, flexShrink: 0, fontSize: isToday ? 11.5 : 12.5 }}>
+            <div style={{ fontWeight: 700, color: isOther ? "#BFC1D9" : isToday ? "#fff" : "#3D3F60", width: 26, height: 26, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", background: isToday ? "#F97316" : undefined, boxShadow: isToday ? "0 4px 20px rgba(249,115,22,.32)" : undefined, flexShrink: 0, fontSize: isToday ? 11.5 : 12.5 }}>
               {d.getDate()}
             </div>
-            {!isOther && <div onClick={() => openModal(null, d)} style={{ width: 20, height: 20, borderRadius: 5, background: "#EEEEFF", color: "#5B5BD6", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, cursor: "pointer" }}>
+            {!isOther && <div onClick={() => openModal(null, d)} style={{ width: 20, height: 20, borderRadius: 5, background: "#EEEEFF", color: "#F97316", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, cursor: "pointer" }}>
               <i className="fa-solid fa-plus" />
             </div>}
           </div>
@@ -2213,7 +2213,7 @@ export default function CalendarPage() {
               )}
               {dayPosts.slice(0, 2).map(p => <MiniCard key={p.id} p={p} onOpen={() => openModal(p.id)} onDup={() => dupPost(p.id)} onDel={() => deletePost(p.id)} onPublishNow={() => { void publishExistingPostNow(p.id); }} />)}
               {dayPosts.length > 2 && (
-                <div style={{ fontSize: 10, fontWeight: 700, color: "#5B5BD6", padding: "3px 7px", borderRadius: 5, background: "#EEEEFF", cursor: "pointer", display: "flex", alignItems: "center", gap: 3, marginTop: 1 }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#F97316", padding: "3px 7px", borderRadius: 5, background: "#EEEEFF", cursor: "pointer", display: "flex", alignItems: "center", gap: 3, marginTop: 1 }}>
                   <i className="fa-solid fa-layer-group" style={{ fontSize: 8 }} /> +{dayPosts.length - 2} more
                 </div>
               )}
@@ -2253,7 +2253,7 @@ export default function CalendarPage() {
         .mmc:hover .mmc-actions { opacity: 1; pointer-events: auto; }
         .pc-hover-actions { opacity: 0; transition: opacity .14s; pointer-events: none; }
         .post-card:hover .pc-hover-actions { opacity: 1; pointer-events: auto; }
-        .tb-search:focus-within { width: 260px !important; border-color: #5B5BD6 !important; background: #fff !important; box-shadow: 0 0 0 3px rgba(91,91,214,.1) !important; }
+        .tb-search:focus-within { width: 260px !important; border-color: #F97316 !important; background: #fff !important; box-shadow: 0 0 0 3px rgba(249,115,22,.1) !important; }
         .sb-item-hover:hover { background: #1E1F2E; color: #F1F2FF; }
       `}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -2274,7 +2274,7 @@ export default function CalendarPage() {
             onSearchChange={setSearch}
             searchPlaceholder="Search posts…"
             actionButton={
-              <button onClick={() => openModal(null)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 15px", borderRadius: 7, background: "#5B5BD6", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(91,91,214,.32)" }}>
+              <button onClick={() => openModal(null)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 15px", borderRadius: 7, background: "linear-gradient(115deg,#F97316,#EA580C)", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 14px rgba(249,115,22,.4)" }}>
                 <i className="fa-solid fa-plus" style={{ fontSize: 11 }} /> New Post
               </button>
             }
@@ -2300,9 +2300,9 @@ export default function CalendarPage() {
             {/* Row 1: View tabs + nav */}
             <div style={{ display: "flex", alignItems: "stretch", padding: "0 20px", gap: 4, borderBottom: "1px solid #ECEDF8" }}>
               {([["7d","fa-calendar-week","Weekly"],["month","fa-calendar","Monthly"],["pipeline","fa-robot","AI Pipeline"]] as const).map(([v, icon, label]) => (
-                <div key={v} onClick={() => { setView(v); setOffset(0); }} style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 16px", fontSize: 13, fontWeight: 700, color: view === v ? "#5B5BD6" : "#8486AB", cursor: "pointer", position: "relative", whiteSpace: "nowrap", fontFamily: "Sora,sans-serif", borderBottom: `2px solid ${view === v ? "#5B5BD6" : "transparent"}`, height: 44 }}>
+                <div key={v} onClick={() => { setView(v); setOffset(0); }} style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 16px", fontSize: 13, fontWeight: 700, color: view === v ? "#F97316" : "#8486AB", cursor: "pointer", position: "relative", whiteSpace: "nowrap", fontFamily: "Sora,sans-serif", borderBottom: `2px solid ${view === v ? "#F97316" : "transparent"}`, height: 44 }}>
                   <i className={`fa-solid ${icon} fa-xs`} /> {label}
-                  <span style={{ padding: "2px 7px", borderRadius: 8, fontSize: 10, fontWeight: 800, background: view === v ? "#EEEEFF" : "#F0F1F9", color: view === v ? "#5B5BD6" : "#8486AB" }}>
+                  <span style={{ padding: "2px 7px", borderRadius: 8, fontSize: 10, fontWeight: 800, background: view === v ? "#EEEEFF" : "#F0F1F9", color: view === v ? "#F97316" : "#8486AB" }}>
                     {v === "pipeline" ? "∞" : v === "7d" ? statSched : posts.filter(p => p.status !== "published").length}
                   </span>
                 </div>
@@ -2329,9 +2329,9 @@ export default function CalendarPage() {
                   ),
                 ]).map(([p, label, icon]) => {
                   const active = platFilter === p;
-                  const bg = active ? (p === "all" ? "#5B5BD6" : PLAT_COLORS[p as PlatKey]) : undefined;
+                  const bg = active ? (p === "all" ? "#F97316" : PLAT_COLORS[p as PlatKey]) : undefined;
                   return (
-                    <div key={p} onClick={() => setPlatFilter(p)} style={{ display: "flex", alignItems: "center", gap: 5, padding: "5px 11px", borderRadius: 20, border: `1.5px solid ${active ? (p === "all" ? "#5B5BD6" : PLAT_COLORS[p as PlatKey]) : "#E2E4F0"}`, background: bg || "#fff", color: active ? "#fff" : "#8486AB", fontSize: 12, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}>
+                    <div key={p} onClick={() => setPlatFilter(p)} style={{ display: "flex", alignItems: "center", gap: 5, padding: "5px 11px", borderRadius: 20, border: `1.5px solid ${active ? (p === "all" ? "#F97316" : PLAT_COLORS[p as PlatKey]) : "#E2E4F0"}`, background: bg || "#fff", color: active ? "#fff" : "#8486AB", fontSize: 12, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}>
                       <i className={icon} style={{ fontSize: 11 }} />{label}
                     </div>
                   );
@@ -2341,7 +2341,7 @@ export default function CalendarPage() {
               <button onClick={createPlanDirect} disabled={planLoading} style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 18px", borderRadius: 8, background: "#10B981", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: planLoading ? "not-allowed" : "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(16,185,129,.32)", whiteSpace: "nowrap", flexShrink: 0, opacity: planLoading ? 0.7 : 1 }}>
                 <i className="fa-solid fa-calendar-plus" style={{ fontSize: 12 }} /> {planLoading ? "Creating..." : "Create Plan"}
               </button>
-              <button onClick={startAiGeneration} style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 18px", borderRadius: 8, background: "linear-gradient(135deg,#5B5BD6,#7C3AED)", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(91,91,214,.32)", whiteSpace: "nowrap", flexShrink: 0 }}>
+              <button onClick={startAiGeneration} style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 18px", borderRadius: 8, background: "linear-gradient(135deg,#F97316,#EA580C)", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 14px rgba(249,115,22,.4)", whiteSpace: "nowrap", flexShrink: 0 }}>
                 <i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 12 }} /> AI Generate
               </button>
             </div>
@@ -2350,7 +2350,7 @@ export default function CalendarPage() {
           {/* Stats Bar */}
           <div style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: 8, padding: "8px 20px", background: "#F0F1F9", borderBottom: "1px solid #E2E4F0" }}>
             {[
-              { dot:"#5B5BD6", val:statTotal, label:"Posts" },
+              { dot:"#F97316", val:statTotal, label:"Posts" },
               { dot:"#3B82F6", val:statSched, label:"Scheduled" },
               { dot:"#10B981", val:statPub,   label:"Published" },
               { dot:"#F59E0B", val:statDraft,  label:"Drafts" },
@@ -2361,8 +2361,8 @@ export default function CalendarPage() {
                 <strong style={{ fontWeight: 800, color: "#0B0C1A", fontFamily: "JetBrains Mono,monospace" }}>{s.val}</strong>&nbsp;{s.label}
               </div>
             ))}
-            <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 20, background: "#EEEEFF", border: "1px solid #DDDDFB", color: "#5B5BD6", fontSize: 12, fontWeight: 700, marginLeft: "auto", fontFamily: "Sora,sans-serif" }}>
-              <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#5B5BD6", animation: "pulse 2s ease-in-out infinite" }} />
+            <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 20, background: "#EEEEFF", border: "1px solid #DDDDFB", color: "#F97316", fontSize: 12, fontWeight: 700, marginLeft: "auto", fontFamily: "Sora,sans-serif" }}>
+              <div style={{ width: 7, height: 7, borderRadius: "50%", background: "linear-gradient(115deg,#F97316,#EA580C)", animation: "pulse 2s ease-in-out infinite" }} />
               AI Pipeline Active
             </div>
           </div>

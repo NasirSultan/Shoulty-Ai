@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef } from "react";
 import Sidebar from "../../Sidebar";
@@ -41,7 +41,7 @@ const PLANS: Plan[] = [
   },
   {
     id:"creator", name:"Creator", monthly:79, yearly:63,
-    color:"#3B82F6", grad:"linear-gradient(135deg,#3B82F6,#6366F1)",
+    color:"#3B82F6", grad:"linear-gradient(135deg,#F97316,#EA580C)",
     features:[
       {yes:true,  txt:"Unlimited posts",      icon:"fa-infinity"},
       {yes:true,  txt:"12 reels / month",     icon:"fa-film"},
@@ -55,7 +55,7 @@ const PLANS: Plan[] = [
   },
   {
     id:"business", name:"Business", monthly:197, yearly:158, popular:true,
-    color:"#5B5BD6", grad:"linear-gradient(135deg,#5B5BD6,#7C3AED)",
+    color:"#F59E0B", grad:"linear-gradient(135deg,#F59E0B,#F97316)",
     features:[
       {yes:true, txt:"Unlimited posts",       icon:"fa-infinity"},
       {yes:true, txt:"Unlimited reels",       icon:"fa-film"},
@@ -86,8 +86,8 @@ const PLANS: Plan[] = [
 const ORDER = ["solo","creator","business","growth"];
 
 const INIT_ADDONS: Addon[] = [
-  { id:"extra-brand", name:"Extra Brand", desc:"Add one more brand slot to your plan. Perfect for agencies managing multiple clients.", price:"$29", period:"/month", icon:"fa-solid fa-tag", grad:"linear-gradient(135deg,#3B82F6,#6366F1)", badge:"Popular", badgeClr:"#3B82F6", active:false },
-  { id:"white-label", name:"White-Label", desc:"Remove Shoutly AI branding entirely. Deliver content under your own brand.", price:"$197", period:"/month", icon:"fa-solid fa-wand-magic-sparkles", grad:"linear-gradient(135deg,#5B5BD6,#7C3AED)", badge:"Pro", badgeClr:"#5B5BD6", active:false },
+  { id:"extra-brand", name:"Extra Brand", desc:"Add one more brand slot to your plan. Perfect for agencies managing multiple clients.", price:"$29", period:"/month", icon:"fa-solid fa-tag", grad:"linear-gradient(135deg,#F97316,#EA580C)", badge:"Popular", badgeClr:"#3B82F6", active:false },
+  { id:"white-label", name:"White-Label", desc:"Remove Shoutly AI branding entirely. Deliver content under your own brand.", price:"$197", period:"/month", icon:"fa-solid fa-wand-magic-sparkles", grad:"linear-gradient(135deg,#F97316,#EF4444)", badge:"Pro", badgeClr:"#F97316", active:false },
   { id:"api", name:"API Access", desc:"Full developer API with webhooks. Build custom integrations and automate at scale.", price:"$497", period:"/month", icon:"fa-solid fa-code", grad:"linear-gradient(135deg,#0F1117,#2D2F4A)", badge:"Dev", badgeClr:"#8486AB", active:false },
   { id:"ai-train", name:"Custom AI Training", desc:"Train ShoutlyAI on your exact brand voice, tone, and visual style.", price:"$997", period:"one-time", icon:"fa-solid fa-brain", grad:"linear-gradient(135deg,#EC4899,#F97316)", badge:"Enterprise", badgeClr:"#F97316", active:false },
 ];
@@ -124,7 +124,7 @@ function useToasts() {
 function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
   return (
     <div onClick={() => onChange(!checked)} style={{ position:"relative", width:36, height:20, flexShrink:0, cursor:"pointer" }}>
-      <div style={{ position:"absolute", inset:0, borderRadius:10, background:checked?"#5B5BD6":"#E2E4F0", border:`1px solid ${checked?"#5B5BD6":"#E2E4F0"}`, transition:"all .2s" }} />
+      <div style={{ position:"absolute", inset:0, borderRadius:10, background:checked?"#F97316":"#E5E7EB", border:`1px solid ${checked?"#F97316":"#E5E7EB"}`, transition:"all .2s" }} />
       <div style={{ position:"absolute", top:3, left:checked?19:3, width:12, height:12, borderRadius:"50%", background:"#fff", transition:"left .2s", boxShadow:"0 1px 3px rgba(0,0,0,.25)" }} />
     </div>
   );
@@ -153,21 +153,21 @@ function PlanCard({ p, currentPlan, cycle, onSwitch }: { p: Plan; currentPlan: s
     btnLabel = <><i className="fa-solid fa-phone" style={{ fontSize:10 }} /> Contact Sales</>;
     btnClick = undefined;
   } else if (isUp) {
-    btnStyle = { background:p.grad, border:"none", color:"#fff", boxShadow:"0 4px 20px rgba(91,91,214,.32)" };
+    btnStyle = { background:p.grad, border:"none", color:"#fff", boxShadow:"0 4px 14px rgba(249,115,22,.4)" };
     btnLabel = <><i className="fa-solid fa-bolt" style={{ fontSize:10 }} /> Upgrade</>;
     btnClick = () => onSwitch(p.id, true);
   } else {
-    btnStyle = { background:"#F0F1F9", border:"1.5px solid #E2E4F0", color:"#3D3F60" };
+    btnStyle = { background:"#F9FAFB", border:"1.5px solid #E2E4F0", color:"#3D3F60" };
     btnLabel = <><i className="fa-solid fa-arrow-down" style={{ fontSize:10 }} /> Downgrade</>;
     btnClick = () => onSwitch(p.id, false);
   }
 
   return (
-    <div style={{ borderRadius:14, border:`1.5px solid ${isCur?"#10B981":p.popular?"#5B5BD6":"#E2E4F0"}`, background:"#fff", overflow:"hidden", display:"flex", flexDirection:"column", transition:"all .22s", position:"relative", boxShadow:isCur?"0 0 0 3px rgba(16,185,129,.1)":undefined }}
+    <div style={{ borderRadius:14, border:`1.5px solid ${isCur?"#10B981":p.popular?"#F97316":"#E5E7EB"}`, background:"#fff", overflow:"hidden", display:"flex", flexDirection:"column", transition:"all .22s", position:"relative", boxShadow:isCur?"0 0 0 3px rgba(16,185,129,.1)":undefined }}
       onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow="0 10px 32px rgba(11,12,26,.11)"; (e.currentTarget as HTMLDivElement).style.transform="translateY(-5px)"; }}
       onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow=isCur?"0 0 0 3px rgba(16,185,129,.1)":""; (e.currentTarget as HTMLDivElement).style.transform=""; }}>
       {isCur && <div style={{ position:"absolute", top:0, right:0, padding:"4px 11px", fontSize:9.5, fontWeight:900, color:"#fff", fontFamily:"Sora,sans-serif", background:"#10B981", borderRadius:"0 14px 0 14px" }}>CURRENT</div>}
-      {!isCur && p.popular && <div style={{ position:"absolute", top:0, right:0, padding:"4px 11px", fontSize:9.5, fontWeight:900, color:"#fff", fontFamily:"Sora,sans-serif", background:"linear-gradient(135deg,#5B5BD6,#7C3AED)", borderRadius:"0 14px 0 14px" }}>POPULAR</div>}
+      {!isCur && p.popular && <div style={{ position:"absolute", top:0, right:0, padding:"4px 11px", fontSize:9.5, fontWeight:900, color:"#fff", fontFamily:"Sora,sans-serif", background:"linear-gradient(135deg,#F97316,#EF4444)", borderRadius:"0 14px 0 14px" }}>POPULAR</div>}
       <div style={{ height:3, background:p.grad }} />
       <div style={{ padding:"17px 17px 13px", flex:1 }}>
         <div style={{ fontSize:14, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", marginBottom:10 }}>{p.name}</div>
@@ -208,8 +208,8 @@ function ConfirmSwitchModal({ planId, isUp, currentPlan, cycle, onConfirm, onClo
   return (
     <>
       <div style={{ padding:"20px 24px 18px", borderBottom:"1px solid #E2E4F0", display:"flex", alignItems:"center", gap:12 }}>
-        <div style={{ width:42, height:42, borderRadius:11, background:isUp?"#EEEEFF":"#FFFBEB", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>
-          <i className={`fa-solid fa-${isUp?"bolt":"arrow-down"}`} style={{ color:isUp?"#5B5BD6":"#F59E0B" }} />
+        <div style={{ width:42, height:42, borderRadius:11, background:isUp?"#FFF7ED":"#FFFBEB", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>
+          <i className={`fa-solid fa-${isUp?"bolt":"arrow-down"}`} style={{ color:isUp?"#F97316":"#F59E0B" }} />
         </div>
         <div>
           <div style={{ fontSize:16, fontWeight:900, color:"#0B0C1A", fontFamily:"Sora,sans-serif" }}>{isUp?"Upgrade to":"Downgrade to"} {p.name}</div>
@@ -218,15 +218,15 @@ function ConfirmSwitchModal({ planId, isUp, currentPlan, cycle, onConfirm, onClo
       </div>
       <div style={{ padding:"20px 24px" }}>
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:14 }}>
-          <div style={{ padding:14, borderRadius:10, background:"#F0F1F9", border:"1px solid #ECEDF8" }}>
+          <div style={{ padding:14, borderRadius:10, background:"#F9FAFB", border:"1px solid #ECEDF8" }}>
             <div style={{ fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:".5px", color:"#8486AB", marginBottom:5, fontFamily:"Sora,sans-serif" }}>Current Plan</div>
             <div style={{ fontSize:15, fontWeight:900, color:"#0B0C1A", fontFamily:"Sora,sans-serif" }}>{cur.name}</div>
             <div style={{ fontSize:20, fontWeight:900, fontFamily:"Sora,sans-serif", color:"#8486AB", marginTop:3 }}>${curP}/mo</div>
           </div>
-          <div style={{ padding:14, borderRadius:10, border:`1.5px solid ${isUp?"#DDDDFB":"rgba(245,158,11,.2)"}`, background:isUp?"#EEEEFF":"#FFFBEB" }}>
-            <div style={{ fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:".5px", color:isUp?"#5B5BD6":"#D97706", marginBottom:5, fontFamily:"Sora,sans-serif" }}>New Plan</div>
+          <div style={{ padding:14, borderRadius:10, border:`1.5px solid ${isUp?"#DDDDFB":"rgba(245,158,11,.2)"}`, background:isUp?"#FFF7ED":"#FFFBEB" }}>
+            <div style={{ fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:".5px", color:isUp?"#F97316":"#D97706", marginBottom:5, fontFamily:"Sora,sans-serif" }}>New Plan</div>
             <div style={{ fontSize:15, fontWeight:900, color:"#0B0C1A", fontFamily:"Sora,sans-serif" }}>{p.name}</div>
-            <div style={{ fontSize:20, fontWeight:900, fontFamily:"Sora,sans-serif", color:isUp?"#5B5BD6":"#F59E0B", marginTop:3 }}>${price}/mo</div>
+            <div style={{ fontSize:20, fontWeight:900, fontFamily:"Sora,sans-serif", color:isUp?"#F97316":"#F59E0B", marginTop:3 }}>${price}/mo</div>
           </div>
         </div>
         <div style={{ display:"flex", alignItems:"flex-start", gap:9, padding:"11px 13px", borderRadius:9, background:isUp?"#ECFDF5":"#FFFBEB", border:`1px solid ${isUp?"rgba(16,185,129,.15)":"rgba(245,158,11,.18)"}` }}>
@@ -238,9 +238,9 @@ function ConfirmSwitchModal({ planId, isUp, currentPlan, cycle, onConfirm, onClo
           </div>
         </div>
       </div>
-      <div style={{ display:"flex", gap:8, padding:"15px 24px", borderTop:"1px solid #E2E4F0", background:"#F0F1F9" }}>
+      <div style={{ display:"flex", gap:8, padding:"15px 24px", borderTop:"1px solid #E2E4F0", background:"#F9FAFB" }}>
         <button onClick={onClose} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#fff", border:"1.5px solid #E2E4F0", color:"#3D3F60" }}>Cancel</button>
-        <button onClick={onConfirm} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:isUp?"linear-gradient(135deg,#5B5BD6,#7C3AED)":"#F59E0B", color:"#fff", border:"none" }}>
+        <button onClick={onConfirm} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:isUp?"linear-gradient(135deg,#F97316,#EF4444)":"#F59E0B", color:"#fff", border:"none" }}>
           <i className={`fa-solid fa-${isUp?"bolt":"check"}`} style={{ marginRight:6 }} /> Confirm {isUp?"Upgrade":"Downgrade"}
         </button>
       </div>
@@ -255,8 +255,8 @@ function UpgradeModal({ currentPlan, onProceed, onClose }: { currentPlan: string
   return (
     <>
       <div style={{ padding:"20px 24px 18px", borderBottom:"1px solid #E2E4F0", display:"flex", alignItems:"center", gap:12 }}>
-        <div style={{ width:42, height:42, borderRadius:11, background:"#EEEEFF", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>
-          <i className="fa-solid fa-bolt" style={{ color:"#5B5BD6" }} />
+        <div style={{ width:42, height:42, borderRadius:11, background:"#FFF7ED", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>
+          <i className="fa-solid fa-bolt" style={{ color:"#F97316" }} />
         </div>
         <div>
           <div style={{ fontSize:16, fontWeight:900, color:"#0B0C1A", fontFamily:"Sora,sans-serif" }}>Choose Your Plan</div>
@@ -264,7 +264,7 @@ function UpgradeModal({ currentPlan, onProceed, onClose }: { currentPlan: string
         </div>
       </div>
       <div style={{ padding:"20px 24px" }}>
-        <div style={{ display:"flex", gap:3, padding:3, borderRadius:8, background:"#F0F1F9", border:"1px solid #E2E4F0", marginBottom:14, width:"fit-content" }}>
+        <div style={{ display:"flex", gap:3, padding:3, borderRadius:8, background:"#F9FAFB", border:"1px solid #E2E4F0", marginBottom:14, width:"fit-content" }}>
           {(["monthly","yearly"] as CycleType[]).map(c => (
             <div key={c} onClick={() => setUpgCycle(c)} style={{ padding:"4px 13px", borderRadius:6, fontSize:11.5, fontWeight:700, cursor:"pointer", color:upgCycle===c?"#0B0C1A":"#8486AB", background:upgCycle===c?"#fff":undefined, boxShadow:upgCycle===c?"0 1px 3px rgba(11,12,26,.06)":undefined, fontFamily:"Sora,sans-serif", display:"flex", alignItems:"center", gap:5 }}>
               {c.charAt(0).toUpperCase()+c.slice(1)}
@@ -278,8 +278,8 @@ function UpgradeModal({ currentPlan, onProceed, onClose }: { currentPlan: string
             const isCur = p.id===currentPlan;
             const isSel = selected===p.id;
             return (
-              <div key={p.id} onClick={() => !isCur && setSelected(p.id)} style={{ border:`1.5px solid ${isSel?"#5B5BD6":isCur?"#10B981":"#E2E4F0"}`, borderRadius:11, padding:14, cursor:isCur?"default":"pointer", background:isSel?"#EEEEFF":"#F0F1F9", position:"relative", boxShadow:isSel?"0 0 0 2px rgba(91,91,214,.12)":undefined, transition:"all .16s" }}>
-                <div style={{ position:"absolute", top:11, right:11, width:19, height:19, borderRadius:"50%", border:`2px solid ${isSel?"#5B5BD6":"#E2E4F0"}`, display:"flex", alignItems:"center", justifyContent:"center", background:isSel?"#5B5BD6":"transparent" }}>
+              <div key={p.id} onClick={() => !isCur && setSelected(p.id)} style={{ border:`1.5px solid ${isSel?"#F97316":isCur?"#10B981":"#E5E7EB"}`, borderRadius:11, padding:14, cursor:isCur?"default":"pointer", background:isSel?"#FFF7ED":"#F9FAFB", position:"relative", boxShadow:isSel?"0 0 0 2px rgba(249,115,22,.1)":undefined, transition:"all .16s" }}>
+                <div style={{ position:"absolute", top:11, right:11, width:19, height:19, borderRadius:"50%", border:`2px solid ${isSel?"#F97316":"#E5E7EB"}`, display:"flex", alignItems:"center", justifyContent:"center", background:isSel?"#F97316":"transparent" }}>
                   {isSel && <i className="fa-solid fa-check" style={{ fontSize:9, color:"#fff" }} />}
                 </div>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
@@ -294,14 +294,14 @@ function UpgradeModal({ currentPlan, onProceed, onClose }: { currentPlan: string
             );
           })}
         </div>
-        <div style={{ display:"flex", alignItems:"flex-start", gap:9, padding:"11px 13px", borderRadius:9, background:"#EEEEFF", border:"1px solid #DDDDFB" }}>
-          <i className="fa-solid fa-shield-halved" style={{ color:"#5B5BD6", fontSize:14, flexShrink:0, marginTop:1 }} />
+        <div style={{ display:"flex", alignItems:"flex-start", gap:9, padding:"11px 13px", borderRadius:9, background:"#FFF7ED", border:"1px solid #DDDDFB" }}>
+          <i className="fa-solid fa-shield-halved" style={{ color:"#F97316", fontSize:14, flexShrink:0, marginTop:1 }} />
           <div style={{ fontSize:12.5, color:"#3D3F60", lineHeight:1.5 }}>Secured by Stripe · Cancel anytime · Instant access · No hidden fees</div>
         </div>
       </div>
-      <div style={{ display:"flex", gap:8, padding:"15px 24px", borderTop:"1px solid #E2E4F0", background:"#F0F1F9" }}>
+      <div style={{ display:"flex", gap:8, padding:"15px 24px", borderTop:"1px solid #E2E4F0", background:"#F9FAFB" }}>
         <button onClick={onClose} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#fff", border:"1.5px solid #E2E4F0", color:"#3D3F60" }}>Cancel</button>
-        <button disabled={!selected} onClick={() => { if (selected) onProceed(selected, ORDER.indexOf(selected)>=ORDER.indexOf(currentPlan)); }} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:selected?"pointer":"default", fontFamily:"Sora,sans-serif", background:"linear-gradient(135deg,#5B5BD6,#7C3AED)", color:"#fff", border:"none", opacity:selected?1:.45 }}>
+        <button disabled={!selected} onClick={() => { if (selected) onProceed(selected, ORDER.indexOf(selected)>=ORDER.indexOf(currentPlan)); }} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:selected?"pointer":"default", fontFamily:"Sora,sans-serif", background:"linear-gradient(135deg,#F97316,#EF4444)", color:"#fff", border:"none", opacity:selected?1:.45 }}>
           <i className="fa-solid fa-bolt" style={{ marginRight:6 }} /> Continue to Checkout
         </button>
       </div>
@@ -327,20 +327,20 @@ function CycleModal({ currentPlan, globalCycle, onApply, onClose }: { currentPla
       <div style={{ padding:"20px 24px" }}>
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:16 }}>
           {(["monthly","yearly"] as CycleType[]).map(c => (
-            <div key={c} onClick={() => setPending(c)} style={{ padding:"16px 12px", borderRadius:11, border:`2px solid ${pending===c?"#5B5BD6":"#E2E4F0"}`, background:pending===c?"#EEEEFF":"#F0F1F9", cursor:"pointer", textAlign:"center", position:"relative", boxShadow:pending===c?"0 0 0 2px rgba(91,91,214,.1)":undefined, transition:"all .16s" }}>
+            <div key={c} onClick={() => setPending(c)} style={{ padding:"16px 12px", borderRadius:11, border:`2px solid ${pending===c?"#F97316":"#E5E7EB"}`, background:pending===c?"#FFF7ED":"#F9FAFB", cursor:"pointer", textAlign:"center", position:"relative", boxShadow:pending===c?"0 0 0 2px rgba(249,115,22,.1)":undefined, transition:"all .16s" }}>
               {c==="yearly" && <div style={{ position:"absolute", top:-11, left:"50%", transform:"translateX(-50%)", padding:"3px 9px", borderRadius:20, background:"#10B981", color:"#fff", fontSize:9.5, fontWeight:800, whiteSpace:"nowrap", fontFamily:"Sora,sans-serif" }}>SAVE ${(p.monthly-p.yearly)*12}/yr</div>}
               <span style={{ fontSize:22, display:"block", marginBottom:7 }}>{c==="monthly"?"📅":"🗓️"}</span>
               <div style={{ fontSize:13, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif" }}>{c.charAt(0).toUpperCase()+c.slice(1)}</div>
-              <div style={{ fontSize:20, fontWeight:900, fontFamily:"Sora,sans-serif", color:"#5B5BD6", marginTop:3 }}>${c==="yearly"?p.yearly:p.monthly}</div>
+              <div style={{ fontSize:20, fontWeight:900, fontFamily:"Sora,sans-serif", color:"#F97316", marginTop:3 }}>${c==="yearly"?p.yearly:p.monthly}</div>
               <div style={{ fontSize:10.5, color:"#8486AB", marginTop:2 }}>per month</div>
               {c==="yearly" && <span style={{ display:"inline-block", marginTop:5, padding:"2px 7px", borderRadius:5, background:"#ECFDF5", color:"#059669", fontSize:9.5, fontWeight:800, fontFamily:"JetBrains Mono,monospace" }}>–20%</span>}
             </div>
           ))}
         </div>
       </div>
-      <div style={{ display:"flex", gap:8, padding:"15px 24px", borderTop:"1px solid #E2E4F0", background:"#F0F1F9" }}>
+      <div style={{ display:"flex", gap:8, padding:"15px 24px", borderTop:"1px solid #E2E4F0", background:"#F9FAFB" }}>
         <button onClick={onClose} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#fff", border:"1.5px solid #E2E4F0", color:"#3D3F60" }}>Cancel</button>
-        <button onClick={() => onApply(pending)} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"linear-gradient(135deg,#5B5BD6,#7C3AED)", color:"#fff", border:"none" }}>
+        <button onClick={() => onApply(pending)} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"linear-gradient(135deg,#F97316,#EF4444)", color:"#fff", border:"none" }}>
           <i className="fa-solid fa-check" style={{ marginRight:6 }} /> Apply Change
         </button>
       </div>
@@ -375,17 +375,17 @@ function AddCardModal({ onClose, showToast }: { onClose: () => void; showToast: 
         ].map(f => (
           <div key={f.label} style={{ marginBottom:14 }}>
             <div style={{ fontSize:10.5, fontWeight:700, textTransform:"uppercase", letterSpacing:".5px", color:"#8486AB", marginBottom:6, display:"block", fontFamily:"Sora,sans-serif" }}>{f.label}</div>
-            <input placeholder={f.placeholder} type={f.type} maxLength={f.maxLength} style={{ width:"100%", padding:"10px 13px", borderRadius:8, border:"1.5px solid #E2E4F0", background:"#F0F1F9", color:"#0B0C1A", fontSize:13.5, outline:"none", fontFamily:"Plus Jakarta Sans,sans-serif" }} />
+            <input placeholder={f.placeholder} type={f.type} maxLength={f.maxLength} style={{ width:"100%", padding:"10px 13px", borderRadius:8, border:"1.5px solid #E2E4F0", background:"#F9FAFB", color:"#0B0C1A", fontSize:13.5, outline:"none", fontFamily:"Plus Jakarta Sans,sans-serif" }} />
           </div>
         ))}
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:14 }}>
           <div>
             <div style={{ fontSize:10.5, fontWeight:700, textTransform:"uppercase", letterSpacing:".5px", color:"#8486AB", marginBottom:6, fontFamily:"Sora,sans-serif" }}>Expiry Date</div>
-            <input placeholder="MM / YY" maxLength={7} style={{ width:"100%", padding:"10px 13px", borderRadius:8, border:"1.5px solid #E2E4F0", background:"#F0F1F9", color:"#0B0C1A", fontSize:13.5, outline:"none", fontFamily:"Plus Jakarta Sans,sans-serif" }} />
+            <input placeholder="MM / YY" maxLength={7} style={{ width:"100%", padding:"10px 13px", borderRadius:8, border:"1.5px solid #E2E4F0", background:"#F9FAFB", color:"#0B0C1A", fontSize:13.5, outline:"none", fontFamily:"Plus Jakarta Sans,sans-serif" }} />
           </div>
           <div>
             <div style={{ fontSize:10.5, fontWeight:700, textTransform:"uppercase", letterSpacing:".5px", color:"#8486AB", marginBottom:6, fontFamily:"Sora,sans-serif" }}>CVV</div>
-            <input placeholder="•••" type="password" maxLength={4} style={{ width:"100%", padding:"10px 13px", borderRadius:8, border:"1.5px solid #E2E4F0", background:"#F0F1F9", color:"#0B0C1A", fontSize:13.5, outline:"none", fontFamily:"Plus Jakarta Sans,sans-serif" }} />
+            <input placeholder="•••" type="password" maxLength={4} style={{ width:"100%", padding:"10px 13px", borderRadius:8, border:"1.5px solid #E2E4F0", background:"#F9FAFB", color:"#0B0C1A", fontSize:13.5, outline:"none", fontFamily:"Plus Jakarta Sans,sans-serif" }} />
           </div>
         </div>
         <div style={{ display:"flex", alignItems:"flex-start", gap:9, padding:"11px 13px", borderRadius:9, background:"#ECFDF5", border:"1px solid rgba(16,185,129,.15)" }}>
@@ -393,9 +393,9 @@ function AddCardModal({ onClose, showToast }: { onClose: () => void; showToast: 
           <div style={{ fontSize:12.5, color:"#3D3F60", lineHeight:1.5 }}>256-bit encrypted · PCI DSS Level 1 · Powered by Stripe Vault — we never store raw card numbers.</div>
         </div>
       </div>
-      <div style={{ display:"flex", gap:8, padding:"15px 24px", borderTop:"1px solid #E2E4F0", background:"#F0F1F9" }}>
+      <div style={{ display:"flex", gap:8, padding:"15px 24px", borderTop:"1px solid #E2E4F0", background:"#F9FAFB" }}>
         <button onClick={onClose} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#fff", border:"1.5px solid #E2E4F0", color:"#3D3F60" }}>Cancel</button>
-        <button onClick={() => { onClose(); showToast("Card added successfully!","green"); }} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"linear-gradient(135deg,#5B5BD6,#7C3AED)", color:"#fff", border:"none" }}>
+        <button onClick={() => { onClose(); showToast("Card added successfully!","green"); }} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"linear-gradient(135deg,#F97316,#EF4444)", color:"#fff", border:"none" }}>
           <i className="fa-solid fa-plus" style={{ marginRight:6 }} /> Add Card
         </button>
       </div>
@@ -426,20 +426,20 @@ function CancelModal({ onClose, showToast }: { onClose: () => void; showToast: (
       <div style={{ padding:"20px 24px" }}>
         <div style={{ display:"flex", flexDirection:"column", gap:6, marginBottom:16 }}>
           {items.map(r => (
-            <div key={r.txt} style={{ display:"flex", alignItems:"center", gap:9, padding:"9px 12px", borderRadius:8, background:r.ok?"#F0F1F9":"#FEF2F2", border:`1px solid ${r.ok?"#ECEDF8":"rgba(239,68,68,.15)"}`, fontSize:12.5, color:"#3D3F60" }}>
+            <div key={r.txt} style={{ display:"flex", alignItems:"center", gap:9, padding:"9px 12px", borderRadius:8, background:r.ok?"#F9FAFB":"#FEF2F2", border:`1px solid ${r.ok?"#F3F4F6":"rgba(239,68,68,.15)"}`, fontSize:12.5, color:"#3D3F60" }}>
               <i className={`fa-solid fa-${r.ok?"check":"xmark"}`} style={{ color:r.ok?"#10B981":"#EF4444", flexShrink:0, fontSize:11 }} />{r.txt}
             </div>
           ))}
         </div>
-        <div style={{ padding:14, borderRadius:11, background:"#EEEEFF", border:"1px solid #DDDDFB", textAlign:"center" }}>
+        <div style={{ padding:14, borderRadius:11, background:"#FFF7ED", border:"1px solid #DDDDFB", textAlign:"center" }}>
           <div style={{ fontSize:13, fontWeight:700, color:"#0B0C1A", marginBottom:4 }}>Want to pause instead?</div>
           <div style={{ fontSize:12, color:"#8486AB", marginBottom:10 }}>Pause for up to 3 months — keep all your data safe.</div>
-          <button onClick={() => { onClose(); showToast("Subscription paused for 1 month.","amber"); }} style={{ padding:"8px 20px", borderRadius:8, background:"#5B5BD6", color:"#fff", fontSize:12.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", border:"none", boxShadow:"0 4px 20px rgba(91,91,214,.32)" }}>
+          <button onClick={() => { onClose(); showToast("Subscription paused for 1 month.","amber"); }} style={{ padding:"8px 20px", borderRadius:8, background:"#F97316", color:"#fff", fontSize:12.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", border:"none", boxShadow:"0 4px 14px rgba(249,115,22,.4)" }}>
             ⏸️ Pause for 1 Month
           </button>
         </div>
       </div>
-      <div style={{ display:"flex", gap:8, padding:"15px 24px", borderTop:"1px solid #E2E4F0", background:"#F0F1F9" }}>
+      <div style={{ display:"flex", gap:8, padding:"15px 24px", borderTop:"1px solid #E2E4F0", background:"#F9FAFB" }}>
         <button onClick={onClose} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#fff", border:"1.5px solid #E2E4F0", color:"#3D3F60" }}>Keep My Plan</button>
         <button onClick={() => { onClose(); showToast("Subscription cancelled. Access until April 8.","red"); }} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#EF4444", color:"#fff", border:"none" }}>
           <i className="fa-solid fa-circle-xmark" style={{ marginRight:6 }} /> Cancel Subscription
@@ -468,7 +468,7 @@ function DeleteCardModal({ cardName, onClose, showToast }: { cardName: string; o
           <div style={{ fontSize:12.5, color:"#3D3F60", lineHeight:1.5 }}>Removing <strong>{cardName}</strong> will cancel any scheduled payments using this card. Please ensure you have another active payment method.</div>
         </div>
       </div>
-      <div style={{ display:"flex", gap:8, padding:"15px 24px", borderTop:"1px solid #E2E4F0", background:"#F0F1F9" }}>
+      <div style={{ display:"flex", gap:8, padding:"15px 24px", borderTop:"1px solid #E2E4F0", background:"#F9FAFB" }}>
         <button onClick={onClose} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#fff", border:"1.5px solid #E2E4F0", color:"#3D3F60" }}>Cancel</button>
         <button onClick={() => { onClose(); showToast("Card removed.","red"); }} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#EF4444", color:"#fff", border:"none" }}>
           <i className="fa-solid fa-trash" style={{ marginRight:6 }} /> Remove Card
@@ -518,7 +518,7 @@ export default function BillingPage() {
     setTimeout(() => { closeModal(); showToast(`Plan changed to ${PLANS.find(x=>x.id===planId)?.name}!`, "green"); }, 1800);
   };
 
-  const toastColors: Record<string, string> = { default:"#0F1117", green:"#059669", red:"#EF4444", brand:"#5B5BD6", amber:"#D97706" };
+  const toastColors: Record<string, string> = { default:"#0F1117", green:"#059669", red:"#EF4444", brand:"#F97316", amber:"#D97706" };
   const toastIcons: Record<string, string> = { default:"🔔", green:"✅", red:"🗑️", brand:"✦", amber:"⚠️" };
 
   const s = (val: React.CSSProperties): React.CSSProperties => val;
@@ -528,7 +528,7 @@ export default function BillingPage() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Plus Jakarta Sans',sans-serif; font-size: 13.5px; background: #F4F5FB; color: #0B0C1A; overflow: hidden; }
+        body { font-family: 'Plus Jakarta Sans',sans-serif; font-size: 13.5px; background: #FBF8F5; color: #0B0C1A; overflow: hidden; }
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #E2E4F0; border-radius: 3px; }
@@ -541,8 +541,8 @@ export default function BillingPage() {
         @keyframes successBounce { 0%{transform:scale(.7);opacity:0}60%{transform:scale(1.12)}100%{transform:scale(1);opacity:1} }
         @keyframes barGrow { from{width:0}to{width:var(--bar-w)} }
         .sb-item-hover:hover { background: #1E1F2E; color: #F1F2FF; }
-        .tb-btn-hover:hover { border-color: #5B5BD6 !important; color: #5B5BD6 !important; background: #EEEEFF !important; }
-        .qa-item:hover { border-color: #5B5BD6; background: #EEEEFF; }
+        .tb-btn-hover:hover { border-color: #F97316 !important; color: #F97316 !important; background: #EEEEFF !important; }
+        .qa-item:hover { border-color: #F97316; background: #EEEEFF; }
         .qa-item.danger:hover { border-color: #EF4444 !important; background: #FEF2F2 !important; }
       `}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -561,7 +561,7 @@ export default function BillingPage() {
             onToggle={() => setSidebarSlim(s => !s)}
             searchPlaceholder="Search billing…"
             actionButton={
-              <button onClick={() => setModal({ type:"upgrade" })} style={{ display:"flex", alignItems:"center", gap:6, padding:"8px 16px", borderRadius:7, background:"#5B5BD6", color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer", border:"none", fontFamily:"Sora,sans-serif", boxShadow:"0 4px 20px rgba(91,91,214,.28)" }}>
+              <button onClick={() => setModal({ type:"upgrade" })} style={{ display:"flex", alignItems:"center", gap:6, padding:"8px 16px", borderRadius:7, background:"#F97316", color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer", border:"none", fontFamily:"Sora,sans-serif", boxShadow:"0 4px 20px rgba(249,115,22,.28)" }}>
                 <i className="fa-solid fa-bolt" style={{ fontSize:11 }} /> Upgrade Plan
               </button>
             }
@@ -572,17 +572,17 @@ export default function BillingPage() {
 
             {/* Page Hero */}
             <div style={{ background:"#fff", borderBottom:"1px solid #E2E4F0", padding:"26px 28px 24px", position:"relative", overflow:"hidden" }}>
-              <div style={{ position:"absolute", top:-100, right:-60, width:360, height:360, background:"radial-gradient(circle,rgba(91,91,214,.07) 0%,transparent 70%)", pointerEvents:"none" }} />
+              <div style={{ position:"absolute", top:-100, right:-60, width:360, height:360, background:"radial-gradient(circle,rgba(249,115,22,.07) 0%,transparent 70%)", pointerEvents:"none" }} />
               <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:20 }}>
                 <div>
-                  <div style={{ width:46, height:46, borderRadius:13, background:"linear-gradient(135deg,#5B5BD6,#7C3AED)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, color:"#fff", marginBottom:12, boxShadow:"0 4px 20px rgba(91,91,214,.32)" }}>
+                  <div style={{ width:46, height:46, borderRadius:13, background:"linear-gradient(135deg,#F97316,#EF4444)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, color:"#fff", marginBottom:12, boxShadow:"0 4px 14px rgba(249,115,22,.4)" }}>
                     <i className="fa-solid fa-credit-card" />
                   </div>
                   <div style={{ fontSize:22, fontWeight:900, color:"#0B0C1A", fontFamily:"Sora,sans-serif", letterSpacing:"-.5px", marginBottom:4 }}>Subscription &amp; Billing</div>
                   <div style={{ fontSize:13, color:"#8486AB", lineHeight:1.55, maxWidth:520 }}>Control your Shoutly AI subscription, manage billing, and upgrade your automation power anytime.</div>
                 </div>
                 <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:10, flexShrink:0 }}>
-                  <div style={{ display:"flex", alignItems:"center", gap:3, padding:4, borderRadius:11, background:"#F0F1F9", border:"1px solid #E2E4F0", boxShadow:"0 1px 3px rgba(11,12,26,.06)" }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:3, padding:4, borderRadius:11, background:"#F9FAFB", border:"1px solid #E2E4F0", boxShadow:"0 1px 3px rgba(11,12,26,.06)" }}>
                     {(["monthly","yearly"] as CycleType[]).map(c => (
                       <div key={c} onClick={() => { setGlobalCycle(c); showToast(c==="yearly"?"🎉 Annual plan — you save 20%!":c+` billing`, "brand"); }} style={{ padding:"6px 16px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", color:globalCycle===c?"#0B0C1A":"#8486AB", background:globalCycle===c?"#fff":undefined, boxShadow:globalCycle===c?"0 1px 3px rgba(11,12,26,.06)":undefined, fontFamily:"Sora,sans-serif", display:"flex", alignItems:"center", gap:5, transition:"all .16s" }}>
                         {c.charAt(0).toUpperCase()+c.slice(1)}
@@ -591,8 +591,8 @@ export default function BillingPage() {
                     ))}
                   </div>
                   <div style={{ display:"flex", gap:8 }}>
-                    {[{dot:"#10B981",val:"$"+price,lbl:"Current plan"},{dot:"#F59E0B",val:"31 days",lbl:"Until renewal"},{dot:"#5B5BD6",val:"$591",lbl:"YTD spend"}].map(hs => (
-                      <div key={hs.lbl} style={{ display:"flex", alignItems:"center", gap:7, padding:"8px 14px", borderRadius:9, background:"#F0F1F9", border:"1px solid #ECEDF8" }}>
+                    {[{dot:"#10B981",val:"$"+price,lbl:"Current plan"},{dot:"#F59E0B",val:"31 days",lbl:"Until renewal"},{dot:"#F97316",val:"$591",lbl:"YTD spend"}].map(hs => (
+                      <div key={hs.lbl} style={{ display:"flex", alignItems:"center", gap:7, padding:"8px 14px", borderRadius:9, background:"#F9FAFB", border:"1px solid #ECEDF8" }}>
                         <div style={{ width:8, height:8, borderRadius:"50%", background:hs.dot, flexShrink:0 }} />
                         <div>
                           <div style={{ fontSize:15, fontWeight:900, color:"#0B0C1A", fontFamily:"Sora,sans-serif" }}>{hs.val}</div>
@@ -613,7 +613,7 @@ export default function BillingPage() {
 
                 {/* Current Plan Hero */}
                 <div style={{ background:"#fff", borderRadius:16, border:"1.5px solid #DDDDFB", boxShadow:"0 4px 16px rgba(11,12,26,.08)", overflow:"hidden", position:"relative", animation:"cardReveal .3s ease both" }}>
-                  <div style={{ height:4, background:"linear-gradient(90deg,#5B5BD6,#7C3AED,#818CF8,#EC4899,#5B5BD6)", backgroundSize:"300%", animation:"gradientMove 5s ease infinite" }} />
+                  <div style={{ height:4, background:"linear-gradient(90deg,#F97316,#EF4444,#FB923C,#F59E0B,#F97316)", backgroundSize:"300%", animation:"gradientMove 5s ease infinite" }} />
                   <div style={{ padding:"24px 26px" }}>
                     <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:16, marginBottom:22 }}>
                       <div style={{ flex:1 }}>
@@ -630,7 +630,7 @@ export default function BillingPage() {
                           <div style={{ display:"inline-flex", alignItems:"center", gap:5, padding:"4px 11px", borderRadius:7, fontSize:11, fontWeight:700, background:"#FFFBEB", border:"1px solid rgba(245,158,11,.2)", color:"#D97706" }}>
                             <i className="fa-solid fa-rotate" style={{ fontSize:9 }} />{cycleLabel}
                           </div>
-                          <div style={{ display:"inline-flex", alignItems:"center", gap:5, padding:"4px 11px", borderRadius:7, fontSize:11, fontWeight:700, background:"#EEEEFF", border:"1px solid #DDDDFB", color:"#5B5BD6" }}>
+                          <div style={{ display:"inline-flex", alignItems:"center", gap:5, padding:"4px 11px", borderRadius:7, fontSize:11, fontWeight:700, background:"#FFF7ED", border:"1px solid #DDDDFB", color:"#F97316" }}>
                             <i className="fa-solid fa-calendar-check" style={{ fontSize:9 }} />Renews Apr 8, 2026
                           </div>
                         </div>
@@ -646,11 +646,11 @@ export default function BillingPage() {
                         </div>
                       </div>
                     </div>
-                    <div style={{ height:1, background:"#ECEDF8", margin:"18px 0" }} />
+                    <div style={{ height:1, background:"#F3F4F6", margin:"18px 0" }} />
                     <div style={{ fontSize:11, fontWeight:700, textTransform:"uppercase", letterSpacing:".5px", color:"#8486AB", marginBottom:12, fontFamily:"Sora,sans-serif" }}>This Month's Usage</div>
                     <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:18 }}>
                       {[
-                        { lbl:"Posts",      val:"192 / ∞",     w:"65%", bg:"linear-gradient(90deg,#5B5BD6,#818CF8)" },
+                        { lbl:"Posts",      val:"192 / ∞",     w:"65%", bg:"linear-gradient(90deg,#F97316,#FB923C)" },
                         { lbl:"Reels",      val:"11 / ∞",      w:"38%", bg:"linear-gradient(90deg,#EC4899,#F97316)" },
                         { lbl:"Brands",     val:"2 / 3",       w:"67%", bg:"linear-gradient(90deg,#10B981,#34D399)" },
                         { lbl:"AI Credits", val:"220 / 1000",  w:"22%", bg:"linear-gradient(90deg,#F59E0B,#FCD34D)" },
@@ -660,25 +660,25 @@ export default function BillingPage() {
                             <div style={{ fontSize:12, fontWeight:600, color:"#3D3F60" }}>{u.lbl}</div>
                             <div style={{ fontSize:11.5, fontWeight:700, color:"#0B0C1A", fontFamily:"JetBrains Mono,monospace" }}>{u.val}</div>
                           </div>
-                          <div style={{ height:5, background:"#E2E4F0", borderRadius:3, overflow:"hidden" }}>
+                          <div style={{ height:5, background:"#E5E7EB", borderRadius:3, overflow:"hidden" }}>
                             <div style={{ height:"100%", borderRadius:3, background:u.bg, width:u.w, animation:"barGrow .8s cubic-bezier(.34,1.56,.64,1) .4s both" } as React.CSSProperties} />
                           </div>
                         </div>
                       ))}
                     </div>
-                    <div style={{ display:"flex", alignItems:"center", gap:10, padding:"12px 16px", borderRadius:10, background:"#EEEEFF", border:"1px solid #DDDDFB", marginBottom:18 }}>
-                      <i className="fa-solid fa-calendar-check" style={{ color:"#5B5BD6", fontSize:14, flexShrink:0 }} />
+                    <div style={{ display:"flex", alignItems:"center", gap:10, padding:"12px 16px", borderRadius:10, background:"#FFF7ED", border:"1px solid #DDDDFB", marginBottom:18 }}>
+                      <i className="fa-solid fa-calendar-check" style={{ color:"#F97316", fontSize:14, flexShrink:0 }} />
                       <div style={{ fontSize:12.5, color:"#3D3F60", flex:1, lineHeight:1.4 }}>Plan auto-renews on <strong>April 8, 2026</strong> · Visa **** 4242 will be charged</div>
-                      <div style={{ padding:"3px 10px", borderRadius:20, background:"#5B5BD6", color:"#fff", fontSize:10.5, fontWeight:800, fontFamily:"JetBrains Mono,monospace", flexShrink:0 }}>31d left</div>
+                      <div style={{ padding:"3px 10px", borderRadius:20, background:"#F97316", color:"#fff", fontSize:10.5, fontWeight:800, fontFamily:"JetBrains Mono,monospace", flexShrink:0 }}>31d left</div>
                     </div>
                     <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-                      <button onClick={() => setModal({ type:"upgrade" })} style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:7, padding:"10px 18px", borderRadius:9, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", border:"none", background:"linear-gradient(135deg,#5B5BD6,#7C3AED)", color:"#fff", boxShadow:"0 4px 20px rgba(91,91,214,.32)" }}>
+                      <button onClick={() => setModal({ type:"upgrade" })} style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:7, padding:"10px 18px", borderRadius:9, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", border:"none", background:"linear-gradient(135deg,#F97316,#EF4444)", color:"#fff", boxShadow:"0 4px 14px rgba(249,115,22,.4)" }}>
                         <i className="fa-solid fa-bolt" style={{ fontSize:12 }} /> Upgrade Plan
                       </button>
-                      <button onClick={() => setModal({ type:"cycle" })} style={{ display:"flex", alignItems:"center", gap:7, padding:"10px 18px", borderRadius:9, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#F0F1F9", border:"1.5px solid #E2E4F0", color:"#3D3F60", transition:"all .17s" }}>
+                      <button onClick={() => setModal({ type:"cycle" })} style={{ display:"flex", alignItems:"center", gap:7, padding:"10px 18px", borderRadius:9, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#F9FAFB", border:"1.5px solid #E2E4F0", color:"#3D3F60", transition:"all .17s" }}>
                         <i className="fa-solid fa-rotate" style={{ fontSize:11 }} /> Change Cycle
                       </button>
-                      <button onClick={() => setModal({ type:"cancel" })} style={{ display:"flex", alignItems:"center", gap:7, padding:"10px 18px", borderRadius:9, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#F0F1F9", border:"1.5px solid #E2E4F0", color:"#8486AB", transition:"all .17s" }}>
+                      <button onClick={() => setModal({ type:"cancel" })} style={{ display:"flex", alignItems:"center", gap:7, padding:"10px 18px", borderRadius:9, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#F9FAFB", border:"1.5px solid #E2E4F0", color:"#8486AB", transition:"all .17s" }}>
                         <i className="fa-solid fa-xmark" style={{ fontSize:11 }} /> Cancel
                       </button>
                     </div>
@@ -689,9 +689,9 @@ export default function BillingPage() {
                 <div style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:16, overflow:"hidden", boxShadow:"0 1px 3px rgba(11,12,26,.06)", animation:"cardReveal .35s ease .09s both" }}>
                   <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"17px 22px", borderBottom:"1px solid #ECEDF8" }}>
                     <div style={{ fontSize:14, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", display:"flex", alignItems:"center", gap:8 }}>
-                      <i className="fa-solid fa-layer-group" style={{ fontSize:13, color:"#5B5BD6" }} /> Choose a Plan
+                      <i className="fa-solid fa-layer-group" style={{ fontSize:13, color:"#F97316" }} /> Choose a Plan
                     </div>
-                    <div style={{ display:"flex", gap:3, padding:3, borderRadius:8, background:"#F0F1F9", border:"1px solid #E2E4F0" }}>
+                    <div style={{ display:"flex", gap:3, padding:3, borderRadius:8, background:"#F9FAFB", border:"1px solid #E2E4F0" }}>
                       {(["monthly","yearly"] as CycleType[]).map(c => (
                         <div key={c} onClick={() => setPlanCycle(c)} style={{ padding:"4px 13px", borderRadius:6, fontSize:11.5, fontWeight:700, cursor:"pointer", color:planCycle===c?"#0B0C1A":"#8486AB", background:planCycle===c?"#fff":undefined, boxShadow:planCycle===c?"0 1px 3px rgba(11,12,26,.06)":undefined, fontFamily:"Sora,sans-serif", display:"flex", alignItems:"center", gap:5 }}>
                           {c.charAt(0).toUpperCase()+c.slice(1)}
@@ -721,17 +721,17 @@ export default function BillingPage() {
                 <div style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:16, overflow:"hidden", boxShadow:"0 1px 3px rgba(11,12,26,.06)", animation:"cardReveal .35s ease .14s both" }}>
                   <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"17px 22px", borderBottom:"1px solid #ECEDF8" }}>
                     <div style={{ fontSize:14, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", display:"flex", alignItems:"center", gap:8 }}>
-                      <i className="fa-solid fa-wallet" style={{ fontSize:13, color:"#5B5BD6" }} /> Payment Methods
+                      <i className="fa-solid fa-wallet" style={{ fontSize:13, color:"#F97316" }} /> Payment Methods
                     </div>
-                    <button onClick={() => setModal({ type:"addCard" })} style={{ display:"flex", alignItems:"center", gap:5, padding:"6px 13px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#5B5BD6", color:"#fff", border:"none", boxShadow:"0 4px 20px rgba(91,91,214,.32)" }}>
+                    <button onClick={() => setModal({ type:"addCard" })} style={{ display:"flex", alignItems:"center", gap:5, padding:"6px 13px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#F97316", color:"#fff", border:"none", boxShadow:"0 4px 14px rgba(249,115,22,.4)" }}>
                       <i className="fa-solid fa-plus" style={{ fontSize:11 }} /> Add Card
                     </button>
                   </div>
                   <div style={{ padding:"20px 22px" }}>
                     <div style={{ display:"flex", flexDirection:"column", gap:9, marginBottom:12 }}>
                       {/* Visa */}
-                      <div style={{ display:"flex", alignItems:"center", gap:13, padding:"13px 15px", borderRadius:11, background:"#F0F1F9", border:`1.5px solid ${defaultCard==="visa"?"rgba(91,91,214,.3)":"#ECEDF8"}`, transition:"all .15s", cursor:"pointer", position:"relative", overflow:"hidden" }}>
-                        {defaultCard==="visa" && <div style={{ position:"absolute", left:0, top:0, bottom:0, width:3, background:"#5B5BD6", borderRadius:"11px 0 0 11px" }} />}
+                      <div style={{ display:"flex", alignItems:"center", gap:13, padding:"13px 15px", borderRadius:11, background:"#F9FAFB", border:`1.5px solid ${defaultCard==="visa"?"rgba(249,115,22,.3)":"#F3F4F6"}`, transition:"all .15s", cursor:"pointer", position:"relative", overflow:"hidden" }}>
+                        {defaultCard==="visa" && <div style={{ position:"absolute", left:0, top:0, bottom:0, width:3, background:"#F97316", borderRadius:"11px 0 0 11px" }} />}
                         <div style={{ width:50, height:34, borderRadius:7, background:"#fff", border:"1px solid #E2E4F0", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, boxShadow:"0 1px 3px rgba(11,12,26,.06)", overflow:"hidden" }}>
                           <svg viewBox="0 0 60 38" width="44" fill="none"><rect width="60" height="38" rx="5" fill="#1A1F71"/><text x="8" y="27" fontFamily="serif" fontSize="17" fontWeight="900" fill="#F7F7F7">VISA</text></svg>
                         </div>
@@ -740,7 +740,7 @@ export default function BillingPage() {
                           <div style={{ fontSize:11.5, color:"#8486AB", fontFamily:"JetBrains Mono,monospace", marginTop:1 }}>•••• •••• •••• 4242</div>
                           <div style={{ fontSize:11, color:"#BFC1D9", marginTop:1 }}>Expires 08 / 2027</div>
                         </div>
-                        {defaultCard==="visa" && <div style={{ padding:"2px 8px", borderRadius:5, background:"#EEEEFF", color:"#5B5BD6", fontSize:10, fontWeight:800 }}>DEFAULT</div>}
+                        {defaultCard==="visa" && <div style={{ padding:"2px 8px", borderRadius:5, background:"#FFF7ED", color:"#F97316", fontSize:10, fontWeight:800 }}>DEFAULT</div>}
                         <div style={{ display:"flex", gap:5 }}>
                           <div onClick={() => showToast("Opening card editor…","brand")} style={{ width:28, height:28, borderRadius:7, background:"#fff", border:"1px solid #E2E4F0", display:"flex", alignItems:"center", justifyContent:"center", color:"#8486AB", fontSize:10, cursor:"pointer" }}>
                             <i className="fa-solid fa-pen" style={{ fontSize:9 }} />
@@ -751,8 +751,8 @@ export default function BillingPage() {
                         </div>
                       </div>
                       {/* Mastercard */}
-                      <div style={{ display:"flex", alignItems:"center", gap:13, padding:"13px 15px", borderRadius:11, background:"#F0F1F9", border:`1.5px solid ${defaultCard==="mc"?"rgba(91,91,214,.3)":"#ECEDF8"}`, transition:"all .15s", cursor:"pointer", position:"relative", overflow:"hidden" }}>
-                        {defaultCard==="mc" && <div style={{ position:"absolute", left:0, top:0, bottom:0, width:3, background:"#5B5BD6", borderRadius:"11px 0 0 11px" }} />}
+                      <div style={{ display:"flex", alignItems:"center", gap:13, padding:"13px 15px", borderRadius:11, background:"#F9FAFB", border:`1.5px solid ${defaultCard==="mc"?"rgba(249,115,22,.3)":"#F3F4F6"}`, transition:"all .15s", cursor:"pointer", position:"relative", overflow:"hidden" }}>
+                        {defaultCard==="mc" && <div style={{ position:"absolute", left:0, top:0, bottom:0, width:3, background:"#F97316", borderRadius:"11px 0 0 11px" }} />}
                         <div style={{ width:50, height:34, borderRadius:7, background:"#fff", border:"1px solid #E2E4F0", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, overflow:"hidden" }}>
                           <svg viewBox="0 0 60 38" width="44" fill="none"><rect width="60" height="38" rx="5" fill="#1C1C1C"/><circle cx="22" cy="19" r="12" fill="#EB001B"/><circle cx="38" cy="19" r="12" fill="#F79E1B"/><path d="M30 10.5a12 12 0 010 17A12 12 0 0130 10.5z" fill="#FF5F00"/></svg>
                         </div>
@@ -761,7 +761,7 @@ export default function BillingPage() {
                           <div style={{ fontSize:11.5, color:"#8486AB", fontFamily:"JetBrains Mono,monospace", marginTop:1 }}>•••• •••• •••• 8834</div>
                           <div style={{ fontSize:11, color:"#BFC1D9", marginTop:1 }}>Expires 12 / 2026</div>
                         </div>
-                        {defaultCard==="mc" && <div style={{ padding:"2px 8px", borderRadius:5, background:"#EEEEFF", color:"#5B5BD6", fontSize:10, fontWeight:800 }}>DEFAULT</div>}
+                        {defaultCard==="mc" && <div style={{ padding:"2px 8px", borderRadius:5, background:"#FFF7ED", color:"#F97316", fontSize:10, fontWeight:800 }}>DEFAULT</div>}
                         <div style={{ display:"flex", gap:5 }}>
                           <div onClick={() => { setDefaultCard("mc"); showToast("Default payment method updated","green"); }} style={{ width:28, height:28, borderRadius:7, background:"#fff", border:"1px solid #E2E4F0", display:"flex", alignItems:"center", justifyContent:"center", color:"#8486AB", fontSize:10, cursor:"pointer" }}>
                             <i className="fa-solid fa-star" style={{ fontSize:9 }} />
@@ -775,13 +775,13 @@ export default function BillingPage() {
                         <i className="fa-solid fa-plus" style={{ fontSize:11 }} /> Add New Payment Method
                       </div>
                     </div>
-                    <div style={{ padding:"14px 16px", borderRadius:11, background:"#F0F1F9", border:"1px solid #ECEDF8", marginTop:10 }}>
+                    <div style={{ padding:"14px 16px", borderRadius:11, background:"#F9FAFB", border:"1px solid #ECEDF8", marginTop:10 }}>
                       <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:10 }}>
                         <div>
                           <div style={{ fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:".5px", color:"#8486AB", marginBottom:6, fontFamily:"Sora,sans-serif" }}>Billing Address</div>
                           <div style={{ fontSize:12.5, color:"#3D3F60", lineHeight:1.65 }}>Jordan Davis<br/>42 Brand Street, Suite 800<br/>San Francisco, CA 94102<br/>United States</div>
                         </div>
-                        <div onClick={() => showToast("Opening address editor…","brand")} style={{ fontSize:11.5, color:"#5B5BD6", fontWeight:700, cursor:"pointer", padding:"3px 8px", borderRadius:6, flexShrink:0 }}>Edit</div>
+                        <div onClick={() => showToast("Opening address editor…","brand")} style={{ fontSize:11.5, color:"#F97316", fontWeight:700, cursor:"pointer", padding:"3px 8px", borderRadius:6, flexShrink:0 }}>Edit</div>
                       </div>
                     </div>
                   </div>
@@ -791,9 +791,9 @@ export default function BillingPage() {
                 <div style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:16, overflow:"hidden", boxShadow:"0 1px 3px rgba(11,12,26,.06)", animation:"cardReveal .35s ease .19s both" }}>
                   <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"17px 22px", borderBottom:"1px solid #ECEDF8" }}>
                     <div style={{ fontSize:14, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", display:"flex", alignItems:"center", gap:8 }}>
-                      <i className="fa-solid fa-clock-rotate-left" style={{ fontSize:13, color:"#5B5BD6" }} /> Billing History
+                      <i className="fa-solid fa-clock-rotate-left" style={{ fontSize:13, color:"#F97316" }} /> Billing History
                     </div>
-                    <button onClick={() => showToast("Exporting all invoices as PDF…","brand")} style={{ display:"flex", alignItems:"center", gap:5, padding:"6px 13px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#F0F1F9", border:"1px solid #E2E4F0", color:"#3D3F60" }}>
+                    <button onClick={() => showToast("Exporting all invoices as PDF…","brand")} style={{ display:"flex", alignItems:"center", gap:5, padding:"6px 13px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#F9FAFB", border:"1px solid #E2E4F0", color:"#3D3F60" }}>
                       <i className="fa-solid fa-file-arrow-down" style={{ fontSize:11 }} /> Export All
                     </button>
                   </div>
@@ -808,10 +808,10 @@ export default function BillingPage() {
                       </thead>
                       <tbody>
                         {history.map((r, i) => (
-                          <tr key={i} style={{ transition:"background .12s" }} onMouseEnter={e => { Array.from((e.currentTarget as HTMLTableRowElement).cells).forEach(td => { (td as HTMLTableCellElement).style.background="#F0F1F9"; }); }} onMouseLeave={e => { Array.from((e.currentTarget as HTMLTableRowElement).cells).forEach(td => { (td as HTMLTableCellElement).style.background=""; }); }}>
+                          <tr key={i} style={{ transition:"background .12s" }} onMouseEnter={e => { Array.from((e.currentTarget as HTMLTableRowElement).cells).forEach(td => { (td as HTMLTableCellElement).style.background="#F9FAFB"; }); }} onMouseLeave={e => { Array.from((e.currentTarget as HTMLTableRowElement).cells).forEach(td => { (td as HTMLTableCellElement).style.background=""; }); }}>
                             <td style={{ padding:"12px 14px", fontSize:12.5, fontWeight:600, color:"#0B0C1A", whiteSpace:"nowrap", borderBottom:"1px solid #ECEDF8" }}>{r.date}</td>
                             <td style={{ padding:"12px 14px", borderBottom:"1px solid #ECEDF8" }}>
-                              <span style={{ padding:"2px 9px", borderRadius:5, fontSize:11, fontWeight:700, background:"#EEEEFF", color:"#5B5BD6" }}>{r.plan}</span>
+                              <span style={{ padding:"2px 9px", borderRadius:5, fontSize:11, fontWeight:700, background:"#FFF7ED", color:"#F97316" }}>{r.plan}</span>
                             </td>
                             <td style={{ padding:"12px 14px", fontSize:12.5, color:"#8486AB", borderBottom:"1px solid #ECEDF8" }}>{r.desc}</td>
                             <td style={{ padding:"12px 14px", borderBottom:"1px solid #ECEDF8" }}>
@@ -824,7 +824,7 @@ export default function BillingPage() {
                               </span>
                             </td>
                             <td style={{ padding:"12px 14px", borderBottom:"1px solid #ECEDF8" }}>
-                              <button onClick={() => showToast("Downloading invoice…","brand")} style={{ display:"flex", alignItems:"center", gap:5, padding:"5px 10px", borderRadius:6, border:"1px solid #E2E4F0", background:"#F0F1F9", color:"#3D3F60", fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", whiteSpace:"nowrap" }}>
+                              <button onClick={() => showToast("Downloading invoice…","brand")} style={{ display:"flex", alignItems:"center", gap:5, padding:"5px 10px", borderRadius:6, border:"1px solid #E2E4F0", background:"#F9FAFB", color:"#3D3F60", fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", whiteSpace:"nowrap" }}>
                                 <i className="fa-solid fa-file-arrow-down" style={{ fontSize:10 }} /> Invoice
                               </button>
                             </td>
@@ -834,7 +834,7 @@ export default function BillingPage() {
                     </table>
                   </div>
                   <div style={{ padding:"12px 20px" }}>
-                    <button onClick={() => { if (!historyLoaded) { setHistory([...history, ...HISTORY_EXTRA]); setHistoryLoaded(true); showToast("Earlier invoices loaded","brand"); } else { showToast("All invoices loaded","brand"); } }} style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:6, padding:11, borderRadius:9, border:"1px solid #E2E4F0", background:"#F0F1F9", color:"#3D3F60", fontSize:12.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", width:"100%", transition:"all .14s" }}>
+                    <button onClick={() => { if (!historyLoaded) { setHistory([...history, ...HISTORY_EXTRA]); setHistoryLoaded(true); showToast("Earlier invoices loaded","brand"); } else { showToast("All invoices loaded","brand"); } }} style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:6, padding:11, borderRadius:9, border:"1px solid #E2E4F0", background:"#F9FAFB", color:"#3D3F60", fontSize:12.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", width:"100%", transition:"all .14s" }}>
                       <i className="fa-solid fa-chevron-down" style={{ fontSize:11 }} /> Load Earlier Invoices
                     </button>
                   </div>
@@ -844,16 +844,16 @@ export default function BillingPage() {
                 <div style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:16, overflow:"hidden", boxShadow:"0 1px 3px rgba(11,12,26,.06)", animation:"cardReveal .35s ease .24s both" }}>
                   <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"17px 22px", borderBottom:"1px solid #ECEDF8" }}>
                     <div style={{ fontSize:14, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", display:"flex", alignItems:"center", gap:8 }}>
-                      <i className="fa-solid fa-puzzle-piece" style={{ fontSize:13, color:"#5B5BD6" }} /> Add-Ons
+                      <i className="fa-solid fa-puzzle-piece" style={{ fontSize:13, color:"#F97316" }} /> Add-Ons
                     </div>
                     <span style={{ fontSize:12, color:"#8486AB", fontWeight:500 }}>Extend your plan capabilities</span>
                   </div>
                   <div style={{ padding:"20px 22px" }}>
                     <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
                       {addons.map(a => (
-                        <div key={a.id} style={{ border:`1.5px solid ${a.active?"#10B981":"#E2E4F0"}`, borderRadius:13, padding:17, background:a.active?"rgba(16,185,129,.03)":"#F0F1F9", transition:"all .2s", cursor:"pointer", position:"relative", overflow:"hidden", display:"flex", flexDirection:"column" }}
-                          onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor=a.active?"#10B981":"rgba(91,91,214,.3)"; (e.currentTarget as HTMLDivElement).style.boxShadow="0 4px 16px rgba(11,12,26,.08)"; (e.currentTarget as HTMLDivElement).style.transform="translateY(-3px)"; }}
-                          onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor=a.active?"#10B981":"#E2E4F0"; (e.currentTarget as HTMLDivElement).style.boxShadow=""; (e.currentTarget as HTMLDivElement).style.transform=""; }}>
+                        <div key={a.id} style={{ border:`1.5px solid ${a.active?"#10B981":"#E5E7EB"}`, borderRadius:13, padding:17, background:a.active?"rgba(16,185,129,.03)":"#F9FAFB", transition:"all .2s", cursor:"pointer", position:"relative", overflow:"hidden", display:"flex", flexDirection:"column" }}
+                          onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor=a.active?"#10B981":"rgba(249,115,22,.3)"; (e.currentTarget as HTMLDivElement).style.boxShadow="0 4px 16px rgba(11,12,26,.08)"; (e.currentTarget as HTMLDivElement).style.transform="translateY(-3px)"; }}
+                          onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor=a.active?"#10B981":"#E5E7EB"; (e.currentTarget as HTMLDivElement).style.boxShadow=""; (e.currentTarget as HTMLDivElement).style.transform=""; }}>
                           <div style={{ position:"absolute", top:11, right:11, padding:"2px 7px", borderRadius:5, fontSize:9, fontWeight:900, fontFamily:"Sora,sans-serif", background:`${a.badgeClr}22`, color:a.badgeClr }}>{a.badge}</div>
                           <div style={{ width:40, height:40, borderRadius:11, display:"flex", alignItems:"center", justifyContent:"center", fontSize:17, color:"#fff", marginBottom:11, flexShrink:0, background:a.grad }}>
                             <i className={a.icon} />
@@ -869,7 +869,7 @@ export default function BillingPage() {
                               const updated = addons.map(x => x.id===a.id?{...x,active:!x.active}:x);
                               setAddons(updated);
                               showToast(!a.active?`${a.name} add-on activated!`:`${a.name} removed`, !a.active?"green":"brand");
-                            }} style={{ padding:"6px 13px", borderRadius:7, fontSize:11.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", border:`1.5px solid ${a.active?"rgba(16,185,129,.3)":"#E2E4F0"}`, background:a.active?"#ECFDF5":"#fff", color:a.active?"#059669":"#3D3F60", display:"flex", alignItems:"center", gap:5, whiteSpace:"nowrap", flexShrink:0 }}>
+                            }} style={{ padding:"6px 13px", borderRadius:7, fontSize:11.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", border:`1.5px solid ${a.active?"rgba(16,185,129,.3)":"#E5E7EB"}`, background:a.active?"#ECFDF5":"#fff", color:a.active?"#059669":"#3D3F60", display:"flex", alignItems:"center", gap:5, whiteSpace:"nowrap", flexShrink:0 }}>
                               {a.active ? <><i className="fa-solid fa-check" style={{ fontSize:9 }} /> Added</> : <><i className="fa-solid fa-plus" style={{ fontSize:9 }} /> Add</>}
                             </button>
                           </div>
@@ -886,15 +886,15 @@ export default function BillingPage() {
                 <div style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:14, overflow:"hidden", boxShadow:"0 1px 3px rgba(11,12,26,.06)", animation:"cardReveal .35s ease .07s both" }}>
                   <div style={{ padding:"14px 17px", borderBottom:"1px solid #ECEDF8", display:"flex", alignItems:"center", gap:8 }}>
                     <div style={{ fontSize:13.5, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", display:"flex", alignItems:"center", gap:7 }}>
-                      <i className="fa-solid fa-calendar-days" style={{ fontSize:12, color:"#5B5BD6" }} /> Next Billing
+                      <i className="fa-solid fa-calendar-days" style={{ fontSize:12, color:"#F97316" }} /> Next Billing
                     </div>
                   </div>
                   <div style={{ padding:"15px 17px" }}>
                     <div style={{ padding:13, borderRadius:10, background:"linear-gradient(135deg,#EEEEFF,#DDDDFB)", border:"1px solid #DDDDFB", marginBottom:13 }}>
-                      <div style={{ fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:".5px", color:"#5B5BD6", fontFamily:"Sora,sans-serif", marginBottom:3 }}>Next Charge</div>
+                      <div style={{ fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:".5px", color:"#F97316", fontFamily:"Sora,sans-serif", marginBottom:3 }}>Next Charge</div>
                       <div style={{ fontSize:17, fontWeight:900, color:"#0B0C1A", fontFamily:"Sora,sans-serif" }}>April 8, 2026</div>
                       <div style={{ fontSize:12.5, fontWeight:700, color:"#3D3F60", marginTop:2 }}>${price}.00 · {p.name} Plan</div>
-                      <div style={{ display:"flex", alignItems:"center", gap:5, fontSize:10.5, fontWeight:700, color:"#5B5BD6", marginTop:7, fontFamily:"JetBrains Mono,monospace" }}>
+                      <div style={{ display:"flex", alignItems:"center", gap:5, fontSize:10.5, fontWeight:700, color:"#F97316", marginTop:7, fontFamily:"JetBrains Mono,monospace" }}>
                         <i className="fa-solid fa-hourglass-half" style={{ fontSize:9 }} /> 31 days remaining
                       </div>
                     </div>
@@ -911,7 +911,7 @@ export default function BillingPage() {
                 <div style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:14, overflow:"hidden", boxShadow:"0 1px 3px rgba(11,12,26,.06)", animation:"cardReveal .35s ease .12s both" }}>
                   <div style={{ padding:"14px 17px", borderBottom:"1px solid #ECEDF8" }}>
                     <div style={{ fontSize:13.5, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", display:"flex", alignItems:"center", gap:7 }}>
-                      <i className="fa-solid fa-shield-halved" style={{ fontSize:12, color:"#5B5BD6" }} /> Security
+                      <i className="fa-solid fa-shield-halved" style={{ fontSize:12, color:"#F97316" }} /> Security
                     </div>
                   </div>
                   <div style={{ padding:"15px 17px" }}>
@@ -920,7 +920,7 @@ export default function BillingPage() {
                       { icon:"fa-shield-check",  title:"PCI DSS Level 1",       sub:"Highest card data security standard" },
                       { icon:"fa-eye-slash",     title:"Zero Card Storage",     sub:"Numbers tokenized via Stripe Vault" },
                     ].map(t => (
-                      <div key={t.title} style={{ display:"flex", alignItems:"flex-start", gap:10, padding:"10px 12px", borderRadius:9, background:"#F0F1F9", border:"1px solid #ECEDF8", marginBottom:7 }}>
+                      <div key={t.title} style={{ display:"flex", alignItems:"flex-start", gap:10, padding:"10px 12px", borderRadius:9, background:"#F9FAFB", border:"1px solid #ECEDF8", marginBottom:7 }}>
                         <i className={`fa-solid ${t.icon}`} style={{ fontSize:14, color:"#10B981", flexShrink:0, marginTop:1 }} />
                         <div>
                           <div style={{ fontSize:12, fontWeight:700, color:"#3D3F60", lineHeight:1.3 }}>{t.title}</div>
@@ -928,7 +928,7 @@ export default function BillingPage() {
                         </div>
                       </div>
                     ))}
-                    <div style={{ display:"flex", alignItems:"center", gap:10, padding:"11px 13px", borderRadius:9, background:"#F0F1F9", border:"1px solid #ECEDF8", marginTop:10 }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:10, padding:"11px 13px", borderRadius:9, background:"#F9FAFB", border:"1px solid #ECEDF8", marginTop:10 }}>
                       <i className="fa-brands fa-stripe" style={{ fontSize:20, color:"#635BFF" }} />
                       <div>
                         <div style={{ fontSize:12, fontWeight:700, color:"#0B0C1A" }}>Powered by Stripe</div>
@@ -942,18 +942,18 @@ export default function BillingPage() {
                 <div style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:14, overflow:"hidden", boxShadow:"0 1px 3px rgba(11,12,26,.06)", animation:"cardReveal .35s ease .17s both" }}>
                   <div style={{ padding:"14px 17px", borderBottom:"1px solid #ECEDF8" }}>
                     <div style={{ fontSize:13.5, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", display:"flex", alignItems:"center", gap:7 }}>
-                      <i className="fa-solid fa-bolt" style={{ fontSize:12, color:"#5B5BD6" }} /> Quick Actions
+                      <i className="fa-solid fa-bolt" style={{ fontSize:12, color:"#F97316" }} /> Quick Actions
                     </div>
                   </div>
                   <div style={{ padding:12 }}>
                     {[
-                      { icon:"fa-bolt", col:"#5B5BD6", label:"Upgrade Plan", danger:false, action:() => setModal({ type:"upgrade" }) },
+                      { icon:"fa-bolt", col:"#F97316", label:"Upgrade Plan", danger:false, action:() => setModal({ type:"upgrade" }) },
                       { icon:"fa-rotate", col:"#F59E0B", label:"Switch Billing Cycle", danger:false, action:() => setModal({ type:"cycle" }) },
                       { icon:"fa-credit-card", col:"#10B981", label:"Update Payment Method", danger:false, action:() => setModal({ type:"addCard" }) },
                       { icon:"fa-file-invoice", col:"#3B82F6", label:"Download Latest Invoice", danger:false, action:() => showToast("Latest invoice downloaded!","green") },
                       { icon:"fa-circle-xmark", col:"#EF4444", label:"Cancel Subscription", danger:true, action:() => setModal({ type:"cancel" }) },
                     ].map(qa => (
-                      <div key={qa.label} onClick={qa.action} className={`qa-item${qa.danger?" danger":""}`} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 12px", borderRadius:9, border:"1px solid #E2E4F0", background:"#F0F1F9", cursor:"pointer", transition:"all .13s", marginBottom:5 }}>
+                      <div key={qa.label} onClick={qa.action} className={`qa-item${qa.danger?" danger":""}`} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 12px", borderRadius:9, border:"1px solid #E2E4F0", background:"#F9FAFB", cursor:"pointer", transition:"all .13s", marginBottom:5 }}>
                         <i className={`fa-solid ${qa.icon}`} style={{ fontSize:13, width:16, textAlign:"center", flexShrink:0, color:qa.col }} />
                         <span style={{ fontSize:13, fontWeight:600, color:qa.danger?"#EF4444":"#0B0C1A", flex:1 }}>{qa.label}</span>
                         <i className="fa-solid fa-chevron-right" style={{ fontSize:10, color:"#BFC1D9" }} />

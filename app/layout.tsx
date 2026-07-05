@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import FloatingChatBot from '../components/FloatingChatBot';
 import Providers from "./providers";
 
 const siteUrl = "https://shoutlyai.com";
@@ -185,6 +186,7 @@ export default function RootLayout({
                     <Header />
                     {children}
                     <Footer />
+                    <FloatingChatBot />
                 </Providers>
             </body>
         </html>

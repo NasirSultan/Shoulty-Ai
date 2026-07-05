@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from '../Sidebar'; // Import the sidebar component
@@ -65,8 +65,8 @@ const engagementData = {
     {
       label: 'Likes',
       data: [3200, 4100, 3800, 5200, 4800, 6100, 5700, 7200, 6800],
-      borderColor: 'rgba(91,91,214,1)',
-      backgroundColor: 'rgba(91,91,214,.15)',
+      borderColor: 'rgba(249,115,22,1)',
+      backgroundColor: 'rgba(249,115,22,.15)',
       tension: 0.4,
       fill: true,
       borderWidth: 2.5,
@@ -102,7 +102,7 @@ const reachData = {
     {
       label: 'Reach',
       data: [82000, 94000, 88000, 112000, 106000, 138000, 124000, 162000, 155000],
-      backgroundColor: 'rgba(91,91,214,.8)',
+      backgroundColor: 'rgba(249,115,22,.8)',
       borderRadius: 6,
       borderSkipped: false,
     },
@@ -347,7 +347,7 @@ const AnalyticsPage: React.FC = () => {
                     style={{
                       height: '22px',
                       borderRadius: '4px',
-                      background: `rgba(91,91,214, ${opacity})`,
+                      background: `rgba(249,115,22, ${opacity})`,
                       cursor: 'pointer',
                       transition: 'all .15s',
                     }}
@@ -399,7 +399,7 @@ const AnalyticsPage: React.FC = () => {
     <>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
       <style>{`
-        :root { --bg:#F5F6FA; --surf:#fff; --surf2:#F8F9FD; --bdr:#E2E4F0; --bdr2:#ECEEF6; --t1:#0B0C1A; --t2:#3D3F60; --t3:#8486AB; --t4:#A0A2BF; --brand:#5B5BD6; --brand2:#7C3AED; --brand-l:#EEEEFF; --brand-l2:#DCDDF7; --gr:#10B981; --gr-l:#ECFDF5; --bl:#3B82F6; --or:#F97316; --or-l:#FFF7ED; --am:#F59E0B; --am-l:#FFF7E6; }
+        :root { --bg:#F5F6FA; --surf:#fff; --surf2:#F8F9FD; --bdr:#E2E4F0; --bdr2:#ECEEF6; --t1:#0B0C1A; --t2:#3D3F60; --t3:#8486AB; --t4:#A0A2BF; --brand:#F97316; --brand2:#EA580C; --brand-l:#EEEEFF; --brand-l2:#DCDDF7; --gr:#10B981; --gr-l:#ECFDF5; --bl:#3B82F6; --or:#F97316; --or-l:#FFF7ED; --am:#F59E0B; --am-l:#FFF7E6; }
         #main { min-width:0; background:var(--bg); color:var(--t1); }
         #topbar { height:56px; display:flex; align-items:center; gap:10px; padding:0 20px; background:#fff; border-bottom:1px solid var(--bdr); box-shadow:0 1px 4px rgba(11,12,26,.06); }
         #content { height:calc(100vh - 56px); overflow:auto; padding:18px 20px 24px; }
@@ -415,7 +415,7 @@ const AnalyticsPage: React.FC = () => {
         .btn-sm { padding:5px 9px; font-size:11.5px; }
         .tb-icon { width:30px; height:30px; border-radius:7px; border:1px solid var(--bdr2); display:flex; align-items:center; justify-content:center; position:relative; color:var(--t2); }
         .tb-dot { position:absolute; top:5px; right:5px; width:7px; height:7px; border-radius:50%; background:#EF4444; border:1.5px solid #fff; }
-        .tb-ava { width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,var(--brand),#EC4899); color:#fff; display:flex; align-items:center; justify-content:center; font-size:10.5px; font-weight:800; }
+        .tb-ava { width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,#F97316,#EA580C); color:#fff; display:flex; align-items:center; justify-content:center; font-size:10.5px; font-weight:800; }
         .page-hdr { margin-bottom:14px; }
         .page-eye { display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:700; color:var(--gr); }
         .page-eye-dot { width:8px; height:8px; border-radius:50%; background:var(--gr); }
@@ -479,7 +479,7 @@ const AnalyticsPage: React.FC = () => {
           actionButton={
             <button
               onClick={exportReport}
-              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 7, background: '#5B5BD6', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', border: 'none', fontFamily: 'Sora,sans-serif', boxShadow: '0 4px 20px rgba(91,91,214,.28)' }}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 7, background: 'linear-gradient(115deg,#F97316,#EA580C)', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', border: 'none', fontFamily: 'Sora,sans-serif', boxShadow: '0 4px 14px rgba(249,115,22,.4)' }}
             >
               <i className="fa-solid fa-file-arrow-down" style={{ fontSize: 11 }} /> Export PDF
             </button>

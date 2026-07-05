@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Sidebar from '../Sidebar'; // Import the sidebar component
@@ -43,6 +43,25 @@ const SOCIALS: SocialAccount[] = [
   { id: 'tiktok', name: 'TikTok', icon: 'fa-brands fa-tiktok', grad: 'linear-gradient(135deg,#010101,#69C9D0)', barClr: '#010101', handle: '@brandco', followers: '31.5K', posts: '187', eng: '7.4%', status: 'connected', sync: '1 hour ago' },
   { id: 'youtube', name: 'YouTube', icon: 'fa-brands fa-youtube', grad: 'linear-gradient(135deg,#FF0000,#CC0000)', barClr: '#FF0000', handle: 'BrandCo Channel', followers: '5.8K', posts: '64', eng: '5.1%', status: 'disconnected', sync: 'Never' },
   { id: 'threads', name: 'Threads', icon: 'fa-brands fa-threads', grad: 'linear-gradient(135deg,#222,#555)', barClr: '#333', handle: '@brandco.official', followers: '3.2K', posts: '89', eng: '3.6%', status: 'disconnected', sync: 'Never' },
+];
+
+const NAV_GROUPS: Array<{ label: string; items: Array<{ id: string; label: string; icon: string; danger?: boolean }> }> = [
+  {
+    label: 'Workspace',
+    items: [
+      { id: 'profile', label: 'Profile', icon: 'fa-user' },
+      { id: 'social', label: 'Social Accounts', icon: 'fa-share-nodes' },
+      { id: 'notif', label: 'Notifications', icon: 'fa-bell' },
+      { id: 'appearance', label: 'Appearance', icon: 'fa-palette' },
+    ],
+  },
+  {
+    label: 'Organization',
+    items: [
+      { id: 'security', label: 'Security', icon: 'fa-shield-halved' },
+      { id: 'danger', label: 'Danger Zone', icon: 'fa-triangle-exclamation', danger: true },
+    ],
+  },
 ];
 
 const NOTIFS: NotificationItem[] = [
@@ -129,6 +148,7 @@ const SettingsPage: React.FC = () => {
     return init;
   });
   const [activeSection, setActiveSection] = useState<string>('profile');
+  const [navSearch, setNavSearch] = useState('');
   const [profileData, setProfileData] = useState({
     fullName: '',
     displayName: '',
@@ -629,7 +649,7 @@ const SettingsPage: React.FC = () => {
     if (!modalContentRef.current) return;
     modalContentRef.current.innerHTML = `
       <div style="padding:48px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px">
-        <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;box-shadow:var(--glow)"><i class="fa-solid fa-spinner" style="animation:spin 1s linear infinite"></i></div>
+        <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#F97316,#EA580C);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;box-shadow:var(--glow)"><i class="fa-solid fa-spinner" style="animation:spin 1s linear infinite"></i></div>
         <div style="font-size:15px;font-weight:800;color:var(--t1);font-family:'Sora',sans-serif">Connecting to ${name}…</div>
         <div style="font-size:13px;color:var(--t3)">Awaiting authorization</div>
       </div>`;
@@ -680,7 +700,7 @@ const SettingsPage: React.FC = () => {
   const openPickerModal = () => {
     const platforms = socials.map(s => {
       const isConn = s.status === 'connected';
-      return `<div onclick="${isConn ? '' : `window.dispatchEvent(new CustomEvent('connect-from-picker', { detail: { id: '${s.id}', name: '${s.name}' } }))`}" style="display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:10px;background:var(--surf2);border:1.5px solid ${isConn ? 'rgba(16,185,129,.2)' : 'var(--bdr2)'};cursor:${isConn ? 'default' : 'pointer'};transition:all .14s;opacity:${isConn ? '.65' : '1'}" ${!isConn ? 'onmouseover="this.style.borderColor=\'rgba(91,91,214,.3)\';this.style.background=\'var(--brand-l)\'" onmouseout="this.style.borderColor=\'var(--bdr2)\';this.style.background=\'var(--surf2)\'"' : ''}>
+      return `<div onclick="${isConn ? '' : `window.dispatchEvent(new CustomEvent('connect-from-picker', { detail: { id: '${s.id}', name: '${s.name}' } }))`}" style="display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:10px;background:var(--surf2);border:1.5px solid ${isConn ? 'rgba(16,185,129,.2)' : 'var(--bdr2)'};cursor:${isConn ? 'default' : 'pointer'};transition:all .14s;opacity:${isConn ? '.65' : '1'}" ${!isConn ? 'onmouseover="this.style.borderColor=\'rgba(249,115,22,.3)\';this.style.background=\'var(--brand-l)\'" onmouseout="this.style.borderColor=\'var(--bdr2)\';this.style.background=\'var(--surf2)\'"' : ''}>
         <div style="width:36px;height:36px;border-radius:9px;background:${s.grad};display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;flex-shrink:0"><i class="${s.icon}"></i></div>
         <div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--t1)">${s.name}</div><div style="font-size:11px;color:var(--t3)">${isConn ? '✓ Connected' : 'Click to connect'}</div></div>
         <i class="fa-solid fa-${isConn ? 'check-circle' : 'chevron-right'}" style="color:${isConn ? 'var(--gr)' : 'var(--t4)'};font-size:${isConn ? '14' : '11'}px"></i>
@@ -723,7 +743,7 @@ const SettingsPage: React.FC = () => {
       <div class="m-hdr"><div class="m-icon" style="background:var(--brand-l)"><i class="fa-solid fa-camera" style="color:var(--brand);font-size:17px"></i></div><div><div class="m-title">Update Profile Photo</div><div class="m-sub">Upload a new photo — JPG, PNG or GIF · Max 5MB</div></div></div>
       <div class="m-body">
         <div style="display:flex;justify-content:center;margin-bottom:16px">
-          <div style="width:88px;height:88px;border-radius:18px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:#fff;font-family:'Sora',sans-serif;box-shadow:var(--glow)">JD</div>
+          <div style="width:88px;height:88px;border-radius:18px;background:linear-gradient(135deg,#F97316,#EA580C);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:#fff;font-family:'Sora',sans-serif;box-shadow:var(--glow)">JD</div>
         </div>
         <div onclick="window.dispatchEvent(new CustomEvent('close-modal')); window.dispatchEvent(new CustomEvent('toast-upload'))" style="border:2px dashed var(--bdr);border-radius:11px;padding:22px;text-align:center;cursor:pointer;transition:all .15s;background:var(--surf2)" onmouseover="this.style.borderColor='var(--brand)';this.style.background='var(--brand-l)'" onmouseout="this.style.borderColor='var(--bdr)';this.style.background='var(--surf2)'">
           <i class="fa-solid fa-cloud-arrow-up" style="font-size:26px;color:var(--t3);margin-bottom:8px;display:block"></i>
@@ -898,22 +918,24 @@ const SettingsPage: React.FC = () => {
     <>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
       <style>{`
-        :root { --bg:#F5F6FA; --surf:#ffffff; --surf2:#F8F9FD; --bdr:#E2E4F0; --bdr2:#ECEEF6; --t1:#0B0C1A; --t2:#3D3F60; --t3:#8486AB; --t4:#A0A2BF; --brand:#5B5BD6; --brand2:#7C3AED; --brand-l:#EEEEFF; --gr:#10B981; --rd:#EF4444; --am:#F59E0B; --bl:#3B82F6; --rd-l:#FEF2F2; --glow:0 8px 28px rgba(91,91,214,.24); }
+        :root { --bg:#F9FAFB; --surf:#FFFFFF; --surf2:#F3F4F6; --bdr:#E5E7EB; --bdr2:#F3F4F6; --t1:#111827; --t2:#374151; --t3:#6B7280; --t4:#9CA3AF; --brand:#F97316; --brand2:#EA580C; --brand-l:rgba(249,115,22,.1); --gr:#16A34A; --rd:#EF4444; --am:#D97706; --bl:#3B82F6; --rd-l:rgba(239,68,68,.08); --glow:0 8px 28px rgba(249,115,22,.28); }
         #main { min-width:0; background:var(--bg); color:var(--t1); }
-        #topbar { height:56px; display:flex; align-items:center; gap:10px; padding:0 20px; background:#fff; border-bottom:1px solid var(--bdr); box-shadow:0 1px 4px rgba(11,12,26,.06); position:sticky; top:0; z-index:20; }
+        #topbar { height:56px; display:flex; align-items:center; gap:10px; padding:0 20px; background:var(--surf); border-bottom:1px solid var(--bdr); box-shadow:0 1px 4px rgba(0,0,0,.24); position:sticky; top:0; z-index:20; }
         .tb-bc { font-size:12.5px; color:var(--t3); display:flex; align-items:center; gap:6px; }
         .tb-bc a { color:var(--t3); text-decoration:none; }
         .tb-bc .cur { color:var(--t1); font-weight:700; font-family:'Sora',sans-serif; }
         .tb-flex { flex:1; }
         .tb-btn { display:flex; align-items:center; gap:6px; padding:8px 13px; border-radius:8px; font-size:12.5px; font-weight:700; border:1px solid var(--bdr); cursor:pointer; }
-        .tb-btn.ghost { background:#fff; color:var(--t2); }
+        .tb-btn.ghost { background:var(--surf2); color:var(--t2); }
         .tb-btn.solid { background:var(--brand); color:#fff; border-color:var(--brand); box-shadow:var(--glow); }
-        .tb-icon { width:30px; height:30px; border-radius:7px; display:flex; align-items:center; justify-content:center; color:var(--t2); position:relative; background:#fff; border:1px solid var(--bdr2); }
-        .tb-dot { position:absolute; top:5px; right:5px; width:7px; height:7px; border-radius:50%; background:var(--rd); border:1.5px solid #fff; }
-        .tb-ava { width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,var(--brand),#EC4899); color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; }
+        .tb-icon { width:30px; height:30px; border-radius:7px; display:flex; align-items:center; justify-content:center; color:var(--t2); position:relative; background:var(--surf2); border:1px solid var(--bdr2); }
+        .tb-dot { position:absolute; top:5px; right:5px; width:7px; height:7px; border-radius:50%; background:var(--rd); border:1.5px solid var(--surf); }
+        .tb-ava { width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,#F97316,#EA580C); color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; }
         #content { padding:18px 20px 24px; height:calc(100vh - 56px); overflow:auto; }
         .settings-wrap { display:grid; grid-template-columns:260px 1fr; gap:16px; align-items:start; }
-        .settings-nav { position:sticky; top:74px; background:#fff; border:1px solid var(--bdr); border-radius:12px; padding:12px; box-shadow:0 1px 4px rgba(11,12,26,.06); }
+        .settings-nav { position:sticky; top:74px; background:transparent; border:none; border-radius:12px; padding:12px; box-shadow:none; }
+        .sn-search { width:100%; padding:9px 11px; border-radius:8px; border:1px solid var(--bdr); background:var(--surf2); color:var(--t1); font-size:12.5px; margin-bottom:10px; }
+        .sn-search::placeholder { color:var(--t4); }
         .sn-hdr-label { font-size:11px; font-weight:800; letter-spacing:.5px; color:var(--t4); text-transform:uppercase; margin:4px 6px 8px; font-family:'Sora',sans-serif; }
         .sn-item { display:flex; align-items:center; gap:8px; border-radius:9px; padding:9px 10px; font-size:13px; font-weight:700; color:var(--t3); cursor:pointer; }
         .sn-item.active { background:var(--brand-l); color:var(--brand); }
@@ -921,12 +943,12 @@ const SettingsPage: React.FC = () => {
         .sn-sep { height:1px; background:var(--bdr2); margin:8px 2px; }
         .danger-nav.active { background:var(--rd-l); color:var(--rd); }
         .settings-content { display:flex; flex-direction:column; gap:14px; }
-        .sph { background:#fff; border:1px solid var(--bdr); border-radius:12px; padding:14px 16px; }
+        .sph { background:var(--surf); border:1px solid var(--bdr); border-radius:12px; padding:14px 16px; }
         .sph-eye { font-size:11px; font-weight:700; color:var(--gr); display:inline-flex; align-items:center; gap:7px; }
         .sph-pulse { width:8px; height:8px; border-radius:50%; background:var(--gr); box-shadow:0 0 0 0 rgba(16,185,129,.4); animation:pulse 2s infinite; }
         .sph-title { margin-top:7px; font-size:20px; font-weight:900; color:var(--t1); font-family:'Sora',sans-serif; }
         .sph-sub { margin-top:5px; color:var(--t3); font-size:13px; line-height:1.5; }
-        .sec { background:#fff; border:1px solid var(--bdr); border-radius:12px; overflow:hidden; }
+        .sec { background:var(--surf); border:1px solid var(--bdr); border-radius:12px; overflow:hidden; }
         .sec-hdr { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; padding:14px 16px; border-bottom:1px solid var(--bdr2); }
         .sec-title { display:flex; align-items:center; gap:8px; font-size:15px; font-weight:800; color:var(--t1); font-family:'Sora',sans-serif; }
         .sec-sub { margin-top:4px; font-size:12.5px; color:var(--t3); }
@@ -936,32 +958,32 @@ const SettingsPage: React.FC = () => {
         .fr-sub { margin-top:4px; color:var(--t3); font-size:12px; }
         .fr-ctrl { min-width:0; }
         .field { width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--bdr); background:var(--surf2); color:var(--t1); font-size:13px; }
-        .field.ok { border-color:rgba(16,185,129,.35); }
-        .field.err { border-color:rgba(239,68,68,.45); }
+        .field.ok { border-color:rgba(16,185,129,.4); }
+        .field.err { border-color:rgba(239,68,68,.5); }
         .char-ct, .field-hint { margin-top:6px; font-size:11px; color:var(--t4); }
         .field-hint.ok { color:var(--gr); } .field-hint.err { color:var(--rd); }
         .badge-row { margin-top:7px; display:flex; align-items:center; gap:10px; }
-        .v-badge { padding:3px 8px; border-radius:999px; font-size:11px; font-weight:700; background:#ECFDF5; color:var(--gr); }
+        .v-badge { padding:3px 8px; border-radius:999px; font-size:11px; font-weight:700; background:rgba(16,185,129,.14); color:var(--gr); }
         .text-link { color:var(--brand); font-size:12px; font-weight:700; cursor:pointer; }
         .ava-row { display:flex; gap:12px; padding-bottom:12px; border-bottom:1px solid var(--bdr2); margin-bottom:6px; }
-        .ava-big { position:relative; width:74px; height:74px; border-radius:14px; background:linear-gradient(135deg,var(--brand),#EC4899); color:#fff; font-size:26px; font-weight:900; display:flex; align-items:center; justify-content:center; cursor:pointer; }
-        .ava-overlay { position:absolute; inset:0; border-radius:14px; background:rgba(11,12,26,.35); display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .14s; }
+        .ava-big { position:relative; width:74px; height:74px; border-radius:14px; background:linear-gradient(135deg,#F97316,#EA580C); color:#fff; font-size:26px; font-weight:900; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:var(--glow); }
+        .ava-overlay { position:absolute; inset:0; border-radius:14px; background:rgba(0,0,0,.5); display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .14s; }
         .ava-big:hover .ava-overlay { opacity:1; }
         .ava-name { font-size:16px; font-weight:800; color:var(--t1); font-family:'Sora',sans-serif; }
         .ava-role { margin-top:3px; font-size:12px; color:var(--t3); }
         .ava-btns { margin-top:8px; display:flex; gap:8px; }
-        .ava-btn { padding:7px 10px; border-radius:8px; border:1px solid var(--bdr); background:#fff; font-size:12px; font-weight:700; color:var(--t2); cursor:pointer; }
+        .ava-btn { padding:7px 10px; border-radius:8px; border:1px solid var(--bdr); background:var(--surf2); font-size:12px; font-weight:700; color:var(--t2); cursor:pointer; }
         .input-wrap { position:relative; }
         .pw-eye { position:absolute; right:10px; top:50%; transform:translateY(-50%); color:var(--t3); cursor:pointer; }
         .pw-bars { display:grid; grid-template-columns:repeat(4,1fr); gap:5px; margin-top:8px; }
         .pw-bar { height:5px; border-radius:999px; background:var(--bdr2); }
         .pw-bar.weak { background:var(--rd); } .pw-bar.fair { background:var(--am); } .pw-bar.good { background:var(--bl); } .pw-bar.strong { background:var(--gr); }
         .sec-footer { display:flex; justify-content:flex-end; gap:8px; margin-top:12px; padding-top:10px; }
-        .btn { padding:9px 12px; border-radius:8px; border:1px solid var(--bdr); background:#fff; color:var(--t2); font-size:12.5px; font-weight:700; cursor:pointer; }
+        .btn { padding:9px 12px; border-radius:8px; border:1px solid var(--bdr); background:var(--surf2); color:var(--t2); font-size:12.5px; font-weight:700; cursor:pointer; }
         .btn.primary { background:var(--brand); border-color:var(--brand); color:#fff; }
         .toggle-row { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:10px 0; border-bottom:1px solid var(--bdr2); }
         .tr-lbl { font-size:13px; font-weight:700; color:var(--t2); } .tr-sub { margin-top:4px; font-size:12px; color:var(--t3); }
-        .toggle { width:40px; height:22px; border-radius:999px; background:#D7D9E9; position:relative; cursor:pointer; transition:all .15s; }
+        .toggle { width:40px; height:22px; border-radius:999px; background:#D1D5DB; position:relative; cursor:pointer; transition:all .15s; }
         .toggle::after { content:""; position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:50%; background:#fff; transition:left .15s; }
         .toggle.on { background:var(--brand); } .toggle.on::after { left:21px; }
         .notif-col-hdr { display:grid; grid-template-columns:1fr 70px 70px; padding-bottom:8px; border-bottom:1px solid var(--bdr2); margin-bottom:6px; }
@@ -969,20 +991,20 @@ const SettingsPage: React.FC = () => {
         .social-row, .notif-row, .session-item, .danger-row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px; border:1px solid var(--bdr2); border-radius:10px; background:var(--surf2); margin-bottom:8px; }
         .danger-row { align-items:flex-start; }
         .soc-icon, .sess-icon, .dz-icon { width:36px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0; }
-        .sess-icon { background:#EFF1FB; color:#4B4D6B; }
+        .sess-icon { background:var(--surf); color:var(--t2); }
         .danger-btn { padding:8px 10px; border-radius:8px; border:none; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; }
-        .danger-btn.blue { background:#EAF2FF; color:#2563EB; } .danger-btn.amber { background:#FFF7E6; color:#B45309; } .danger-btn.red { background:#FEF2F2; color:#DC2626; }
+        .danger-btn.blue { background:rgba(59,130,246,.14); color:#60A5FA; } .danger-btn.amber { background:rgba(245,158,11,.14); color:#FBBF24; } .danger-btn.red { background:rgba(239,68,68,.14); color:#F87171; }
         .dr-title, .dz-title { font-size:13px; font-weight:700; color:var(--t2); }
         .dr-sub, .dz-sub { margin-top:3px; font-size:12px; color:var(--t3); line-height:1.45; }
-        #modal-bg { position:fixed; inset:0; background:rgba(11,12,26,.45); backdrop-filter:blur(2px); display:none; align-items:center; justify-content:center; z-index:70; }
+        #modal-bg { position:fixed; inset:0; background:rgba(0,0,0,.6); backdrop-filter:blur(2px); display:none; align-items:center; justify-content:center; z-index:70; }
         #modal-bg.open { display:flex; }
-        .mbox { width:min(560px, 92vw); max-height:90vh; overflow:auto; border-radius:14px; background:#fff; border:1px solid var(--bdr); box-shadow:0 20px 60px rgba(11,12,26,.25); }
+        .mbox { width:min(560px, 92vw); max-height:90vh; overflow:auto; border-radius:14px; background:var(--surf); border:1px solid var(--bdr); box-shadow:0 20px 60px rgba(0,0,0,.5); }
         #toast-stack { position:fixed; top:84px; right:18px; z-index:99999; display:flex; flex-direction:column; gap:8px; }
-        .toast { min-width:260px; max-width:360px; display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:10px; background:#fff; border:1px solid var(--bdr); box-shadow:0 8px 26px rgba(11,12,26,.18); color:var(--t1); font-size:13px; font-weight:700; line-height:1.35; }
-        .toast.green { background:#ECFDF5; border-color:rgba(16,185,129,.4); color:#065F46; }
-        .toast.red { background:#FEF2F2; border-color:rgba(239,68,68,.38); color:#991B1B; }
-        .toast.brand { background:#EEF2FF; border-color:rgba(91,91,214,.35); color:#3730A3; }
-        .toast.amber { background:#FFF7ED; border-color:rgba(245,158,11,.42); color:#92400E; }
+        .toast { min-width:260px; max-width:360px; display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:10px; background:var(--surf); border:1px solid var(--bdr); box-shadow:0 8px 26px rgba(0,0,0,.4); color:var(--t1); font-size:13px; font-weight:700; line-height:1.35; }
+        .toast.green { background:rgba(16,185,129,.16); border-color:rgba(16,185,129,.4); color:#6EE7B7; }
+        .toast.red { background:rgba(239,68,68,.16); border-color:rgba(239,68,68,.4); color:#FCA5A5; }
+        .toast.brand { background:rgba(249,115,22,.12); border-color:rgba(249,115,22,.4); color:#EA580C; }
+        .toast.amber { background:rgba(245,158,11,.16); border-color:rgba(245,158,11,.4); color:#FCD34D; }
         .toast .t-x { cursor:pointer; color:inherit; font-weight:900; opacity:.75; }
         @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(16,185,129,.35)} 70%{box-shadow:0 0 0 10px rgba(16,185,129,0)} 100%{box-shadow:0 0 0 0 rgba(16,185,129,0)} }
         @media (max-width: 1024px) { .settings-wrap { grid-template-columns:1fr; } .settings-nav { position:static; } .form-row { grid-template-columns:1fr; } }
@@ -1003,7 +1025,7 @@ const SettingsPage: React.FC = () => {
           actionButton={
             <button
               onClick={saveAll}
-              style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 7, background: "#5B5BD6", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(91,91,214,.28)" }}
+              style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 7, background: "linear-gradient(115deg,#F97316,#EA580C)", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", border: "none", boxShadow: "0 4px 14px rgba(249,115,22,.4)" }}
             >
               <i className="fa-solid fa-check" style={{ fontSize: 11 }} /> Save Changes
             </button>
@@ -1014,26 +1036,34 @@ const SettingsPage: React.FC = () => {
           <div className="settings-wrap">
             {/* Settings Nav */}
             <div className="settings-nav">
-              <div className="sn-hdr"><div className="sn-hdr-label">Settings</div></div>
-              <div className={`sn-item ${activeSection === 'profile' ? 'active' : ''}`} onClick={(e) => goToSection('profile', e.currentTarget)}>
-                <i className="fa-solid fa-user"></i>Profile
-              </div>
-              <div className={`sn-item ${activeSection === 'security' ? 'active' : ''}`} onClick={(e) => goToSection('security', e.currentTarget)}>
-                <i className="fa-solid fa-shield-halved"></i>Security
-              </div>
-              <div className={`sn-item ${activeSection === 'social' ? 'active' : ''}`} onClick={(e) => goToSection('social', e.currentTarget)}>
-                <i className="fa-solid fa-share-nodes"></i>Social Accounts
-              </div>
-              <div className={`sn-item ${activeSection === 'notif' ? 'active' : ''}`} onClick={(e) => goToSection('notif', e.currentTarget)}>
-                <i className="fa-solid fa-bell"></i>Notifications
-              </div>
-              <div className={`sn-item ${activeSection === 'appearance' ? 'active' : ''}`} onClick={(e) => goToSection('appearance', e.currentTarget)}>
-                <i className="fa-solid fa-palette"></i>Appearance
-              </div>
-              <div className="sn-sep"></div>
-              <div className={`sn-item danger-nav ${activeSection === 'danger' ? 'active' : ''}`} onClick={(e) => goToSection('danger', e.currentTarget)}>
-                <i className="fa-solid fa-triangle-exclamation"></i>Danger Zone
-              </div>
+              <input
+                className="sn-search"
+                type="text"
+                placeholder="Search settings…"
+                value={navSearch}
+                onChange={(e) => setNavSearch(e.target.value)}
+              />
+              {NAV_GROUPS.map((group, gi) => {
+                const items = group.items.filter((item) =>
+                  item.label.toLowerCase().includes(navSearch.trim().toLowerCase())
+                );
+                if (items.length === 0) return null;
+                return (
+                  <React.Fragment key={group.label}>
+                    {gi > 0 && <div className="sn-sep"></div>}
+                    <div className="sn-hdr-label">{group.label}</div>
+                    {items.map((item) => (
+                      <div
+                        key={item.id}
+                        className={`sn-item ${item.danger ? 'danger-nav' : ''} ${activeSection === item.id ? 'active' : ''}`}
+                        onClick={(e) => goToSection(item.id, e.currentTarget)}
+                      >
+                        <i className={`fa-solid ${item.icon}`}></i>{item.label}
+                      </div>
+                    ))}
+                  </React.Fragment>
+                );
+              })}
             </div>
 
             {/* Settings Content */}
@@ -1046,7 +1076,7 @@ const SettingsPage: React.FC = () => {
               </div>
 
               {/* Profile Section */}
-              <div className="sec" id="sec-profile" style={{ animationDelay: '0.04s' }}>
+              <div className="sec" id="sec-profile" style={{ animationDelay: '0.04s', display: activeSection === 'profile' ? undefined : 'none' }}>
                 <div className="sec-hdr">
                   <div>
                     <div className="sec-title"><i className="fa-solid fa-user"></i>Profile Information</div>
@@ -1081,7 +1111,7 @@ const SettingsPage: React.FC = () => {
                       <div className="ava-name">{profileName}</div>
                       <div className="ava-role">{profileRole} · {profilePlan} · Member</div>
                       <div className="ava-btns">
-                        <button className="ava-btn up" onClick={() => avatarInputRef.current?.click()}><i className="fa-solid fa-upload" style={{ fontSize: '10px' }}></i> Upload Photo</button>
+                        <button className="ava-btn up" onClick={() => avatarInputRef.current?.click()}><i className="fa-solid fa-upload" style={{ fontSize: '10px' }}></i> Upload new</button>
                         <button className="ava-btn rm" onClick={handleRemoveAvatar}><i className="fa-solid fa-trash" style={{ fontSize: '10px' }}></i> Remove</button>
                       </div>
                     </div>
@@ -1157,7 +1187,7 @@ const SettingsPage: React.FC = () => {
               </div>
 
               {/* Security Section */}
-              <div className="sec" id="sec-security" style={{ animationDelay: '0.08s' }}>
+              <div className="sec" id="sec-security" style={{ animationDelay: '0.08s', display: activeSection === 'security' ? undefined : 'none' }}>
                 <div className="sec-hdr">
                   <div>
                     <div className="sec-title"><i className="fa-solid fa-shield-halved"></i>Password &amp; Security</div>
@@ -1245,7 +1275,7 @@ const SettingsPage: React.FC = () => {
               </div>
 
               {/* Social Accounts Section */}
-              <div className="sec" id="sec-social" style={{ animationDelay: '0.12s' }}>
+              <div className="sec" id="sec-social" style={{ animationDelay: '0.12s', display: activeSection === 'social' ? undefined : 'none' }}>
                 <div className="sec-hdr">
                   <div>
                     <div className="sec-title"><i className="fa-solid fa-share-nodes"></i>Connected Social Accounts</div>
@@ -1259,7 +1289,7 @@ const SettingsPage: React.FC = () => {
               </div>
 
               {/* Notifications Section */}
-              <div className="sec" id="sec-notif" style={{ animationDelay: '0.16s' }}>
+              <div className="sec" id="sec-notif" style={{ animationDelay: '0.16s', display: activeSection === 'notif' ? undefined : 'none' }}>
                 <div className="sec-hdr">
                   <div>
                     <div className="sec-title"><i className="fa-solid fa-bell"></i>Notification Preferences</div>
@@ -1279,29 +1309,32 @@ const SettingsPage: React.FC = () => {
               </div>
 
               {/* Appearance Section */}
-              <div className="sec" id="sec-appearance" style={{ animationDelay: '0.20s' }}>
+              <div className="sec" id="sec-appearance" style={{ animationDelay: '0.20s', display: activeSection === 'appearance' ? undefined : 'none' }}>
                 <div className="sec-hdr">
                   <div>
-                    <div className="sec-title"><i className="fa-solid fa-palette"></i>Appearance</div>
+                    <div className="sec-title">
+                      <i className="fa-solid fa-palette"></i>Appearance
+                      <span style={{ marginLeft: 8, padding: '2px 8px', borderRadius: 999, background: 'var(--brand-l)', color: 'var(--brand)', fontSize: 10.5, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.4px' }}>Coming soon</span>
+                    </div>
                     <div className="sec-sub">Customize the look and feel of your dashboard</div>
                   </div>
                 </div>
-                <div className="sec-body">
+                <div className="sec-body" style={{ opacity: 0.55, pointerEvents: 'auto' }}>
                   <div className="form-row">
                     <div><div className="fr-lbl">Theme</div><div className="fr-sub">Choose your preferred color theme</div></div>
                     <div className="fr-ctrl">
                       <div style={{ display: 'flex', gap: '10px' }}>
-                        <div id="th-light" onClick={() => setTheme('light')} style={{ flex: 1, padding: '14px', borderRadius: '10px', border: `2px solid ${theme === 'light' ? 'var(--brand)' : 'var(--bdr)'}`, background: theme === 'light' ? 'var(--brand-l)' : 'var(--surf2)', cursor: 'pointer', textAlign: 'center', transition: 'all .15s' }}>
+                        <div id="th-light" onClick={() => showToast('Appearance settings are coming soon!', 'brand')} style={{ flex: 1, padding: '14px', borderRadius: '10px', border: '2px solid var(--bdr)', background: 'var(--surf2)', cursor: 'not-allowed', textAlign: 'center', transition: 'all .15s' }}>
                           <div style={{ fontSize: '20px', marginBottom: '5px' }}>☀️</div>
-                          <div style={{ fontSize: '12px', fontWeight: '700', color: theme === 'light' ? 'var(--brand)' : 'var(--t2)', fontFamily: "'Sora', sans-serif" }}>Light</div>
+                          <div style={{ fontSize: '12px', fontWeight: '700', color: 'var(--t2)', fontFamily: "'Sora', sans-serif" }}>Light</div>
                         </div>
-                        <div id="th-dark" onClick={() => setTheme('dark')} style={{ flex: 1, padding: '14px', borderRadius: '10px', border: `2px solid ${theme === 'dark' ? 'var(--brand)' : 'var(--bdr)'}`, background: theme === 'dark' ? 'var(--brand-l)' : 'var(--surf2)', cursor: 'pointer', textAlign: 'center', transition: 'all .15s' }}>
+                        <div id="th-dark" onClick={() => showToast('Appearance settings are coming soon!', 'brand')} style={{ flex: 1, padding: '14px', borderRadius: '10px', border: '2px solid var(--bdr)', background: 'var(--surf2)', cursor: 'not-allowed', textAlign: 'center', transition: 'all .15s' }}>
                           <div style={{ fontSize: '20px', marginBottom: '5px' }}>🌙</div>
-                          <div style={{ fontSize: '12px', fontWeight: '700', color: theme === 'dark' ? 'var(--brand)' : 'var(--t2)', fontFamily: "'Sora', sans-serif" }}>Dark</div>
+                          <div style={{ fontSize: '12px', fontWeight: '700', color: 'var(--t2)', fontFamily: "'Sora', sans-serif" }}>Dark</div>
                         </div>
-                        <div id="th-system" onClick={() => setTheme('system')} style={{ flex: 1, padding: '14px', borderRadius: '10px', border: `2px solid ${theme === 'system' ? 'var(--brand)' : 'var(--bdr)'}`, background: theme === 'system' ? 'var(--brand-l)' : 'var(--surf2)', cursor: 'pointer', textAlign: 'center', transition: 'all .15s' }}>
+                        <div id="th-system" onClick={() => showToast('Appearance settings are coming soon!', 'brand')} style={{ flex: 1, padding: '14px', borderRadius: '10px', border: '2px solid var(--bdr)', background: 'var(--surf2)', cursor: 'not-allowed', textAlign: 'center', transition: 'all .15s' }}>
                           <div style={{ fontSize: '20px', marginBottom: '5px' }}>🖥️</div>
-                          <div style={{ fontSize: '12px', fontWeight: '700', color: theme === 'system' ? 'var(--brand)' : 'var(--t2)', fontFamily: "'Sora', sans-serif" }}>System</div>
+                          <div style={{ fontSize: '12px', fontWeight: '700', color: 'var(--t2)', fontFamily: "'Sora', sans-serif" }}>System</div>
                         </div>
                       </div>
                     </div>
@@ -1309,28 +1342,28 @@ const SettingsPage: React.FC = () => {
                   <div className="form-row">
                     <div><div className="fr-lbl">Sidebar Density</div><div className="fr-sub">How compact the sidebar navigation appears</div></div>
                     <div className="fr-ctrl">
-                      <select className="field" defaultValue="Comfortable" onChange={() => showToast('Density updated', 'brand')}>
+                      <select className="field" defaultValue="Comfortable" style={{ cursor: 'not-allowed' }} onClick={(e) => { e.preventDefault(); (e.currentTarget as HTMLSelectElement).blur(); showToast('Appearance settings are coming soon!', 'brand'); }} onChange={(e) => e.preventDefault()}>
                         <option>Comfortable</option><option>Compact</option><option>Spacious</option>
                       </select>
                     </div>
                   </div>
                   <div className="toggle-row">
                     <div><div className="tr-lbl">Animations &amp; Transitions</div><div className="tr-sub">Smooth animations when navigating the dashboard.</div></div>
-                    <div className={`toggle ${toggles.animations ? 'on' : ''}`} onClick={() => toggleSwitch('animations')}></div>
+                    <div className="toggle" style={{ cursor: 'not-allowed' }} onClick={() => showToast('Appearance settings are coming soon!', 'brand')}></div>
                   </div>
                   <div className="toggle-row">
                     <div><div className="tr-lbl">Compact Calendar View</div><div className="tr-sub">Show more posts per row in the content calendar.</div></div>
-                    <div className={`toggle ${toggles.compact ? 'on' : ''}`} onClick={() => toggleSwitch('compact')}></div>
+                    <div className="toggle" style={{ cursor: 'not-allowed' }} onClick={() => showToast('Appearance settings are coming soon!', 'brand')}></div>
                   </div>
                   <div className="toggle-row">
                     <div><div className="tr-lbl">Show AI Confidence Scores</div><div className="tr-sub">Display engagement prediction scores on post cards.</div></div>
-                    <div className={`toggle ${toggles.scores ? 'on' : ''}`} onClick={() => toggleSwitch('scores')}></div>
+                    <div className="toggle" style={{ cursor: 'not-allowed' }} onClick={() => showToast('Appearance settings are coming soon!', 'brand')}></div>
                   </div>
                 </div>
               </div>
 
               {/* Danger Zone Section */}
-              <div className="sec" id="sec-danger" style={{ animationDelay: '0.24s' }}>
+              <div className="sec" id="sec-danger" style={{ animationDelay: '0.24s', display: activeSection === 'danger' ? undefined : 'none' }}>
                 <div className="sec-hdr">
                   <div>
                     <div className="sec-title" style={{ color: 'var(--rd)' }}><i className="fa-solid fa-triangle-exclamation" style={{ color: 'var(--rd)' }}></i>Danger Zone</div>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -110,7 +110,7 @@ function useToasts() {
 function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
   return (
     <div onClick={() => onChange(!checked)} style={{ position:"relative", width:36, height:20, flexShrink:0, cursor:"pointer" }}>
-      <div style={{ position:"absolute", inset:0, borderRadius:10, background:checked?"#5B5BD6":"#E2E4F0", border:`1px solid ${checked?"#5B5BD6":"#E2E4F0"}`, transition:"all .2s" }} />
+      <div style={{ position:"absolute", inset:0, borderRadius:10, background:checked?"#F97316":"#E2E4F0", border:`1px solid ${checked?"#F97316":"#E2E4F0"}`, transition:"all .2s" }} />
       <div style={{ position:"absolute", top:3, left:checked?19:3, width:12, height:12, borderRadius:"50%", background:"#fff", transition:"left .2s", boxShadow:"0 1px 3px rgba(0,0,0,.25)" }} />
     </div>
   );
@@ -168,7 +168,7 @@ function PlatCard({ p, idx, onConnect, onDisconnect, onAccMenu, showToast }: {
           <div style={{ display:"flex", flexDirection:"column", gap:7, marginBottom:12 }}>
             {p.accounts.map(acc => (
               <div key={acc.id} onClick={() => onAccMenu(p.id, acc.id)} style={{ display:"flex", alignItems:"center", gap:10, padding:"9px 11px", borderRadius:10, background:"#F0F1F9", border:"1px solid #ECEDF8", cursor:"pointer", position:"relative", overflow:"hidden", transition:"all .14s" }}
-                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor="rgba(91,91,214,.22)"; (e.currentTarget as HTMLDivElement).style.background="#EEEEFF"; }}
+                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor="rgba(249,115,22,.22)"; (e.currentTarget as HTMLDivElement).style.background="#EEEEFF"; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor="#ECEDF8"; (e.currentTarget as HTMLDivElement).style.background="#F0F1F9"; }}>
                 <div style={{ width:34, height:34, borderRadius:9, flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:800, color:acc.col, background:`${acc.col}22` }}>{acc.ava}</div>
                 <div style={{ flex:1, minWidth:0 }}>
@@ -244,9 +244,9 @@ function PlatCard({ p, idx, onConnect, onDisconnect, onAccMenu, showToast }: {
       <div style={{ display:"flex", gap:7, padding:"13px 18px", borderTop:"1px solid #ECEDF8", background:"#F0F1F9" }}>
         {isConnected ? (
           <>
-            <button onClick={() => onConnect(p.id)} style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:6, padding:"9px 12px", borderRadius:9, fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", border:"1.5px solid #DDDDFB", background:"#EEEEFF", color:"#5B5BD6", flex:1, transition:"all .16s" }}
-              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background="#5B5BD6"; (e.currentTarget as HTMLButtonElement).style.color="#fff"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background="#EEEEFF"; (e.currentTarget as HTMLButtonElement).style.color="#5B5BD6"; }}>
+            <button onClick={() => onConnect(p.id)} style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:6, padding:"9px 12px", borderRadius:9, fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", border:"1.5px solid #DDDDFB", background:"#EEEEFF", color:"#F97316", flex:1, transition:"all .16s" }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background="#F97316"; (e.currentTarget as HTMLButtonElement).style.color="#fff"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background="#EEEEFF"; (e.currentTarget as HTMLButtonElement).style.color="#F97316"; }}>
               <i className="fa-solid fa-plus" style={{ fontSize:10 }} /> Add Account
             </button>
             <button onClick={() => showToast(`📊 Opening ${p.name} analytics…`, "brand")} style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:6, padding:"9px 12px", borderRadius:9, fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", border:"1.5px solid rgba(59,130,246,.15)", background:"#EFF6FF", color:"#3B82F6", flex:1, transition:"all .16s" }}>
@@ -296,7 +296,7 @@ function ConnectModal({ p, mode, onAuthorize, onClose }: { p: Platform; mode: st
       <div style={{ padding:"18px 22px", display:"flex", flexDirection:"column", gap:0 }}>
         {["Click Authorize — you'll be securely redirected to "+p.name,"Log in to "+p.name+" if prompted and approve Shoutly AI","Grant the required permissions below for AI posting to work","Redirected back automatically — your account goes live instantly ✅"].map((step, i) => (
           <div key={i} style={{ display:"flex", alignItems:"flex-start", gap:12, padding:"10px 0", borderBottom:i<3?"1px solid #ECEDF8":undefined, animation:`fadeUp .3s ease ${i*0.04+0.04}s both` }}>
-            <div style={{ width:26, height:26, borderRadius:8, background:"#EEEEFF", color:"#5B5BD6", fontSize:12, fontWeight:800, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, fontFamily:"Sora,sans-serif", marginTop:1 }}>{i+1}</div>
+            <div style={{ width:26, height:26, borderRadius:8, background:"#EEEEFF", color:"#F97316", fontSize:12, fontWeight:800, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, fontFamily:"Sora,sans-serif", marginTop:1 }}>{i+1}</div>
             <div style={{ fontSize:12.5, color:"#3D3F60", lineHeight:1.5 }} dangerouslySetInnerHTML={{ __html: step.replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>").replace(/(Click Authorize|Log in|required permissions|Redirected back)/g,"<strong>$1</strong>") }} />
           </div>
         ))}
@@ -328,13 +328,13 @@ function OAuthLoadingModal({ p, step }: { p: Platform; step: number }) {
   const steps = ["Opening secure OAuth window","Awaiting user authorization","Exchanging access tokens","Syncing account profile & data"];
   return (
     <div style={{ display:"flex", flexDirection:"column", alignItems:"center", padding:"32px 22px", gap:16 }}>
-      <div style={{ width:54, height:54, borderRadius:"50%", border:"3px solid #E2E4F0", borderTopColor:"#5B5BD6", animation:"spin .8s linear infinite" }} />
+      <div style={{ width:54, height:54, borderRadius:"50%", border:"3px solid #E2E4F0", borderTopColor:"#F97316", animation:"spin .8s linear infinite" }} />
       <div style={{ fontSize:15, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif" }}>Connecting to {p.name}</div>
       <div style={{ fontSize:12, color:"#8486AB", textAlign:"center", lineHeight:1.5 }}>Complete authorization in the popup window. This usually takes a few seconds.</div>
       <div style={{ display:"flex", flexDirection:"column", gap:5, width:"100%" }}>
         {steps.map((s, i) => (
           <div key={s} style={{ display:"flex", alignItems:"center", gap:8, fontSize:12, color:i<step?"#10B981":i===step?"#0B0C1A":"#8486AB", fontWeight:i===step?700:400, padding:"4px 0", transition:"color .2s" }}>
-            <i className={i < step ? "fa-solid fa-check" : i === step ? "fa-solid fa-circle-notch" : "fa-regular fa-circle"} style={{ fontSize:11, flexShrink:0, width:14, textAlign:"center", animation:i===step?"spin .8s linear infinite":undefined, color:i<step?"#10B981":i===step?"#5B5BD6":"#BFC1D9" }} />
+            <i className={i < step ? "fa-solid fa-check" : i === step ? "fa-solid fa-circle-notch" : "fa-regular fa-circle"} style={{ fontSize:11, flexShrink:0, width:14, textAlign:"center", animation:i===step?"spin .8s linear infinite":undefined, color:i<step?"#10B981":i===step?"#F97316":"#BFC1D9" }} />
             {s}
           </div>
         ))}
@@ -432,7 +432,7 @@ function PickerModal({ plats, onSelect, onClose }: { plats: Platform[]; onSelect
     <>
       <div style={{ padding:"20px 22px 16px", borderBottom:"1px solid #E2E4F0", display:"flex", alignItems:"center", gap:12 }}>
         <div style={{ width:42, height:42, borderRadius:11, background:"#EEEEFF", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0 }}>
-          <i className="fa-solid fa-plus" style={{ color:"#5B5BD6" }} />
+          <i className="fa-solid fa-plus" style={{ color:"#F97316" }} />
         </div>
         <div>
           <div style={{ fontSize:16, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif" }}>Connect a Platform</div>
@@ -583,7 +583,7 @@ export default function SocialAccountsPage() {
   const activePlat = plats.find(p => p.id === modal.platId);
   const activeAcc = activePlat?.accounts.find(a => a.id === modal.accId);
 
-  const toastColors: Record<string, string> = { default:"#0F1117", green:"#059669", red:"#EF4444", brand:"#5B5BD6", amber:"#F59E0B" };
+  const toastColors: Record<string, string> = { default:"#0F1117", green:"#059669", red:"#EF4444", brand:"#F97316", amber:"#F59E0B" };
   const toastIcons: Record<string, string> = { default:"🔔", green:"✅", red:"🔌", brand:"✦", amber:"⚡" };
 
   return (
@@ -619,7 +619,7 @@ export default function SocialAccountsPage() {
             onToggle={() => setSidebarSlim(s => !s)}
             searchPlaceholder="Search accounts…"
             actionButton={
-              <button onClick={syncAll} style={{ display:"flex", alignItems:"center", gap:6, padding:"8px 16px", borderRadius:7, background:"#5B5BD6", color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer", border:"none", fontFamily:"Sora,sans-serif", boxShadow:"0 4px 20px rgba(91,91,214,.28)" }}>
+              <button onClick={syncAll} style={{ display:"flex", alignItems:"center", gap:6, padding:"8px 16px", borderRadius:7, background:"linear-gradient(115deg,#F97316,#EA580C)", color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer", border:"none", fontFamily:"Sora,sans-serif", boxShadow:"0 4px 14px rgba(249,115,22,.4)" }}>
                 <i className="fa-solid fa-rotate" style={{ fontSize:11, animation:syncing?"spin .6s linear infinite":undefined }} /> Sync All
               </button>
             }
@@ -629,10 +629,10 @@ export default function SocialAccountsPage() {
           <div style={{ flex:1, overflowY:"auto" }}>
             {/* Page Header */}
             <div style={{ background:"#fff", borderBottom:"1px solid #E2E4F0", padding:"24px 28px 20px", position:"relative", overflow:"hidden" }}>
-              <div style={{ position:"absolute", top:-80, right:-60, width:320, height:320, background:"radial-gradient(circle,rgba(91,91,214,.07) 0%,transparent 70%)", pointerEvents:"none" }} />
+              <div style={{ position:"absolute", top:-80, right:-60, width:320, height:320, background:"radial-gradient(circle,rgba(249,115,22,.07) 0%,transparent 70%)", pointerEvents:"none" }} />
               <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:20, marginBottom:18 }}>
                 <div>
-                  <div style={{ width:46, height:46, borderRadius:12, background:"linear-gradient(135deg,#5B5BD6,#7C3AED)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, color:"#fff", marginBottom:12, boxShadow:"0 4px 20px rgba(91,91,214,.32)" }}>
+                  <div style={{ width:46, height:46, borderRadius:12, background:"linear-gradient(135deg,#F97316,#EA580C)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, color:"#fff", marginBottom:12, boxShadow:"0 4px 14px rgba(249,115,22,.4)" }}>
                     <i className="fa-solid fa-link" />
                   </div>
                   <div style={{ fontSize:23, fontWeight:900, color:"#0B0C1A", fontFamily:"Sora,sans-serif", letterSpacing:"-.5px", marginBottom:5 }}>Social Accounts</div>
@@ -642,7 +642,7 @@ export default function SocialAccountsPage() {
                   <button onClick={() => showToast("🔑 API keys copied","brand")} style={{ display:"flex", alignItems:"center", gap:6, padding:"7px 14px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#F0F1F9", border:"1px solid #E2E4F0", color:"#3D3F60" }}>
                     <i className="fa-solid fa-key" style={{ fontSize:11 }} /> API Keys
                   </button>
-                  <button onClick={openPicker} style={{ display:"flex", alignItems:"center", gap:6, padding:"7px 14px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#5B5BD6", color:"#fff", border:"none", boxShadow:"0 4px 20px rgba(91,91,214,.32)" }}>
+                  <button onClick={openPicker} style={{ display:"flex", alignItems:"center", gap:6, padding:"7px 14px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"linear-gradient(115deg,#F97316,#EA580C)", color:"#fff", border:"none", boxShadow:"0 4px 14px rgba(249,115,22,.4)" }}>
                     <i className="fa-solid fa-plus" style={{ fontSize:12 }} /> Connect Account
                   </button>
                 </div>
@@ -688,7 +688,7 @@ export default function SocialAccountsPage() {
               {([["all","All Platforms"],["connected","Connected"],["disconnected","Disconnected"],["attention","Needs Attention"]] as const).map(([f, label]) => {
                 const dotCols: Record<string, string> = { connected:"#10B981", disconnected:"#BFC1D9", attention:"#F59E0B" };
                 return (
-                  <div key={f} onClick={() => setFilter(f)} style={{ display:"flex", alignItems:"center", gap:5, padding:"6px 13px", borderRadius:20, fontSize:12, fontWeight:700, cursor:"pointer", border:`1.5px solid ${filter===f?"#5B5BD6":"#E2E4F0"}`, background:filter===f?"#5B5BD6":"#fff", color:filter===f?"#fff":"#3D3F60", fontFamily:"Sora,sans-serif", whiteSpace:"nowrap", transition:"all .14s" }}>
+                  <div key={f} onClick={() => setFilter(f)} style={{ display:"flex", alignItems:"center", gap:5, padding:"6px 13px", borderRadius:20, fontSize:12, fontWeight:700, cursor:"pointer", border:`1.5px solid ${filter===f?"#F97316":"#E2E4F0"}`, background:filter===f?"#F97316":"#fff", color:filter===f?"#fff":"#3D3F60", fontFamily:"Sora,sans-serif", whiteSpace:"nowrap", transition:"all .14s" }}>
                     {f !== "all" && <div style={{ width:7, height:7, borderRadius:"50%", background:filter===f?"rgba(255,255,255,.7)":dotCols[f] }} />}
                     {label}
                     {f === "all" && <span style={{ fontSize:10, background:filter===f?"rgba(255,255,255,.25)":"#F0F1F9", padding:"1px 6px", borderRadius:8, marginLeft:2 }}>{plats.length}</span>}
@@ -715,7 +715,7 @@ export default function SocialAccountsPage() {
               ))}
               {/* Add Platform Card */}
               <div onClick={() => showToast("📩 Request sent! We'll prioritize it.","brand")} style={{ background:"#fff", border:"2px dashed #E2E4F0", borderRadius:16, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"36px 24px", gap:10, cursor:"pointer", transition:"all .18s", minHeight:200, animation:`cardReveal .35s ease ${filteredPlats.length*0.07}s both` }}
-                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor="#5B5BD6"; (e.currentTarget as HTMLDivElement).style.background="#EEEEFF"; (e.currentTarget as HTMLDivElement).style.transform="translateY(-2px)"; }}
+                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor="#F97316"; (e.currentTarget as HTMLDivElement).style.background="#EEEEFF"; (e.currentTarget as HTMLDivElement).style.transform="translateY(-2px)"; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor="#E2E4F0"; (e.currentTarget as HTMLDivElement).style.background="#fff"; (e.currentTarget as HTMLDivElement).style.transform=""; }}>
                 <div style={{ width:54, height:54, borderRadius:14, background:"#F0F1F9", border:"1.5px solid #E2E4F0", display:"flex", alignItems:"center", justifyContent:"center", fontSize:24, color:"#BFC1D9", marginBottom:4 }}>
                   <i className="fa-solid fa-plus" />

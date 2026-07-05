@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from '../Sidebar'; // Import the sidebar component
@@ -34,12 +34,12 @@ interface Activity {
 
 // --- Data ---
 const initialMembers: Member[] = [
-  { initials: "JD", name: "Jordan Davis", email: "jordan@brandco.io", role: "admin", brands: "All", lastActive: "Active now", grad: "linear-gradient(135deg,#5B5BD6,#7C3AED)" },
+  { initials: "JD", name: "Jordan Davis", email: "jordan@brandco.io", role: "admin", brands: "All", lastActive: "Active now", grad: "linear-gradient(135deg,#F97316,#EA580C)" },
   { initials: "SM", name: "Sarah Mitchell", email: "sarah@brandco.io", role: "editor", brands: "All", lastActive: "12 min ago", grad: "linear-gradient(135deg,#E1306C,#F58529)" },
   { initials: "CR", name: "Carlos Rivera", email: "carlos@brandco.io", role: "approver", brands: "BrandCo", lastActive: "1 hour ago", grad: "linear-gradient(135deg,#10B981,#059669)" },
   { initials: "NK", name: "Nina Kim", email: "nina@brandco.io", role: "editor", brands: "BrandCo", lastActive: "3 hours ago", grad: "linear-gradient(135deg,#F59E0B,#D97706)" },
   { initials: "AP", name: "Alex Patel", email: "alex@brandco.io", role: "viewer", brands: "BrandCo", lastActive: "Yesterday", grad: "linear-gradient(135deg,#06B6D4,#0891B2)" },
-  { initials: "LW", name: "Lisa Wang", email: "lisa@brandco.io", role: "editor", brands: "BrandCo", lastActive: "2 days ago", grad: "linear-gradient(135deg,#8B5CF6,#6D28D9)" },
+  { initials: "LW", name: "Lisa Wang", email: "lisa@brandco.io", role: "editor", brands: "BrandCo", lastActive: "2 days ago", grad: "linear-gradient(135deg,#EA580C,#6D28D9)" },
 ];
 
 const initialApprovals: Approval[] = [
@@ -330,7 +330,7 @@ const TeamPage: React.FC = () => {
     <>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
       <style>{`
-        :root { --bg:#F5F6FA; --surf:#fff; --surf2:#F8F9FD; --bdr:#E2E4F0; --bdr2:#ECEEF6; --t1:#0B0C1A; --t2:#3D3F60; --t3:#8486AB; --t4:#A0A2BF; --brand:#5B5BD6; --brand2:#7C3AED; --brand-l:#EEEEFF; --brand-l2:#DCDDF7; --gr:#10B981; --gr-l:#ECFDF5; --am:#F59E0B; --am-l:#FFF7E6; --rd:#EF4444; --rd-l:#FEF2F2; --bl:#3B82F6; --bl-l:#EFF6FF; }
+        :root { --bg:#F5F6FA; --surf:#fff; --surf2:#F8F9FD; --bdr:#E2E4F0; --bdr2:#ECEEF6; --t1:#0B0C1A; --t2:#3D3F60; --t3:#8486AB; --t4:#A0A2BF; --brand:#F97316; --brand2:#EA580C; --brand-l:#EEEEFF; --brand-l2:#DCDDF7; --gr:#10B981; --gr-l:#ECFDF5; --am:#F59E0B; --am-l:#FFF7E6; --rd:#EF4444; --rd-l:#FEF2F2; --bl:#3B82F6; --bl-l:#EFF6FF; }
         #main { min-width:0; background:var(--bg); color:var(--t1); }
         #topbar { height:56px; display:flex; align-items:center; gap:10px; padding:0 20px; background:#fff; border-bottom:1px solid var(--bdr); box-shadow:0 1px 4px rgba(11,12,26,.06); }
         #content { height:calc(100vh - 56px); overflow:auto; padding:18px 20px 24px; }
@@ -343,7 +343,7 @@ const TeamPage: React.FC = () => {
         .tb-btn.solid { background:var(--brand); border-color:var(--brand); color:#fff; }
         .tb-icon { width:30px; height:30px; border-radius:7px; border:1px solid var(--bdr2); display:flex; align-items:center; justify-content:center; position:relative; color:var(--t2); }
         .tb-dot { position:absolute; top:5px; right:5px; width:7px; height:7px; border-radius:50%; background:#EF4444; border:1.5px solid #fff; }
-        .tb-ava { width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,var(--brand),#EC4899); color:#fff; display:flex; align-items:center; justify-content:center; font-size:10.5px; font-weight:800; }
+        .tb-ava { width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,#F97316,#EA580C); color:#fff; display:flex; align-items:center; justify-content:center; font-size:10.5px; font-weight:800; }
         .page-hdr { margin-bottom:14px; }
         .page-eye { display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:700; color:var(--gr); }
         .page-eye-dot { width:8px; height:8px; border-radius:50%; background:var(--gr); }
@@ -386,7 +386,7 @@ const TeamPage: React.FC = () => {
         .ai-actions { margin-top:8px; display:flex; gap:6px; }
         .approve-btn, .review-btn, .reject-btn { border-radius:8px; border:1px solid var(--bdr); padding:5px 8px; font-size:11px; font-weight:700; cursor:pointer; }
         .approve-btn { background:var(--gr-l); color:var(--gr); border-color:rgba(16,185,129,.28); }
-        .review-btn { background:var(--brand-l); color:var(--brand); border-color:rgba(91,91,214,.26); }
+        .review-btn { background:var(--brand-l); color:var(--brand); border-color:rgba(249,115,22,.26); }
         .reject-btn { background:var(--rd-l); color:var(--rd); border-color:rgba(239,68,68,.26); }
         .activity-item { display:flex; align-items:flex-start; gap:9px; padding:10px 0; border-bottom:1px solid var(--bdr2); }
         .act-dot { width:8px; height:8px; border-radius:50%; margin-top:6px; flex-shrink:0; }
@@ -417,7 +417,7 @@ const TeamPage: React.FC = () => {
           actionButton={
             <button
               onClick={openInviteModal}
-              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 7, background: '#5B5BD6', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', border: 'none', fontFamily: 'Sora,sans-serif', boxShadow: '0 4px 20px rgba(91,91,214,.28)' }}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 7, background: 'linear-gradient(115deg,#F97316,#EA580C)', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', border: 'none', fontFamily: 'Sora,sans-serif', boxShadow: '0 4px 14px rgba(249,115,22,.4)' }}
             >
               <i className="fa-solid fa-user-plus" style={{ fontSize: '11px' }} /> Invite Member
             </button>
