@@ -1,9 +1,9 @@
 ﻿"use client";
 
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AdminHeader from "../AdminHeader";
 import { saveDashboardCalendarPost } from "../calendarSync";
-import { fetchImages, fetchIndustries } from "@/api/homeApi";
+import { fetchImages, fetchIndustries, fetchPosts, ApiPost } from "@/api/homeApi";
 import {
   resolveGeneratorProfileFields,
   streamGeneratePosts,
@@ -819,66 +819,51 @@ function ComposerModal({ card, onClose, showToast, industryId, subIndustryId }: 
 }
 
 // ── Card Component ─────────────────────────────────────────────────────────
-function LibCardItem({ card, viewMode, isFav, onFav, onOpen, onCopy }: {
-  card: LibCard; viewMode: ViewMode; isFav: boolean;
-  onFav: () => void; onOpen: () => void; onCopy: () => void;
+const LibCardItem = React.memo(function LibCardItem({ card, viewMode, onOpen, onCopy }: {
+  card: LibCard; viewMode: ViewMode;
+  onOpen: () => void; onCopy: () => void;
 }) {
-  const meta = TYPE_META[card.type];
   const isList = viewMode === "list";
-  const isReel = card.type === "reel";
-  const eng = parseFloat(card.eng);
-  const engCol = eng > 8 ? "#10B981" : eng > 5 ? "#F59E0B" : "#9496B5";
 
   return (
     <div onClick={onOpen} style={{ background:"#fff",border:"1px solid #E4E5EF",borderRadius:14,overflow:"hidden",cursor:"pointer",boxShadow:"0 1px 2px rgba(13,14,26,.05)",transition:"all .18s",display:isList?"flex":"block",position:"relative" }}
       onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow="0 4px 12px rgba(13,14,26,.08),0 0 0 1.5px #F97316"; (e.currentTarget as HTMLDivElement).style.borderColor="#F97316"; (e.currentTarget as HTMLDivElement).style.transform="translateY(-3px)"; }}
       onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow="0 1px 2px rgba(13,14,26,.05)"; (e.currentTarget as HTMLDivElement).style.borderColor="#E4E5EF"; (e.currentTarget as HTMLDivElement).style.transform="translateY(0)"; }}>
       {/* Thumbnail */}
-      <div style={{ position:"relative",overflow:"hidden",background:"#F0F1F8",width:isList?130:undefined,flexShrink:isList?0:undefined,aspectRatio:isList?undefined:isReel?"9/16":"4/3",maxHeight:isReel&&!isList?260:undefined }}>
+      <div style={{ position:"relative",overflow:"hidden",background:"#F0F1F8",width:isList?130:undefined,flexShrink:isList?0:undefined,aspectRatio:isList?undefined:"4/3" }}>
         <img src={card.img} alt={card.cat} loading="lazy" style={{ width:"100%",display:"block",objectFit:"cover",height:isList?"100%":undefined }} />
-        <div style={{ position:"absolute",top:8,left:8,zIndex:3,display:"flex",alignItems:"center",gap:4,padding:"3px 8px",borderRadius:5,background:meta.bg,color:"#fff",fontSize:10.5,fontWeight:800,fontFamily:"Sora,sans-serif" }}>
-          <i className={`fa-solid ${meta.icon}`} style={{ fontSize:9 }} />{meta.label}
-        </div>
-        {isReel && <div style={{ position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:42,height:42,borderRadius:"50%",background:"rgba(255,255,255,.85)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,color:"#0D0E1A",zIndex:3 }}><i className="fa-solid fa-play" style={{ marginLeft:2 }} /></div>}
-        <div onClick={e => { e.stopPropagation(); onFav(); }} style={{ position:"absolute",top:8,right:8,zIndex:4,width:28,height:28,borderRadius:"50%",background:"rgba(255,255,255,.85)",display:"flex",alignItems:"center",justifyContent:"center",color:isFav?"#F59E0B":"#9496B5",fontSize:12,cursor:"pointer",border:"1px solid rgba(255,255,255,.6)" }}>
-          <i className={`fa-${isFav?"solid":"regular"} fa-star`} />
-        </div>
-        {/* Hover action overlay — only for grid view */}
+        {/* Hover action bar — only for grid view */}
         {!isList && (
-          <div className="card-hover-actions" style={{ position:"absolute",bottom:0,left:0,right:0,zIndex:4,padding:8,display:"flex",gap:6,background:"linear-gradient(transparent,rgba(0,0,0,.5))" }}>
-            <div onClick={e => { e.stopPropagation(); onOpen(); }} style={{ flex:1,padding:7,borderRadius:7,background:"linear-gradient(115deg,#F97316,#EA580C)",color:"#fff",fontSize:11.5,fontWeight:700,textAlign:"center",cursor:"pointer",fontFamily:"Sora,sans-serif" }}>
-              <i className="fa-solid fa-bolt fa-xs" /> Use This
-            </div>
-            <div onClick={e => { e.stopPropagation(); onCopy(); }} style={{ flex:1,padding:7,borderRadius:7,background:"rgba(255,255,255,.85)",color:"#0D0E1A",fontSize:11.5,fontWeight:700,textAlign:"center",cursor:"pointer",fontFamily:"Sora,sans-serif" }}>
-              <i className="fa-regular fa-copy fa-xs" /> Copy
-            </div>
+          <div className="card-hover-actions" style={{ position:"absolute",bottom:0,left:0,right:0,zIndex:4,padding:"8px 6px 6px",display:"flex",gap:4,justifyContent:"center",background:"linear-gradient(transparent,rgba(0,0,0,.7))" }}>
+            {([
+              {icon:"fa-pen",title:"Edit",fn:()=>onOpen()},
+              {icon:"fa-wand-sparkles",title:"Generate AI Image",fn:()=>onOpen()},
+              {icon:"fa-rotate-right",title:"Regenerate",fn:()=>onOpen()},
+              {icon:"fa-copy",title:"Copy Caption",fn:()=>onCopy()},
+              {icon:"fa-download",title:"Download",fn:()=>{}},
+              {icon:"fa-calendar-plus",title:"Schedule",fn:()=>onOpen()},
+              {icon:"fa-bolt",title:"Post Now",fn:()=>onOpen()},
+              {icon:"fa-trash",title:"Delete",fn:()=>{}},
+            ] as {icon:string;title:string;fn:()=>void}[]).map(({icon,title,fn}) => (
+              <div key={icon} onClick={e => { e.stopPropagation(); fn(); }} title={title}
+                style={{ width:28,height:28,borderRadius:7,background:"rgba(255,255,255,.15)",backdropFilter:"blur(4px)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",color:"#fff",fontSize:10.5,border:"1px solid rgba(255,255,255,.18)",transition:"all .13s",flexShrink:0 }}
+                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background="rgba(249,115,22,.85)"; (e.currentTarget as HTMLDivElement).style.borderColor="transparent"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background="rgba(255,255,255,.15)"; (e.currentTarget as HTMLDivElement).style.borderColor="rgba(255,255,255,.18)"; }}>
+                <i className={`fa-solid ${icon}`} />
+              </div>
+            ))}
           </div>
         )}
       </div>
       {/* Body */}
-      <div style={{ padding:isList?"13px 15px":"11px 13px 13px",flex:isList?1:undefined,display:isList?"flex":undefined,flexDirection:isList?"column":undefined,justifyContent:isList?"space-between":undefined }}>
-        <div style={{ display:"flex",alignItems:"center",gap:5,marginBottom:5 }}>
-          <div style={{ width:5,height:5,borderRadius:"50%",background:meta.c,flexShrink:0 }} />
-          <div style={{ fontSize:10.5,fontWeight:800,textTransform:"uppercase",letterSpacing:".5px",color:meta.c,fontFamily:"Sora,sans-serif" }}>{card.cat}</div>
+      <div style={{ padding:isList?"12px 14px":"10px 12px 12px",flex:isList?1:undefined,display:"flex",flexDirection:"column",gap:7 }}>
+        <div style={{ fontSize:12.5,color:"#4B4D6B",lineHeight:1.55,overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",fontWeight:500 }}>{card.cap}</div>
+        <div style={{ display:"flex",flexWrap:"nowrap",gap:4,overflow:"hidden" }}>
+          {card.tags.slice(0,3).map(t => <span key={t} style={{ padding:"2px 7px",borderRadius:5,background:"#FFF7ED",border:"1px solid #FDBA74",color:"#F97316",fontSize:10.5,fontWeight:600,fontFamily:"JetBrains Mono,monospace",whiteSpace:"nowrap",flexShrink:0 }}>{t}</span>)}
+          {card.tags.length > 3 && <span style={{ padding:"2px 7px",borderRadius:5,background:"#F0F1F8",border:"1px solid #E4E5EF",color:"#9496B5",fontSize:10.5,fontWeight:600,fontFamily:"JetBrains Mono,monospace",whiteSpace:"nowrap",flexShrink:0 }}>+{card.tags.length - 3}</span>}
         </div>
-        <div style={{ fontSize:12.5,color:"#4B4D6B",lineHeight:1.5,marginBottom:7,overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",fontWeight:500 }}>{card.cap}</div>
-        <div style={{ display:"flex",flexWrap:"wrap",gap:4,marginBottom:8 }}>
-          {card.tags.slice(0,4).map(t => <span key={t} style={{ padding:"2px 7px",borderRadius:5,background:"#EEEEFF",border:"1px solid #E0E0FA",color:"#F97316",fontSize:11,fontWeight:600,fontFamily:"JetBrains Mono,monospace",cursor:"pointer" }}>{t}</span>)}
-        </div>
-        <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",gap:6 }}>
-          <div style={{ display:"flex",gap:3 }}>
-            {card.plats.map(pl => <div key={pl} style={{ width:16,height:16,borderRadius:4,background:PC[pl]||"#888",display:"flex",alignItems:"center",justifyContent:"center",fontSize:6.5,fontWeight:900,color:"#fff" }}><i className={`fa-brands ${PLAT_ICONS[pl]}`} /></div>)}
-          </div>
-          <div style={{ fontSize:11,color:"#10B981",fontFamily:"JetBrains Mono,monospace",display:"flex",alignItems:"center",gap:3,fontWeight:600 }}>
-            <i className="fa-regular fa-clock" style={{ fontSize:10 }} />{card.bestTime}
-          </div>
-          <div style={{ fontSize:11,fontWeight:700,color:engCol,fontFamily:"JetBrains Mono,monospace",display:"flex",alignItems:"center",gap:3 }}>
-            <i className="fa-solid fa-chart-simple" style={{ fontSize:9 }} />{card.eng}
-          </div>
-        </div>
-        {/* List-view buttons */}
         {isList && (
-          <div style={{ display:"flex",gap:6,marginTop:8 }}>
+          <div style={{ display:"flex",gap:6,marginTop:2 }}>
             <button onClick={e => { e.stopPropagation(); onOpen(); }} style={{ display:"flex",alignItems:"center",gap:5,padding:"6px 12px",borderRadius:7,background:"linear-gradient(115deg,#F97316,#EA580C)",color:"#fff",fontSize:12.5,fontWeight:700,cursor:"pointer",border:"none",fontFamily:"Sora,sans-serif" }}>
               <i className="fa-solid fa-bolt fa-xs" /> Use This
             </button>
@@ -890,18 +875,56 @@ function LibCardItem({ card, viewMode, isFav, onFav, onOpen, onCopy }: {
       </div>
     </div>
   );
-}
+});
+
+// ── Library static data ────────────────────────────────────────────────────
+const CONN_PLATS = [
+  { id:"tw",  name:"X",          icon:"fa-x-twitter", color:"#000000", connected:true  },
+  { id:"li",  name:"LinkedIn",   icon:"fa-linkedin",  color:"#0A66C2", connected:true  },
+  { id:"ig",  name:"Instagram",  icon:"fa-instagram", color:"#E1306C", connected:true  },
+  { id:"tk",  name:"TikTok",     icon:"fa-tiktok",    color:"#333333", connected:true  },
+  { id:"fb",  name:"Facebook",   icon:"fa-facebook",  color:"#1877F2", connected:true  },
+  { id:"th",  name:"Threads",    icon:"fa-threads",   color:"#000000", connected:false },
+  { id:"bs",  name:"Bluesky",    icon:"fa-bluesky",   color:"#0085FF", connected:false },
+  { id:"yt",  name:"YouTube",    icon:"fa-youtube",   color:"#FF0000", connected:false },
+  { id:"pi",  name:"Pinterest",  icon:"fa-pinterest", color:"#BD081C", connected:false },
+  { id:"gb",  name:"Google Biz", icon:"fa-google",    color:"#4285F4", connected:false },
+];
+
+const LIB_INDUSTRIES = [
+  {k:"real-estate",label:"🏠 Real Estate"},{k:"food",label:"🍕 Food"},{k:"fitness",label:"💪 Fitness"},
+  {k:"startup",label:"🚀 Startup"},{k:"health",label:"❤️ Health"},{k:"fashion",label:"👗 Fashion"},
+  {k:"education",label:"📚 Education"},{k:"technology",label:"💻 Technology"},
+  {k:"restaurant",label:"🍽️ Restaurant"},{k:"ecommerce",label:"🛒 E-commerce"},
+];
+
+const LIB_CATS = ["All categories","Motivational","Educational","Product Showcase","Promotional","Tips & Tricks","Behind the Scenes","Testimonials"];
+const LIB_FESTS = ["All festivals","New Year","Valentine's Day","Holi","Easter","Eid","Diwali","Christmas","Independence Day","Halloween"];
 
 // ── Main Page ──────────────────────────────────────────────────────────────
 export default function LibraryPage() {
   const [industry, setIndustry] = useState("");
   const [searchInput, setSearchInput] = useState("");
-  const [filterType, setFilterType] = useState<FilterType>("all");
   const [sort, setSort] = useState<SortType>("default");
-  const [viewMode, setViewMode] = useState<ViewMode>(4);
-  const [allCards, setAllCards] = useState<LibCard[]>([]);
-  const [filtered, setFiltered] = useState<LibCard[]>([]);
-  const [favs, setFavs] = useState<Set<number>>(new Set());
+  const [viewMode, setViewMode] = useState<ViewMode>(3);
+  const [newStartIdx, setNewStartIdx] = useState(0);
+  const [posts, setPosts] = useState<LibCard[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [activeSubIndId, setActiveSubIndId] = useState<string | undefined>(undefined);
+  const [apiIndustries, setApiIndustries] = useState<{id:string;name:string;subIndustries:{id:string;name:string}[]}[]>([]);
+  const [selIndId, setSelIndId] = useState("");
+  const [selIndName, setSelIndName] = useState("");
+  const [selSubIndId, setSelSubIndId] = useState("");
+  const [selSubIndName, setSelSubIndName] = useState("");
+  const [indDrop, setIndDrop] = useState(false);
+  const [subIndDrop, setSubIndDrop] = useState(false);
+  const [indPos, setIndPos] = useState({ top: 0, left: 0 });
+  const [subIndPos, setSubIndPos] = useState({ top: 0, left: 0 });
+  const indBtnRef = useRef<HTMLButtonElement>(null);
+  const subIndBtnRef = useRef<HTMLButtonElement>(null);
+  const indDropRef = useRef<HTMLDivElement>(null);
+  const subIndDropRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
   const [compCard, setCompCard] = useState<LibCard | null>(null);
   const [generatorIdsByKey, setGeneratorIdsByKey] = useState<
@@ -935,95 +958,124 @@ export default function LibraryPage() {
     });
   };
 
-  const applyFilter = (cards: LibCard[], type: FilterType, sortMode: SortType) => {
-    let result = type === "all" ? cards : cards.filter(c => c.type === type);
-    if (sortMode === "engagement") result = [...result].sort((a, b) => parseFloat(b.eng) - parseFloat(a.eng));
-    else if (sortMode === "newest") result = [...result].reverse();
-    setFiltered(result);
-  };
+  const mapApiPost = (post: ApiPost, idx: number, offset: number): LibCard => ({
+    id: offset + idx,
+    type: "image",
+    cat: "",
+    cap: post.text,
+    tags: (post.hashtags || []).map(h => h.startsWith("#") ? h : `#${h}`),
+    plats: PLAT_SETS[(offset + idx) % PLAT_SETS.length],
+    img: post.imageUrl,
+    bestTime: "",
+    eng: ENG_VALS[(offset + idx) % ENG_VALS.length],
+    k: post.subIndustryId,
+  });
 
-  const loadLibrary = async (k: string) => {
-    setLoading(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const loadPosts = async (p: number, subIndId?: string, append = false) => {
+    if (append) {
+      setLoadingMore(true);
+    } else {
+      setLoading(true);
+    }
     try {
-      // Use the proper subIndustryId UUID from generatorIdsByKey, not the industry key
-      const subIndustryUUID = generatorIdsByKey[k]?.subIndustryId || profileSubIndustryId || null;
-      const apiImages = (await fetchImages(subIndustryUUID)) as { url?: string; imageUrl?: string; id?: string | number }[];
-      const cards = apiImages?.length > 0 ? buildCardsFromApi(apiImages, k) : buildCards(k);
-      setAllCards(cards);
-      applyFilter(cards, filterType, sort);
+      const res = await fetchPosts(p, subIndId);
+      const data = res.data || [];
+      if (append) {
+        setPosts(prev => {
+          const off = prev.length;
+          setNewStartIdx(off);
+          return [...prev, ...data.map((post, i) => mapApiPost(post, i, off))];
+        });
+      } else {
+        setNewStartIdx(0);
+        setPosts(data.map((post, i) => mapApiPost(post, i, 0)));
+      }
+      setPage(res.meta?.page ?? p);
+      setTotalPages(res.meta?.totalPages ?? 1);
     } catch {
-      const cards = buildCards(k);
-      setAllCards(cards);
-      applyFilter(cards, filterType, sort);
+      if (!append) setPosts([]);
     } finally {
-      setLoading(false);
+      if (append) {
+        setLoadingMore(false);
+      } else {
+        setLoading(false);
+      }
     }
   };
 
   const selectIndustry = (k: string) => {
     setIndustry(k);
     setSearchInput(k ? k.replace(/-/g, " ") : "");
-    if (k) loadLibrary(k);
-    else { setAllCards([]); setFiltered([]); }
+    if (k) {
+      // Try to find matching sub-industry from API list for the hero chips
+      const matchedInd = apiIndustries.find(i => i.name.toLowerCase().includes(k.replace(/-/g, " ")));
+      const subId = matchedInd?.subIndustries?.[0]?.id;
+      setActiveSubIndId(subId);
+      loadPosts(1, subId);
+    } else {
+      setActiveSubIndId(undefined);
+      loadPosts(1);
+    }
   };
 
-  const doSearch = () => {
-    const v = searchInput.trim().toLowerCase();
-    if (!v) { setAllCards([]); setFiltered([]); return; }
-    const hit = Object.keys(SEARCH_MAP).find(m => v.includes(m));
-    const k = hit ? SEARCH_MAP[hit] : (IMGS[v] ? v : "startup");
-    setIndustry(k);
-    loadLibrary(k);
-  };
+  // Search is a client-side filter applied to already-loaded posts (text + hashtags)
+  const doSearch = () => {};
 
   useEffect(() => {
-    // Try preloading a relevant industry from backend taxonomy
+    // Load random posts immediately
+    loadPosts(1);
+
+    // Fetch industry list for filter dropdowns
     fetchIndustries()
-      .then((inds: { id?: string | number; name?: string; subIndustries?: { id?: string | number }[] }[]) => {
+      .then((inds: { id?: string | number; name?: string; subIndustries?: { id?: string | number; name?: string }[] }[]) => {
         if (!inds || inds.length === 0) return;
         const nextMap: Record<string, { industryId: string; subIndustryId: string }> = {};
         inds.forEach((ind) => {
           const key = Object.keys(IMGS).find((k) => (ind.name || "").toLowerCase().includes(k));
           const industryId = ind.id != null ? String(ind.id) : "";
           const subIndustryId = ind.subIndustries?.[0]?.id != null ? String(ind.subIndustries[0].id) : "";
-          if (key && industryId && subIndustryId) {
-            nextMap[key] = { industryId, subIndustryId };
-          }
+          if (key && industryId && subIndustryId) nextMap[key] = { industryId, subIndustryId };
         });
         setGeneratorIdsByKey(nextMap);
 
-        const firstName = (inds[0].name || "startup").toLowerCase();
-        const normalized = Object.keys(IMGS).find((key) => firstName.includes(key)) || "startup";
-        setIndustry(normalized);
-        setSearchInput(normalized.replace(/-/g, " "));
-        loadLibrary(normalized);
+        const mapped = inds.map(ind => ({
+          id: String(ind.id ?? ""),
+          name: ind.name || "",
+          subIndustries: ((ind.subIndustries || []) as {id?:string|number;name?:string}[]).map(s => ({
+            id: String(s.id ?? ""),
+            name: s.name || "",
+          })),
+        }));
+        setApiIndustries(mapped);
+        if (mapped[0]) { setSelIndId(mapped[0].id); setSelIndName(mapped[0].name); }
       })
-      .catch(() => {
-        setIndustry("startup");
-        setSearchInput("startup");
-        loadLibrary("startup");
-      });
+      .catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const toggleFav = (id: number) => {
-    setFavs(prev => {
-      const next = new Set(prev);
-      if (next.has(id)) { next.delete(id); showToast("Removed from saved", "red"); }
-      else { next.add(id); showToast("⭐ Saved to favourites", "green"); }
-      return next;
-    });
-  };
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (indDropRef.current && !indDropRef.current.contains(e.target as Node)) setIndDrop(false);
+      if (subIndDropRef.current && !subIndDropRef.current.contains(e.target as Node)) setSubIndDrop(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   const copyText = (txt: string) => { navigator.clipboard?.writeText(txt).catch(() => {}); showToast("📋 Caption copied!"); };
 
-  const counts = {
-    all: allCards.length,
-    image: allCards.filter(c => c.type === "image").length,
-    reel: allCards.filter(c => c.type === "reel").length,
-    carousel: allCards.filter(c => c.type === "carousel").length,
-    festival: allCards.filter(c => c.type === "festival").length,
-  };
+  const searchTerm = searchInput.trim().toLowerCase();
+  const searchFiltered = searchTerm
+    ? posts.filter(c =>
+        c.cap.toLowerCase().includes(searchTerm) ||
+        c.tags.some(t => t.toLowerCase().includes(searchTerm))
+      )
+    : posts;
+  const displayPosts = sort === "engagement"
+    ? [...searchFiltered].sort((a, b) => parseFloat(b.eng) - parseFloat(a.eng))
+    : sort === "newest" ? [...searchFiltered].reverse() : searchFiltered;
 
   const gridCols = viewMode === "list" ? "1fr" : viewMode === 3 ? "repeat(3,1fr)" : "repeat(4,1fr)";
 
@@ -1056,89 +1108,193 @@ export default function LibraryPage() {
           {/* Topbar */}
           <AdminHeader
             pageTitle="Image & Reel Library"
-            searchValue={searchInput}
-            onSearchChange={setSearchInput}
-            searchPlaceholder="Search…"
             userName={user?.name}
             userInitials={initials}
-            actionButton={
-              <button onClick={() => showToast("Opening post composer…")} style={{ display:"flex",alignItems:"center",gap:6,padding:"8px 16px",borderRadius:7,background:"linear-gradient(115deg,#F97316,#EA580C)",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",border:"none",fontFamily:"Sora,sans-serif",boxShadow:"0 4px 14px rgba(249,115,22,.4)" }}>
-                <i className="fa-solid fa-plus" style={{ fontSize:11 }} /> New Post
-              </button>
-            }
           />
 
-          {/* Hero Search */}
-          <div style={{ flexShrink:0,padding:"18px 22px 16px",background:"#fff",borderBottom:"1px solid #E4E5EF" }}>
-            <div style={{ display:"flex",gap:20,alignItems:"flex-start" }}>
-              <div style={{ flex:1,minWidth:0 }}>
-                <div style={{ display:"inline-flex",alignItems:"center",gap:6,padding:"3px 10px",borderRadius:20,background:"#EEEEFF",border:"1px solid #E0E0FA",color:"#F97316",fontSize:11.5,fontWeight:700,marginBottom:7,fontFamily:"Sora,sans-serif" }}>✦ 10,000+ assets · Updated daily</div>
-                <div style={{ fontSize:22,fontWeight:800,color:"#0D0E1A",letterSpacing:"-.4px",marginBottom:3,fontFamily:"Sora,sans-serif" }}>Find content that <span style={{ color:"#F97316" }}>converts</span></div>
-                <div style={{ fontSize:13,color:"#9496B5",marginBottom:13 }}>Search any industry — 30 real images, reels, captions & hashtags. Post instantly or schedule it all.</div>
-                <div style={{ display:"flex",alignItems:"center",gap:8,padding:"8px 8px 8px 14px",borderRadius:14,background:"#fff",border:"1.5px solid #E4E5EF",maxWidth:680,transition:"all .18s" }}>
-                  <i className="fa-solid fa-magnifying-glass" style={{ color:"#9496B5",fontSize:14,flexShrink:0 }} />
-                  <input value={searchInput} onChange={e => setSearchInput(e.target.value)} onKeyDown={e => e.key==="Enter" && doSearch()} placeholder="Search 'real estate', 'fitness', 'food', 'festival'…"
-                    style={{ flex:1,background:"none",border:"none",outline:"none",fontSize:14,color:"#0D0E1A",fontWeight:500,fontFamily:"inherit" }} />
-                  {searchInput && <i onClick={() => { setSearchInput(""); setIndustry(""); setAllCards([]); setFiltered([]); }} className="fa-solid fa-xmark" style={{ color:"#9496B5",cursor:"pointer" }} />}
-                  <button onClick={doSearch} style={{ padding:"8px 18px",borderRadius:7,background:"linear-gradient(115deg,#F97316,#EA580C)",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",border:"none",whiteSpace:"nowrap",fontFamily:"Sora,sans-serif",flexShrink:0 }}>Search</button>
+          {/* Hero */}
+          <div style={{ flexShrink:0,padding:"44px 22px 28px",background:"linear-gradient(180deg,#FFF7ED 0%,#fff 65%)",borderBottom:"1px solid #E4E5EF",textAlign:"center" }}>
+            <div style={{ display:"inline-flex",alignItems:"center",gap:6,padding:"4px 14px",borderRadius:20,background:"#FFF7ED",border:"1.5px solid #FDBA74",color:"#F97316",fontSize:11.5,fontWeight:700,marginBottom:14,fontFamily:"Sora,sans-serif" }}>✦ Shoutly AI · 10,000+ Assets</div>
+            <div style={{ fontSize:38,fontWeight:800,color:"#0D0E1A",letterSpacing:"-.9px",marginBottom:10,fontFamily:"Sora,sans-serif",lineHeight:1.1 }}>Content Library</div>
+            <div style={{ fontSize:15,color:"#9496B5",marginBottom:26,maxWidth:520,margin:"0 auto 26px",lineHeight:1.65 }}>Search from thousands of AI-generated social media posts<br/>across 131 industries</div>
+            {/* Search bar */}
+            <div style={{ display:"flex",alignItems:"center",gap:8,padding:"9px 9px 9px 18px",borderRadius:16,background:"#fff",border:"1.5px solid #E4E5EF",maxWidth:660,margin:"0 auto",transition:"all .18s",boxShadow:"0 3px 14px rgba(13,14,26,.07)" }}>
+              <i className="fa-solid fa-magnifying-glass" style={{ color:"#9496B5",fontSize:15,flexShrink:0 }} />
+              <input value={searchInput} onChange={e => setSearchInput(e.target.value)} onKeyDown={e => e.key==="Enter" && doSearch()} placeholder="Search 'real estate', 'fitness', 'food', 'restaurant', 'festival'…"
+                style={{ flex:1,background:"none",border:"none",outline:"none",fontSize:14.5,color:"#0D0E1A",fontWeight:500,fontFamily:"inherit" }} />
+              {searchInput && <i onClick={() => setSearchInput("")} className="fa-solid fa-xmark" style={{ color:"#9496B5",cursor:"pointer",flexShrink:0,fontSize:13 }} />}
+              <button onClick={doSearch} style={{ padding:"10px 24px",borderRadius:10,background:"linear-gradient(115deg,#F97316,#EA580C)",color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer",border:"none",whiteSpace:"nowrap",fontFamily:"Sora,sans-serif",flexShrink:0,boxShadow:"0 4px 14px rgba(249,115,22,.38)" }}>Search</button>
+            </div>
+            {/* Quick chips */}
+            <div style={{ display:"flex",gap:8,flexWrap:"wrap",marginTop:20,justifyContent:"center" }}>
+              {([
+                {label:"✨ New",k:"fitness"},
+                {label:"💼 Business",k:"real-estate"},
+                {label:"🎁 Offers",k:"ecommerce"},
+                {label:"💬 Quotes",k:"education"},
+                {label:"💡 Tips",k:"health"},
+                {label:"📢 Promotions",k:"restaurant"},
+                {label:"🤖 AI Generated",k:"technology"},
+                {label:"🕐 Recently Added",k:"fashion"},
+              ] as {label:string;k:string}[]).map(chip => (
+                <button key={chip.k} onClick={() => selectIndustry(chip.k)}
+                  style={{ padding:"7px 15px",borderRadius:20,border:`1.5px solid ${industry===chip.k?"#F97316":"#E4E5EF"}`,background:industry===chip.k?"#FFF7ED":"#fff",color:industry===chip.k?"#F97316":"#4B4D6B",fontSize:13,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap",fontFamily:"Sora,sans-serif",transition:"all .15s",boxShadow:industry===chip.k?"0 2px 10px rgba(249,115,22,.22)":"none" }}>
+                  {chip.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Connected Accounts */}
+          <div style={{ flexShrink:0,padding:"14px 22px 16px",background:"#F9FAFB",borderBottom:"1px solid #E4E5EF" }}>
+            <div style={{ display:"flex",alignItems:"center",gap:7,marginBottom:12 }}>
+              <i className="fa-solid fa-link" style={{ color:"#9496B5",fontSize:12 }} />
+              <span style={{ fontSize:13,fontWeight:700,color:"#0D0E1A",fontFamily:"Sora,sans-serif" }}>Connected Accounts</span>
+              <span style={{ fontSize:11.5,color:"#9496B5",fontWeight:500 }}>5 of 10 connected</span>
+            </div>
+            <div style={{ display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:8 }}>
+              {CONN_PLATS.map(p => (
+                <div key={p.id}
+                  style={{ display:"flex",alignItems:"center",gap:8,padding:"9px 12px",borderRadius:10,border:`1.5px solid ${p.connected?"#10B981":"#E4E5EF"}`,background:p.connected?"rgba(16,185,129,.05)":"#fff",cursor:"pointer",transition:"all .15s" }}
+                  onMouseEnter={e => { if (!p.connected) (e.currentTarget as HTMLDivElement).style.borderColor="#F97316"; }}
+                  onMouseLeave={e => { if (!p.connected) (e.currentTarget as HTMLDivElement).style.borderColor="#E4E5EF"; }}>
+                  <div style={{ width:28,height:28,borderRadius:"50%",background:p.color,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontSize:12,flexShrink:0 }}>
+                    <i className={`fa-brands ${p.icon}`} />
+                  </div>
+                  <span style={{ fontSize:12.5,fontWeight:600,color:p.connected?"#0D0E1A":"#4B4D6B",flex:1,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",fontFamily:"Sora,sans-serif" }}>{p.name}</span>
+                  {p.connected
+                    ? <i className="fa-solid fa-check" style={{ color:"#10B981",fontSize:11,flexShrink:0 }} />
+                    : <span style={{ fontSize:10.5,color:"#9496B5",fontWeight:700,flexShrink:0,fontFamily:"Sora,sans-serif" }}>Connect</span>
+                  }
                 </div>
-                {/* Industry pills */}
-                <div style={{ display:"flex",gap:6,flexWrap:"wrap",marginTop:10 }}>
-                  {INDUSTRY_PILLS.map(pill => (
-                    <div key={pill.k} onClick={() => selectIndustry(pill.k)} style={{ display:"flex",alignItems:"center",gap:5,padding:"5px 12px",borderRadius:20,border:`1.5px solid ${industry===pill.k||(!industry&&pill.k==="")?("#F97316"):"#E4E5EF"}`,background:industry===pill.k||(!industry&&pill.k==="")?(!pill.k?"#F97316":"#F97316"):"#fff",color:industry===pill.k||(!industry&&pill.k==="")?pill.k?"#fff":"#fff":"#4B4D6B",fontSize:12.5,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap",fontFamily:"Sora,sans-serif",transition:"all .15s",boxShadow:(industry===pill.k||(!industry&&pill.k===""))?"0 4px 14px rgba(249,115,22,.4)":undefined }}>
-                      {pill.label}
+              ))}
+            </div>
+          </div>
+
+          {/* Filter Bar */}
+          <div style={{ flexShrink:0,display:"flex",alignItems:"center",gap:8,padding:"10px 22px",background:"#fff",borderBottom:"1px solid #E4E5EF",flexWrap:"wrap" }}>
+            {/* Industry dropdown */}
+            <div ref={indDropRef} style={{ flexShrink:0 }}>
+              <button ref={indBtnRef}
+                onClick={() => {
+                  const r = indBtnRef.current?.getBoundingClientRect();
+                  if (r) setIndPos({ top: r.bottom + 6, left: r.left });
+                  setIndDrop(d => !d); setSubIndDrop(false);
+                }}
+                style={{ display:"flex",alignItems:"center",gap:6,padding:"7px 13px",borderRadius:10,border:`1.5px solid ${indDrop||selIndId?"#F97316":"#E4E5EF"}`,background:selIndId?"#FFF7ED":"#fff",color:selIndId?"#F97316":"#4B4D6B",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:"Sora,sans-serif",whiteSpace:"nowrap" }}>
+                <i className="fa-solid fa-globe" style={{ fontSize:11 }} />
+                {selIndName || "Industry"}
+                <i className={`fa-solid fa-chevron-${indDrop?"up":"down"}`} style={{ fontSize:10 }} />
+              </button>
+              {indDrop && (
+                <div style={{ position:"fixed",top:indPos.top,left:indPos.left,zIndex:9999,background:"#fff",border:"1.5px solid #E4E5EF",borderRadius:12,boxShadow:"0 8px 28px rgba(13,14,26,.14)",minWidth:220,maxHeight:300,overflowY:"auto" }}>
+                  {apiIndustries.length === 0 && (
+                    <div style={{ padding:"12px 14px",fontSize:13,color:"#9496B5",fontFamily:"Sora,sans-serif" }}>Loading…</div>
+                  )}
+                  {apiIndustries.map(ind => (
+                    <div key={ind.id} onClick={() => { setSelIndId(ind.id); setSelIndName(ind.name); setSelSubIndId(""); setSelSubIndName(""); setIndDrop(false); }}
+                      style={{ padding:"10px 14px",fontSize:13,fontWeight:600,cursor:"pointer",color:selIndId===ind.id?"#F97316":"#0D0E1A",background:selIndId===ind.id?"#FFF7ED":"#fff",fontFamily:"Sora,sans-serif",borderBottom:"1px solid #F5F6FA" }}
+                      onMouseEnter={e => { if(selIndId!==ind.id) (e.currentTarget as HTMLDivElement).style.background="#F9FAFB"; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background=selIndId===ind.id?"#FFF7ED":"#fff"; }}>
+                      {ind.name}
                     </div>
                   ))}
                 </div>
+              )}
+            </div>
+            {/* Sub-industry dropdown — only when an industry is selected */}
+            {selIndId && (
+              <div ref={subIndDropRef} style={{ flexShrink:0 }}>
+                <button ref={subIndBtnRef}
+                  onClick={() => {
+                    const r = subIndBtnRef.current?.getBoundingClientRect();
+                    if (r) setSubIndPos({ top: r.bottom + 6, left: r.left });
+                    setSubIndDrop(d => !d); setIndDrop(false);
+                  }}
+                  style={{ display:"flex",alignItems:"center",gap:6,padding:"7px 13px",borderRadius:10,border:`1.5px solid ${subIndDrop||selSubIndId?"#F97316":"#E4E5EF"}`,background:selSubIndId?"#FFF7ED":"#fff",color:selSubIndId?"#F97316":"#4B4D6B",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:"Sora,sans-serif",whiteSpace:"nowrap" }}>
+                  {selSubIndName || "All sub-industries"}
+                  <i className={`fa-solid fa-chevron-${subIndDrop?"up":"down"}`} style={{ fontSize:10 }} />
+                </button>
+                {subIndDrop && (
+                  <div style={{ position:"fixed",top:subIndPos.top,left:subIndPos.left,zIndex:9999,background:"#fff",border:"1.5px solid #E4E5EF",borderRadius:12,boxShadow:"0 8px 28px rgba(13,14,26,.14)",minWidth:220,maxHeight:300,overflowY:"auto" }}>
+                    {(apiIndustries.find(i => i.id === selIndId)?.subIndustries || []).length === 0 && (
+                      <div style={{ padding:"12px 14px",fontSize:13,color:"#9496B5",fontFamily:"Sora,sans-serif" }}>No sub-industries</div>
+                    )}
+                    {(apiIndustries.find(i => i.id === selIndId)?.subIndustries || []).map(sub => (
+                      <div key={sub.id} onClick={() => { setSelSubIndId(sub.id); setSelSubIndName(sub.name); setSubIndDrop(false); setActiveSubIndId(sub.id); loadPosts(1, sub.id); }}
+                        style={{ padding:"10px 14px",fontSize:13,fontWeight:600,cursor:"pointer",color:selSubIndId===sub.id?"#F97316":"#0D0E1A",background:selSubIndId===sub.id?"#FFF7ED":"#fff",fontFamily:"Sora,sans-serif",borderBottom:"1px solid #F5F6FA" }}
+                        onMouseEnter={e => { if(selSubIndId!==sub.id) (e.currentTarget as HTMLDivElement).style.background="#F9FAFB"; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background=selSubIndId===sub.id?"#FFF7ED":"#fff"; }}>
+                        {sub.name}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-              {/* Hero stats */}
-              <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,flexShrink:0 }}>
-                {[{val:"10K+",lbl:"Total Assets"},{val:"13",lbl:"Industries"},{val:"365",lbl:"Festival Posts"},{val:"6",lbl:"Platforms"}].map(s => (
-                  <div key={s.lbl} style={{ background:"#F0F1F8",border:"1px solid #E4E5EF",borderRadius:10,padding:"10px 14px",minWidth:88 }}>
-                    <div style={{ fontSize:18,fontWeight:800,color:"#0D0E1A",fontFamily:"Sora,sans-serif",letterSpacing:"-.4px" }}>{s.val}</div>
-                    <div style={{ fontSize:11,color:"#9496B5",marginTop:2 }}>{s.lbl}</div>
+            )}
+            {/* Sort + results + view — right side */}
+            <div style={{ marginLeft:"auto",display:"flex",alignItems:"center",gap:8,flexShrink:0 }}>
+              <span style={{ fontSize:12,color:"#9496B5",whiteSpace:"nowrap",fontFamily:"JetBrains Mono,monospace" }}>
+                <span style={{ color:"#F97316",fontWeight:700 }}>{posts.length}</span> results
+              </span>
+              <div style={{ width:1,height:20,background:"#E4E5EF" }} />
+              {/* Sort dropdown */}
+              <div style={{ display:"flex",alignItems:"center",gap:5,padding:"6px 11px",borderRadius:10,border:"1px solid #E4E5EF",background:"#fff",cursor:"pointer",fontSize:13,fontWeight:600,color:"#4B4D6B",whiteSpace:"nowrap" }}>
+                <i className="fa-solid fa-arrow-up-arrow-down" style={{ fontSize:11 }} />
+                <select value={sort} onChange={e => setSort(e.target.value as SortType)} style={{ background:"none",border:"none",outline:"none",fontSize:13,fontWeight:600,color:"#4B4D6B",cursor:"pointer",fontFamily:"inherit" }}>
+                  <option value="default">Recently added</option>
+                  <option value="engagement">Best Engagement</option>
+                  <option value="newest">Newest</option>
+                </select>
+              </div>
+              <div style={{ width:1,height:20,background:"#E4E5EF" }} />
+              {/* View toggles */}
+              <div style={{ display:"flex",background:"#F0F1F8",borderRadius:8,padding:3,border:"1px solid #E4E5EF" }}>
+                {([[3,"fa-table-cells"],["list","fa-list"]] as const).map(([v, icon]) => (
+                  <div key={String(v)} onClick={() => setViewMode(v as ViewMode)} style={{ width:30,height:30,borderRadius:6,display:"flex",alignItems:"center",justifyContent:"center",color:viewMode===v?"#F97316":"#9496B5",cursor:"pointer",fontSize:12,background:viewMode===v?"#fff":undefined,boxShadow:viewMode===v?"0 1px 4px rgba(13,14,26,.07)":undefined,transition:"all .12s" }}>
+                    <i className={`fa-solid ${icon}`} />
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Filter Bar */}
-          <div style={{ flexShrink:0,display:"flex",alignItems:"center",gap:8,padding:"10px 22px",background:"#fff",borderBottom:"1px solid #E4E5EF",overflowX:"auto" }}>
-            {([["all","fa-layer-group","All",counts.all],["image","fa-image","Images",counts.image],["reel","fa-instagram","Reels",counts.reel],["carousel","fa-table-cells-large","Carousel",counts.carousel],["festival","fa-cake-candles","Festival",counts.festival]] as const).map(([t,icon,label,cnt]) => (
-              <div key={t} onClick={() => { setFilterType(t); applyFilter(allCards, t, sort); }} style={{ display:"flex",alignItems:"center",gap:5,padding:"5px 12px",borderRadius:20,border:`1.5px solid ${filterType===t?"#F97316":"#E4E5EF"}`,background:filterType===t?"#EEEEFF":"#fff",color:filterType===t?"#F97316":"#9496B5",fontSize:12.5,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap",fontFamily:"Sora,sans-serif",transition:"all .13s" }}>
-                <i className={`fa-solid ${icon} fa-xs`} /> {label}
-                <span style={{ padding:"1px 6px",borderRadius:10,background:filterType===t?"#E0E0FA":"#F0F1F8",fontSize:10.5,fontWeight:700,color:filterType===t?"#F97316":"#9496B5" }}>{cnt}</span>
-              </div>
-            ))}
-            <div style={{ width:1,height:22,background:"#E4E5EF",flexShrink:0 }} />
-            <select value={sort} onChange={e => { setSort(e.target.value as SortType); applyFilter(allCards, filterType, e.target.value as SortType); }} style={{ padding:"6px 10px",borderRadius:7,border:"1px solid #E4E5EF",background:"#fff",color:"#4B4D6B",fontSize:12.5,outline:"none",cursor:"pointer" }}>
-              <option value="default">Trending</option>
-              <option value="engagement">Best Engagement</option>
-              <option value="newest">Newest</option>
-            </select>
-            <div style={{ width:1,height:22,background:"#E4E5EF",flexShrink:0 }} />
-            <span style={{ fontSize:12.5,color:"#9496B5",whiteSpace:"nowrap",fontFamily:"JetBrains Mono,monospace" }}>
-              <span style={{ color:"#F97316",fontWeight:700 }}>{filtered.length}</span> results
-            </span>
-            {/* View toggles */}
-            <div style={{ display:"flex",background:"#F0F1F8",borderRadius:7,padding:3,border:"1px solid #E4E5EF",marginLeft:"auto" }}>
-              {([[4,"fa-grip"],[3,"fa-table-cells"],["list","fa-list"]] as const).map(([v, icon]) => (
-                <div key={String(v)} onClick={() => setViewMode(v as ViewMode)} style={{ width:28,height:28,borderRadius:5,display:"flex",alignItems:"center",justifyContent:"center",color:viewMode===v?"#0D0E1A":"#9496B5",cursor:"pointer",fontSize:11,background:viewMode===v?"#fff":undefined,boxShadow:viewMode===v?"0 1px 4px rgba(13,14,26,.07)":undefined,transition:"all .12s" }}>
-                  <i className={`fa-solid ${icon}`} />
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Library Body */}
           <div style={{ flex:1,overflowY:"auto",padding:"20px 22px" }}>
-            {/* Empty state */}
-            {!loading && filtered.length === 0 && (
+            {/* Empty state — no sub-industry selected yet */}
+            {!loading && posts.length === 0 && !activeSubIndId && (
               <div style={{ display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:380 }}>
                 <div style={{ width:80,height:80,borderRadius:22,background:"#fff",border:"1.5px solid #E4E5EF",display:"flex",alignItems:"center",justifyContent:"center",fontSize:32,marginBottom:14,boxShadow:"0 1px 4px rgba(13,14,26,.07)" }}>🔍</div>
                 <div style={{ fontSize:18,fontWeight:800,color:"#0D0E1A",fontFamily:"Sora,sans-serif",marginBottom:5 }}>Pick an industry above</div>
-                <div style={{ fontSize:13,color:"#9496B5",maxWidth:360,textAlign:"center",lineHeight:1.7 }}>Tap any quick-pick or search an industry to browse 30 ready-to-post images, reels & captions pre-loaded with real hashtags.</div>
+                <div style={{ fontSize:13,color:"#9496B5",maxWidth:360,textAlign:"center",lineHeight:1.7 }}>Tap any quick-pick or search an industry to browse ready-to-post images and captions pre-loaded with real hashtags.</div>
+              </div>
+            )}
+            {/* Empty state — sub-industry selected but API returned nothing */}
+            {!loading && posts.length === 0 && activeSubIndId && (
+              <div style={{ display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:380 }}>
+                <div style={{ width:80,height:80,borderRadius:22,background:"#FFF7ED",border:"1.5px solid #FDBA74",display:"flex",alignItems:"center",justifyContent:"center",fontSize:32,marginBottom:14,boxShadow:"0 1px 4px rgba(249,115,22,.08)" }}>📭</div>
+                <div style={{ fontSize:18,fontWeight:800,color:"#0D0E1A",fontFamily:"Sora,sans-serif",marginBottom:5 }}>No posts found</div>
+                <div style={{ fontSize:13,color:"#9496B5",maxWidth:340,textAlign:"center",lineHeight:1.7,marginBottom:16 }}>
+                  {selSubIndName ? `No content is available for "${selSubIndName}" yet.` : "No content is available for this sub-industry yet."}<br/>Try a different sub-industry or clear the filter.
+                </div>
+                <button onClick={() => { setSelSubIndId(""); setSelSubIndName(""); setActiveSubIndId(undefined); loadPosts(1); }}
+                  style={{ display:"inline-flex",alignItems:"center",gap:6,padding:"9px 20px",borderRadius:20,background:"linear-gradient(115deg,#F97316,#EA580C)",color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",border:"none",fontFamily:"Sora,sans-serif",boxShadow:"0 4px 14px rgba(249,115,22,.3)" }}>
+                  <i className="fa-solid fa-xmark" style={{ fontSize:11 }} /> Clear filter
+                </button>
+              </div>
+            )}
+            {/* Empty state — search filtered everything out */}
+            {!loading && posts.length > 0 && displayPosts.length === 0 && searchTerm && (
+              <div style={{ display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:380 }}>
+                <div style={{ width:80,height:80,borderRadius:22,background:"#fff",border:"1.5px solid #E4E5EF",display:"flex",alignItems:"center",justifyContent:"center",fontSize:32,marginBottom:14,boxShadow:"0 1px 4px rgba(13,14,26,.07)" }}>🔎</div>
+                <div style={{ fontSize:18,fontWeight:800,color:"#0D0E1A",fontFamily:"Sora,sans-serif",marginBottom:5 }}>No matches found</div>
+                <div style={{ fontSize:13,color:"#9496B5",maxWidth:340,textAlign:"center",lineHeight:1.7,marginBottom:16 }}>
+                  No posts match <strong style={{ color:"#0D0E1A" }}>"{searchInput}"</strong> in the current results.<br/>Try a different keyword or clear the search.
+                </div>
+                <button onClick={() => setSearchInput("")}
+                  style={{ display:"inline-flex",alignItems:"center",gap:6,padding:"9px 20px",borderRadius:20,border:"1.5px solid #E4E5EF",background:"#fff",color:"#4B4D6B",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"Sora,sans-serif" }}>
+                  <i className="fa-solid fa-xmark" style={{ fontSize:11 }} /> Clear search
+                </button>
               </div>
             )}
             {/* Skeleton */}
@@ -1155,13 +1311,42 @@ export default function LibraryPage() {
               </div>
             )}
             {/* Grid */}
-            {!loading && filtered.length > 0 && (
+            {!loading && displayPosts.length > 0 && (
               <div style={{ display:"grid",gridTemplateColumns:gridCols,gap:14 }}>
-                {filtered.map((card, i) => (
-                  <div key={card.id} style={{ animationDelay:`${Math.min(i * 0.04, 0.6)}s` }}>
-                    <LibCardItem card={card} viewMode={viewMode} isFav={favs.has(card.id)} onFav={() => toggleFav(card.id)} onOpen={() => setCompCard(card)} onCopy={() => copyText(card.cap)} />
+                {displayPosts.map((card, i) => {
+                  const isNew = i >= newStartIdx;
+                  return (
+                    <div key={card.id} style={isNew ? { animation:"cardIn .35s ease both",animationDelay:`${Math.min((i - newStartIdx) * 0.04, 0.5)}s` } : undefined}>
+                      <LibCardItem card={card} viewMode={viewMode} onOpen={() => setCompCard(card)} onCopy={() => copyText(card.cap)} />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            {/* Load more spinner (inline — existing images stay visible) */}
+            {loadingMore && (
+              <div style={{ display:"grid",gridTemplateColumns:gridCols,gap:14,marginTop:14 }}>
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} style={{ background:"#fff",borderRadius:14,overflow:"hidden",border:"1px solid #E4E5EF" }}>
+                    <div style={{ aspectRatio:"4/3",background:"linear-gradient(90deg,#F0F1F8 0%,#E4E5EF 50%,#F0F1F8 100%)",backgroundSize:"700px",animation:"shimmer 1.5s infinite" }} />
+                    <div style={{ padding:12,display:"flex",flexDirection:"column",gap:7 }}>
+                      {[100,75,55].map(w => <div key={w} style={{ height:10,borderRadius:5,background:"linear-gradient(90deg,#F0F1F8 0%,#E4E5EF 50%,#F0F1F8 100%)",backgroundSize:"700px",animation:"shimmer 1.5s infinite",width:`${w}%` }} />)}
+                    </div>
                   </div>
                 ))}
+              </div>
+            )}
+            {/* Load more button */}
+            {!loading && !loadingMore && page < totalPages && posts.length > 0 && (
+              <div style={{ textAlign:"center",marginTop:30,paddingBottom:8 }}>
+                <button onClick={() => loadPosts(page + 1, activeSubIndId, true)}
+                  style={{ display:"inline-flex",alignItems:"center",gap:8,padding:"11px 30px",borderRadius:24,border:"1.5px solid #E4E5EF",background:"#fff",color:"#4B4D6B",fontSize:13.5,fontWeight:700,cursor:"pointer",fontFamily:"Sora,sans-serif",boxShadow:"0 1px 6px rgba(13,14,26,.06)",transition:"all .2s" }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor="#F97316"; (e.currentTarget as HTMLButtonElement).style.color="#F97316"; (e.currentTarget as HTMLButtonElement).style.boxShadow="0 4px 14px rgba(249,115,22,.18)"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor="#E4E5EF"; (e.currentTarget as HTMLButtonElement).style.color="#4B4D6B"; (e.currentTarget as HTMLButtonElement).style.boxShadow="0 1px 6px rgba(13,14,26,.06)"; }}>
+                  <i className="fa-solid fa-chevron-down" style={{ fontSize:12 }} />
+                  Load more posts
+                  <span style={{ opacity:.55,fontWeight:500,fontSize:12.5 }}>(page {page} of {totalPages})</span>
+                </button>
               </div>
             )}
           </div>
@@ -1172,8 +1357,8 @@ export default function LibraryPage() {
         card={compCard}
         onClose={() => setCompCard(null)}
         showToast={showToast}
-        industryId={generatorIdsByKey[industry]?.industryId || profileIndustryId || ""}
-        subIndustryId={generatorIdsByKey[industry]?.subIndustryId || profileSubIndustryId || ""}
+        industryId={selIndId || generatorIdsByKey[industry]?.industryId || profileIndustryId || ""}
+        subIndustryId={activeSubIndId || selSubIndId || generatorIdsByKey[industry]?.subIndustryId || profileSubIndustryId || ""}
       />
 
       {/* Toast */}

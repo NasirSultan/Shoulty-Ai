@@ -2,6 +2,7 @@
 export const API_BASE_URL = "https://backend.shoutlyai.com";
 
 export const API_ENDPOINTS = {
+    posts: `${API_BASE_URL}/api/posts`,
     displayImages: `/api/display-images`,
     industries: `${API_BASE_URL}/api/industries/with-subindustries`,
     postGeneratorGenerate: `/api/post-generator/generate`,

@@ -64,6 +64,44 @@ const writeIndustriesToSession = (data: Array<{ id: string; name: string; subInd
     }
 };
 
+export interface ApiPost {
+  imageId: string;
+  imageUrl: string;
+  subIndustryId: string;
+  contentId: string;
+  text: string;
+  hashtags: string[];
+}
+
+export interface PostsResponse {
+  data: ApiPost[];
+  meta: { total: number; page: number; limit: number; totalPages: number };
+}
+
+export const fetchPosts = async (page: number = 1, subIndustryId?: string): Promise<PostsResponse> => {
+  const empty: PostsResponse = { data: [], meta: { total: 0, page, limit: 10, totalPages: 1 } };
+  try {
+    const params = new URLSearchParams({ page: String(page) });
+    if (subIndustryId) params.set("subIndustryId", subIndustryId);
+    const url = `${API_ENDPOINTS.posts}?${params.toString()}`;
+    console.log("📋 Fetching posts:", url);
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "true",
+      },
+      cache: "no-store",
+    });
+    if (!res.ok) { console.error(`❌ Posts API ${res.status}`); return empty; }
+    return await res.json() as PostsResponse;
+  } catch (err) {
+    console.error("❌ fetchPosts failed:", err);
+    return empty;
+  }
+};
+
 export const fetchImages = async (subIndustryId?: string | null) => {
     try {
         let url = API_ENDPOINTS.displayImages;

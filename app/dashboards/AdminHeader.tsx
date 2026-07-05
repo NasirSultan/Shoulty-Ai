@@ -91,35 +91,37 @@ export default function AdminHeader({
 
       <div style={{ flex: 1 }} />
 
-      {/* Search */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          padding: "7px 12px",
-          borderRadius: 7,
-          background: "#F0F1F8",
-          border: "1px solid #E4E5EF",
-          width: 220,
-        }}
-      >
-        <i className="fa-solid fa-magnifying-glass" style={{ color: "#9496B5", fontSize: 12, flexShrink: 0 }} />
-        <input
-          value={searchValue ?? ""}
-          onChange={(e) => onSearchChange?.(e.target.value)}
-          placeholder={searchPlaceholder}
+      {/* Search — only rendered when a handler is provided */}
+      {onSearchChange && (
+        <div
           style={{
-            background: "none",
-            border: "none",
-            outline: "none",
-            fontSize: 13,
-            color: "#0D0E1A",
-            width: "100%",
-            fontFamily: "inherit",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "7px 12px",
+            borderRadius: 7,
+            background: "#F0F1F8",
+            border: "1px solid #E4E5EF",
+            width: 220,
           }}
-        />
-      </div>
+        >
+          <i className="fa-solid fa-magnifying-glass" style={{ color: "#9496B5", fontSize: 12, flexShrink: 0 }} />
+          <input
+            value={searchValue ?? ""}
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder={searchPlaceholder}
+            style={{
+              background: "none",
+              border: "none",
+              outline: "none",
+              fontSize: 13,
+              color: "#0D0E1A",
+              width: "100%",
+              fontFamily: "inherit",
+            }}
+          />
+        </div>
+      )}
 
       {/* Extra slot (e.g. LIVE badge) */}
       {extra}
