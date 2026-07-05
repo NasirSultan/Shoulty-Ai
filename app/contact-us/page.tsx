@@ -1,5 +1,137 @@
 "use client";
-import Head from "next/head";
+import { useState } from "react";
+
+type Status = "idle" | "loading" | "success" | "error";
+
+function ContactForm() {
+    const [form, setForm] = useState({ name: "", email: "", phone: "", query: "" });
+    const [status, setStatus] = useState<Status>("idle");
+    const [errorMsg, setErrorMsg] = useState("");
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!form.name || !form.email || !form.query) return;
+        setStatus("loading");
+        setErrorMsg("");
+        try {
+            const res = await fetch("/api/contact", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: form.name,
+                    email: form.email,
+                    mobile: form.phone,
+                    subject: "Contact Form Inquiry",
+                    message: form.query,
+                }),
+            });
+            const data = await res.json();
+            if (data.success) {
+                setStatus("success");
+                setForm({ name: "", email: "", phone: "", query: "" });
+            } else {
+                setStatus("error");
+                setErrorMsg(data.error || "Something went wrong.");
+            }
+        } catch {
+            setStatus("error");
+            setErrorMsg("Network error. Please try again.");
+        }
+    };
+
+    return (
+        <section className="bg-white border border-orange-100 rounded-[32px] p-10 shadow-xl shadow-orange-100/40 mb-20">
+            <h2 className="text-3xl font-bold mb-2">✉️ SEND US A MESSAGE</h2>
+            <p className="text-gray-500 mb-8">Fill in the form and we'll get back to you within 24 hours.</p>
+
+            {status === "success" && (
+                <div className="mb-6 flex items-center gap-3 bg-green-50 border border-green-200 text-green-700 px-5 py-4 rounded-2xl font-semibold">
+                    <span className="text-xl">✅</span> Message sent! We'll be in touch shortly.
+                </div>
+            )}
+            {status === "error" && (
+                <div className="mb-6 flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-2xl font-semibold">
+                    <span className="text-xl">❌</span> {errorMsg}
+                </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-6">
+                {/* Name */}
+                <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Full Name *</label>
+                    <input
+                        type="text"
+                        name="name"
+                        value={form.name}
+                        onChange={handleChange}
+                        placeholder="John Doe"
+                        required
+                        className="w-full h-13 px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 text-sm focus:outline-none focus:border-orange-400 focus:bg-white transition"
+                    />
+                </div>
+
+                {/* Email */}
+                <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Email Address *</label>
+                    <input
+                        type="email"
+                        name="email"
+                        value={form.email}
+                        onChange={handleChange}
+                        placeholder="you@company.com"
+                        required
+                        className="w-full h-13 px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 text-sm focus:outline-none focus:border-orange-400 focus:bg-white transition"
+                    />
+                </div>
+
+                {/* Phone */}
+                <div className="flex flex-col gap-1.5 md:col-span-2">
+                    <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Phone Number</label>
+                    <input
+                        type="tel"
+                        name="phone"
+                        value={form.phone}
+                        onChange={handleChange}
+                        placeholder="+1 (555) 000-0000"
+                        className="w-full h-13 px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 text-sm focus:outline-none focus:border-orange-400 focus:bg-white transition"
+                    />
+                </div>
+
+                {/* Query */}
+                <div className="flex flex-col gap-1.5 md:col-span-2">
+                    <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Your Query *</label>
+                    <textarea
+                        name="query"
+                        value={form.query}
+                        onChange={handleChange}
+                        placeholder="Tell us how we can help..."
+                        required
+                        rows={5}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 text-sm focus:outline-none focus:border-orange-400 focus:bg-white transition resize-none"
+                    />
+                </div>
+
+                {/* Submit */}
+                <div className="md:col-span-2 flex items-center gap-4">
+                    <button
+                        type="submit"
+                        disabled={status === "loading"}
+                        className="px-8 py-3.5 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold rounded-full hover:brightness-110 transition shadow-md shadow-orange-200 disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                        {status === "loading" ? "Sending..." : "Send Message"}
+                    </button>
+                    {status === "idle" && (
+                        <span className="text-xs text-gray-400">* Required fields</span>
+                    )}
+                </div>
+            </form>
+        </section>
+    );
+}
 
 export default function ContactPage() {
     return (
@@ -158,6 +290,9 @@ export default function ContactPage() {
                         />
                     </div>
                 </section>
+
+                {/* Contact Form */}
+                <ContactForm />
 
                 {/* Footer */}
                 <footer className="border-t border-orange-100 mt-20 pt-8 flex flex-col md:flex-row justify-between gap-4 text-sm text-gray-500">
