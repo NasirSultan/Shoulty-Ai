@@ -214,12 +214,12 @@ export default function LandingPage() {
     const [generateImages, setGenerateImages] = useState<ImageItem[]>([]);
     const [generateLoadingImages, setGenerateLoadingImages] = useState(false);
     const [previewStockImages, setPreviewStockImages] = useState<ImageItem[]>(
-        PREVIEW_TEMPLATE_IMAGES.slice(0, 7).map((url) => ({ id: url, url }))
+        PREVIEW_TEMPLATE_IMAGES.slice(0, 8).map((url) => ({ id: url, url }))
     );
 
-    // Randomize the 7 preview templates once mounted (kept deterministic above for SSR).
+    // Randomize the 8 preview templates once mounted (kept deterministic above for SSR).
     useEffect(() => {
-        setPreviewStockImages(getRandomPreviewImages(7));
+        setPreviewStockImages(getRandomPreviewImages(8));
     }, []);
 
     const [streamedPosts, setStreamedPosts] = useState<GeneratedPost[]>([]);
@@ -467,11 +467,11 @@ export default function LandingPage() {
         setPreviewStockImages(nextImages);
     }, [generateImages, generateSelectedSubIndustry]);
 
-    const previewPrimaryStockImages = previewStockImages.slice(0, 7);
+    const previewPrimaryStockImages = previewStockImages.slice(0, 8);
     const shouldShowFirstLoadMsg =
         !streamLoading &&
         streamedPosts.length === 0 &&
-        (generateLoadingImages || previewPrimaryStockImages.length < 7);
+        (generateLoadingImages || previewPrimaryStockImages.length < 8);
     const isGenerateReady =
         !!generateSelectedIndustry &&
         !!generatePendingSubIndustry &&
@@ -1318,7 +1318,7 @@ const speeds = [120, 160, 110, 150, 130];
                             {!streamLoading && streamedPosts.length === 0 && <div>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
                                     {generateLoadingImages ? (
-                                        Array.from({ length: 7 }).map((_, i) => (
+                                        Array.from({ length: 8 }).map((_, i) => (
                                             <div
                                                 key={`r2-loading-${i}`}
                                                 className="aspect-square rounded-xl bg-gray-100 animate-pulse"

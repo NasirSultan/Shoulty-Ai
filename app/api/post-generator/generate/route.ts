@@ -1,4 +1,4 @@
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 const UPSTREAM_URL = "https://backend.shoutlyai.com/api/generator/posts";
 const UPSTREAM_FALLBACK = "https://backend.shoutlyai.com/api/generator/posts";
