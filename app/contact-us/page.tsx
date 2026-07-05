@@ -36,17 +36,20 @@ function ContactForm() {
                     query: form.query,
                 }),
             });
-            const data = await res.json();
-            if (data.success) {
+
+            let data: any = {};
+            try { data = await res.json(); } catch { /* non-JSON response */ }
+
+            if (res.ok && (data.success !== false)) {
                 setStatus("success");
                 setForm({ name: "", email: "", phone: "", query: "" });
             } else {
                 setStatus("error");
-                setErrorMsg(data.error || "Something went wrong.");
+                setErrorMsg(data.message || data.error || `Server error (${res.status}). Please try again.`);
             }
         } catch {
             setStatus("error");
-            setErrorMsg("Network error. Please try again.");
+            setErrorMsg("Network error. Please check your connection and try again.");
         }
     };
 

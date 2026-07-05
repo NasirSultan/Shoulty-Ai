@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { User, SparklesIcon, ChevronDown, Menu, X } from "lucide-react";
 import { motion } from "framer-motion";
 import ShoutlyLogo from "@/components/common/ShoutlyLogo";
@@ -24,7 +23,6 @@ export default function Header() {
     const [activeLink, setActiveLink] = useState<string>("/");
     const pathname = usePathname();
     const router = useRouter();
-    const { data: session, status } = useSession();
     const profileRef = useRef<HTMLDivElement>(null);
 
     const icons = [User, SparklesIcon, User, SparklesIcon];
@@ -61,22 +59,13 @@ export default function Header() {
             return;
         }
 
-        if (status === "authenticated" && session?.user) {
-            setUser({
-                name: session.user.name ?? undefined,
-                email: session.user.email ?? undefined,
-                picture: session.user.image ?? undefined,
-            });
-            return;
-        }
-
         setUser(null);
     };
 
     // Keep header state in sync with login/logout and route changes
     useEffect(() => {
         refreshAuthState();
-    }, [pathname, status, session]);
+    }, [pathname]);
 
     useEffect(() => {
         const handler = () => refreshAuthState();
@@ -87,7 +76,7 @@ export default function Header() {
             window.removeEventListener("storage", handler);
             window.removeEventListener("auth-changed", handler);
         };
-    }, [status, session]);
+    }, []);
 
     // Close profile dropdown when clicking outside
     useEffect(() => {
