@@ -9,7 +9,14 @@ function ContactForm() {
     const [errorMsg, setErrorMsg] = useState("");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+        const { name, value } = e.target;
+        if (name === "phone") {
+            // Allow only digits, +, -, (, ), and spaces
+            const cleaned = value.replace(/[^\d\s+\-()]/g, "");
+            setForm(prev => ({ ...prev, phone: cleaned }));
+            return;
+        }
+        setForm(prev => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -24,9 +31,8 @@ function ContactForm() {
                 body: JSON.stringify({
                     name: form.name,
                     email: form.email,
-                    mobile: form.phone,
-                    subject: "Contact Form Inquiry",
-                    message: form.query,
+                    phone: form.phone,
+                    query: form.query,
                 }),
             });
             const data = await res.json();

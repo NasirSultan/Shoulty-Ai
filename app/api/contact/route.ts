@@ -4,7 +4,10 @@ import nodemailer from 'nodemailer';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, email, mobile, subject, message } = body;
+    const { name, email, phone, query } = body;
+    const mobile = phone ?? "";
+    const subject = "Contact Form Inquiry";
+    const message = query ?? "";
 
     // IMPORTANT: You must set these in your .env file
     // For Gmail: Use an "App Password" (not your regular password)
