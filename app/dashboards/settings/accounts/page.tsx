@@ -2,9 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import Sidebar from "../../Sidebar";
 import AdminHeader from "../../AdminHeader";
-import { useSidebarState } from "@/hooks/useSidebarState";
 import { getFacebookAuthUrl, getFacebookPages } from "@/api/facebookApi";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -470,7 +468,6 @@ function PickerModal({ plats, onSelect, onClose }: { plats: Platform[]; onSelect
 
 // ── Main Page ──────────────────────────────────────────────────────────────
 export default function SocialAccountsPage() {
-  const { sidebarSlim, setSidebarSlim } = useSidebarState();
   const [plats, setPlats] = useState<Platform[]>(INIT_PLATS);
   const [filter, setFilter] = useState<FilterType>("all");
   const [alertVisible, setAlertVisible] = useState(true);
@@ -606,17 +603,10 @@ export default function SocialAccountsPage() {
       `}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-      <div style={{ display:"flex", height:"100vh", overflow:"hidden" }}>
-        {/* ── Sidebar (imported) ── */}
-        <Sidebar slim={sidebarSlim} onToggle={() => setSidebarSlim(s => !s)} activePath="/settings/accounts" />
-
-        {/* ── Main ── */}
         <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden" }}>
           {/* Topbar */}
           <AdminHeader
             pageTitle="Social Accounts"
-            slim={sidebarSlim}
-            onToggle={() => setSidebarSlim(s => !s)}
             searchPlaceholder="Search accounts…"
             actionButton={
               <button onClick={syncAll} style={{ display:"flex", alignItems:"center", gap:6, padding:"8px 16px", borderRadius:7, background:"linear-gradient(115deg,#F97316,#EA580C)", color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer", border:"none", fontFamily:"Sora,sans-serif", boxShadow:"0 4px 14px rgba(249,115,22,.4)" }}>
@@ -726,7 +716,6 @@ export default function SocialAccountsPage() {
             </div>
           </div>
         </div>
-      </div>
 
       {/* ── Modal ── */}
       {modal.type && (

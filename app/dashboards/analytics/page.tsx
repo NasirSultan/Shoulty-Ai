@@ -1,9 +1,7 @@
 ﻿"use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import Sidebar from '../Sidebar'; // Import the sidebar component
 import AdminHeader from '../AdminHeader';
-import { useSidebarState } from '@/hooks/useSidebarState';
 
 // Chart.js imports
 import {
@@ -185,7 +183,6 @@ const showToast = (msg: string, type: 'default' | 'green' | 'red' | 'brand' | 'a
 
 // --- Main Component ---
 const AnalyticsPage: React.FC = () => {
-  const { sidebarSlim, setSidebarSlim } = useSidebarState();
   const [activeRange, setActiveRange] = useState<string>('30d');
   const [activePlatform, setActivePlatform] = useState<string>('all');
   const modalRef = useRef<HTMLDivElement>(null);
@@ -465,16 +462,10 @@ const AnalyticsPage: React.FC = () => {
         @media (max-width:640px) { .analytics-grid-4 { grid-template-columns:1fr; } #content { padding:14px; } }
       `}</style>
 
-      <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
-        {/* Import the Sidebar component */}
-        <Sidebar slim={sidebarSlim} onToggle={() => setSidebarSlim((s) => !s)} activePath="/dashboards/analytics" />
-
       <div id="main" style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
         {/* Topbar */}
         <AdminHeader
           pageTitle="Analytics"
-          slim={sidebarSlim}
-          onToggle={() => setSidebarSlim((s) => !s)}
           searchPlaceholder="Search analytics…"
           actionButton={
             <button
@@ -792,7 +783,6 @@ const AnalyticsPage: React.FC = () => {
       {/* Toast Container */}
       <div id="toast-stack"></div>
 
-      </div>
     </>
   );
 };

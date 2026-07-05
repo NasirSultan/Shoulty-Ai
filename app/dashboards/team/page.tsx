@@ -1,8 +1,7 @@
 ﻿"use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import Sidebar from '../Sidebar'; // Import the sidebar component
-import AdminHeader from '../AdminHeader';import { useSidebarState } from '@/hooks/useSidebarState';
+import AdminHeader from '../AdminHeader';
 // --- Types ---
 interface Member {
   initials: string;
@@ -71,7 +70,6 @@ const showToast = (msg: string, type: 'default' | 'green' | 'red' | 'brand' | 'a
 
 // --- Main Component ---
 const TeamPage: React.FC = () => {
-  const { sidebarSlim, setSidebarSlim } = useSidebarState();
   const [members, setMembers] = useState<Member[]>(initialMembers);
   const [approvals, setApprovals] = useState<Approval[]>(initialApprovals);
   const [activities] = useState<Activity[]>(initialActivities);
@@ -403,16 +401,10 @@ const TeamPage: React.FC = () => {
         @media (max-width:760px){ #content { padding:14px; } .mt-hdr { display:none; } .mt-row { grid-template-columns:1fr; gap:8px; } }
       `}</style>
 
-      <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
-        {/* Import the Sidebar component */}
-        <Sidebar slim={sidebarSlim} onToggle={() => setSidebarSlim((s) => !s)} activePath="/dashboards/team" />
-
       <div id="main" style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
         {/* Topbar */}
         <AdminHeader
           pageTitle="Team & Approvals"
-          slim={sidebarSlim}
-          onToggle={() => setSidebarSlim((s) => !s)}
           searchPlaceholder="Search team, approvals…"
           actionButton={
             <button
@@ -608,8 +600,6 @@ const TeamPage: React.FC = () => {
 
       {/* Toast Container */}
       <div id="toast-stack"></div>
-
-      </div>
     </>
   );
 };

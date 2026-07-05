@@ -30,7 +30,6 @@ shoutlyClient.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
-            console.error("🔒 Unauthorized (shoutlyClient)! Redirecting to sign-in...");
             if (typeof window !== "undefined") {
                 localStorage.removeItem("shoutly_token");
                 localStorage.removeItem("shoutly_user");

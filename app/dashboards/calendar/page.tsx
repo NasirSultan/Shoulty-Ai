@@ -2,9 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import Sidebar from "../Sidebar";
 import AdminHeader from "../AdminHeader";
-import { useSidebarState } from "@/hooks/useSidebarState";
 import {
   DASHBOARD_CALENDAR_EVENT,
   readDashboardCalendarPosts,
@@ -1547,7 +1545,6 @@ function useToast() {
 // ── Main Page ──────────────────────────────────────────────────────────────
 export default function CalendarPage() {
   const router = useRouter();
-  const { sidebarSlim, setSidebarSlim } = useSidebarState();
   const [today, setToday] = useState(() => startOfDay(new Date()));
   const [posts, setPosts] = useState<Post[]>([]);
   const [nextId, setNextId] = useState(10000);
@@ -2258,18 +2255,11 @@ export default function CalendarPage() {
       `}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-      <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
-        {/* ── Sidebar (imported component) ── */}
-        <Sidebar slim={sidebarSlim} onToggle={() => setSidebarSlim(s => !s)} />
-
-        {/* ── Main ── */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
 
           {/* Topbar */}
           <AdminHeader
             pageTitle="Content Calendar"
-            slim={sidebarSlim}
-            onToggle={() => setSidebarSlim(s => !s)}
             searchValue={search}
             onSearchChange={setSearch}
             searchPlaceholder="Search posts…"
@@ -2401,7 +2391,6 @@ export default function CalendarPage() {
             <RightPanel rpTab={rpTab} setRpTab={setRpTab} posts={filtered} onOpen={id => openModal(id)} onAddIdea={addIdeaPost} showToast={showToast} onOpenFacebookConnect={() => router.push("/facebook")} />
           </div>
         </div>
-      </div>
 
       {/* Edit Modal */}
       <EditModal state={modal} posts={posts} today={today} onClose={closeModal} onSave={savePost} onPublishNow={publishPostNow} onDelete={deletePost} onDuplicate={dupPost} showToast={showToast} user={user} />

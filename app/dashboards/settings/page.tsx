@@ -1,10 +1,8 @@
 ﻿"use client";
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Sidebar from '../Sidebar'; // Import the sidebar component
 import AdminHeader from '../AdminHeader';
 import { useUserProfile } from '@/hooks/useUserProfile';
-import { useSidebarState } from '@/hooks/useSidebarState';
 import { fetchProfile, setAccountPassword, setUserProfile } from '@/api/authApi';
 
 // --- Types ---
@@ -138,7 +136,6 @@ const pickStringField = (
 // --- Main Component ---
 const SettingsPage: React.FC = () => {
   // State
-  const { sidebarSlim, setSidebarSlim } = useSidebarState();
   const [socials, setSocials] = useState<SocialAccount[]>(SOCIALS);
   const [notifState, setNotifState] = useState<NotifState>(() => {
     const init: NotifState = {};
@@ -1009,27 +1006,13 @@ const SettingsPage: React.FC = () => {
         @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(16,185,129,.35)} 70%{box-shadow:0 0 0 10px rgba(16,185,129,0)} 100%{box-shadow:0 0 0 0 rgba(16,185,129,0)} }
         @media (max-width: 1024px) { .settings-wrap { grid-template-columns:1fr; } .settings-nav { position:static; } .form-row { grid-template-columns:1fr; } }
       `}</style>
-      <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
-        {/* Import the Sidebar component */}
-        <Sidebar slim={sidebarSlim} onToggle={() => setSidebarSlim((s) => !s)} activePath="/dashboards/settings" />
-        
         <div id="main" style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
         {/* Topbar */}
         <AdminHeader
           pageTitle="Account Settings"
-          slim={sidebarSlim}
-          onToggle={() => setSidebarSlim((s) => !s)}
           searchPlaceholder="Search settings…"
           userName={user?.name}
           userInitials={initials}
-          actionButton={
-            <button
-              onClick={saveAll}
-              style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 7, background: "linear-gradient(115deg,#F97316,#EA580C)", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", border: "none", boxShadow: "0 4px 14px rgba(249,115,22,.4)" }}
-            >
-              <i className="fa-solid fa-check" style={{ fontSize: 11 }} /> Save Changes
-            </button>
-          }
         />
 
         <div id="content">
@@ -1397,7 +1380,6 @@ const SettingsPage: React.FC = () => {
           </div>
         </div>
         </div>
-      </div>
 
       {/* Modal */}
       <div id="modal-bg" ref={modalRef} onClick={(e) => { if ((e.target as HTMLElement).id === 'modal-bg') closeModal(); }}>

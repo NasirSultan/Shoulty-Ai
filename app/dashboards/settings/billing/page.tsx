@@ -1,9 +1,7 @@
 ﻿"use client";
 
 import { useState, useRef } from "react";
-import Sidebar from "../../Sidebar";
 import AdminHeader from "../../AdminHeader";
-import { useSidebarState } from "@/hooks/useSidebarState";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 type CycleType = "monthly" | "yearly";
@@ -493,7 +491,6 @@ function SuccessOverlay({ name }: { name: string }) {
 
 // ── Main Page ──────────────────────────────────────────────────────────────
 export default function BillingPage() {
-  const { sidebarSlim, setSidebarSlim } = useSidebarState();
   const [currentPlan, setCurrentPlan] = useState("business");
   const [globalCycle, setGlobalCycle] = useState<CycleType>("monthly");
   const [planCycle, setPlanCycle] = useState<CycleType>("monthly");
@@ -547,18 +544,11 @@ export default function BillingPage() {
       `}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-      <div style={{ display:"flex", height:"100vh", overflow:"hidden" }}>
-        {/* ── Sidebar ── */}
-        <Sidebar slim={sidebarSlim} onToggle={() => setSidebarSlim(s => !s)} activePath="/settings/billing" />
-
-        {/* ── Main ── */}
         <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden", minWidth:0 }}>
 
           {/* Topbar */}
           <AdminHeader
             pageTitle="Subscription & Billing"
-            slim={sidebarSlim}
-            onToggle={() => setSidebarSlim(s => !s)}
             searchPlaceholder="Search billing…"
             actionButton={
               <button onClick={() => setModal({ type:"upgrade" })} style={{ display:"flex", alignItems:"center", gap:6, padding:"8px 16px", borderRadius:7, background:"#F97316", color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer", border:"none", fontFamily:"Sora,sans-serif", boxShadow:"0 4px 20px rgba(249,115,22,.28)" }}>
@@ -965,7 +955,6 @@ export default function BillingPage() {
             </div>
           </div>
         </div>
-      </div>
 
       {/* ── Modal ── */}
       {modal.type && (

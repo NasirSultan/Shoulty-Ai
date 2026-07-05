@@ -85,8 +85,12 @@ export function useUserProfile() {
                 localStorage.setItem("shoutly_user", JSON.stringify(merged));
                 setUser(merged);
             }
-        } catch (err) {
-            console.error("Profile fetch failed:", err);
+        } catch (err: any) {
+            // 401/404 are handled by the axios interceptor (redirects to sign-in)
+            // Suppress the Next.js error overlay for expected auth failures
+            if (err?.response?.status !== 401 && err?.response?.status !== 404) {
+                console.warn("Profile fetch failed:", err);
+            }
         } finally {
             setLoading(false);
         }

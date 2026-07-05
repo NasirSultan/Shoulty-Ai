@@ -1,8 +1,6 @@
 ﻿"use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useSidebarState } from "@/hooks/useSidebarState";
-import Sidebar from "../Sidebar";
 import AdminHeader from "../AdminHeader";
 
 interface Notification {
@@ -19,7 +17,6 @@ interface Notification {
 }
 
 const NotificationsPage = () => {
-  const { sidebarSlim, setSidebarSlim } = useSidebarState();
   const [notifications, setNotifications] = useState<Notification[]>([
     {
       id: "1",
@@ -130,14 +127,10 @@ const NotificationsPage = () => {
   };
 
   return (
-    <div style={{ display: "flex", height: "100vh", overflow: "hidden", background: "#F0F1F9" }}>
-      <Sidebar slim={sidebarSlim} onToggle={() => setSidebarSlim((s) => !s)} />
-
+    <>
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
         <AdminHeader
           pageTitle="Notifications"
-          slim={sidebarSlim}
-          onToggle={() => setSidebarSlim((s) => !s)}
           searchValue={searchTerm}
           onSearchChange={setSearchTerm}
           searchPlaceholder="Search notifications…"
@@ -371,7 +364,7 @@ const NotificationsPage = () => {
       `}</style>
 
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    </div>
+    </>
   );
 };
 

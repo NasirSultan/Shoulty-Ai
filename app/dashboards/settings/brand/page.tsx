@@ -1,10 +1,8 @@
 ﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
-import Sidebar from "../../Sidebar";
 import AdminHeader from "../../AdminHeader";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { useSidebarState } from "@/hooks/useSidebarState";
 import { fetchIndustries, fetchImages } from "@/api/homeApi";
 import { setUserProfile } from "@/api/authApi";
 
@@ -147,7 +145,6 @@ function useToast() {
 
 // ── Main Page ──────────────────────────────────────────────────────────────
 export default function BrandOverlayPage() {
-  const { sidebarSlim, setSidebarSlim } = useSidebarState();
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [bgImg, setBgImg] = useState(BG_IMAGES[0]);
@@ -379,19 +376,11 @@ export default function BrandOverlayPage() {
       `}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 
-      <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
-
-        {/* ── Sidebar (imported) ── */}
-        <Sidebar slim={sidebarSlim} onToggle={() => setSidebarSlim(s => !s)} activePath="/settings/brand" />
-
-        {/* ── Main ── */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
 
           {/* Topbar */}
           <AdminHeader
             pageTitle="Overlay Settings"
-            slim={sidebarSlim}
-            onToggle={() => setSidebarSlim((s: boolean) => !s)}
             searchPlaceholder="Search settings…"
             actionButton={
               <button onClick={saveSettings} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 7, background: "linear-gradient(115deg,#F97316,#EA580C)", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 14px rgba(249,115,22,.4)" }}>
@@ -793,7 +782,6 @@ export default function BrandOverlayPage() {
 
           </div>
         </div>
-      </div>
 
       {/* Toast */}
       <div style={{ position: "fixed", bottom: 22, right: 22, zIndex: 9999, display: "flex", alignItems: "center", gap: 9, padding: "11px 16px", borderRadius: 10, background: "#0D0E1A", color: "#fff", fontSize: 13, fontWeight: 600, boxShadow: "0 12px 32px rgba(13,14,26,.10)", fontFamily: "Sora,sans-serif", opacity: toast.visible ? 1 : 0, transform: toast.visible ? "translateY(0)" : "translateY(8px)", transition: "all .3s cubic-bezier(.4,0,.2,1)", pointerEvents: "none" }}>

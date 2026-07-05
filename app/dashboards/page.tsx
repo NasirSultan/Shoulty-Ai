@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import Sidebar from "./Sidebar";
 import { API_ENDPOINTS } from "@/api/configApi";
 
 // ── Orange / white palette (matches homepage) ──────────────────────────────
@@ -145,13 +144,7 @@ export default function DashboardPage() {
         .chat-scroll::-webkit-scrollbar{width:3px}.chat-scroll::-webkit-scrollbar-thumb{background:rgba(249,115,22,.25);border-radius:3px}
       `}</style>
 
-      <div className="db-body" style={{ display: "flex", minHeight: "100vh" }}>
-
-        {/* ── SIDEBAR ── */}
-        <Sidebar />
-
-        {/* ── MAIN ── */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+      <div className="db-body" style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
 
           {/* TOPBAR */}
           <div style={{
@@ -523,7 +516,6 @@ export default function DashboardPage() {
               ))}
             </nav>
           </footer>
-        </div>
       </div>
 
       {/* ── FLOATING CHAT POPUP (fixed bottom-right, only when open) ── */}

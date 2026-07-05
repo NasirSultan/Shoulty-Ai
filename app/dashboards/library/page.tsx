@@ -1,9 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
-import Sidebar from "../Sidebar";
 import AdminHeader from "../AdminHeader";
-import { useSidebarState } from "@/hooks/useSidebarState";
 import { saveDashboardCalendarPost } from "../calendarSync";
 import { fetchImages, fetchIndustries } from "@/api/homeApi";
 import {
@@ -896,7 +894,6 @@ function LibCardItem({ card, viewMode, isFav, onFav, onOpen, onCopy }: {
 
 // ── Main Page ──────────────────────────────────────────────────────────────
 export default function LibraryPage() {
-  const { sidebarSlim, setSidebarSlim } = useSidebarState();
   const [industry, setIndustry] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [filterType, setFilterType] = useState<FilterType>("all");
@@ -1054,18 +1051,11 @@ export default function LibraryPage() {
       `}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-      <div style={{ display:"flex",height:"100vh",overflow:"hidden" }}>
-        {/* ── Sidebar (imported) ── */}
-        <Sidebar slim={sidebarSlim} onToggle={() => setSidebarSlim(s => !s)} activePath="/library" />
-
-        {/* ── Main ── */}
-        <div style={{ flex:1,display:"flex",flexDirection:"column",overflow:"hidden",minWidth:0,background:"#F5F6FA" }}>
+      <div style={{ flex:1,display:"flex",flexDirection:"column",overflow:"hidden",minWidth:0,background:"#F5F6FA" }}>
 
           {/* Topbar */}
           <AdminHeader
             pageTitle="Image & Reel Library"
-            slim={sidebarSlim}
-            onToggle={() => setSidebarSlim((s: boolean) => !s)}
             searchValue={searchInput}
             onSearchChange={setSearchInput}
             searchPlaceholder="Search…"
@@ -1176,7 +1166,6 @@ export default function LibraryPage() {
             )}
           </div>
         </div>
-      </div>
 
       {/* Composer Modal */}
       <ComposerModal
