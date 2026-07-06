@@ -1,6 +1,6 @@
-﻿"use client";
+"use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import AdminHeader from '../AdminHeader';
 
 // Chart.js imports
@@ -31,124 +31,122 @@ ChartJS.register(
   Filler
 );
 
-// --- Types ---
-interface PlatformData {
-  name: string;
-  icon: string;
-  grad: string;
-  pct: number;
-  eng: string;
-  reach: string;
+// ============================================================
+// ShoutlyAI Analytics API integration
+// ============================================================
+const API_BASE_URL = 'https://ai-shoutly-backend.onrender.com/api';
+
+// --- API response types (mirrors GET /autopost/analytics schema) ---
+interface AnalyticsMetrics {
+  totalFollowers: number;
+  totalReach: number;
+  totalEngagement: number;
+  avgEngagementRate: number;
+  postsThisMonth: number;
 }
 
-interface PostData {
-  emoji: string;
-  caption: string;
-  plat: string;
-  platColor: string;
-  platIcon: string;
+interface EngagementPoint {
   date: string;
-  likes: string;
-  comments: string;
-  shares: string;
-  eng: string;
+  engagement: number;
+  likes: number;
+  comments: number;
+  shares: number;
+  saves: number;
 }
 
-// --- Data ---
-const days = ['Mar 1', 'Mar 2', 'Mar 3', 'Mar 4', 'Mar 5', 'Mar 6', 'Mar 7', 'Mar 8', 'Mar 9'];
+interface ReachPoint {
+  date: string;
+  reach: number;
+  impressions: number;
+}
 
-const engagementData = {
-  labels: days,
-  datasets: [
-    {
-      label: 'Likes',
-      data: [3200, 4100, 3800, 5200, 4800, 6100, 5700, 7200, 6800],
-      borderColor: 'rgba(249,115,22,1)',
-      backgroundColor: 'rgba(249,115,22,.15)',
-      tension: 0.4,
-      fill: true,
-      borderWidth: 2.5,
-      pointRadius: 3,
-      pointHoverRadius: 6,
-    },
-    {
-      label: 'Comments',
-      data: [420, 510, 490, 680, 620, 790, 740, 920, 880],
-      borderColor: 'rgba(16,185,129,1)',
-      backgroundColor: 'rgba(16,185,129,.1)',
-      tension: 0.4,
-      fill: true,
-      borderWidth: 2,
-      pointRadius: 3,
-    },
-    {
-      label: 'Shares',
-      data: [180, 220, 205, 310, 280, 390, 355, 445, 420],
-      borderColor: 'rgba(59,130,246,1)',
-      backgroundColor: 'rgba(59,130,246,.1)',
-      tension: 0.4,
-      fill: true,
-      borderWidth: 2,
-      pointRadius: 3,
-    },
-  ],
+interface PlatformBreakdownEntry {
+  engagementShare: number;
+  engagementRate: number;
+  reach: number;
+}
+
+interface FollowerGrowthPoint {
+  date: string;
+  total: number;
+  [platform: string]: string | number;
+}
+
+interface AnalyticsResponse {
+  success: boolean;
+  timeframe: { from_unix: string; to_unix: string };
+  metrics: AnalyticsMetrics;
+  charts: {
+    engagementOverTime: EngagementPoint[];
+    reachAndImpressions: ReachPoint[];
+    platformBreakdown: Record<string, PlatformBreakdownEntry>;
+    followerGrowth: FollowerGrowthPoint[];
+  };
+}
+
+// --- Platform display metadata (icon / gradient / accent color), keyed by the
+// uppercase platform name returned by the API (e.g. "INSTAGRAM") ---
+const PLATFORM_META: Record<string, { icon: string; grad: string; color: string }> = {
+  INSTAGRAM: { icon: 'fa-instagram', grad: 'linear-gradient(135deg,#F58529,#E1306C)', color: '#E1306C' },
+  TIKTOK: { icon: 'fa-tiktok', grad: 'linear-gradient(135deg,#010101,#69C9D0)', color: '#111111' },
+  LINKEDIN: { icon: 'fa-linkedin', grad: 'linear-gradient(135deg,#0A66C2,#004182)', color: '#0A66C2' },
+  FACEBOOK: { icon: 'fa-facebook', grad: 'linear-gradient(135deg,#1877F2,#0A4FC4)', color: '#1877F2' },
+  TWITTER: { icon: 'fa-x-twitter', grad: 'linear-gradient(135deg,#111111,#333333)', color: '#111111' },
+  X: { icon: 'fa-x-twitter', grad: 'linear-gradient(135deg,#111111,#333333)', color: '#111111' },
+  THREADS: { icon: 'fa-threads', grad: 'linear-gradient(135deg,#000000,#444444)', color: '#000000' },
+  YOUTUBE: { icon: 'fa-youtube', grad: 'linear-gradient(135deg,#FF0000,#CC0000)', color: '#FF0000' },
 };
 
-const reachData = {
-  labels: days,
-  datasets: [
-    {
-      label: 'Reach',
-      data: [82000, 94000, 88000, 112000, 106000, 138000, 124000, 162000, 155000],
-      backgroundColor: 'rgba(249,115,22,.8)',
-      borderRadius: 6,
-      borderSkipped: false,
-    },
-    {
-      label: 'Impressions',
-      data: [124000, 142000, 134000, 168000, 158000, 205000, 186000, 242000, 228000],
-      backgroundColor: 'rgba(124,58,237,.4)',
-      borderRadius: 6,
-      borderSkipped: false,
-    },
-  ],
+const getPlatformMeta = (name: string) =>
+  PLATFORM_META[name.toUpperCase()] || { icon: 'fa-hashtag', grad: 'linear-gradient(135deg,#6B7280,#4B5563)', color: '#6B7280' };
+
+const platformLabel = (name: string) => name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+
+// --- Formatting helpers ---
+const formatNumber = (num: number): string => {
+  if (num === undefined || num === null || isNaN(num)) return '0';
+  if (Math.abs(num) >= 1_000_000) return (num / 1_000_000).toFixed(num % 1_000_000 === 0 ? 0 : 1) + 'M';
+  if (Math.abs(num) >= 1_000) return (num / 1_000).toFixed(num % 1_000 === 0 ? 0 : 1) + 'K';
+  return String(num);
 };
 
-const followerGrowthData = {
-  labels: ['Instagram', 'LinkedIn', 'TikTok', 'Facebook', 'Twitter/X'],
-  datasets: [
-    {
-      label: 'New Followers',
-      data: [1420, 680, 820, 190, 108],
-      backgroundColor: [
-        'rgba(225,48,108,.8)',
-        'rgba(10,102,194,.8)',
-        'rgba(17,17,17,.7)',
-        'rgba(24,119,242,.8)',
-        'rgba(29,161,242,.8)',
-      ],
-      borderRadius: 8,
-      borderSkipped: false,
-    },
-  ],
+const formatChartDate = (dateStr: string): string => {
+  const d = new Date(`${dateStr}T00:00:00`);
+  if (isNaN(d.getTime())) return dateStr;
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 };
 
-const platforms: PlatformData[] = [
-  { name: 'Instagram', icon: 'fa-instagram', grad: 'linear-gradient(135deg,#F58529,#E1306C)', pct: 48, eng: '4.8%', reach: '1.36M' },
-  { name: 'TikTok', icon: 'fa-tiktok', grad: 'linear-gradient(135deg,#010101,#69C9D0)', pct: 26, eng: '7.4%', reach: '738K' },
-  { name: 'LinkedIn', icon: 'fa-linkedin', grad: 'linear-gradient(135deg,#0A66C2,#004182)', pct: 14, eng: '3.2%', reach: '398K' },
-  { name: 'Facebook', icon: 'fa-facebook', grad: 'linear-gradient(135deg,#1877F2,#0A4FC4)', pct: 8, eng: '1.8%', reach: '227K' },
-  { name: 'Twitter/X', icon: 'fa-x-twitter', grad: 'linear-gradient(135deg,#111,#333)', pct: 4, eng: '2.1%', reach: '114K' },
-  { name: 'Threads', icon: 'fa-threads', grad: 'linear-gradient(135deg,#000,#444)', pct: 8, eng: '3.9%', reach: '227K' },
-  { name: 'YouTube', icon: 'fa-youtube', grad: 'linear-gradient(135deg,#FF0000,#CC0000)', pct: 10, eng: '5.2%', reach: '284K' },
-];
+// --- Auth token retrieval ---
+// TODO: Wire this up to however your app actually stores the session token
+// (e.g. an auth context/provider, a cookie, or NextAuth's useSession()).
+// Falling back to localStorage here as a placeholder so the integration is
+// runnable out of the box.
+const getAuthToken = (): string | null => {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem('shoutly_token') || localStorage.getItem('token');
+};
 
-const topPosts: PostData[] = [
-  { emoji: '🎨', caption: '5 brand identity principles every marketer must know in 2026…', plat: 'Instagram', platColor: '#E1306C', platIcon: 'fa-instagram', date: 'Mar 7', likes: '12.4K', comments: '892', shares: '3.2K', eng: '6.8%' },
-  { emoji: '🚀', caption: 'How we grew from 0 to 100K followers in 90 days — thread 🧵', plat: 'LinkedIn', platColor: '#0A66C2', platIcon: 'fa-linkedin', date: 'Mar 5', likes: '8.1K', comments: '1.2K', shares: '4.8K', eng: '5.9%' },
-  { emoji: '✨', caption: 'POV: You discovered the AI tool that writes your captions for you…', plat: 'TikTok', platColor: '#111', platIcon: 'fa-tiktok', date: 'Mar 4', likes: '34.2K', comments: '2.1K', shares: '8.4K', eng: '7.4%' },
-  { emoji: '📊', caption: 'Our Q1 results are in — here\'s what the data says about social ROI…', plat: 'Instagram', platColor: '#E1306C', platIcon: 'fa-instagram', date: 'Mar 2', likes: '7.8K', comments: '543', shares: '1.9K', eng: '4.4%' },
-];
+// --- Maps the UI's range tabs to the query params the API expects ---
+const getRangeQueryString = (range: string): string => {
+  switch (range) {
+    case '7d':
+      return 'from=7d';
+    case '30d':
+      return 'from=30d';
+    case '90d':
+      return 'from=90d';
+    case 'ytd': {
+      // The API doesn't have a "ytd" shorthand, so we build an explicit
+      // YYYY-MM-DD range from Jan 1 of the current year through today.
+      const now = new Date();
+      const jan1 = `${now.getFullYear()}-01-01`;
+      const today = now.toISOString().split('T')[0];
+      return `from=${jan1}&to=${today}`;
+    }
+    default:
+      return '';
+  }
+};
 
 const chartOptions = {
   responsive: true,
@@ -169,10 +167,12 @@ const chartOptions = {
   },
 };
 
-const barChartOptions = {
+const stackedBarOptions = {
   ...chartOptions,
-  indexAxis: 'y' as const,
-  plugins: { ...chartOptions.plugins, legend: { display: false } },
+  scales: {
+    x: { ...chartOptions.scales.x, stacked: true },
+    y: { ...chartOptions.scales.y, stacked: true },
+  },
 };
 
 // --- Utility Functions ---
@@ -188,17 +188,148 @@ const AnalyticsPage: React.FC = () => {
   const modalRef = useRef<HTMLDivElement>(null);
   const modalContentRef = useRef<HTMLDivElement>(null);
 
-  // Heatmap data
-  const heatmapDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const heatmapTimes = ['9AM', '12PM', '3PM', '6PM', '9PM', '12AM'];
-  const heatmapValues = [
-    [3, 4, 5, 8, 7, 4, 2],
-    [5, 6, 8, 9, 8, 5, 3],
-    [4, 5, 6, 7, 6, 4, 2],
-    [3, 4, 5, 6, 5, 3, 2],
-    [6, 8, 9, 10, 9, 6, 4],
-    [4, 5, 7, 8, 7, 5, 3],
-  ];
+  // --- Analytics API state ---
+  const [data, setData] = useState<AnalyticsResponse | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchAnalytics = useCallback(async (range: string) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const token = getAuthToken();
+      if (!token) {
+        throw new Error('NO_TOKEN');
+      }
+
+      const query = getRangeQueryString(range);
+      const res = await fetch(`${API_BASE_URL}/autopost/analytics${query ? `?${query}` : ''}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Per the API docs: an invalid/expired token returns 401 — send the
+      // user back to login.
+      if (res.status === 401) {
+        showToast('Session expired — please log in again', 'red');
+        setError('NO_TOKEN');
+        // setLoading(false);
+        // window.location.href = '/login'; // adjust to your app's actual login route
+        // return;
+      }
+
+      if (!res.ok) {
+        throw new Error(`HTTP_${res.status}`);
+      }
+
+      const json: AnalyticsResponse = await res.json();
+      if (!json.success) {
+        throw new Error('API_ERROR');
+      }
+
+      setData(json);
+    } catch (err) {
+      console.error('Failed to fetch analytics:', err);
+      setError(err instanceof Error ? err.message : 'UNKNOWN_ERROR');
+      showToast('Could not load analytics data', 'red');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAnalytics(activeRange);
+  }, [activeRange, fetchAnalytics]);
+
+  // --- Derived values from the API response ---
+  const metrics = data?.metrics;
+
+  // The API doesn't return a single "new followers this period" figure —
+  // we derive it by summing the daily "total" field from followerGrowth.
+  const newFollowers =
+    data?.charts.followerGrowth?.reduce((sum, point) => sum + (typeof point.total === 'number' ? point.total : 0), 0) ??
+    metrics?.totalFollowers ??
+    0;
+
+  const engagementPoints = data?.charts.engagementOverTime ?? [];
+  const engagementChartData = {
+    labels: engagementPoints.map((p) => formatChartDate(p.date)),
+    datasets: [
+      {
+        label: 'Likes',
+        data: engagementPoints.map((p) => p.likes),
+        borderColor: 'rgba(249,115,22,1)',
+        backgroundColor: 'rgba(249,115,22,.15)',
+        tension: 0.4,
+        fill: true,
+        borderWidth: 2.5,
+        pointRadius: 3,
+        pointHoverRadius: 6,
+      },
+      {
+        label: 'Comments',
+        data: engagementPoints.map((p) => p.comments),
+        borderColor: 'rgba(16,185,129,1)',
+        backgroundColor: 'rgba(16,185,129,.1)',
+        tension: 0.4,
+        fill: true,
+        borderWidth: 2,
+        pointRadius: 3,
+      },
+      {
+        label: 'Shares',
+        data: engagementPoints.map((p) => p.shares),
+        borderColor: 'rgba(59,130,246,1)',
+        backgroundColor: 'rgba(59,130,246,.1)',
+        tension: 0.4,
+        fill: true,
+        borderWidth: 2,
+        pointRadius: 3,
+      },
+    ],
+  };
+
+  const reachPoints = data?.charts.reachAndImpressions ?? [];
+  const reachChartData = {
+    labels: reachPoints.map((p) => formatChartDate(p.date)),
+    datasets: [
+      {
+        label: 'Reach',
+        data: reachPoints.map((p) => p.reach),
+        backgroundColor: 'rgba(249,115,22,.8)',
+        borderRadius: 6,
+        borderSkipped: false,
+      },
+      {
+        label: 'Impressions',
+        data: reachPoints.map((p) => p.impressions),
+        backgroundColor: 'rgba(124,58,237,.4)',
+        borderRadius: 6,
+        borderSkipped: false,
+      },
+    ],
+  };
+
+  const followerGrowthPoints = data?.charts.followerGrowth ?? [];
+  const followerPlatformKeys = Array.from(
+    new Set(followerGrowthPoints.flatMap((p) => Object.keys(p).filter((k) => k !== 'date' && k !== 'total')))
+  );
+  const followerGrowthChartData = {
+    labels: followerGrowthPoints.map((p) => formatChartDate(p.date)),
+    datasets: followerPlatformKeys.map((key) => {
+      const meta = getPlatformMeta(key);
+      return {
+        label: platformLabel(key),
+        data: followerGrowthPoints.map((p) => (typeof p[key] === 'number' ? (p[key] as number) : 0)),
+        backgroundColor: meta.color,
+        borderRadius: 4,
+        borderSkipped: false,
+        stack: 'followers',
+      };
+    }),
+  };
 
   // Handlers
   const setRange = (range: string, el: HTMLElement) => {
@@ -241,128 +372,41 @@ const AnalyticsPage: React.FC = () => {
     }
   };
 
-  // Render platform breakdown
+  // Render platform breakdown (live data from charts.platformBreakdown)
   const renderPlatformBreakdown = () => {
-    return platforms.map((p, idx) => (
-      <div key={idx} className="plat-row">
-        <div className="plat-icon" style={{ background: p.grad }}>
-          <i className={`fa-brands ${p.icon}`}></i>
-        </div>
-        <div className="plat-info">
-          <div className="plat-name">{p.name}</div>
-          <div className="plat-bar-wrap">
-            <div className="plat-bar" style={{ width: `${p.pct}%`, background: p.grad }}></div>
+    if (loading) {
+      return <div style={{ fontSize: 12, color: 'var(--t4)', textAlign: 'center', padding: '20px 0' }}>Loading…</div>;
+    }
+    const entries = data ? Object.entries(data.charts.platformBreakdown) : [];
+    if (entries.length === 0) {
+      return <div style={{ fontSize: 12, color: 'var(--t4)', textAlign: 'center', padding: '20px 0' }}>No platform data for this period</div>;
+    }
+    return entries.map(([name, stats]) => {
+      const meta = getPlatformMeta(name);
+      return (
+        <div key={name} className="plat-row">
+          <div className="plat-icon" style={{ background: meta.grad }}>
+            <i className={`fa-brands ${meta.icon}`}></i>
           </div>
-        </div>
-        <div className="plat-stats">
-          <div className="plat-stat">
-            <div className="plat-stat-val">{p.eng}</div>
-            <div className="plat-stat-lbl">Eng Rate</div>
-          </div>
-          <div className="plat-stat">
-            <div className="plat-stat-val">{p.reach}</div>
-            <div className="plat-stat-lbl">Reach</div>
-          </div>
-        </div>
-      </div>
-    ));
-  };
-
-  // Render top posts
-  const renderTopPosts = () => {
-    return topPosts.map((post, idx) => (
-      <div key={idx} className="post-row" style={{ animationDelay: `${idx * 0.06}s` }}>
-        <div className="post-thumb">{post.emoji}</div>
-        <div className="post-info">
-          <div className="post-caption">{post.caption}</div>
-          <div className="post-meta">
-            <i className={`fa-brands ${post.platIcon}`} style={{ color: post.platColor }}></i>
-            {post.plat} · {post.date}
-            <span className="badge green" style={{ padding: '1px 6px', fontSize: '10px' }}>
-              {post.eng} eng
-            </span>
-          </div>
-        </div>
-        <div className="post-stats">
-          <div className="ps">
-            <div className="ps-val">{post.likes}</div>
-            <div className="ps-lbl">Likes</div>
-          </div>
-          <div className="ps">
-            <div className="ps-val">{post.comments}</div>
-            <div className="ps-lbl">Comments</div>
-          </div>
-          <div className="ps">
-            <div className="ps-val">{post.shares}</div>
-            <div className="ps-lbl">Shares</div>
-          </div>
-        </div>
-      </div>
-    ));
-  };
-
-  // Render heatmap
-  const renderHeatmap = () => {
-    return (
-      <>
-        <div style={{ display: 'grid', gridTemplateColumns: 'auto repeat(7, 1fr)', gap: '4px' }}>
-          <div></div>
-          {heatmapDays.map((day, idx) => (
-            <div
-              key={`header-${idx}`}
-              style={{
-                fontSize: '9px',
-                color: 'var(--t4)',
-                textAlign: 'center',
-                fontWeight: '700',
-                fontFamily: "'Sora', sans-serif",
-                paddingBottom: '4px',
-              }}
-            >
-              {day}
+          <div className="plat-info">
+            <div className="plat-name">{platformLabel(name)}</div>
+            <div className="plat-bar-wrap">
+              <div className="plat-bar" style={{ width: `${stats.engagementShare}%`, background: meta.grad }}></div>
             </div>
-          ))}
-          {heatmapTimes.map((time, ti) => (
-            <React.Fragment key={`row-${ti}`}>
-              <div
-                style={{
-                  fontSize: '9px',
-                  color: 'var(--t4)',
-                  fontFamily: "'JetBrains Mono', monospace",
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                {time}
-              </div>
-              {heatmapDays.map((_, di) => {
-                const v = heatmapValues[ti][di];
-                const opacity = 0.1 + v * 0.09;
-                return (
-                  <div
-                    key={`cell-${ti}-${di}`}
-                    style={{
-                      height: '22px',
-                      borderRadius: '4px',
-                      background: `rgba(249,115,22, ${opacity})`,
-                      cursor: 'pointer',
-                      transition: 'all .15s',
-                    }}
-                    title={`${time} ${heatmapDays[di]}: ${v * 10}% engagement`}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLDivElement).style.transform = 'scale(1.15)';
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLDivElement).style.transform = 'scale(1)';
-                    }}
-                  />
-                );
-              })}
-            </React.Fragment>
-          ))}
+          </div>
+          <div className="plat-stats">
+            <div className="plat-stat">
+              <div className="plat-stat-val">{stats.engagementRate}%</div>
+              <div className="plat-stat-lbl">Eng Rate</div>
+            </div>
+            <div className="plat-stat">
+              <div className="plat-stat-val">{formatNumber(stats.reach)}</div>
+              <div className="plat-stat-lbl">Reach</div>
+            </div>
+          </div>
         </div>
-      </>
-    );
+      );
+    });
   };
 
   // Toast listener effect
@@ -457,6 +501,7 @@ const AnalyticsPage: React.FC = () => {
         #toast-stack { position:fixed; top:18px; right:18px; z-index:80; display:flex; flex-direction:column; gap:8px; }
         .toast { min-width:260px; max-width:360px; display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:10px; background:#fff; border:1px solid var(--bdr); box-shadow:0 8px 26px rgba(11,12,26,.12); }
         .toast .t-x { cursor:pointer; color:var(--t4); font-weight:700; }
+        .error-banner { display:flex; align-items:center; justify-content:space-between; gap:10px; background:#FEF2F2; border:1px solid #FCA5A5; color:#B91C1C; padding:10px 14px; border-radius:10px; margin-bottom:14px; font-size:13px; }
         @media (max-width:1200px) { .analytics-grid-4 { grid-template-columns:repeat(2,minmax(0,1fr)); } }
         @media (max-width:900px) { .analytics-grid { grid-template-columns:1fr; } }
         @media (max-width:640px) { .analytics-grid-4 { grid-template-columns:1fr; } #content { padding:14px; } }
@@ -487,6 +532,21 @@ const AnalyticsPage: React.FC = () => {
               Track reach, engagement, and growth across all your connected social platforms.
             </div>
           </div>
+
+          {/* Error banner */}
+          {error && (
+            <div className="error-banner">
+              <span>
+                <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: 8 }}></i>
+                {error === 'NO_TOKEN'
+                  ? "Couldn't authenticate — please log in again."
+                  : "Couldn't load analytics data. Please try again."}
+              </span>
+              <button className="btn ghost btn-sm" onClick={() => fetchAnalytics(activeRange)}>
+                Retry
+              </button>
+            </div>
+          )}
 
           {/* Range Tabs */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
@@ -524,47 +584,35 @@ const AnalyticsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* KPI Cards */}
+          {/* KPI Cards — bound to data.metrics from the API */}
           <div className="analytics-grid-4">
             <div className="kpi" style={{ animationDelay: '0.04s' }}>
               <div className="kpi-ico" style={{ background: 'var(--brand-l)' }}>
                 <i className="fa-solid fa-eye" style={{ color: 'var(--brand)' }}></i>
               </div>
               <div className="kpi-label">Total Reach</div>
-              <div className="kpi-val">2.84M</div>
-              <div className="kpi-delta up">
-                <i className="fa-solid fa-arrow-trend-up"></i> +18.4% vs last period
-              </div>
+              <div className="kpi-val">{loading ? '—' : formatNumber(metrics?.totalReach ?? 0)}</div>
             </div>
             <div className="kpi" style={{ animationDelay: '0.08s' }}>
               <div className="kpi-ico" style={{ background: 'var(--gr-l)' }}>
                 <i className="fa-solid fa-heart" style={{ color: 'var(--gr)' }}></i>
               </div>
               <div className="kpi-label">Engagements</div>
-              <div className="kpi-val">142K</div>
-              <div className="kpi-delta up">
-                <i className="fa-solid fa-arrow-trend-up"></i> +24.1% vs last period
-              </div>
+              <div className="kpi-val">{loading ? '—' : formatNumber(metrics?.totalEngagement ?? 0)}</div>
             </div>
             <div className="kpi" style={{ animationDelay: '0.12s' }}>
               <div className="kpi-ico" style={{ background: 'var(--or-l)' }}>
                 <i className="fa-solid fa-users" style={{ color: 'var(--or)' }}></i>
               </div>
               <div className="kpi-label">New Followers</div>
-              <div className="kpi-val">+3,218</div>
-              <div className="kpi-delta up">
-                <i className="fa-solid fa-arrow-trend-up"></i> +31.6% vs last period
-              </div>
+              <div className="kpi-val">{loading ? '—' : `+${formatNumber(newFollowers)}`}</div>
             </div>
             <div className="kpi" style={{ animationDelay: '0.16s' }}>
               <div className="kpi-ico" style={{ background: 'var(--am-l)' }}>
                 <i className="fa-solid fa-percent" style={{ color: 'var(--am)' }}></i>
               </div>
               <div className="kpi-label">Avg Engagement Rate</div>
-              <div className="kpi-val">4.7%</div>
-              <div className="kpi-delta up">
-                <i className="fa-solid fa-arrow-trend-up"></i> +0.8pp vs last period
-              </div>
+              <div className="kpi-val">{loading ? '—' : `${metrics?.avgEngagementRate ?? 0}%`}</div>
             </div>
           </div>
 
@@ -585,7 +633,7 @@ const AnalyticsPage: React.FC = () => {
                 </div>
               </div>
               <div className="cc-body">
-                <Line data={engagementData} options={chartOptions} height={180} />
+                <Line data={engagementChartData} options={chartOptions} height={180} />
               </div>
             </div>
             <div className="chart-card" style={{ animationDelay: '0.22s' }}>
@@ -598,7 +646,7 @@ const AnalyticsPage: React.FC = () => {
                 </div>
               </div>
               <div className="cc-body">
-                <Bar data={reachData} options={chartOptions} height={180} />
+                <Bar data={reachChartData} options={chartOptions} height={180} />
               </div>
             </div>
           </div>
@@ -624,16 +672,23 @@ const AnalyticsPage: React.FC = () => {
                   <div className="cc-title">
                     <i className="fa-solid fa-user-plus"></i>Follower Growth
                   </div>
-                  <div className="cc-sub">Net new followers per platform</div>
+                  <div className="cc-sub">Net new followers per platform, per day</div>
                 </div>
               </div>
               <div className="cc-body">
-                <Bar data={followerGrowthData} options={barChartOptions} height={200} />
+                <Bar data={followerGrowthChartData} options={stackedBarOptions} height={200} />
               </div>
             </div>
           </div>
 
-          {/* Top Posts + Audience */}
+          {/*
+            ------------------------------------------------------------------
+            Top Performing Posts + Audience Demographics — temporarily disabled.
+            The ShoutlyAI analytics endpoint (GET /autopost/analytics) does not
+            currently return per-post rankings or audience demographic data,
+            so this section is commented out until that data is available.
+            ------------------------------------------------------------------
+
           <div className="analytics-grid" style={{ animationDelay: '0.3s' }}>
             <div className="chart-card" style={{ animationDelay: '0.3s' }}>
               <div className="cc-hdr">
@@ -768,6 +823,11 @@ const AnalyticsPage: React.FC = () => {
               </div>
             </div>
           </div>
+
+          ------------------------------------------------------------------
+          End of disabled section
+          ------------------------------------------------------------------
+          */}
         </div>
       </div>
 

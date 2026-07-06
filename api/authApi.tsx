@@ -76,8 +76,11 @@ export const emailLogin = async (email: string, password: string) => {
             email,
             password,
         });
+
+        console.log("🔑 Login response:", response.data);
         const { token, user } = response.data;
-        localStorage.setItem("shoutly_token", token);
+        // console.log("🔑 Token received:", token.substring(0, 20) + "...");
+        localStorage.setItem("shoutly_token", response.data.accessToken);
         return { token, user };
     } catch (error: unknown) {
         if (axios.isAxiosError(error)) {

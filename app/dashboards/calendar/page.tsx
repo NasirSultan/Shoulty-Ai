@@ -2387,8 +2387,8 @@ export default function CalendarPage() {
               )}
             </div>
 
-            {/* Right Panel */}
-            <RightPanel rpTab={rpTab} setRpTab={setRpTab} posts={filtered} onOpen={id => openModal(id)} onAddIdea={addIdeaPost} showToast={showToast} onOpenFacebookConnect={() => router.push("/facebook")} />
+            /* {/* Right Panel */}
+            {/* <RightPanel rpTab={rpTab} setRpTab={setRpTab} posts={filtered} onOpen={id => openModal(id)} onAddIdea={addIdeaPost} showToast={showToast} onOpenFacebookConnect={() => router.push("/facebook")} /> */ }
           </div>
         </div>
 
