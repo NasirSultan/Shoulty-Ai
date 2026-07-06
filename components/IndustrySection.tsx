@@ -23,7 +23,7 @@ export default function IndustrySection() {
         <section className="py-24 bg-white">
             <div className="max-w-7xl mx-auto px-6 sm:px-10">
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight">Who We Help</h2>
+                    <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight">Made for Your Business</h2>
                     <p className="text-gray-500 text-lg font-medium">Built for professionals across every major industry.</p>
                 </div>
 

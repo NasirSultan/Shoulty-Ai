@@ -210,16 +210,15 @@ const SocialMediaCalendar = ({ selectedIndustry }: { selectedIndustry?: string }
 
         {/* Heading */}
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
-          Social Media{" "}
+          Your Next 30 Days{" "}
           <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-            Calendar Preview
+            Are Ready
           </span>
         </h2>
 
         {/* Subtitle */}
         <p className="text-slate-500 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed px-2 mb-8">
-          A sample monthly content plan showing how posts, reels, and campaigns
-          can be scheduled for consistent growth.
+          See your monthly posting schedule with professionally designed posts, reels, promotions, festivals, and special occasions planned in advance so your social media never goes silent.
         </p>
 
         {/* Weekly / Monthly toggle */}

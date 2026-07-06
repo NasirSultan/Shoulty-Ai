@@ -28,19 +28,13 @@ export default function Header() {
     const icons = [User, SparklesIcon, User, SparklesIcon];
     const primaryLinks = [
         { label: "Home", href: "/" },
-        { label: "Who We Help", href: "/#who-we-help" },
+        { label: "Made for Your Business", href: "/#who-we-help" },
         { label: "Library", href: "/#library" },
         { label: "Pricing", href: "/#pricing" },
-    ];
-    const resourceLinks = [
-        { label: "Blog", href: "https://blog.shoutlyai.com/" },
-        { label: "Help Center / FAQ", href: "/help-center" },
-        { label: "Case Studies", href: "/case-studies" },
     ];
     const companyLinks = [
         { label: "About Us", href: "/about-us" },
         { label: "Contact", href: "/contact-us" },
-        { label: "Press", href: "/press-media" },
         { label: "Careers", href: "/careers" },
     ];
 
@@ -163,24 +157,6 @@ export default function Header() {
                             </Link>
                         ))}
 
-                        {/* Resources Dropdown */}
-                        <div className="relative group">
-                            <span className="cursor-pointer py-4">
-                                Resources
-                            </span>
-                            <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition">
-                                {resourceLinks.map((link) => (
-                                    <Link
-                                        key={link.label}
-                                        href={link.href}
-                                        className="block px-4 py-2 hover:bg-gray-100"
-                                    >
-                                        {link.label}
-                                    </Link>
-                                ))}
-                            </div>
-                        </div>
-
                         {/* Company Dropdown */}
                         <div className="relative group">
                             <span className="cursor-pointer py-4">Company</span>
@@ -297,23 +273,6 @@ export default function Header() {
                                 {link.label}
                             </Link>
                         ))}
-
-                        {/* Resources */}
-                            <div className="space-y-2 border border-gray-100 bg-gray-50 rounded-xl p-4">
-                                <p className="font-semibold text-black text-sm uppercase tracking-wide mb-2">
-                                Resources
-                            </p>
-                            {resourceLinks.map((link) => (
-                                <Link
-                                    key={link.label}
-                                    href={link.href}
-                                    className="block text-sm text-gray-700 py-1"
-                                    onClick={() => setMenuOpen(false)}
-                                >
-                                    {link.label}
-                                </Link>
-                            ))}
-                        </div>
 
                         {/* Company */}
                             <div className="space-y-2 border border-gray-100 bg-gray-50 rounded-xl p-4">

@@ -47,7 +47,7 @@ const Footer = () => {
           
           {/* COL 1 — WHO WE HELP (Local + Lifestyle) */}
           <div className="col-span-1">
-            <div className="text-xs font-bold uppercase tracking-widest text-orange-600 dark:text-orange-400 mb-5">Who We Help</div>
+            <div className="text-xs font-bold uppercase tracking-widest text-orange-600 dark:text-orange-400 mb-5">Made for Your Business</div>
             <div className="grid grid-cols-2 gap-6">
               {/* Local Business */}
               <div>
@@ -103,8 +103,8 @@ const Footer = () => {
           <div className="col-span-1">
             <div className="text-xs font-bold uppercase tracking-widest text-orange-600 dark:text-orange-400 mb-5">Product</div>
             <ul className="space-y-2.5">
-              <li><Link href="/#who-we-help" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Who We Help</Link></li>
-              <li><Link href="/#library" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Browse Our Library</Link></li>
+              <li><Link href="/#who-we-help" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Made for Your Business</Link></li>
+              <li><Link href="/#library" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Find the Perfect Post</Link></li>
               <li><Link href="/#generator" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Generate 365 Days Content</Link></li>
               <li><Link href="/pricing" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Plans & Pricing</Link></li>
             </ul>

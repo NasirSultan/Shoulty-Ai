@@ -793,13 +793,13 @@ export default function PricingSection() {
         <div className="wrap">
           {/* HERO */}
           <section className="hero">
-            <span className="eyebrow">💰 Investment — Not an Expense</span>
-            <h1>Ten Platforms. <span className="u">One Integration.</span></h1>
-            <p className="sub">Post, schedule, analyze, manage media and comments across every major network — from a single dashboard. One transparent price, everything included.</p>
+            <span className="eyebrow">Everything Your Business Needs to Stay Visible</span>
+            <h1>One Dashboard. <span className="u">Every Platform.</span></h1>
+            <p className="sub">Manage your entire social media from one place. Create, schedule, publish, and monitor your posts across all major platforms—with one simple plan and no hidden add-ons.</p>
           </section>
 
           <div className="platline">
-            Built for all ten — natively
+            Everything You Need. Nothing Extra to Buy.
             <div className="platstrip">
               {PLATFORMS.map((p, idx) => (
                 <div key={idx} className="ps" title={p.name} style={{ background: p.bg }}>
@@ -846,11 +846,6 @@ export default function PricingSection() {
                   <span>{d.save}</span>
                 </div>
               )}
-
-              <a href="/signup" className="bill-cta">
-                <span>{p.cta}</span>
-                <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-              </a>
 
               <div className="bill-pay">{d.pay}</div>
             </div>

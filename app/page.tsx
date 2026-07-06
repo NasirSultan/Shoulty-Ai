@@ -119,9 +119,10 @@ function useTypingEffect(words: string[], speed: number = 50, pause: number = 20
 }
 
 const TYPING_PLACEHOLDERS = [
-    "Promote my coffee shop in Bangalore. Cozy vibe, cold brew specialist...",
-    "Real estate agent in Austin. Luxury homes, modern architecture...",
-    "Personal trainer for busy CEOs. 15-min workouts, high energy...",
+    "Real estate company helping families find premium apartments.",
+    "Luxury salon in Dubai offering hair, skincare, bridal makeup, and spa services.",
+    "https://yourbusiness.com",
+    "Luxury salon in Dubai offering hair, skincare, bridal makeup, and spa services.",
 ];
 
 // Isolated component — only this re-renders on every typing tick, not the whole page
@@ -911,17 +912,18 @@ const speeds = [120, 160, 110, 150, 130];
                         </div>
 
                         {/* Heading */}
-                        <h1 className="text-5xl md:text-6xl font-black tracking-tight text-white leading-tight">
-                            One Prompt.<br />
-                            <span className="bg-gradient-to-r from-orange-400 via-red-400 to-rose-400 bg-clip-text text-transparent">365 Days</span>
+                        <h1 className="text-3xl md:text-4xl font-black tracking-tight text-white leading-tight">
+                            Your Business Posts Every Day.<br />
+                            <span className="bg-gradient-to-r from-orange-400 via-red-400 to-rose-400 bg-clip-text text-transparent">365 Days of Social Media.</span>
                             <br />
-                            of Content.<br />
                             Zero Effort.
                         </h1>
 
                         {/* Subtitle */}
                         <p className="text-base text-slate-300 leading-relaxed max-w-md">
-                            Shoutly AI generates a full year of on-brand social media content from a single business prompt — scheduled, optimised, and ready to publish across every platform.
+                            Stay active on Instagram, Facebook, LinkedIn, Google Business, X, Threads, Pinterest, TikTok, YouTube, and more without creating content yourself.
+                            <br /><br />
+                            Every post comes with a professionally designed poster, engaging caption, and ready-to-use hashtags, scheduled throughout the year so your business stays visible every single day.
                         </p>
 
                         {/* CTAs */}
@@ -974,8 +976,8 @@ const speeds = [120, 160, 110, 150, 130];
                 className="relative flex-shrink-0 rounded-lg overflow-hidden border border-white/10 hover:border-white/30 hover:scale-110 transition-all cursor-pointer group h-[60px] sm:h-[75px] lg:h-[90px]"
                 style={{zIndex: "auto"}}
               >
-                <img 
-                  src={item.url} 
+                <img
+                  src={item.url}
                   alt={item.label}
                   loading="lazy"
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
@@ -1019,13 +1021,13 @@ const speeds = [120, 160, 110, 150, 130];
                             3 Simple Steps
                         </div>
                         <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
-                            Generate Your{" "}
+                            Let&apos;s Get Your Business{" "}
                             <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-                                Year of Content
+                                Ready to Post
                             </span>
                         </h2>
                         <p className="text-slate-500 max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-                            One prompt, 365 days of posts — including local festivals &amp; events.
+                            Tell us about your business and we&apos;ll prepare professionally designed social media posts for the year—including local festivals, special occasions, and seasonal campaigns.
                         </p>
                     </div>
 
@@ -1043,7 +1045,7 @@ const speeds = [120, 160, 110, 150, 130];
                                     <div>
                                         <div className="text-[9px] font-bold uppercase tracking-widest text-orange-500 mb-0.5">Step 1</div>
                                         <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-none">
-                                            Select your industry
+                                            Choose Your Business
                                         </h3>
                                     </div>
                                 </div>
@@ -1158,7 +1160,7 @@ const speeds = [120, 160, 110, 150, 130];
                                 <div>
                                     <div className="text-[9px] font-bold uppercase tracking-widest text-orange-500 mb-0.5">Step 2</div>
                                     <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-none">
-                                        Describe Your Brand
+                                        Describe Your Business or Website
                                     </h3>
                                 </div>
                             </div>
@@ -1246,7 +1248,7 @@ const speeds = [120, 160, 110, 150, 130];
                                     <span className="absolute inset-0 animate-[shimmer_2.5s_infinite] bg-gradient-to-r from-transparent via-white/25 to-transparent" />
                                 )}
                                 {isGenerateReady && !hasGeneratedToday ? <Zap className="w-4 h-4 relative" /> : <Lock className="w-4 h-4 relative" />}
-                                <span className="relative">{hasGeneratedToday ? "Daily Limit Reached — Try Again Tomorrow" : "Generate 7 Days of Content"}</span>
+                                <span className="relative">{hasGeneratedToday ? "Daily Limit Reached — Try Again Tomorrow" : "Preview First Post"}</span>
                             </button>
                             {generateValidationError && (
                                 <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-700">
@@ -1264,16 +1266,16 @@ const speeds = [120, 160, 110, 150, 130];
                     <div className="text-center mb-12 sm:mb-16">
                         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold uppercase tracking-widest shadow-lg shadow-orange-200 mb-5">
                             <SparklesIcon className="w-3.5 h-3.5" />
-                            Live AI Preview
+                            See Exactly What Your Customers Will See
                         </div>
                         <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
-                            AI-Generated Posts for{" "}
+                            Your First 7 Posts Are{" "}
                             <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-                                Your Business
+                                Already Ready
                             </span>
                         </h2>
                         <p className="text-slate-500 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
-                            Real AI-generated images crafted uniquely for your business — click any image to see the full post view
+                            This is exactly what Shoutly AI creates for your business—professionally designed posters, captions, and hashtags, ready to publish automatically.
                         </p>
                     </div>
 
@@ -1312,72 +1314,117 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* Stock Templates — shown only before generation starts */}
                             {!streamLoading && streamedPosts.length === 0 && <div>
-                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-                                    {generateLoadingImages ? (
-                                        Array.from({ length: 8 }).map((_, i) => (
-                                            <div
-                                                key={`r2-loading-${i}`}
-                                                className="aspect-square rounded-xl bg-gray-100 animate-pulse"
-                                            />
-                                        ))
-                                    ) : previewPrimaryStockImages.length === 0 ? (
-                                        <p className="col-span-full text-center text-gray-400 py-10">
-                                            No stock templates found
-                                        </p>
-                                    ) : (
-                                        previewPrimaryStockImages.map((img, index) => {
-                                            const url = img.file || img.url || "";
-                                            const isActiveStock = selectedPreviewPost?.imageUrl === url;
-                                            return (
-                                            <div
-                                                key={img.id || `r2-stock-${index}`}
-                                                className={`relative group aspect-square rounded-xl overflow-hidden bg-gray-50 cursor-pointer transition-all duration-200 ${
-                                                    isActiveStock
-                                                        ? "ring-4 ring-orange-500 ring-offset-2 scale-[1.03]"
-                                                        : "hover:ring-2 hover:ring-orange-300 hover:ring-offset-1 hover:scale-[1.02]"
-                                                }`}
-                                                onClick={() => {
-                                                    setSelectedPreviewPost(
-                                                        isActiveStock ? null : { imageUrl: url, caption: img.name || img.title || "" }
-                                                    );
-                                                }}
-                                            >
-                                                <img
-                                                    src={img.file || img.url}
-                                                    alt={img.name || img.title || `Stock ${index + 1}`}
-                                                    loading="lazy"
-                                                    decoding="async"
-                                                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                                    onError={(e) => {
-                                                        e.currentTarget.onerror = null;
-                                                        e.currentTarget.src = getSubIndustryFallbackImage(index);
+                                {generateLoadingImages ? (
+                                    <>
+                                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-3 sm:mb-4">
+                                            {Array.from({ length: 4 }).map((_, i) => (
+                                                <div key={`r2-loading-${i}`} className="aspect-square rounded-xl bg-gray-100 animate-pulse" />
+                                            ))}
+                                        </div>
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                                            {Array.from({ length: 3 }).map((_, i) => (
+                                                <div key={`r2-loading-b${i}`} className="aspect-square rounded-xl bg-gray-100 animate-pulse" />
+                                            ))}
+                                        </div>
+                                    </>
+                                ) : previewPrimaryStockImages.length === 0 ? (
+                                    <p className="text-center text-gray-400 py-10">No stock templates found</p>
+                                ) : (
+                                    <>
+                                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-3 sm:mb-4">
+                                            {previewPrimaryStockImages.slice(0, 4).map((img, index) => {
+                                                const url = img.file || img.url || "";
+                                                const isActiveStock = selectedPreviewPost?.imageUrl === url;
+                                                return (
+                                                <div
+                                                    key={img.id || `r2-stock-${index}`}
+                                                    className={`relative group aspect-square rounded-xl overflow-hidden bg-gray-50 cursor-pointer transition-all duration-200 ${
+                                                        isActiveStock
+                                                            ? "ring-4 ring-orange-500 ring-offset-2 scale-[1.03]"
+                                                            : "hover:ring-2 hover:ring-orange-300 hover:ring-offset-1 hover:scale-[1.02]"
+                                                    }`}
+                                                    onClick={() => {
+                                                        setSelectedPreviewPost(
+                                                            isActiveStock ? null : { imageUrl: url, caption: img.name || img.title || "" }
+                                                        );
                                                     }}
-                                                />
-                                                {isActiveStock && (
-                                                    <>
-                                                        <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
-                                                            <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                                        </div>
-                                                        <div className="absolute inset-0 bg-orange-500/10 pointer-events-none" />
-                                                    </>
-                                                )}
-                                            </div>
-                                            );
-                                        })
-                                        )
-                                    }
-                                </div>
+                                                >
+                                                    <img
+                                                        src={img.file || img.url}
+                                                        alt={img.name || img.title || `Stock ${index + 1}`}
+                                                        loading="lazy"
+                                                        decoding="async"
+                                                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                                        onError={(e) => {
+                                                            e.currentTarget.onerror = null;
+                                                            e.currentTarget.src = getSubIndustryFallbackImage(index);
+                                                        }}
+                                                    />
+                                                    {isActiveStock && (
+                                                        <>
+                                                            <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                                                                <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                                            </div>
+                                                            <div className="absolute inset-0 bg-orange-500/10 pointer-events-none" />
+                                                        </>
+                                                    )}
+                                                </div>
+                                                );
+                                            })}
+                                        </div>
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                                            {previewPrimaryStockImages.slice(4, 7).map((img, index) => {
+                                                const actualIndex = index + 4;
+                                                const url = img.file || img.url || "";
+                                                const isActiveStock = selectedPreviewPost?.imageUrl === url;
+                                                return (
+                                                <div
+                                                    key={img.id || `r2-stock-${actualIndex}`}
+                                                    className={`relative group aspect-square rounded-xl overflow-hidden bg-gray-50 cursor-pointer transition-all duration-200 ${
+                                                        isActiveStock
+                                                            ? "ring-4 ring-orange-500 ring-offset-2 scale-[1.03]"
+                                                            : "hover:ring-2 hover:ring-orange-300 hover:ring-offset-1 hover:scale-[1.02]"
+                                                    }`}
+                                                    onClick={() => {
+                                                        setSelectedPreviewPost(
+                                                            isActiveStock ? null : { imageUrl: url, caption: img.name || img.title || "" }
+                                                        );
+                                                    }}
+                                                >
+                                                    <img
+                                                        src={img.file || img.url}
+                                                        alt={img.name || img.title || `Stock ${actualIndex + 1}`}
+                                                        loading="lazy"
+                                                        decoding="async"
+                                                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                                        onError={(e) => {
+                                                            e.currentTarget.onerror = null;
+                                                            e.currentTarget.src = getSubIndustryFallbackImage(actualIndex);
+                                                        }}
+                                                    />
+                                                    {isActiveStock && (
+                                                        <>
+                                                            <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                                                                <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                                            </div>
+                                                            <div className="absolute inset-0 bg-orange-500/10 pointer-events-none" />
+                                                        </>
+                                                    )}
+                                                </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </>
+                                )}
                             </div>}
 
                             {/* AI Generated Posts — shown below stock, only when streaming or posts available */}
                             {(streamLoading || streamedPosts.length > 0) && (
                             <div>
-                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-                                    {Array.from({ length: 7 }).map((_, i) => {
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-3 sm:mb-4">
+                                    {[0,1,2,3].map((i) => {
                                         const post = streamedPosts[i];
                                         const imageUrl = post?.image?.imageUrl;
-
-                                        // During streaming show spinner; after done skip empty slots
                                         if (!imageUrl) {
                                             if (!streamLoading) return null;
                                             return (
@@ -1406,8 +1453,76 @@ const speeds = [120, 160, 110, 150, 130];
                                                 </div>
                                             );
                                         }
-
-                                        // Post arrived — show image
+                                        const isActivePost = selectedPreviewPost?.imageUrl === imageUrl;
+                                        return (
+                                            <div
+                                                key={`r1-post-${i}`}
+                                                className={`relative group aspect-square rounded-xl overflow-hidden bg-gray-50 cursor-pointer transition-all duration-200 ${
+                                                    isActivePost
+                                                        ? "ring-4 ring-orange-500 ring-offset-2 scale-[1.03]"
+                                                        : "hover:ring-2 hover:ring-orange-300 hover:ring-offset-1 hover:scale-[1.02]"
+                                                }`}
+                                                onClick={() =>
+                                                    setSelectedPreviewPost(
+                                                        isActivePost ? null : { imageUrl, caption: post.text || "" }
+                                                    )
+                                                }
+                                            >
+                                                <img
+                                                    src={imageUrl}
+                                                    alt={post.text?.slice(0, 40) || `Post ${i + 1}`}
+                                                    loading="lazy"
+                                                    decoding="async"
+                                                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                                    onError={(e) => {
+                                                        e.currentTarget.onerror = null;
+                                                        e.currentTarget.src = getSubIndustryFallbackImage(i);
+                                                    }}
+                                                />
+                                                {isActivePost && (
+                                                    <>
+                                                        <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                                                            <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                                        </div>
+                                                        <div className="absolute inset-0 bg-orange-500/10 pointer-events-none" />
+                                                    </>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                                    {[4,5,6].map((i) => {
+                                        const post = streamedPosts[i];
+                                        const imageUrl = post?.image?.imageUrl;
+                                        if (!imageUrl) {
+                                            if (!streamLoading) return null;
+                                            return (
+                                                <div
+                                                    key={`r1-loading-${i}`}
+                                                    className="aspect-square rounded-xl overflow-hidden relative bg-gradient-to-br from-gray-100 via-white to-gray-100 border border-orange-200"
+                                                >
+                                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer-fast" />
+                                                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                                                        <div className="relative w-12 h-12">
+                                                            <svg className="w-full h-full text-orange-500 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="3">
+                                                                <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" />
+                                                                <path className="opacity-100" fill="none" stroke="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                                            </svg>
+                                                        </div>
+                                                        <div className="text-center">
+                                                            <p className="text-sm font-bold text-gray-800">Generating</p>
+                                                            <p className="text-xs text-gray-500 mt-0.5">AI Magic...</p>
+                                                        </div>
+                                                        <div className="flex gap-1">
+                                                            {[0, 0.2, 0.4].map((delay, d) => (
+                                                                <div key={d} className="w-2 h-2 rounded-full bg-orange-500 animate-bounce" style={{ animationDelay: `${delay}s` }} />
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        }
                                         const isActivePost = selectedPreviewPost?.imageUrl === imageUrl;
                                         return (
                                             <div
@@ -1471,17 +1586,17 @@ const speeds = [120, 160, 110, 150, 130];
                     <div className="flex justify-center mb-5">
                         <span className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold uppercase tracking-widest shadow-lg shadow-orange-200">
                             <SparklesIcon className="w-3.5 h-3.5" />
-                            Built for Every Industry
+                            Built for Business
                         </span>
                     </div>
 
                     {/* Title + Subtitle */}
                     <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
-                        Who We Help
+                        Made for Your Business
                     </h2>
 
                     <p className="text-slate-500 max-w-2xl mx-auto mb-14 text-sm sm:text-base leading-relaxed">
-                        Industry-specific content automation for businesses of all sizes
+                        Every business has a unique story. That's why your social media is tailored to your business, with relevant posts, promotions, festival greetings, and seasonal campaigns designed to engage your audience throughout the year.
                     </p>
 
                     {/* Cards Grid */}
@@ -1558,18 +1673,18 @@ const speeds = [120, 160, 110, 150, 130];
                     <div className="flex justify-center mb-5">
                         <span className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold uppercase tracking-widest shadow-lg shadow-orange-200">
                             <SparklesIcon className="w-3.5 h-3.5" />
-                            10,000+ Professional Templates
+                            Thousands of Ready-to-Publish Posts
                         </span>
                     </div>
 
                     {/* Title */}
                     <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-center text-slate-900 tracking-tight mb-4">
-                        Browse Our Library
+                        Find the Perfect Post
                     </h2>
 
                     {/* Subtitle */}
                     <p className="text-center text-slate-500 text-sm sm:text-base max-w-2xl mx-auto mb-12 sm:mb-16 px-2 leading-relaxed">
-                        Industry-specific templates that update instantly based on your selection
+                        From restaurants and salons to healthcare, real estate, retail, education, and 155+ business categories — Shoutly AI creates professional social media content tailored to your business.
                     </p>
 
                     {/* Main Card */}
