@@ -794,38 +794,87 @@ const SettingsPage: React.FC = () => {
     return socials.map((s, i) => {
       const isConn = s.status === 'connected';
       const isExp = s.status === 'expired';
-
-      let badgeHtml, actHtml;
-      if (isConn) {
-        badgeHtml = '<span class="conn-badge on"><span class="conn-dot"></span> Connected</span>';
-        actHtml = `<button class="soc-btn settings" onclick="window.dispatchEvent(new CustomEvent('open-soc-settings', { detail: { id: '${s.id}' } }))" title="Settings"><i class="fa-solid fa-sliders" style="font-size:11px"></i></button><button class="soc-btn disconnect" onclick="window.dispatchEvent(new CustomEvent('open-disconnect', { detail: { id: '${s.id}', name: '${s.name}' } }))"><i class="fa-solid fa-link-slash" style="font-size:10px"></i> Disconnect</button>`;
-      } else if (isExp) {
-        badgeHtml = '<span class="conn-badge exp"><i class="fa-solid fa-triangle-exclamation" style="font-size:9px"></i> Token Expired</span>';
-        actHtml = `<button class="soc-btn reconnect" onclick="window.dispatchEvent(new CustomEvent('open-connect', { detail: { id: '${s.id}', name: '${s.name}' } }))"><i class="fa-solid fa-rotate-right" style="font-size:10px"></i> Reconnect</button>`;
-      } else {
-        badgeHtml = '<span class="conn-badge off"><i class="fa-solid fa-circle-xmark" style="font-size:9px"></i> Not Connected</span>';
-        actHtml = `<button class="soc-btn connect" onclick="window.dispatchEvent(new CustomEvent('open-connect', { detail: { id: '${s.id}', name: '${s.name}' } }))"><i class="fa-solid fa-plus" style="font-size:10px"></i> Connect</button>`;
-      }
-
-      const infoHtml = (isConn || isExp)
-        ? `<div class="soc-handle">${s.handle}</div><div class="soc-stats"><span class="soc-stat"><strong>${s.followers}</strong> followers</span><span class="soc-stat"><strong>${s.posts}</strong> posts</span><span class="soc-stat"><strong>${s.eng}</strong> eng.</span></div>`
-        : `<div class="soc-handle" style="color:var(--t4)">Not connected · Connect to start posting</div>`;
+      const isLast = i === socials.length - 1;
 
       return (
-        <div key={s.id} className="social-row" id={`sr-${s.id}`} style={{ animationDelay: `${i * 0.04}s` }}>
-          {isConn && <div className="social-bar" style={{ background: s.barClr }}></div>}
-          <div className="soc-icon" style={{ background: s.grad }}><i className={s.icon}></i></div>
-          <div className="soc-info">
-            <div className="soc-name">{s.name}</div>
-            <div dangerouslySetInnerHTML={{ __html: infoHtml }} />
+        <div key={s.id} style={{ display:'flex', alignItems:'center', gap:16, padding:'16px 20px', borderBottom: isLast ? 'none' : '1px solid #F0F1F9', animation:`fadeIn .3s ease both`, animationDelay:`${i * 0.04}s` }}>
+          {/* Platform icon */}
+          <div style={{ width:52, height:52, borderRadius:14, background:s.grad, display:'flex', alignItems:'center', justifyContent:'center', fontSize:24, color:'#fff', flexShrink:0, boxShadow:'0 2px 8px rgba(11,12,26,.14)' }}>
+            <i className={s.icon} />
           </div>
-          <div className="soc-status">
-            <span dangerouslySetInnerHTML={{ __html: badgeHtml }} />
-            <div style={{ fontSize: '10.5px', color: 'var(--t4)', fontFamily: "'JetBrains Mono', monospace" }}>
+
+          {/* Name + info */}
+          <div style={{ flex:1, minWidth:0 }}>
+            <div style={{ fontSize:15, fontWeight:700, color:'#0B0C1A', fontFamily:"'Sora',sans-serif", marginBottom:3 }}>{s.name}</div>
+            {(isConn || isExp) ? (
+              <>
+                <div style={{ fontSize:13, color:'#4B4D6B', fontWeight:600, marginBottom:3 }}>{s.handle}</div>
+                <div style={{ display:'flex', gap:0, alignItems:'center' }}>
+                  <span style={{ fontSize:12.5, color:'#8486AB' }}><strong style={{ color:'#0B0C1A' }}>{s.followers}</strong> followers</span>
+                  <span style={{ color:'#D1D3E0', margin:'0 8px' }}>·</span>
+                  <span style={{ fontSize:12.5, color:'#8486AB' }}><strong style={{ color:'#0B0C1A' }}>{s.posts}</strong> posts</span>
+                  <span style={{ color:'#D1D3E0', margin:'0 8px' }}>·</span>
+                  <span style={{ fontSize:12.5, color:'#8486AB' }}><strong style={{ color:'#0B0C1A' }}>{s.eng}</strong> eng.</span>
+                </div>
+              </>
+            ) : (
+              <div style={{ fontSize:12.5, color:'#9496B5' }}>Not connected · Connect to start posting</div>
+            )}
+          </div>
+
+          {/* Status badge */}
+          <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:4, flexShrink:0, minWidth:130 }}>
+            {isConn && (
+              <div style={{ display:'flex', alignItems:'center', gap:5, padding:'5px 12px', borderRadius:20, background:'#ECFDF5', border:'1px solid rgba(16,185,129,.25)' }}>
+                <span style={{ width:7, height:7, borderRadius:'50%', background:'#10B981', display:'inline-block', flexShrink:0 }} />
+                <span style={{ fontSize:12, fontWeight:700, color:'#059669', fontFamily:"'Sora',sans-serif" }}>Connected</span>
+              </div>
+            )}
+            {isExp && (
+              <div style={{ display:'flex', alignItems:'center', gap:5, padding:'5px 12px', borderRadius:20, background:'#FFFBEB', border:'1px solid #FCD34D' }}>
+                <i className="fa-solid fa-triangle-exclamation" style={{ fontSize:10, color:'#F59E0B' }} />
+                <span style={{ fontSize:12, fontWeight:700, color:'#B45309', fontFamily:"'Sora',sans-serif" }}>Token Expired</span>
+              </div>
+            )}
+            {!isConn && !isExp && (
+              <div style={{ display:'flex', alignItems:'center', gap:5, padding:'5px 12px', borderRadius:20, background:'#F0F1F9', border:'1px solid #E2E4F0' }}>
+                <span style={{ width:7, height:7, borderRadius:'50%', background:'#BFC1D9', display:'inline-block', flexShrink:0 }} />
+                <span style={{ fontSize:12, fontWeight:700, color:'#8486AB', fontFamily:"'Sora',sans-serif" }}>Not Connected</span>
+              </div>
+            )}
+            <div style={{ fontSize:11, color:'#BFC1D9', fontFamily:"'JetBrains Mono',monospace" }}>
               {isConn ? `↻ ${s.sync}` : isExp ? s.sync : ''}
             </div>
           </div>
-          <div className="soc-actions" dangerouslySetInnerHTML={{ __html: actHtml }} />
+
+          {/* Action button */}
+          <div style={{ flexShrink:0, minWidth:110, display:'flex', justifyContent:'flex-end' }}>
+            {isConn && (
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('open-disconnect', { detail: { id: s.id, name: s.name } }))}
+                style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 16px', borderRadius:9, border:'1.5px solid #E2E4F0', background:'#fff', color:'#3D3F60', fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:"'Sora',sans-serif", whiteSpace:'nowrap', transition:'all .14s' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor='#EF4444'; (e.currentTarget as HTMLButtonElement).style.color='#EF4444'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor='#E2E4F0'; (e.currentTarget as HTMLButtonElement).style.color='#3D3F60'; }}>
+                <i className="fa-solid fa-link-slash" style={{ fontSize:11 }} /> Disconnect
+              </button>
+            )}
+            {isExp && (
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('open-connect', { detail: { id: s.id, name: s.name } }))}
+                style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 16px', borderRadius:9, border:'none', background:'linear-gradient(135deg,#F97316,#EA580C)', color:'#fff', fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:"'Sora',sans-serif", whiteSpace:'nowrap', boxShadow:'0 2px 10px rgba(249,115,22,.3)' }}>
+                <i className="fa-solid fa-rotate-right" style={{ fontSize:11 }} /> Reconnect
+              </button>
+            )}
+            {!isConn && !isExp && (
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('open-connect', { detail: { id: s.id, name: s.name } }))}
+                style={{ display:'flex', alignItems:'center', gap:6, padding:'9px 16px', borderRadius:9, border:'1.5px solid #E2E4F0', background:'#fff', color:'#3D3F60', fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:"'Sora',sans-serif", whiteSpace:'nowrap', transition:'all .14s' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor='#F97316'; (e.currentTarget as HTMLButtonElement).style.color='#F97316'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor='#E2E4F0'; (e.currentTarget as HTMLButtonElement).style.color='#3D3F60'; }}>
+                <i className="fa-solid fa-plus" style={{ fontSize:11 }} /> Connect
+              </button>
+            )}
+          </div>
         </div>
       );
     });
@@ -1259,14 +1308,23 @@ const SettingsPage: React.FC = () => {
 
               {/* Social Accounts Section */}
               <div className="sec" id="sec-social" style={{ animationDelay: '0.12s', display: activeSection === 'social' ? undefined : 'none' }}>
-                <div className="sec-hdr">
+                {/* Section header */}
+                <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:16, gap:12 }}>
                   <div>
-                    <div className="sec-title"><i className="fa-solid fa-share-nodes"></i>Connected Social Accounts</div>
-                    <div className="sec-sub">Manage which platforms Shoutly AI can post to on your behalf</div>
+                    <div style={{ display:'flex', alignItems:'center', gap:8, fontSize:16, fontWeight:800, color:'#0B0C1A', fontFamily:"'Sora',sans-serif", marginBottom:4 }}>
+                      <i className="fa-solid fa-share-nodes" style={{ color:'#F97316', fontSize:15 }} />
+                      Connected Social Accounts
+                    </div>
+                    <div style={{ fontSize:13, color:'#8486AB' }}>Manage which platforms Shoutly AI can post to on your behalf</div>
                   </div>
-                  <button className="btn primary" onClick={openPickerModal}><i className="fa-solid fa-plus" style={{ fontSize: '10px' }}></i> Connect Account</button>
+                  <button
+                    onClick={openPickerModal}
+                    style={{ display:'flex', alignItems:'center', gap:6, padding:'10px 18px', borderRadius:9, border:'none', background:'linear-gradient(115deg,#F97316,#EA580C)', color:'#fff', fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:"'Sora',sans-serif", whiteSpace:'nowrap', flexShrink:0, boxShadow:'0 4px 14px rgba(249,115,22,.35)' }}>
+                    <i className="fa-solid fa-plus" style={{ fontSize:10 }} /> Connect Account
+                  </button>
                 </div>
-                <div className="sec-body" id="socialGrid">
+                {/* Platform list — white card */}
+                <div style={{ background:'#fff', border:'1px solid #E2E4F0', borderRadius:16, overflow:'hidden', boxShadow:'0 1px 4px rgba(11,12,26,.04)' }} id="socialGrid">
                   {renderSocials()}
                 </div>
               </div>

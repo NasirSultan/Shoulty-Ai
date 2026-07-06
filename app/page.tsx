@@ -1030,26 +1030,19 @@ const speeds = [120, 160, 110, 150, 130];
                     </div>
 
                     {/* Cards Row */}
-                    <div id="industry-cards" className="relative grid grid-cols-1 md:grid-cols-2 gap-10 sm:gap-12">
-                        {/* Connector between steps (desktop only) */}
-                        <div className="hidden md:flex absolute top-14 left-1/2 -translate-x-1/2 z-20 w-11 h-11 rounded-full bg-gradient-to-br from-orange-500 to-red-500 items-center justify-center shadow-lg shadow-orange-300/50 ring-4 ring-white">
-                            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                            </svg>
-                        </div>
+                    <div id="industry-cards" className="relative grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-7">
 
                         {/* CARD 1 - Industry Selection */}
-                        <div className="group/card p-[2px] rounded-[28px] bg-gradient-to-br from-orange-400 via-red-300 to-orange-400 shadow-xl shadow-orange-200/60 hover:shadow-2xl hover:shadow-orange-300/70 hover:-translate-y-1.5 transition-all duration-300">
-                        <div className="h-full bg-white rounded-[26px] p-5 sm:p-8 relative overflow-hidden">
+                        <div className="group/card border border-orange-100 rounded-2xl bg-white p-4 sm:p-6 relative overflow-hidden shadow-lg shadow-orange-100/40 hover:shadow-xl hover:shadow-orange-200/40 hover:-translate-y-1 transition-all duration-300">
                             <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-orange-50 to-transparent rounded-full -mr-16 -mt-16 pointer-events-none"></div>
-                            <div className="flex items-center justify-between mb-5 sm:mb-6">
-                                <div className="flex items-center gap-3">
-                                    <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 text-white flex items-center justify-center text-sm font-black shadow-md shadow-orange-200 group-hover/card:scale-110 transition-transform duration-300">
+                            <div className="flex items-center justify-between mb-3 sm:mb-4">
+                                <div className="flex items-center gap-2.5">
+                                    <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 text-white flex items-center justify-center text-xs font-black shadow-md shadow-orange-200 group-hover/card:scale-110 transition-transform duration-300">
                                         1
                                     </span>
                                     <div>
-                                        <div className="text-[10px] font-bold uppercase tracking-widest text-orange-500 mb-0.5">Step 1</div>
-                                        <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-none">
+                                        <div className="text-[9px] font-bold uppercase tracking-widest text-orange-500 mb-0.5">Step 1</div>
+                                        <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-none">
                                             Select your industry
                                         </h3>
                                     </div>
@@ -1060,7 +1053,7 @@ const speeds = [120, 160, 110, 150, 130];
                                 value={generateSelectedIndustry}
                                 // REPLACE WITH:
                                 onChange={(e) => handleSelectGenerateIndustry(e.target.value)}
-                                className="w-full mb-4 px-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50/70 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white focus:shadow-md text-sm sm:text-base font-medium text-slate-700 transition-all duration-200 cursor-pointer hover:border-orange-300 hover:shadow-md"
+                                className="w-full mb-3 px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/70 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white focus:shadow-md text-sm font-medium text-slate-700 transition-all duration-200 cursor-pointer hover:border-orange-300 hover:shadow-md"
                             >
                                 <option value="">Choose your industry</option>
                                 {loadingIndustries ? (
@@ -1078,28 +1071,28 @@ const speeds = [120, 160, 110, 150, 130];
                             </select>
 
                             {!loadingIndustries && industries.length > 0 && !generateSelectedIndustry && (
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5 mb-4 sm:mb-5">
                                     {industries.slice(0, 6).map((industry: Industry, i) => {
                                         const isActive = String(generateSelectedIndustry) === String(industry.id);
                                         return (
                                             <div
                                                 key={industry.id}
                                                 onClick={() => handleSelectGenerateIndustry(String(industry.id))}
-                                                className={`group cursor-pointer relative overflow-hidden rounded-2xl p-4 border-2 transition-all duration-200 flex flex-col items-center gap-2 ${
+                                                className={`group cursor-pointer relative overflow-hidden rounded-xl p-2.5 border-2 transition-all duration-200 flex flex-col items-center gap-1.5 ${
                                                     isActive
                                                         ? "border-orange-500 bg-gradient-to-br from-orange-50 to-red-50 shadow-lg shadow-orange-100"
                                                         : "border-slate-100 bg-gradient-to-b from-white to-slate-50/80 shadow-sm hover:border-orange-300 hover:shadow-md hover:shadow-orange-100/60 hover:bg-orange-50/40"
                                                 }`}
                                             >
                                                 {/* Number badge */}
-                                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-sm transition-all duration-200 ${
+                                                <div className={`w-7 h-7 rounded-lg flex items-center justify-center font-black text-xs transition-all duration-200 ${
                                                     isActive
                                                         ? "bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-md shadow-orange-200"
                                                         : "bg-slate-100 text-slate-500 group-hover:bg-orange-500 group-hover:text-white"
                                                 }`}>
                                                     {i + 1}
                                                 </div>
-                                                <span className={`text-xs sm:text-sm text-center font-semibold leading-tight transition-colors duration-200 ${
+                                                <span className={`text-[11px] sm:text-xs text-center font-semibold leading-tight transition-colors duration-200 ${
                                                     isActive ? "text-orange-600" : "text-slate-600 group-hover:text-slate-900"
                                                 }`}>
                                                     {industry.name}
@@ -1113,9 +1106,9 @@ const speeds = [120, 160, 110, 150, 130];
                                 </div>
                             )}
 
-                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5">
                                 {generateSubIndustries.length === 0 ? (
-                                    <p className="text-sm text-slate-400 col-span-full text-center py-10 font-medium">
+                                    <p className="text-sm text-slate-400 col-span-full text-center py-5 font-medium">
                                         Select an industry to see sub-categories
                                     </p>
                                 ) : (
@@ -1125,21 +1118,21 @@ const speeds = [120, 160, 110, 150, 130];
                                             <div
                                                 key={sub.id || i}
                                                 onClick={() => setGeneratePendingSubIndustry(String(sub.id))}
-                                                className={`group cursor-pointer relative overflow-hidden rounded-2xl p-4 border-2 transition-all duration-200 flex flex-col items-center gap-2 ${
+                                                className={`group cursor-pointer relative overflow-hidden rounded-xl p-2.5 border-2 transition-all duration-200 flex flex-col items-center gap-1.5 ${
                                                     isActive
                                                         ? "border-orange-500 bg-gradient-to-br from-orange-50 to-red-50 shadow-lg shadow-orange-100"
                                                         : "border-slate-100 bg-gradient-to-b from-white to-slate-50/80 shadow-sm hover:border-orange-300 hover:shadow-md hover:shadow-orange-100/60 hover:bg-orange-50/40"
                                                 }`}
                                             >
                                                 {/* Number badge */}
-                                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-sm transition-all duration-200 ${
+                                                <div className={`w-7 h-7 rounded-lg flex items-center justify-center font-black text-xs transition-all duration-200 ${
                                                     isActive
                                                         ? "bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-md shadow-orange-200"
                                                         : "bg-slate-100 text-slate-500 group-hover:bg-orange-500 group-hover:text-white"
                                                 }`}>
                                                     {i + 1}
                                                 </div>
-                                                <span className={`text-xs sm:text-sm text-center font-semibold leading-tight transition-colors duration-200 ${
+                                                <span className={`text-[11px] sm:text-xs text-center font-semibold leading-tight transition-colors duration-200 ${
                                                     isActive ? "text-orange-600" : "text-slate-600 group-hover:text-slate-900"
                                                 }`}>
                                                     {sub.name}
@@ -1153,20 +1146,18 @@ const speeds = [120, 160, 110, 150, 130];
                                 )}
                             </div>
                         </div>
-                        </div>
 
                         {/* CARD 2 - Prompt/Brand Description */}
-                        <div className="group/card p-[2px] rounded-[28px] bg-gradient-to-br from-orange-400 via-red-300 to-orange-400 shadow-xl shadow-orange-200/60 hover:shadow-2xl hover:shadow-orange-300/70 hover:-translate-y-1.5 transition-all duration-300">
-                        <div className="h-full bg-white rounded-[26px] p-5 sm:p-8 relative overflow-hidden">
+                        <div className="group/card border border-orange-100 rounded-2xl bg-white p-4 sm:p-6 relative overflow-hidden shadow-lg shadow-orange-100/40 hover:shadow-xl hover:shadow-orange-200/40 hover:-translate-y-1 transition-all duration-300">
                             <div className="absolute -top-20 -right-20 w-60 h-60 bg-gradient-to-br from-orange-100 to-red-50 rounded-full blur-3xl opacity-60 pointer-events-none" />
 
-                            <div className="flex items-center gap-3 mb-5 sm:mb-6">
-                                <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 text-white flex items-center justify-center text-sm font-black shadow-md shadow-orange-200 group-hover/card:scale-110 transition-transform duration-300">
+                            <div className="flex items-center gap-2.5 mb-3 sm:mb-4">
+                                <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 text-white flex items-center justify-center text-xs font-black shadow-md shadow-orange-200 group-hover/card:scale-110 transition-transform duration-300">
                                     2
                                 </span>
                                 <div>
-                                    <div className="text-[10px] font-bold uppercase tracking-widest text-orange-500 mb-0.5">Step 2</div>
-                                    <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-none">
+                                    <div className="text-[9px] font-bold uppercase tracking-widest text-orange-500 mb-0.5">Step 2</div>
+                                    <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-none">
                                         Describe Your Brand
                                     </h3>
                                 </div>
@@ -1174,19 +1165,19 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* ... existing code ... */}
 
-                            <div className="relative mb-3">
-                                <SparklesIcon className="absolute top-3.5 right-3.5 w-4 h-4 text-orange-300 pointer-events-none" />
+                            <div className="relative mb-2.5">
+                                <SparklesIcon className="absolute top-3 right-3 w-4 h-4 text-orange-300 pointer-events-none" />
                                 <AnimatedTextarea
                                     value={brandDescription}
                                     onChange={setBrandDescription}
                                     minLength={MIN_BRAND_DESCRIPTION_CHARS}
                                     maxLength={MAX_BRAND_DESCRIPTION_CHARS}
-                                    className="w-full min-h-[140px] sm:min-h-[180px] p-4 pr-9 bg-slate-50/70 rounded-2xl border border-slate-200 hover:border-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white resize-none text-sm sm:text-base font-medium text-slate-700 shadow-inner transition-all duration-200"
+                                    className="w-full min-h-[90px] sm:min-h-[110px] p-3 pr-9 bg-slate-50/70 rounded-xl border border-slate-200 hover:border-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white resize-none text-sm font-medium text-slate-700 shadow-inner transition-all duration-200"
                                 />
                             </div>
 
                             {/* Char counter */}
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center justify-between mb-2.5">
                                 <p className={`text-xs font-medium ${brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS ? "text-red-400" : "text-slate-400"}`}>
                                     {brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS
                                         ? `Min ${MIN_BRAND_DESCRIPTION_CHARS} chars (${brandDescription.trim().length}/${MIN_BRAND_DESCRIPTION_CHARS})`
@@ -1197,12 +1188,12 @@ const speeds = [120, 160, 110, 150, 130];
                                 </p>
                             </div>
 
-                            <div className="mb-6 flex justify-end">
+                            <div className="mb-3 flex justify-end">
                                 <button
                                     type="button"
                                     onClick={handleRegenerateBrandDescription}
                                     disabled={isRegeneratingBrand || brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS || regenCount >= MAX_REGENERATIONS_PER_DAY}
-                                    className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition-all ${
+                                    className={`inline-flex items-center justify-center gap-2 rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all ${
                                         isRegeneratingBrand || brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS || regenCount >= MAX_REGENERATIONS_PER_DAY
                                             ? "cursor-not-allowed bg-slate-100 text-slate-400"
                                             : "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:brightness-110 cursor-pointer shadow-md shadow-orange-200"
@@ -1220,10 +1211,10 @@ const speeds = [120, 160, 110, 150, 130];
 
                             {/* ... rest of the buttons and CTA ... */}
 
-                            <div className="flex gap-3 mb-6">
+                            <div className="flex gap-2.5 mb-3">
                                 <button
                                     onClick={() => setSelectedContent(selectedContent === "photos" ? null : "photos")}
-                                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 text-sm font-bold transition-all duration-200 ${
+                                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-xl border-2 text-xs sm:text-sm font-bold transition-all duration-200 ${
                                         selectedContent === "photos"
                                             ? "bg-gradient-to-r from-orange-500 to-red-500 border-transparent text-white"
                                             : "bg-white border-slate-200 text-slate-600 hover:border-orange-400 hover:text-orange-500"
@@ -1233,36 +1224,17 @@ const speeds = [120, 160, 110, 150, 130];
                                 </button>
                                 <button
                                     onClick={() => setShowReelsComingSoon(true)}
-                                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 text-sm font-bold transition-all duration-200 bg-white border-slate-200 text-slate-600 hover:border-orange-400 hover:text-orange-500"
+                                    className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl border-2 text-xs sm:text-sm font-bold transition-all duration-200 bg-white border-slate-200 text-slate-600 hover:border-orange-400 hover:text-orange-500"
                                 >
                                     <Film className="w-4 h-4" /> Create Reels
                                 </button>
                             </div>
 
-                            {showReelsComingSoon && (
-                                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setShowReelsComingSoon(false)}>
-                                    <div className="bg-white rounded-2xl shadow-2xl p-8 flex flex-col items-center gap-4 max-w-xs mx-4" onClick={(e) => e.stopPropagation()}>
-                                        <div className="w-14 h-14 rounded-full flex items-center justify-center text-3xl" style={{ background: "linear-gradient(135deg,#f97316,#ef4444)" }}>
-                                            🎬
-                                        </div>
-                                        <h3 className="text-xl font-bold text-gray-900">Coming Soon!</h3>
-                                        <p className="text-sm text-gray-500 text-center">Reels generation is under development. Stay tuned for this exciting feature!</p>
-                                        <button
-                                            onClick={() => setShowReelsComingSoon(false)}
-                                            className="mt-2 px-6 py-2 rounded-full text-sm font-semibold text-white"
-                                            style={{ background: "linear-gradient(135deg,#f97316,#ef4444)" }}
-                                        >
-                                            Got it
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-
                             {/* CTA Button */}
                             <button
                                 onClick={handleGenerateClick}
                                 disabled={hasGeneratedToday}
-                                className={`relative w-full py-4 rounded-2xl text-base font-black tracking-wide transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 overflow-hidden ${
+                                className={`relative w-full py-3 rounded-xl text-sm sm:text-base font-black tracking-wide transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 overflow-hidden ${
                                     hasGeneratedToday
                                         ? "bg-slate-100 text-slate-400 cursor-not-allowed"
                                         : isGenerateReady
@@ -1281,7 +1253,6 @@ const speeds = [120, 160, 110, 150, 130];
                                     {generateValidationError}
                                 </div>
                             )}
-                        </div>
                         </div>
                     </div>
                 </div>

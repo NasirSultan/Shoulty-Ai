@@ -21,9 +21,10 @@ interface Platform {
 
 interface ConnectedAccount {
   id: string; brandName: string; brandInitials: string; brandColor: string;
-  platformId: string; platformIcon: string; platformColor: string;
+  platformId: string; platformIcon: string; platformColor: string; platformGrad: string;
   handle: string; accountType: string; role: "Admin" | "Owner" | "Member";
   health: "Healthy" | "Needs refresh";
+  followers: string;
   connectedDate: string; lastSync: string; publishing: "active" | "at risk";
   permissions: string[]; workspace: string;
 }
@@ -41,17 +42,17 @@ const INIT_PLATS: Platform[] = [
 ];
 
 const WORKSPACE_ACCOUNTS: ConnectedAccount[] = [
-  { id:"a1", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"fb", platformIcon:"fa-brands fa-facebook", platformColor:"#1877F2", handle:"BrightFit Studio", accountType:"Page", role:"Admin", health:"Needs refresh", connectedDate:"Mar 2025", lastSync:"3d ago", publishing:"at risk", workspace:"BrightFit Studio", permissions:["Can publish posts","Can publish reels","Can publish stories","Can read analytics","Can reply to comments","Can schedule"] },
-  { id:"a2", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"ig", platformIcon:"fa-brands fa-instagram", platformColor:"#E1306C", handle:"@brightfit.studio", accountType:"Profile", role:"Owner", health:"Healthy", connectedDate:"Mar 2025", lastSync:"10 min ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish posts","Can publish reels","Can publish stories","Can read analytics","Can reply to comments","Can schedule"] },
-  { id:"a3", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"li", platformIcon:"fa-brands fa-linkedin", platformColor:"#0A66C2", handle:"brightfit-studio", accountType:"Company", role:"Admin", health:"Healthy", connectedDate:"Apr 2025", lastSync:"2h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish posts","Can read analytics","Can reply to comments","Can schedule"] },
-  { id:"a4", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"tk", platformIcon:"fa-brands fa-tiktok", platformColor:"#010101", handle:"@brightfit", accountType:"Profile", role:"Owner", health:"Healthy", connectedDate:"May 2025", lastSync:"25 min ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish reels","Can read analytics","Can reply to comments","Can schedule"] },
-  { id:"a5", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"yt", platformIcon:"fa-brands fa-youtube", platformColor:"#FF0000", handle:"@BrightFitStudio", accountType:"Channel", role:"Owner", health:"Healthy", connectedDate:"Mar 2025", lastSync:"1h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish videos","Can read analytics","Can reply to comments","Can schedule"] },
-  { id:"a6", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"x", platformIcon:"fa-brands fa-x-twitter", platformColor:"#1A1A1A", handle:"@BrightFitStudio", accountType:"Profile", role:"Owner", health:"Healthy", connectedDate:"Mar 2025", lastSync:"1h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish posts","Can read analytics","Can reply to comments","Can schedule"] },
-  { id:"a7", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"pi", platformIcon:"fa-brands fa-pinterest", platformColor:"#E60023", handle:"@brightfitstudio", accountType:"Business", role:"Admin", health:"Healthy", connectedDate:"Jun 2025", lastSync:"4h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish pins","Can read analytics","Can schedule"] },
-  { id:"a8", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"gb", platformIcon:"fa-brands fa-google", platformColor:"#4285F4", handle:"BrightFit Studio", accountType:"Business Profile", role:"Admin", health:"Healthy", connectedDate:"May 2025", lastSync:"6h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish posts","Can read analytics","Can schedule"] },
-  { id:"b1", brandName:"Wellness Hub", brandInitials:"WH", brandColor:"#059669", platformId:"ig", platformIcon:"fa-brands fa-instagram", platformColor:"#E1306C", handle:"@wellnesshub", accountType:"Profile", role:"Owner", health:"Healthy", connectedDate:"May 2025", lastSync:"15 min ago", publishing:"active", workspace:"Wellness Hub", permissions:["Can publish posts","Can publish reels","Can read analytics","Can schedule"] },
-  { id:"b2", brandName:"Wellness Hub", brandInitials:"WH", brandColor:"#059669", platformId:"tk", platformIcon:"fa-brands fa-tiktok", platformColor:"#010101", handle:"@wellnesshub", accountType:"Profile", role:"Owner", health:"Healthy", connectedDate:"Jun 2025", lastSync:"30 min ago", publishing:"active", workspace:"Wellness Hub", permissions:["Can publish reels","Can read analytics","Can schedule"] },
-  { id:"b3", brandName:"Wellness Hub", brandInitials:"WH", brandColor:"#059669", platformId:"pi", platformIcon:"fa-brands fa-pinterest", platformColor:"#E60023", handle:"@wellnesshub", accountType:"Business", role:"Admin", health:"Healthy", connectedDate:"Jun 2025", lastSync:"5h ago", publishing:"active", workspace:"Wellness Hub", permissions:["Can publish pins","Can read analytics","Can schedule"] },
+  { id:"a1", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"ig", platformIcon:"fa-brands fa-instagram", platformColor:"#E1306C", platformGrad:"linear-gradient(135deg,#F77737,#E1306C,#833AB4)", handle:"@brightfit.studio", accountType:"Business", followers:"12.4k followers", role:"Owner", health:"Healthy", connectedDate:"Mar 2025", lastSync:"10 min ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish posts","Can publish reels","Can publish stories","Can read analytics","Can reply to comments","Can schedule"] },
+  { id:"a2", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"tk", platformIcon:"fa-brands fa-tiktok", platformColor:"#010101", platformGrad:"linear-gradient(135deg,#010101,#EE1D52)", handle:"@brightfitstudio", accountType:"Profile", followers:"8.1k followers", role:"Owner", health:"Healthy", connectedDate:"May 2025", lastSync:"25 min ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish reels","Can read analytics","Can reply to comments","Can schedule"] },
+  { id:"a3", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"li", platformIcon:"fa-brands fa-linkedin", platformColor:"#0A66C2", platformGrad:"linear-gradient(135deg,#0A66C2,#0853A0)", handle:"BrightFit Studio", accountType:"Company page", followers:"", role:"Admin", health:"Healthy", connectedDate:"Apr 2025", lastSync:"2h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish posts","Can read analytics","Can reply to comments","Can schedule"] },
+  { id:"a4", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"fb", platformIcon:"fa-brands fa-facebook", platformColor:"#1877F2", platformGrad:"linear-gradient(135deg,#1877F2,#0C52C5)", handle:"BrightFit Studio", accountType:"Page", followers:"", role:"Admin", health:"Needs refresh", connectedDate:"Mar 2025", lastSync:"3d ago", publishing:"at risk", workspace:"BrightFit Studio", permissions:["Can publish posts","Can publish reels","Can publish stories","Can read analytics","Can reply to comments","Can schedule"] },
+  { id:"a5", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"x", platformIcon:"fa-brands fa-x-twitter", platformColor:"#1A1A1A", platformGrad:"linear-gradient(135deg,#1A1A1A,#444)", handle:"@brightfit_blr", accountType:"Profile", followers:"2.3k followers", role:"Owner", health:"Healthy", connectedDate:"Mar 2025", lastSync:"1h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish posts","Can read analytics","Can reply to comments","Can schedule"] },
+  { id:"a6", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"yt", platformIcon:"fa-brands fa-youtube", platformColor:"#FF0000", platformGrad:"linear-gradient(135deg,#FF0000,#CC0000)", handle:"BrightFit Studio", accountType:"Channel", followers:"Shorts enabled", role:"Owner", health:"Healthy", connectedDate:"Mar 2025", lastSync:"1h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish videos","Can read analytics","Can reply to comments","Can schedule"] },
+  { id:"a7", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"pi", platformIcon:"fa-brands fa-pinterest", platformColor:"#E60023", platformGrad:"linear-gradient(135deg,#E60023,#AD0019)", handle:"@brightfitstudio", accountType:"Business", followers:"", role:"Admin", health:"Healthy", connectedDate:"Jun 2025", lastSync:"4h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish pins","Can read analytics","Can schedule"] },
+  { id:"a8", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"gb", platformIcon:"fa-brands fa-google", platformColor:"#4285F4", platformGrad:"linear-gradient(135deg,#4285F4,#1A6CF0)", handle:"BrightFit Studio", accountType:"Business Profile", followers:"", role:"Admin", health:"Healthy", connectedDate:"May 2025", lastSync:"6h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish posts","Can read analytics","Can schedule"] },
+  { id:"b1", brandName:"Wellness Hub", brandInitials:"WH", brandColor:"#059669", platformId:"ig", platformIcon:"fa-brands fa-instagram", platformColor:"#E1306C", platformGrad:"linear-gradient(135deg,#F77737,#E1306C,#833AB4)", handle:"@wellnesshub", accountType:"Profile", followers:"5.2k followers", role:"Owner", health:"Healthy", connectedDate:"May 2025", lastSync:"15 min ago", publishing:"active", workspace:"Wellness Hub", permissions:["Can publish posts","Can publish reels","Can read analytics","Can schedule"] },
+  { id:"b2", brandName:"Wellness Hub", brandInitials:"WH", brandColor:"#059669", platformId:"tk", platformIcon:"fa-brands fa-tiktok", platformColor:"#010101", platformGrad:"linear-gradient(135deg,#010101,#EE1D52)", handle:"@wellnesshub", accountType:"Profile", followers:"3.1k followers", role:"Owner", health:"Healthy", connectedDate:"Jun 2025", lastSync:"30 min ago", publishing:"active", workspace:"Wellness Hub", permissions:["Can publish reels","Can read analytics","Can schedule"] },
+  { id:"b3", brandName:"Wellness Hub", brandInitials:"WH", brandColor:"#059669", platformId:"pi", platformIcon:"fa-brands fa-pinterest", platformColor:"#E60023", platformGrad:"linear-gradient(135deg,#E60023,#AD0019)", handle:"@wellnesshub", accountType:"Business", followers:"", role:"Admin", health:"Healthy", connectedDate:"Jun 2025", lastSync:"5h ago", publishing:"active", workspace:"Wellness Hub", permissions:["Can publish pins","Can read analytics","Can schedule"] },
 ];
 
 const AI_RECS = [
@@ -163,101 +164,53 @@ function PlatCard({ p, onConnect, onDisconnect, showToast }: {
 }
 
 // ── Connected Account Row ──────────────────────────────────────────────────
-function AccountRow({ acc, showToast }: { acc: ConnectedAccount; showToast: (m: string, t?: string) => void }) {
+function AccountRow({ acc, showToast, isLast }: { acc: ConnectedAccount; showToast: (m: string, t?: string) => void; isLast?: boolean }) {
   const needsRefresh = acc.health === "Needs refresh";
-  const [moreOpen, setMoreOpen] = useState(false);
-  const moreRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
+  const platName: Record<string, string> = {
+    ig:"Instagram", tk:"TikTok", li:"LinkedIn", fb:"Facebook",
+    x:"X", yt:"YouTube", pi:"Pinterest", gb:"Google Business",
+  };
 
-  const moreItems = [
-    { icon:"fa-chart-simple", label:"View Analytics", danger:false, action:() => { showToast("📊 Opening analytics…","brand"); setMoreOpen(false); } },
-    { icon:"fa-rotate", label:"Force Sync Now", danger:false, action:() => { showToast(`🔄 Syncing ${acc.handle}…`,"brand"); setMoreOpen(false); } },
-    { icon:"fa-calendar-check", label:"View Scheduled Posts", danger:false, action:() => { showToast("📅 Opening queue…","brand"); setMoreOpen(false); } },
-    { icon:"fa-pen", label:"Edit Account Settings", danger:false, action:() => { showToast("⚙️ Opening settings…","brand"); setMoreOpen(false); } },
-    { icon:"fa-unlink", label:"Disconnect This Account", danger:true, action:() => { showToast("🔌 Disconnecting…","red"); setMoreOpen(false); } },
-  ];
+  const meta = [platName[acc.platformId] || acc.platformId, acc.accountType, acc.followers].filter(Boolean).join(" · ");
 
   return (
-    <div style={{ background:"#fff", border:`1px solid ${needsRefresh?"rgba(245,158,11,.2)":"#E2E4F0"}`, borderRadius:12, padding:"16px 20px", display:"flex", alignItems:"flex-start", gap:14 }}>
-      {/* Avatar */}
-      <div style={{ position:"relative", flexShrink:0 }}>
-        <div style={{ width:48, height:48, borderRadius:12, background:acc.brandColor, display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, fontWeight:800, color:"#fff", fontFamily:"Sora,sans-serif" }}>
-          {acc.brandInitials}
-        </div>
-        <div style={{ position:"absolute", bottom:-2, right:-2, width:18, height:18, borderRadius:5, background:acc.platformColor, display:"flex", alignItems:"center", justifyContent:"center", fontSize:9, color:"#fff", border:"2px solid #fff" }}>
-          <i className={acc.platformIcon} />
-        </div>
+    <div style={{ display:"flex", alignItems:"center", gap:16, padding:"16px 24px", borderBottom:isLast ? "none" : "1px solid #F0F1F9" }}>
+      {/* Platform icon */}
+      <div style={{ width:48, height:48, borderRadius:14, background:acc.platformGrad, display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, color:"#fff", flexShrink:0, boxShadow:"0 2px 8px rgba(11,12,26,.12)" }}>
+        <i className={acc.platformIcon} />
       </div>
 
-      {/* Info */}
+      {/* Handle + meta */}
       <div style={{ flex:1, minWidth:0 }}>
-        <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:3, flexWrap:"wrap" }}>
-          <span style={{ fontSize:14, fontWeight:700, color:"#0B0C1A", fontFamily:"Sora,sans-serif" }}>{acc.brandName}</span>
-          <span style={{ display:"flex", alignItems:"center", gap:4, padding:"2px 8px", borderRadius:20, fontSize:11, fontWeight:700, background:needsRefresh?"#FFFBEB":"#ECFDF5", color:needsRefresh?"#B45309":"#059669" }}>
-            <span style={{ width:6, height:6, borderRadius:"50%", background:"currentColor", flexShrink:0, display:"inline-block" }} />
-            {acc.health}
-          </span>
-          <span style={{ padding:"2px 8px", borderRadius:20, fontSize:11, fontWeight:600, background:"#F0F1F9", color:"#8486AB" }}>{acc.role}</span>
-        </div>
-        <div style={{ fontSize:12, color:"#8486AB", marginBottom:5 }}>
-          <i className={acc.platformIcon} style={{ marginRight:4, fontSize:11 }} />
-          {acc.handle} · {acc.accountType}
-        </div>
-        <div style={{ fontSize:11.5, color:"#8486AB", marginBottom:8 }}>
-          Connected {acc.connectedDate} &nbsp;·&nbsp; Last sync {acc.lastSync} &nbsp;·&nbsp; Publishing{" "}
-          <span style={{ fontWeight:700, color:needsRefresh?"#F59E0B":"#059669" }}>{acc.publishing}</span>
-        </div>
-        <div style={{ display:"flex", flexWrap:"wrap", gap:4 }}>
-          {acc.permissions.map(pm => (
-            <span key={pm} style={{ padding:"2px 7px", borderRadius:5, background:"#F0F1F9", border:"1px solid #E2E4F0", fontSize:11, color:"#8486AB", fontWeight:500 }}>{pm}</span>
-          ))}
-        </div>
+        <div style={{ fontSize:15, fontWeight:700, color:"#0B0C1A", fontFamily:"Sora,sans-serif", marginBottom:3 }}>{acc.handle}</div>
+        <div style={{ fontSize:12.5, color:"#8486AB" }}>{meta}</div>
       </div>
 
-      {/* Actions */}
-      <div style={{ display:"flex", flexDirection:"column", gap:6, flexShrink:0 }}>
-        {needsRefresh ? (
-          <button onClick={() => showToast(`🔄 Reconnecting ${acc.handle}…`,"brand")} style={{ padding:"8px 16px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"linear-gradient(115deg,#F97316,#EA580C)", color:"#fff", border:"none", whiteSpace:"nowrap", boxShadow:"0 2px 8px rgba(249,115,22,.3)" }}>
-            Reconnect
-          </button>
-        ) : (
-          <button onClick={() => showToast(`Managing ${acc.handle}…`,"brand")} style={{ padding:"8px 16px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#fff", border:"1.5px solid #E2E4F0", color:"#3D3F60", whiteSpace:"nowrap" }}>
-            Manage
-          </button>
-        )}
-        {/* More dropdown */}
-        <div ref={moreRef} style={{ position:"relative" }}>
-          <button
-            onClick={() => setMoreOpen(o => !o)}
-            style={{ width:"100%", padding:"7px 16px", borderRadius:8, fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"Sora,sans-serif", background:moreOpen?"#F0F1F9":"#fff", border:"1.5px solid #E2E4F0", color:"#8486AB", whiteSpace:"nowrap", display:"flex", alignItems:"center", justifyContent:"center", gap:5 }}
-          >
-            More <i className="fa-solid fa-chevron-down" style={{ fontSize:9, transition:"transform .15s", transform:moreOpen?"rotate(180deg)":"rotate(0deg)" }} />
-          </button>
-          {moreOpen && (
-            <div style={{ position:"absolute", right:0, top:"calc(100% + 5px)", background:"#fff", border:"1px solid #E2E4F0", borderRadius:10, boxShadow:"0 8px 28px rgba(11,12,26,.13)", minWidth:210, zIndex:200, overflow:"hidden", animation:"scaleIn .15s cubic-bezier(.34,1.56,.64,1)" }}>
-              {moreItems.map((item, i) => (
-                <div
-                  key={item.label}
-                  onClick={item.action}
-                  style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", cursor:"pointer", color:item.danger?"#EF4444":"#0B0C1A", fontSize:13, fontWeight:500, borderTop:i>0?"1px solid #F0F1F9":undefined, transition:"background .12s" }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = item.danger?"#FEF2F2":"#F0F1F9"; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = ""; }}
-                >
-                  <i className={`fa-solid ${item.icon}`} style={{ fontSize:12, width:16, textAlign:"center", color:item.danger?"#EF4444":"#8486AB" }} />
-                  {item.label}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+      {/* Status badge */}
+      <div style={{ display:"flex", alignItems:"center", gap:6, padding:"5px 12px", borderRadius:20, background:needsRefresh?"#FFF7ED":"#ECFDF5", border:`1px solid ${needsRefresh?"#FDBA74":"rgba(16,185,129,.25)"}`, flexShrink:0 }}>
+        <span style={{ width:7, height:7, borderRadius:"50%", background:needsRefresh?"#F97316":"#10B981", flexShrink:0, display:"inline-block" }} />
+        <span style={{ fontSize:12, fontWeight:700, color:needsRefresh?"#EA580C":"#059669", fontFamily:"Sora,sans-serif", whiteSpace:"nowrap" }}>
+          {needsRefresh ? "Reconnect" : "Connected"}
+        </span>
       </div>
+
+      {/* Action button */}
+      {needsRefresh ? (
+        <button
+          onClick={() => showToast(`🔄 Reconnecting ${acc.handle}…`, "brand")}
+          style={{ padding:"9px 20px", borderRadius:9, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"linear-gradient(135deg,#6366F1,#4F46E5)", color:"#fff", border:"none", whiteSpace:"nowrap", flexShrink:0, boxShadow:"0 2px 10px rgba(99,102,241,.35)" }}>
+          Reconnect
+        </button>
+      ) : (
+        <button
+          onClick={() => showToast(`Managing ${acc.handle}…`, "brand")}
+          style={{ padding:"9px 20px", borderRadius:9, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#fff", border:"1.5px solid #E2E4F0", color:"#3D3F60", whiteSpace:"nowrap", flexShrink:0, transition:"all .14s" }}
+          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor="#F97316"; (e.currentTarget as HTMLButtonElement).style.color="#F97316"; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor="#E2E4F0"; (e.currentTarget as HTMLButtonElement).style.color="#3D3F60"; }}>
+          Manage
+        </button>
+      )}
     </div>
   );
 }
@@ -539,39 +492,40 @@ export default function SocialAccountsPage() {
 
           {/* ── Connected Accounts ── */}
           <div style={{ marginBottom:32 }}>
-            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:14 }}>
-              <h2 style={{ fontSize:16, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif" }}>Connected accounts</h2>
-              <span style={{ fontSize:12, color:"#8486AB" }}>{totalAccs} accounts across {Object.keys(workspaceGroups).length} workspaces</span>
-            </div>
-            {/* Filters */}
-            <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:16, flexWrap:"wrap" }}>
-              <div style={{ position:"relative", flex:"0 0 240px" }}>
-                <i className="fa-solid fa-magnifying-glass" style={{ position:"absolute", left:12, top:"50%", transform:"translateY(-50%)", fontSize:12, color:"#BFC1D9", pointerEvents:"none" }} />
-                <input
-                  value={searchQ}
-                  onChange={e => setSearchQ(e.target.value)}
-                  placeholder="Search accounts..."
-                  style={{ width:"100%", padding:"9px 12px 9px 34px", borderRadius:8, border:"1.5px solid #E2E4F0", background:"#fff", fontSize:13, color:"#0B0C1A", outline:"none", fontFamily:"Plus Jakarta Sans,sans-serif" }}
-                />
-              </div>
-              {["All platforms","All statuses","All workspaces"].map(label => (
-                <select key={label} style={{ padding:"9px 12px", borderRadius:8, border:"1.5px solid #E2E4F0", background:"#fff", fontSize:13, color:"#3D3F60", cursor:"pointer", outline:"none", fontFamily:"Plus Jakarta Sans,sans-serif" }}>
-                  <option>{label}</option>
-                </select>
-              ))}
-              <span style={{ marginLeft:"auto", fontSize:12, color:"#8486AB", fontWeight:600 }}>{filteredAccounts.length} of {totalAccs} accounts</span>
-            </div>
-            {/* Grouped list */}
-            <div style={{ display:"flex", flexDirection:"column", gap:24 }}>
-              {Object.entries(workspaceGroups).map(([ws, accounts]) => (
-                <div key={ws}>
-                  <div style={{ fontSize:11, fontWeight:800, color:"#BFC1D9", letterSpacing:"1px", textTransform:"uppercase", marginBottom:10 }}>{ws} · {accounts.length}</div>
-                  <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-                    {accounts.map(acc => <AccountRow key={acc.id} acc={acc} showToast={showToast} />)}
+            {Object.entries(workspaceGroups).map(([ws, accounts]) => {
+              const needsAttn = accounts.filter(a => a.health === "Needs refresh").length;
+              const connectedCount = accounts.filter(a => a.health === "Healthy").length;
+              return (
+                <div key={ws} style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:16, overflow:"hidden", marginBottom:20, boxShadow:"0 1px 4px rgba(11,12,26,.04)" }}>
+                  {/* Card header */}
+                  <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", padding:"20px 24px 14px", borderBottom:"1px solid #F0F1F9" }}>
+                    <div>
+                      <h2 style={{ fontSize:17, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", marginBottom:5 }}>Connected accounts</h2>
+                      <p style={{ fontSize:13, color:"#8486AB" }}>
+                        {connectedCount} of {accounts.length} networks connected. Posts publish to every connected profile.
+                      </p>
+                    </div>
+                    {needsAttn > 0 ? (
+                      <div style={{ display:"flex", alignItems:"center", gap:6, padding:"5px 13px", borderRadius:20, background:"#FFF7ED", border:"1px solid #FDBA74", flexShrink:0 }}>
+                        <span style={{ width:7, height:7, borderRadius:"50%", background:"#F97316", display:"inline-block" }} />
+                        <span style={{ fontSize:12, fontWeight:700, color:"#EA580C", fontFamily:"Sora,sans-serif" }}>{needsAttn} need{needsAttn===1?"s":""} attention</span>
+                      </div>
+                    ) : (
+                      <div style={{ display:"flex", alignItems:"center", gap:6, padding:"5px 13px", borderRadius:20, background:"#ECFDF5", border:"1px solid rgba(16,185,129,.25)", flexShrink:0 }}>
+                        <span style={{ width:7, height:7, borderRadius:"50%", background:"#10B981", display:"inline-block" }} />
+                        <span style={{ fontSize:12, fontWeight:700, color:"#059669", fontFamily:"Sora,sans-serif" }}>All systems healthy</span>
+                      </div>
+                    )}
+                  </div>
+                  {/* Account rows */}
+                  <div>
+                    {accounts.map((acc, i) => (
+                      <AccountRow key={acc.id} acc={acc} showToast={showToast} isLast={i === accounts.length - 1} />
+                    ))}
                   </div>
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
 
           {/* ── AI Recommendations ── */}
