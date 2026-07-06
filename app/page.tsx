@@ -1030,24 +1030,37 @@ const speeds = [120, 160, 110, 150, 130];
                     </div>
 
                     {/* Cards Row */}
-                    <div id="industry-cards" className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
+                    <div id="industry-cards" className="relative grid grid-cols-1 md:grid-cols-2 gap-10 sm:gap-12">
+                        {/* Connector between steps (desktop only) */}
+                        <div className="hidden md:flex absolute top-14 left-1/2 -translate-x-1/2 z-20 w-11 h-11 rounded-full bg-gradient-to-br from-orange-500 to-red-500 items-center justify-center shadow-lg shadow-orange-300/50 ring-4 ring-white">
+                            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                            </svg>
+                        </div>
+
                         {/* CARD 1 - Industry Selection */}
-                        <div className="border border-orange-100 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-xl shadow-orange-100/40 relative overflow-hidden bg-white">
+                        <div className="group/card p-[2px] rounded-[28px] bg-gradient-to-br from-orange-400 via-red-300 to-orange-400 shadow-xl shadow-orange-200/60 hover:shadow-2xl hover:shadow-orange-300/70 hover:-translate-y-1.5 transition-all duration-300">
+                        <div className="h-full bg-white rounded-[26px] p-5 sm:p-8 relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-orange-50 to-transparent rounded-full -mr-16 -mt-16 pointer-events-none"></div>
-                            <div className="flex items-center gap-3 mb-5 sm:mb-6">
-                                <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 text-white flex items-center justify-center text-sm font-black shadow-md shadow-orange-200">
-                                    1
-                                </span>
-                                <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
-                                    Select your industry
-                                </h3>
+                            <div className="flex items-center justify-between mb-5 sm:mb-6">
+                                <div className="flex items-center gap-3">
+                                    <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 text-white flex items-center justify-center text-sm font-black shadow-md shadow-orange-200 group-hover/card:scale-110 transition-transform duration-300">
+                                        1
+                                    </span>
+                                    <div>
+                                        <div className="text-[10px] font-bold uppercase tracking-widest text-orange-500 mb-0.5">Step 1</div>
+                                        <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-none">
+                                            Select your industry
+                                        </h3>
+                                    </div>
+                                </div>
                             </div>
 
                             <select
                                 value={generateSelectedIndustry}
                                 // REPLACE WITH:
                                 onChange={(e) => handleSelectGenerateIndustry(e.target.value)}
-                                className="w-full mb-4 px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm sm:text-base font-medium text-slate-700"
+                                className="w-full mb-4 px-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50/70 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white focus:shadow-md text-sm sm:text-base font-medium text-slate-700 transition-all duration-200 cursor-pointer hover:border-orange-300 hover:shadow-md"
                             >
                                 <option value="">Choose your industry</option>
                                 {loadingIndustries ? (
@@ -1075,7 +1088,7 @@ const speeds = [120, 160, 110, 150, 130];
                                                 className={`group cursor-pointer relative overflow-hidden rounded-2xl p-4 border-2 transition-all duration-200 flex flex-col items-center gap-2 ${
                                                     isActive
                                                         ? "border-orange-500 bg-gradient-to-br from-orange-50 to-red-50 shadow-lg shadow-orange-100"
-                                                        : "border-slate-200 bg-white hover:border-orange-300 hover:shadow-md hover:bg-orange-50/40"
+                                                        : "border-slate-100 bg-gradient-to-b from-white to-slate-50/80 shadow-sm hover:border-orange-300 hover:shadow-md hover:shadow-orange-100/60 hover:bg-orange-50/40"
                                                 }`}
                                             >
                                                 {/* Number badge */}
@@ -1115,7 +1128,7 @@ const speeds = [120, 160, 110, 150, 130];
                                                 className={`group cursor-pointer relative overflow-hidden rounded-2xl p-4 border-2 transition-all duration-200 flex flex-col items-center gap-2 ${
                                                     isActive
                                                         ? "border-orange-500 bg-gradient-to-br from-orange-50 to-red-50 shadow-lg shadow-orange-100"
-                                                        : "border-slate-200 bg-white hover:border-orange-300 hover:shadow-md hover:bg-orange-50/40"
+                                                        : "border-slate-100 bg-gradient-to-b from-white to-slate-50/80 shadow-sm hover:border-orange-300 hover:shadow-md hover:shadow-orange-100/60 hover:bg-orange-50/40"
                                                 }`}
                                             >
                                                 {/* Number badge */}
@@ -1140,29 +1153,37 @@ const speeds = [120, 160, 110, 150, 130];
                                 )}
                             </div>
                         </div>
+                        </div>
 
                         {/* CARD 2 - Prompt/Brand Description */}
-                        <div className="border border-orange-100 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-xl shadow-orange-100/40 relative overflow-hidden bg-white">
+                        <div className="group/card p-[2px] rounded-[28px] bg-gradient-to-br from-orange-400 via-red-300 to-orange-400 shadow-xl shadow-orange-200/60 hover:shadow-2xl hover:shadow-orange-300/70 hover:-translate-y-1.5 transition-all duration-300">
+                        <div className="h-full bg-white rounded-[26px] p-5 sm:p-8 relative overflow-hidden">
                             <div className="absolute -top-20 -right-20 w-60 h-60 bg-gradient-to-br from-orange-100 to-red-50 rounded-full blur-3xl opacity-60 pointer-events-none" />
 
                             <div className="flex items-center gap-3 mb-5 sm:mb-6">
-                                <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 text-white flex items-center justify-center text-sm font-black shadow-md shadow-orange-200">
+                                <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 text-white flex items-center justify-center text-sm font-black shadow-md shadow-orange-200 group-hover/card:scale-110 transition-transform duration-300">
                                     2
                                 </span>
-                                <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
-                                    Describe Your Brand
-                                </h3>
+                                <div>
+                                    <div className="text-[10px] font-bold uppercase tracking-widest text-orange-500 mb-0.5">Step 2</div>
+                                    <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-none">
+                                        Describe Your Brand
+                                    </h3>
+                                </div>
                             </div>
 
                             {/* ... existing code ... */}
 
-                            <AnimatedTextarea
-                                value={brandDescription}
-                                onChange={setBrandDescription}
-                                minLength={MIN_BRAND_DESCRIPTION_CHARS}
-                                maxLength={MAX_BRAND_DESCRIPTION_CHARS}
-                                className="w-full min-h-[140px] sm:min-h-[180px] p-4 bg-white rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none text-sm sm:text-base mb-3 font-medium text-slate-700 shadow-inner"
-                            />
+                            <div className="relative mb-3">
+                                <SparklesIcon className="absolute top-3.5 right-3.5 w-4 h-4 text-orange-300 pointer-events-none" />
+                                <AnimatedTextarea
+                                    value={brandDescription}
+                                    onChange={setBrandDescription}
+                                    minLength={MIN_BRAND_DESCRIPTION_CHARS}
+                                    maxLength={MAX_BRAND_DESCRIPTION_CHARS}
+                                    className="w-full min-h-[140px] sm:min-h-[180px] p-4 pr-9 bg-slate-50/70 rounded-2xl border border-slate-200 hover:border-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white resize-none text-sm sm:text-base font-medium text-slate-700 shadow-inner transition-all duration-200"
+                                />
+                            </div>
 
                             {/* Char counter */}
                             <div className="flex items-center justify-between mb-4">
@@ -1241,22 +1262,26 @@ const speeds = [120, 160, 110, 150, 130];
                             <button
                                 onClick={handleGenerateClick}
                                 disabled={hasGeneratedToday}
-                                className={`w-full py-4 rounded-2xl text-base font-black tracking-wide transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 ${
+                                className={`relative w-full py-4 rounded-2xl text-base font-black tracking-wide transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 overflow-hidden ${
                                     hasGeneratedToday
                                         ? "bg-slate-100 text-slate-400 cursor-not-allowed"
                                         : isGenerateReady
-                                        ? "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:brightness-110 cursor-pointer"
+                                        ? "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:brightness-110 hover:shadow-xl hover:shadow-orange-300/50 cursor-pointer"
                                         : "bg-slate-100 text-slate-400 cursor-not-allowed"
                                 }`}
                             >
-                                <Lock className="w-4 h-4" />
-                                {hasGeneratedToday ? "Daily Limit Reached — Try Again Tomorrow" : "Generate 7 Days of Content"}
+                                {isGenerateReady && !hasGeneratedToday && (
+                                    <span className="absolute inset-0 animate-[shimmer_2.5s_infinite] bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+                                )}
+                                {isGenerateReady && !hasGeneratedToday ? <Zap className="w-4 h-4 relative" /> : <Lock className="w-4 h-4 relative" />}
+                                <span className="relative">{hasGeneratedToday ? "Daily Limit Reached — Try Again Tomorrow" : "Generate 7 Days of Content"}</span>
                             </button>
                             {generateValidationError && (
                                 <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-700">
                                     {generateValidationError}
                                 </div>
                             )}
+                        </div>
                         </div>
                     </div>
                 </div>
