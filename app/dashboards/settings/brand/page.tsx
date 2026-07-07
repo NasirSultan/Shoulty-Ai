@@ -149,8 +149,9 @@ export default function BrandOverlayPage() {
   const [saving, setSaving] = useState(false);
   const [bgImg, setBgImg] = useState(BG_IMAGES[0]);
   const [bgOptions, setBgOptions] = useState<string[]>(BG_IMAGES);
-  const [fmt, setFmt] = useState<"square" | "portrait" | "landscape">("square");
   const [selTimes, setSelTimes] = useState<Record<string, string>>({});
+  const [openSection, setOpenSection] = useState<string | null>("logo-upload");
+  const toggleSection = (id: string) => setOpenSection(s => s === id ? null : id);
   const { toast, show: showToast } = useToast();
 
   useEffect(() => {
@@ -337,7 +338,7 @@ export default function BrandOverlayPage() {
   };
 
   const tc = S.textColor === "white" ? "#fff" : "#0D0E1A";
-  const stageAspect = fmt === "square" ? "1/1" : fmt === "portrait" ? "9/16" : "16/9";
+  const stageAspect = "1/1";
   const opacityPct = ((S.opacity - 10) / 90) * 100;
   const blurPct = (S.blur / 24) * 100;
   const radiusPct = (S.radius / 28) * 100;
@@ -408,222 +409,271 @@ export default function BrandOverlayPage() {
               </div>
 
               {/* Logo Upload */}
-              <div style={{ padding: "16px 20px", borderBottom: "1px solid #ECEDF5" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".6px", color: "#9496B5", marginBottom: 13, fontFamily: "Sora,sans-serif" }}>
-                  <i className="fa-solid fa-image" style={{ fontSize: 11, color: "#F97316" }} /> Logo Upload
-                  <span style={{ marginLeft: "auto", padding: "2px 7px", borderRadius: 5, background: "#EEEEFF", color: "#F97316", fontSize: 10, fontWeight: 700 }}>Required</span>
+              <div style={{ borderBottom: "1px solid #ECEDF5" }}>
+                <div onClick={() => toggleSection("logo-upload")} style={{ padding: "14px 20px", display: "flex", alignItems: "center", gap: 8, cursor: "pointer", userSelect: "none" }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 8, background: "#EEEEFF", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <i className="fa-solid fa-image" style={{ fontSize: 11, color: "#F97316" }} />
+                  </div>
+                  <span style={{ flex: 1, fontSize: 13, fontWeight: 700, color: "#0D0E1A", fontFamily: "Sora,sans-serif" }}>Logo Upload</span>
+                  <span style={{ padding: "2px 7px", borderRadius: 5, background: "#EEEEFF", color: "#F97316", fontSize: 10, fontWeight: 700 }}>Required</span>
+                  <i className="fa-solid fa-chevron-down" style={{ fontSize: 10, color: "#9496B5", transition: "transform .2s", transform: openSection === "logo-upload" ? "rotate(180deg)" : "rotate(0deg)" }} />
                 </div>
-                <div style={{ ...labelStyle }}><span>Upload</span><span style={{ fontSize: 10.5, color: "#C8CADF", fontWeight: 500, textTransform: "none", letterSpacing: 0, marginLeft: "auto" }}>PNG, SVG, JPG, WEBP</span></div>
-                <label className="upload-box-hover" style={{ display: "block", border: `1.5px dashed ${S.logoUrl ? "#F97316" : "#E4E5EF"}`, borderRadius: 14, padding: 18, textAlign: "center", cursor: "pointer", background: S.logoUrl ? "#EEEEFF" : "#F0F1F8", transition: "all .18s" }}>
-                  <input type="file" accept="image/*" onChange={handleLogoUpload} style={{ display: "none" }} />
-                  <div style={{ width: 36, height: 36, borderRadius: 10, background: "#fff", border: "1px solid #E4E5EF", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 8px" }}>
-                    <i className="fa-solid fa-cloud-arrow-up" style={{ color: "#F97316", fontSize: 16 }} />
+                {openSection === "logo-upload" && (
+                  <div style={{ padding: "0 20px 16px" }}>
+                    <div style={{ ...labelStyle, marginBottom: 8 }}><span>Upload</span><span style={{ fontSize: 10.5, color: "#C8CADF", fontWeight: 500, textTransform: "none", letterSpacing: 0, marginLeft: "auto" }}>PNG, SVG, JPG, WEBP</span></div>
+                    <label className="upload-box-hover" style={{ display: "block", border: `1.5px dashed ${S.logoUrl ? "#F97316" : "#E4E5EF"}`, borderRadius: 14, padding: 18, textAlign: "center", cursor: "pointer", background: S.logoUrl ? "#EEEEFF" : "#F0F1F8", transition: "all .18s" }}>
+                      <input type="file" accept="image/*" onChange={handleLogoUpload} style={{ display: "none" }} />
+                      <div style={{ width: 36, height: 36, borderRadius: 10, background: "#fff", border: "1px solid #E4E5EF", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 8px" }}>
+                        <i className="fa-solid fa-cloud-arrow-up" style={{ color: "#F97316", fontSize: 16 }} />
+                      </div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "#0D0E1A", marginBottom: 2, fontFamily: "Sora,sans-serif" }}>Drop your logo here</div>
+                      <div style={{ fontSize: 12, color: "#9496B5" }}>or click to browse files</div>
+                      <div style={{ display: "flex", justifyContent: "center", gap: 4, marginTop: 8 }}>
+                        {["PNG","SVG","JPG"].map(f => <span key={f} style={{ padding: "2px 6px", borderRadius: 4, background: "#fff", border: "1px solid #E4E5EF", color: "#9496B5", fontSize: 10, fontWeight: 700, fontFamily: "JetBrains Mono,monospace" }}>{f}</span>)}
+                      </div>
+                    </label>
+                    {S.logoUrl && (
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 7, background: "#F0F1F8", marginTop: 10, border: "1px solid #E4E5EF" }}>
+                        <img src={S.logoUrl} alt="" style={{ width: 38, height: 38, objectFit: "contain", borderRadius: 6, background: "#fff", border: "1px solid #E4E5EF" }} />
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 12.5, fontWeight: 700, color: "#0D0E1A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{S.logoName}</div>
+                          <div style={{ fontSize: 11, color: "#9496B5" }}>{S.logoSize}</div>
+                        </div>
+                        <div onClick={removeLogo} style={{ width: 24, height: 24, borderRadius: 6, background: "#FEF2F2", color: "#EF4444", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
+                          <i className="fa-solid fa-xmark" style={{ fontSize: 11 }} />
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#0D0E1A", marginBottom: 2, fontFamily: "Sora,sans-serif" }}>Drop your logo here</div>
-                  <div style={{ fontSize: 12, color: "#9496B5" }}>or click to browse files</div>
-                  <div style={{ display: "flex", justifyContent: "center", gap: 4, marginTop: 8 }}>
-                    {["PNG","SVG","JPG"].map(f => <span key={f} style={{ padding: "2px 6px", borderRadius: 4, background: "#fff", border: "1px solid #E4E5EF", color: "#9496B5", fontSize: 10, fontWeight: 700, fontFamily: "JetBrains Mono,monospace" }}>{f}</span>)}
+                )}
+              </div>
+
+              {/* Logo Position */}
+              <div style={{ borderBottom: "1px solid #ECEDF5" }}>
+                <div onClick={() => toggleSection("logo-position")} style={{ padding: "14px 20px", display: "flex", alignItems: "center", gap: 8, cursor: "pointer", userSelect: "none" }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 8, background: "#EEEEFF", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <i className="fa-solid fa-arrows-up-down-left-right" style={{ fontSize: 11, color: "#F97316" }} />
                   </div>
-                </label>
-                {S.logoUrl && (
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 7, background: "#F0F1F8", marginTop: 10, border: "1px solid #E4E5EF" }}>
-                    <img src={S.logoUrl} alt="" style={{ width: 38, height: 38, objectFit: "contain", borderRadius: 6, background: "#fff", border: "1px solid #E4E5EF" }} />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 12.5, fontWeight: 700, color: "#0D0E1A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{S.logoName}</div>
-                      <div style={{ fontSize: 11, color: "#9496B5" }}>{S.logoSize}</div>
+                  <span style={{ flex: 1, fontSize: 13, fontWeight: 700, color: "#0D0E1A", fontFamily: "Sora,sans-serif" }}>Logo Position</span>
+                  <i className="fa-solid fa-chevron-down" style={{ fontSize: 10, color: "#9496B5", transition: "transform .2s", transform: openSection === "logo-position" ? "rotate(180deg)" : "rotate(0deg)" }} />
+                </div>
+                {openSection === "logo-position" && (
+                  <div style={{ padding: "0 20px 16px" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+                      {(["tl","tr","bl","br"] as PosKey[]).map(p => {
+                        const icons: Record<PosKey, string> = { tl:"fa-arrow-up-left", tr:"fa-arrow-up-right", bl:"fa-arrow-down-left", br:"fa-arrow-down-right" };
+                        return (
+                          <div key={p} onClick={() => updS({ pos: p })} className="pos-btn" style={{ padding: "9px 8px", borderRadius: 7, border: `1.5px solid ${S.pos===p?"#F97316":"#E4E5EF"}`, background: S.pos===p?"#EEEEFF":"#F0F1F8", color: S.pos===p?"#F97316":"#4B4D6B", fontSize: 12.5, fontWeight: 700, cursor: "pointer", textAlign: "center", fontFamily: "Sora,sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, boxShadow: S.pos===p?"0 0 0 3px rgba(249,115,22,.08)":undefined }}>
+                            <i className={`fa-solid ${icons[p]} fa-xs`} /> {POS_LABELS[p]}
+                          </div>
+                        );
+                      })}
                     </div>
-                    <div onClick={removeLogo} style={{ width: 24, height: 24, borderRadius: 6, background: "#FEF2F2", color: "#EF4444", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
-                      <i className="fa-solid fa-xmark" style={{ fontSize: 11 }} />
+                    <div style={{ marginTop: 13 }}>
+                      <div style={{ ...labelStyle }}>Logo Size <span style={{ fontSize: 10.5, color: "#C8CADF", fontWeight: 500, textTransform: "none", letterSpacing: 0, marginLeft: "auto" }}>{S.size}px</span></div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <span style={{ fontSize: 10.5, color: "#C8CADF", flexShrink: 0 }}>XS</span>
+                        <input type="range" min={24} max={80} value={S.size} onChange={e => updS({ size: +e.target.value })} style={{ flex: 1, background: sliderFill(sizePct) }} />
+                        <span style={{ fontSize: 10.5, color: "#C8CADF", flexShrink: 0 }}>XL</span>
+                      </div>
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Position */}
-              <div style={{ padding: "16px 20px", borderBottom: "1px solid #ECEDF5" }}>
-                <div style={{ ...labelStyle, marginBottom: 13 }}><i className="fa-solid fa-arrows-up-down-left-right" style={{ fontSize: 11, color: "#F97316" }} /> Logo Position</div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
-                  {(["tl","tr","bl","br"] as PosKey[]).map(p => {
-                    const icons: Record<PosKey, string> = { tl:"fa-arrow-up-left", tr:"fa-arrow-up-right", bl:"fa-arrow-down-left", br:"fa-arrow-down-right" };
-                    return (
-                      <div key={p} onClick={() => updS({ pos: p })} className="pos-btn" style={{ padding: "9px 8px", borderRadius: 7, border: `1.5px solid ${S.pos===p?"#F97316":"#E4E5EF"}`, background: S.pos===p?"#EEEEFF":"#F0F1F8", color: S.pos===p?"#F97316":"#4B4D6B", fontSize: 12.5, fontWeight: 700, cursor: "pointer", textAlign: "center", fontFamily: "Sora,sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, boxShadow: S.pos===p?"0 0 0 3px rgba(249,115,22,.08)":undefined }}>
-                        <i className={`fa-solid ${icons[p]} fa-xs`} /> {POS_LABELS[p]}
+              {/* Overlay Appearance */}
+              <div style={{ borderBottom: "1px solid #ECEDF5" }}>
+                <div onClick={() => toggleSection("overlay-appearance")} style={{ padding: "14px 20px", display: "flex", alignItems: "center", gap: 8, cursor: "pointer", userSelect: "none" }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 8, background: "#EEEEFF", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <i className="fa-solid fa-sliders" style={{ fontSize: 11, color: "#F97316" }} />
+                  </div>
+                  <span style={{ flex: 1, fontSize: 13, fontWeight: 700, color: "#0D0E1A", fontFamily: "Sora,sans-serif" }}>Overlay Appearance</span>
+                  <i className="fa-solid fa-chevron-down" style={{ fontSize: 10, color: "#9496B5", transition: "transform .2s", transform: openSection === "overlay-appearance" ? "rotate(180deg)" : "rotate(0deg)" }} />
+                </div>
+                {openSection === "overlay-appearance" && (
+                  <div style={{ padding: "0 20px 16px" }}>
+                    <div style={{ marginBottom: 13 }}>
+                      <div style={{ ...labelStyle }}>Badge Style</div>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+                        {(["glass","solid","outline","minimal"] as BadgeStyle[]).map(bs => (
+                          <div key={bs} onClick={() => updS({ style: bs })} className="style-btn-hover" style={{ padding: 9, borderRadius: 7, border: `1.5px solid ${S.style===bs?"#F97316":"#E4E5EF"}`, background: S.style===bs?"#EEEEFF":"#F0F1F8", color: S.style===bs?"#F97316":"#4B4D6B", fontSize: 12.5, fontWeight: 700, cursor: "pointer", textAlign: "center", fontFamily: "Sora,sans-serif" }}>
+                            {bs.charAt(0).toUpperCase()+bs.slice(1)}
+                          </div>
+                        ))}
                       </div>
-                    );
-                  })}
-                </div>
-                <div style={{ marginTop: 13 }}>
-                  <div style={{ ...labelStyle }}>Logo Size <span style={{ fontSize: 10.5, color: "#C8CADF", fontWeight: 500, textTransform: "none", letterSpacing: 0, marginLeft: "auto" }}>{S.size}px</span></div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <span style={{ fontSize: 10.5, color: "#C8CADF", flexShrink: 0 }}>XS</span>
-                    <input type="range" min={24} max={80} value={S.size} onChange={e => updS({ size: +e.target.value })} style={{ flex: 1, background: sliderFill(sizePct) }} />
-                    <span style={{ fontSize: 10.5, color: "#C8CADF", flexShrink: 0 }}>XL</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Brand Identity */}
-              <div style={{ padding: "16px 20px", borderBottom: "1px solid #ECEDF5" }}>
-                <div style={{ ...labelStyle, marginBottom: 13 }}><i className="fa-solid fa-id-badge" style={{ fontSize: 11, color: "#F97316" }} /> Brand Identity</div>
-                {[
-                  { label: "Brand Name", val: brandName, set: setBrandName, placeholder: "Your Brand Name" },
-                  { label: "Overlay / Tagline", val: overlayText, set: setOverlayText, placeholder: "Website or tagline…", tip: "Optional" },
-                  { label: "Phone / Contact", val: phone, set: setPhone, placeholder: "+1 (555) 000-0000" },
-                ].map((f, i) => (
-                  <div key={f.label} style={{ marginBottom: i < 2 ? 11 : 0 }}>
-                    <div style={{ ...labelStyle }}>{f.label}{f.tip && <span style={{ fontSize: 10.5, color: "#C8CADF", fontWeight: 500, textTransform: "none", letterSpacing: 0, marginLeft: "auto" }}>{f.tip}</span>}</div>
-                    <input value={f.val} onChange={e => { f.set(e.target.value); mark(); }} placeholder={f.placeholder} style={fieldStyle} />
-                  </div>
-                ))}
-                <div style={{ marginTop: 11 }}>
-                  <div style={{ ...labelStyle }}>Industry</div>
-                  <select
-                    value={industryId}
-                    onChange={(e) => {
-                      setIndustryId(e.target.value);
-                      setSubIndustryId("");
-                      mark();
-                    }}
-                    style={fieldStyle}
-                    disabled={loadingIndustries}
-                  >
-                    <option value="">{loadingIndustries ? "Loading industries..." : "Select industry"}</option>
-                    {industries.map((ind) => (
-                      <option key={String(ind.id)} value={String(ind.id)}>{ind.name}</option>
+                    </div>
+                    {[
+                      { label: "Opacity", val: S.opacity, key: "opacity" as const, min: 10, max: 100, pct: opacityPct, suffix: "%", l: "10%", r: "100%" },
+                      { label: "Blur", val: S.blur, key: "blur" as const, min: 0, max: 24, pct: blurPct, suffix: "px", l: "0", r: "24" },
+                      { label: "Corner Radius", val: S.radius, key: "radius" as const, min: 0, max: 28, pct: radiusPct, suffix: "px", l: "0", r: "28" },
+                    ].map(sl => (
+                      <div key={sl.key} style={{ marginBottom: 13 }}>
+                        <div style={{ ...labelStyle }}>{sl.label} <span style={{ fontSize: 10.5, color: "#C8CADF", fontWeight: 500, textTransform: "none", letterSpacing: 0, marginLeft: "auto" }}>{sl.val}{sl.suffix}</span></div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                          <span style={{ fontSize: 10.5, color: "#C8CADF", flexShrink: 0 }}>{sl.l}</span>
+                          <input type="range" min={sl.min} max={sl.max} value={sl.val} onChange={e => updS({ [sl.key]: +e.target.value })} style={{ flex: 1, background: sliderFill(sl.pct) }} />
+                          <span style={{ fontSize: 10.5, color: "#C8CADF", flexShrink: 0 }}>{sl.r}</span>
+                        </div>
+                      </div>
                     ))}
-                  </select>
-                </div>
-                <div style={{ marginTop: 11 }}>
-                  <div style={{ ...labelStyle }}>Sub-industry</div>
-                  <select
-                    value={subIndustryId}
-                    onChange={(e) => {
-                      setSubIndustryId(e.target.value);
-                      mark();
-                    }}
-                    style={fieldStyle}
-                    disabled={!industryId || subIndustryOptions.length === 0}
-                  >
-                    <option value="">Select sub-industry</option>
-                    {subIndustryOptions.map((sub) => (
-                      <option key={String(sub.id)} value={String(sub.id)}>{sub.name}</option>
-                    ))}
-                  </select>
-                </div>
+                  </div>
+                )}
               </div>
 
               {/* Brand Colors */}
-              <div style={{ padding: "16px 20px", borderBottom: "1px solid #ECEDF5" }}>
-                <div style={{ ...labelStyle, marginBottom: 13 }}><i className="fa-solid fa-palette" style={{ fontSize: 11, color: "#F97316" }} /> Brand Colors</div>
-                <div style={{ marginBottom: 13 }}>
-                  <div style={{ ...labelStyle }}>Primary Color</div>
-                  <div style={{ display: "flex", gap: 7, alignItems: "center", flexWrap: "wrap" }}>
-                    {PRIMARY_SWATCHES.map(c => (
-                      <div key={c} onClick={() => updS({ primary: c })} className="swatch" style={{ width: 28, height: 28, borderRadius: 7, cursor: "pointer", background: c, border: `2.5px solid ${S.primary===c?"#F97316":c==="#ffffff"?"#E4E5EF":"transparent"}`, boxShadow: S.primary===c?"0 0 0 2px rgba(249,115,22,.3)":undefined, transition: "all .15s", flexShrink: 0 }} />
-                    ))}
-                    <div style={{ position: "relative", flexShrink: 0 }}>
-                      <div style={{ width: 28, height: 28, borderRadius: 7, border: "1.5px dashed #E4E5EF", background: "#F0F1F8", display: "flex", alignItems: "center", justifyContent: "center", color: "#9496B5", cursor: "pointer" }}>
-                        <i className="fa-solid fa-plus" style={{ fontSize: 11 }} />
+              <div style={{ borderBottom: "1px solid #ECEDF5" }}>
+                <div onClick={() => toggleSection("brand-colors")} style={{ padding: "14px 20px", display: "flex", alignItems: "center", gap: 8, cursor: "pointer", userSelect: "none" }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 8, background: "#EEEEFF", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <i className="fa-solid fa-palette" style={{ fontSize: 11, color: "#F97316" }} />
+                  </div>
+                  <span style={{ flex: 1, fontSize: 13, fontWeight: 700, color: "#0D0E1A", fontFamily: "Sora,sans-serif" }}>Brand Colors</span>
+                  <i className="fa-solid fa-chevron-down" style={{ fontSize: 10, color: "#9496B5", transition: "transform .2s", transform: openSection === "brand-colors" ? "rotate(180deg)" : "rotate(0deg)" }} />
+                </div>
+                {openSection === "brand-colors" && (
+                  <div style={{ padding: "0 20px 16px" }}>
+                    <div style={{ marginBottom: 13 }}>
+                      <div style={{ ...labelStyle }}>Primary Color</div>
+                      <div style={{ display: "flex", gap: 7, alignItems: "center", flexWrap: "wrap" }}>
+                        {PRIMARY_SWATCHES.map(c => (
+                          <div key={c} onClick={() => updS({ primary: c })} className="swatch" style={{ width: 28, height: 28, borderRadius: 7, cursor: "pointer", background: c, border: `2.5px solid ${S.primary===c?"#F97316":c==="#ffffff"?"#E4E5EF":"transparent"}`, boxShadow: S.primary===c?"0 0 0 2px rgba(249,115,22,.3)":undefined, transition: "all .15s", flexShrink: 0 }} />
+                        ))}
+                        <div style={{ position: "relative", flexShrink: 0 }}>
+                          <div style={{ width: 28, height: 28, borderRadius: 7, border: "1.5px dashed #E4E5EF", background: "#F0F1F8", display: "flex", alignItems: "center", justifyContent: "center", color: "#9496B5", cursor: "pointer" }}>
+                            <i className="fa-solid fa-plus" style={{ fontSize: 11 }} />
+                          </div>
+                          <input type="color" value={S.primary} onChange={e => updS({ primary: e.target.value })} style={{ position: "absolute", opacity: 0, width: 28, height: 28, top: 0, left: 0, cursor: "pointer" }} />
+                        </div>
                       </div>
-                      <input type="color" value={S.primary} onChange={e => updS({ primary: e.target.value })} style={{ position: "absolute", opacity: 0, width: 28, height: 28, top: 0, left: 0, cursor: "pointer" }} />
+                    </div>
+                    <div>
+                      <div style={{ ...labelStyle }}>Text Color on Badge</div>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+                        {(["white","dark"] as TextColor[]).map(tc => (
+                          <div key={tc} onClick={() => updS({ textColor: tc })} className="style-btn-hover" style={{ padding: 9, borderRadius: 7, border: `1.5px solid ${S.textColor===tc?"#F97316":"#E4E5EF"}`, background: S.textColor===tc?"#EEEEFF":"#F0F1F8", color: S.textColor===tc?"#F97316":"#4B4D6B", fontSize: 12.5, fontWeight: 700, cursor: "pointer", textAlign: "center", fontFamily: "Sora,sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 5 }}>
+                            <span style={{ display: "inline-block", width: 9, height: 9, borderRadius: "50%", background: tc==="white"?"#fff":"#0F1117", border: tc==="white"?"1px solid rgba(0,0,0,.15)":undefined }} />
+                            {tc.charAt(0).toUpperCase()+tc.slice(1)}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div>
-                  <div style={{ ...labelStyle }}>Text Color on Badge</div>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
-                    {(["white","dark"] as TextColor[]).map(tc => (
-                      <div key={tc} onClick={() => updS({ textColor: tc })} className="style-btn-hover" style={{ padding: 9, borderRadius: 7, border: `1.5px solid ${S.textColor===tc?"#F97316":"#E4E5EF"}`, background: S.textColor===tc?"#EEEEFF":"#F0F1F8", color: S.textColor===tc?"#F97316":"#4B4D6B", fontSize: 12.5, fontWeight: 700, cursor: "pointer", textAlign: "center", fontFamily: "Sora,sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 5 }}>
-                        <span style={{ display: "inline-block", width: 9, height: 9, borderRadius: "50%", background: tc==="white"?"#fff":"#0F1117", border: tc==="white"?"1px solid rgba(0,0,0,.15)":undefined }} />
-                        {tc.charAt(0).toUpperCase()+tc.slice(1)}
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                )}
               </div>
 
-              {/* Overlay Appearance */}
-              <div style={{ padding: "16px 20px", borderBottom: "1px solid #ECEDF5" }}>
-                <div style={{ ...labelStyle, marginBottom: 13 }}><i className="fa-solid fa-sliders" style={{ fontSize: 11, color: "#F97316" }} /> Overlay Appearance</div>
-                <div style={{ marginBottom: 13 }}>
-                  <div style={{ ...labelStyle }}>Badge Style</div>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
-                    {(["glass","solid","outline","minimal"] as BadgeStyle[]).map(bs => (
-                      <div key={bs} onClick={() => updS({ style: bs })} className="style-btn-hover" style={{ padding: 9, borderRadius: 7, border: `1.5px solid ${S.style===bs?"#F97316":"#E4E5EF"}`, background: S.style===bs?"#EEEEFF":"#F0F1F8", color: S.style===bs?"#F97316":"#4B4D6B", fontSize: 12.5, fontWeight: 700, cursor: "pointer", textAlign: "center", fontFamily: "Sora,sans-serif" }}>
-                        {bs.charAt(0).toUpperCase()+bs.slice(1)}
+              {/* Brand Identity */}
+              <div style={{ borderBottom: "1px solid #ECEDF5" }}>
+                <div onClick={() => toggleSection("brand-identity")} style={{ padding: "14px 20px", display: "flex", alignItems: "center", gap: 8, cursor: "pointer", userSelect: "none" }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 8, background: "#EEEEFF", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <i className="fa-solid fa-id-badge" style={{ fontSize: 11, color: "#F97316" }} />
+                  </div>
+                  <span style={{ flex: 1, fontSize: 13, fontWeight: 700, color: "#0D0E1A", fontFamily: "Sora,sans-serif" }}>Brand Identity</span>
+                  <i className="fa-solid fa-chevron-down" style={{ fontSize: 10, color: "#9496B5", transition: "transform .2s", transform: openSection === "brand-identity" ? "rotate(180deg)" : "rotate(0deg)" }} />
+                </div>
+                {openSection === "brand-identity" && (
+                  <div style={{ padding: "0 20px 16px" }}>
+                    {[
+                      { label: "Brand Name", val: brandName, set: setBrandName, placeholder: "Your Brand Name" },
+                      { label: "Overlay / Tagline", val: overlayText, set: setOverlayText, placeholder: "Website or tagline…", tip: "Optional" },
+                      { label: "Phone / Contact", val: phone, set: setPhone, placeholder: "+1 (555) 000-0000" },
+                    ].map((f, i) => (
+                      <div key={f.label} style={{ marginBottom: i < 2 ? 11 : 0 }}>
+                        <div style={{ ...labelStyle }}>{f.label}{f.tip && <span style={{ fontSize: 10.5, color: "#C8CADF", fontWeight: 500, textTransform: "none", letterSpacing: 0, marginLeft: "auto" }}>{f.tip}</span>}</div>
+                        <input value={f.val} onChange={e => { f.set(e.target.value); mark(); }} placeholder={f.placeholder} style={fieldStyle} />
                       </div>
                     ))}
-                  </div>
-                </div>
-                {[
-                  { label: "Opacity", val: S.opacity, key: "opacity" as const, min: 10, max: 100, pct: opacityPct, suffix: "%", l: "10%", r: "100%" },
-                  { label: "Blur", val: S.blur, key: "blur" as const, min: 0, max: 24, pct: blurPct, suffix: "px", l: "0", r: "24" },
-                  { label: "Corner Radius", val: S.radius, key: "radius" as const, min: 0, max: 28, pct: radiusPct, suffix: "px", l: "0", r: "28" },
-                ].map(sl => (
-                  <div key={sl.key} style={{ marginBottom: 13 }}>
-                    <div style={{ ...labelStyle }}>{sl.label} <span style={{ fontSize: 10.5, color: "#C8CADF", fontWeight: 500, textTransform: "none", letterSpacing: 0, marginLeft: "auto" }}>{sl.val}{sl.suffix}</span></div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <span style={{ fontSize: 10.5, color: "#C8CADF", flexShrink: 0 }}>{sl.l}</span>
-                      <input type="range" min={sl.min} max={sl.max} value={sl.val} onChange={e => updS({ [sl.key]: +e.target.value })} style={{ flex: 1, background: sliderFill(sl.pct) }} />
-                      <span style={{ fontSize: 10.5, color: "#C8CADF", flexShrink: 0 }}>{sl.r}</span>
+                    <div style={{ marginTop: 11 }}>
+                      <div style={{ ...labelStyle }}>Industry</div>
+                      <select value={industryId} onChange={(e) => { setIndustryId(e.target.value); setSubIndustryId(""); mark(); }} style={fieldStyle} disabled={loadingIndustries}>
+                        <option value="">{loadingIndustries ? "Loading industries..." : "Select industry"}</option>
+                        {industries.map((ind) => (
+                          <option key={String(ind.id)} value={String(ind.id)}>{ind.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div style={{ marginTop: 11 }}>
+                      <div style={{ ...labelStyle }}>Sub-industry</div>
+                      <select value={subIndustryId} onChange={(e) => { setSubIndustryId(e.target.value); mark(); }} style={fieldStyle} disabled={!industryId || subIndustryOptions.length === 0}>
+                        <option value="">Select sub-industry</option>
+                        {subIndustryOptions.map((sub) => (
+                          <option key={String(sub.id)} value={String(sub.id)}>{sub.name}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
-                ))}
+                )}
               </div>
 
               {/* Show / Hide toggles */}
-              <div style={{ padding: "16px 20px", borderBottom: "1px solid #ECEDF5" }}>
-                <div style={{ ...labelStyle, marginBottom: 13 }}><i className="fa-solid fa-toggle-on" style={{ fontSize: 11, color: "#F97316" }} /> Show / Hide Elements</div>
-                {[
-                  { key: "showLogo" as const, icon: "fa-image", iconBg: "#EEEEFF", iconC: "#F97316", title: "Logo", sub: "Display your logo on posts" },
-                  { key: "showName" as const, icon: "fa-font", iconBg: "#ECFDF5", iconC: "#10B981", title: "Brand Name", sub: "Display name text on badge" },
-                  { key: "showContact" as const, icon: "fa-phone", iconBg: "#FFFBEB", iconC: "#F59E0B", title: "Contact Info", sub: "Show phone number on badge" },
-                  { key: "showOvtext" as const, icon: "fa-link", iconBg: "#EFF6FF", iconC: "#3B82F6", title: "Overlay Text", sub: "Show tagline or website URL" },
-                  { key: "showCorner" as const, icon: "fa-vector-square", iconBg: "#FDF2F8", iconC: "#EC4899", title: "Corner Accents", sub: "Branded corner frame element" },
-                  { key: "showTextbar" as const, icon: "fa-grip-lines", iconBg: "#ECFEFF", iconC: "#06B6D4", title: "Bottom Text Bar", sub: "Full-width bar at the bottom" },
-                ].map((item, i) => (
-                  <div key={item.key} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 0", borderTop: i > 0 ? "1px solid #ECEDF5" : undefined }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-                      <div style={{ width: 28, height: 28, borderRadius: 8, background: item.iconBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, flexShrink: 0 }}>
-                        <i className={`fa-solid ${item.icon}`} style={{ color: item.iconC }} />
-                      </div>
-                      <div>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: "#0D0E1A" }}>{item.title}</div>
-                        <div style={{ fontSize: 11.5, color: "#9496B5", marginTop: 1 }}>{item.sub}</div>
-                      </div>
-                    </div>
-                    <Toggle checked={S[item.key]} onChange={v => updS({ [item.key]: v })} />
+              <div style={{ borderBottom: "1px solid #ECEDF5" }}>
+                <div onClick={() => toggleSection("show-hide")} style={{ padding: "14px 20px", display: "flex", alignItems: "center", gap: 8, cursor: "pointer", userSelect: "none" }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 8, background: "#EEEEFF", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <i className="fa-solid fa-toggle-on" style={{ fontSize: 11, color: "#F97316" }} />
                   </div>
-                ))}
+                  <span style={{ flex: 1, fontSize: 13, fontWeight: 700, color: "#0D0E1A", fontFamily: "Sora,sans-serif" }}>Show / Hide Elements</span>
+                  <i className="fa-solid fa-chevron-down" style={{ fontSize: 10, color: "#9496B5", transition: "transform .2s", transform: openSection === "show-hide" ? "rotate(180deg)" : "rotate(0deg)" }} />
+                </div>
+                {openSection === "show-hide" && (
+                  <div style={{ padding: "0 20px 16px" }}>
+                    {[
+                      { key: "showLogo" as const, icon: "fa-image", iconBg: "#EEEEFF", iconC: "#F97316", title: "Logo", sub: "Display your logo on posts" },
+                      { key: "showName" as const, icon: "fa-font", iconBg: "#ECFDF5", iconC: "#10B981", title: "Brand Name", sub: "Display name text on badge" },
+                      { key: "showContact" as const, icon: "fa-phone", iconBg: "#FFFBEB", iconC: "#F59E0B", title: "Contact Info", sub: "Show phone number on badge" },
+                      { key: "showOvtext" as const, icon: "fa-link", iconBg: "#EFF6FF", iconC: "#3B82F6", title: "Overlay Text", sub: "Show tagline or website URL" },
+                      { key: "showCorner" as const, icon: "fa-vector-square", iconBg: "#FDF2F8", iconC: "#EC4899", title: "Corner Accents", sub: "Branded corner frame element" },
+                      { key: "showTextbar" as const, icon: "fa-grip-lines", iconBg: "#ECFEFF", iconC: "#06B6D4", title: "Bottom Text Bar", sub: "Full-width bar at the bottom" },
+                    ].map((item, i) => (
+                      <div key={item.key} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 0", borderTop: i > 0 ? "1px solid #ECEDF5" : undefined }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+                          <div style={{ width: 28, height: 28, borderRadius: 8, background: item.iconBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, flexShrink: 0 }}>
+                            <i className={`fa-solid ${item.icon}`} style={{ color: item.iconC }} />
+                          </div>
+                          <div>
+                            <div style={{ fontSize: 13, fontWeight: 600, color: "#0D0E1A" }}>{item.title}</div>
+                            <div style={{ fontSize: 11.5, color: "#9496B5", marginTop: 1 }}>{item.sub}</div>
+                          </div>
+                        </div>
+                        <Toggle checked={S[item.key]} onChange={v => updS({ [item.key]: v })} />
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Best Posting Times */}
-              <div style={{ padding: "16px 20px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".6px", color: "#9496B5", marginBottom: 13, fontFamily: "Sora,sans-serif" }}>
-                  <i className="fa-solid fa-clock" style={{ fontSize: 11, color: "#F97316" }} /> Best Posting Times
-                  <span style={{ marginLeft: "auto", padding: "2px 7px", borderRadius: 5, background: "#EEEEFF", color: "#F97316", fontSize: 10, fontWeight: 700, textTransform: "none", letterSpacing: 0 }}>AI Powered</span>
-                </div>
-                {TIME_BLOCKS.filter(b => b.times.length > 0).map(block => (
-                  <div key={block.name} style={{ background: "#F0F1F8", border: "1px solid #E4E5EF", borderRadius: 10, padding: "11px 13px", marginBottom: 7 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 9 }}>
-                      <div style={{ width: 26, height: 26, borderRadius: 7, background: block.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, flexShrink: 0 }}>
-                        <i className={`fa-brands ${block.icon}`} style={{ color: block.color }} />
-                      </div>
-                      <div>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: "#0D0E1A", fontFamily: "Sora,sans-serif" }}>{block.name}</div>
-                        <div style={{ fontSize: 11, color: "#9496B5", marginTop: 1 }}>{block.sub}</div>
-                      </div>
-                    </div>
-                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                      {block.times.map(slot => (
-                        <div key={slot.t} onClick={() => { setSelTimes(p => ({ ...p, [block.name]: slot.t })); showToast(`Best time noted: ${slot.t}`, "brand"); }} className="time-badge" style={{ display: "flex", alignItems: "center", gap: 4, padding: "4px 9px", borderRadius: 6, background: selTimes[block.name]===slot.t?"#EEEEFF":slot.best?"#ECFDF5":"#fff", border: `1px solid ${selTimes[block.name]===slot.t?"#F97316":slot.best?"rgba(16,185,129,.25)":"#E4E5EF"}`, fontSize: 11.5, fontWeight: 700, color: selTimes[block.name]===slot.t?"#F97316":slot.best?"#10B981":"#4B4D6B", cursor: "pointer", fontFamily: "JetBrains Mono,monospace", transition: "all .13s" }}>
-                          {slot.best && <div style={{ width: 5, height: 5, borderRadius: "50%", background: selTimes[block.name]===slot.t?"#F97316":"#10B981", flexShrink: 0 }} />}
-                          {slot.t}
-                        </div>
-                      ))}
-                    </div>
+              <div>
+                <div onClick={() => toggleSection("posting-times")} style={{ padding: "14px 20px", display: "flex", alignItems: "center", gap: 8, cursor: "pointer", userSelect: "none" }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 8, background: "#EEEEFF", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <i className="fa-solid fa-clock" style={{ fontSize: 11, color: "#F97316" }} />
                   </div>
-                ))}
+                  <span style={{ flex: 1, fontSize: 13, fontWeight: 700, color: "#0D0E1A", fontFamily: "Sora,sans-serif" }}>Best Posting Times</span>
+                  <span style={{ padding: "2px 7px", borderRadius: 5, background: "#EEEEFF", color: "#F97316", fontSize: 10, fontWeight: 700 }}>AI</span>
+                  <i className="fa-solid fa-chevron-down" style={{ fontSize: 10, color: "#9496B5", transition: "transform .2s", transform: openSection === "posting-times" ? "rotate(180deg)" : "rotate(0deg)" }} />
+                </div>
+                {openSection === "posting-times" && (
+                  <div style={{ padding: "0 20px 16px" }}>
+                    {TIME_BLOCKS.filter(b => b.times.length > 0).map(block => (
+                      <div key={block.name} style={{ background: "#F0F1F8", border: "1px solid #E4E5EF", borderRadius: 10, padding: "11px 13px", marginBottom: 7 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 9 }}>
+                          <div style={{ width: 26, height: 26, borderRadius: 7, background: block.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, flexShrink: 0 }}>
+                            <i className={`fa-brands ${block.icon}`} style={{ color: block.color }} />
+                          </div>
+                          <div>
+                            <div style={{ fontSize: 13, fontWeight: 700, color: "#0D0E1A", fontFamily: "Sora,sans-serif" }}>{block.name}</div>
+                            <div style={{ fontSize: 11, color: "#9496B5", marginTop: 1 }}>{block.sub}</div>
+                          </div>
+                        </div>
+                        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                          {block.times.map(slot => (
+                            <div key={slot.t} onClick={() => { setSelTimes(p => ({ ...p, [block.name]: slot.t })); showToast(`Best time noted: ${slot.t}`, "brand"); }} className="time-badge" style={{ display: "flex", alignItems: "center", gap: 4, padding: "4px 9px", borderRadius: 6, background: selTimes[block.name]===slot.t?"#EEEEFF":slot.best?"#ECFDF5":"#fff", border: `1px solid ${selTimes[block.name]===slot.t?"#F97316":slot.best?"rgba(16,185,129,.25)":"#E4E5EF"}`, fontSize: 11.5, fontWeight: 700, color: selTimes[block.name]===slot.t?"#F97316":slot.best?"#10B981":"#4B4D6B", cursor: "pointer", fontFamily: "JetBrains Mono,monospace", transition: "all .13s" }}>
+                              {slot.best && <div style={{ width: 5, height: 5, borderRadius: "50%", background: selTimes[block.name]===slot.t?"#F97316":"#10B981", flexShrink: 0 }} />}
+                              {slot.t}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -633,13 +683,6 @@ export default function BrandOverlayPage() {
                 <div>
                   <div style={{ fontSize: 15, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.3px" }}>Live Preview</div>
                   <div style={{ fontSize: 12, color: "#9496B5", marginTop: 2 }}>Reflects every change instantly</div>
-                </div>
-                <div style={{ display: "flex", gap: 5 }}>
-                  {([["square","fa-square","Square"],["portrait","fa-mobile","Story"],["landscape","fa-rectangle-wide","Wide"]] as const).map(([f, icon, label]) => (
-                    <div key={f} onClick={() => setFmt(f)} style={{ padding: "5px 12px", borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: "pointer", border: `1px solid ${fmt===f?"#F97316":"#E4E5EF"}`, background: fmt===f?"#EEEEFF":"#fff", color: fmt===f?"#F97316":"#9496B5", fontFamily: "Sora,sans-serif", transition: "all .14s" }}>
-                      <i className={`fa-solid ${icon} fa-xs`} /> {label}
-                    </div>
-                  ))}
                 </div>
               </div>
 
@@ -657,7 +700,7 @@ export default function BrandOverlayPage() {
                   </div>
                 </div>
                 {/* Stage */}
-                <div style={{ position: "relative", overflow: "hidden", background: "#F0F1F8", aspectRatio: stageAspect, maxHeight: fmt==="portrait"?500:fmt==="landscape"?360:undefined }}>
+                <div style={{ position: "relative", overflow: "hidden", background: "#F0F1F8", aspectRatio: stageAspect }}>
                   <img src={bgImg} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                   {/* Brand badge overlay */}
                   <div style={getBadgeStyle()}>
@@ -696,26 +739,13 @@ export default function BrandOverlayPage() {
               {/* BG Swapper */}
               <div style={{ marginBottom: 14 }}>
                 <div style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".5px", color: "#9496B5", marginBottom: 8, fontFamily: "Sora,sans-serif" }}>Test Backgrounds</div>
-                <div style={{ display: "flex", gap: 7, flexWrap: "wrap" }}>
+                <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 4 }}>
                   {bgOptions.map((src, i) => (
-                    <img key={i} onClick={() => setBgImg(src)} className="bg-thumb" src={src} alt="" style={{ width: 52, height: 52, borderRadius: 7, objectFit: "cover", cursor: "pointer", border: `2.5px solid ${bgImg===src?"#F97316":"transparent"}`, boxShadow: bgImg===src?"0 0 0 2px rgba(249,115,22,.25)":undefined, transition: "all .15s" }} />
+                    <img key={i} onClick={() => setBgImg(src)} className="bg-thumb" src={src} alt="" style={{ flex: "0 0 calc(100% / 7 - 6px)", minWidth: 0, height: 64, borderRadius: 8, objectFit: "cover", cursor: "pointer", border: `2.5px solid ${bgImg===src?"#F97316":"transparent"}`, boxShadow: bgImg===src?"0 0 0 2px rgba(249,115,22,.25)":undefined, transition: "all .15s" }} />
                   ))}
                 </div>
               </div>
 
-              {/* Mini format grid */}
-              <div>
-                <div style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".5px", color: "#9496B5", marginBottom: 8, fontFamily: "Sora,sans-serif" }}>All Format Preview</div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
-                  {([["square","1:1"],["portrait","9:16"],["landscape","16:9"]] as const).map(([f, label]) => (
-                    <div key={f} onClick={() => setFmt(f)} className="mini-card-item" style={{ background: "#fff", border: `1px solid ${fmt===f?"#F97316":"#E4E5EF"}`, borderRadius: 10, overflow: "hidden", cursor: "pointer", transition: "all .14s", position: "relative", boxShadow: fmt===f?"0 0 0 2px rgba(249,115,22,.2)":undefined }}>
-                      <img src={bgImg} alt="" style={{ width: "100%", display: "block", objectFit: "cover", aspectRatio: f==="square"?"1/1":f==="portrait"?"9/16":"16/9" }} />
-                      <div style={{ fontSize: 11, fontWeight: 700, color: "#9496B5", textAlign: "center", padding: 6, background: "#fff", borderTop: "1px solid #E4E5EF", fontFamily: "Sora,sans-serif" }}>{f.charAt(0).toUpperCase()+f.slice(1)} {label}</div>
-                      {fmt===f && <div style={{ position: "absolute", top: 6, right: 6, padding: "2px 6px", borderRadius: 6, background: "linear-gradient(115deg,#F97316,#EA580C)", color: "#fff", fontSize: 10, fontWeight: 800, fontFamily: "Sora,sans-serif" }}>Active</div>}
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
 
             {/* ── RIGHT: Action column ── */}

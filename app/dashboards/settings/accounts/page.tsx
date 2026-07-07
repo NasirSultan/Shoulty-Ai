@@ -24,7 +24,7 @@ interface ConnectedAccount {
   platformId: string; platformIcon: string; platformColor: string; platformGrad: string;
   handle: string; accountType: string; role: "Admin" | "Owner" | "Member";
   health: "Healthy" | "Needs refresh";
-  followers: string;
+  followers: string; posts?: string; engagement?: string;
   connectedDate: string; lastSync: string; publishing: "active" | "at risk";
   permissions: string[]; workspace: string;
 }
@@ -39,19 +39,21 @@ const INIT_PLATS: Platform[] = [
   { id:"pi", name:"Pinterest", icon:"fa-brands fa-pinterest", color:"#E60023", grad:"linear-gradient(135deg,#E60023,#AD0019)", desc:"Visual discovery for 450M+ monthly users", perms:["Create & schedule pins","Access analytics","Manage boards","Read audience insights"], status:"connected", accountCount:1, lastSync:"4h ago", publishing:"active", features:[{label:"Posts",enabled:true},{label:"Analytics",enabled:true},{label:"Schedule",enabled:true}] },
   { id:"yt", name:"YouTube", icon:"fa-brands fa-youtube", color:"#FF0000", grad:"linear-gradient(135deg,#FF0000,#CC0000)", desc:"World's largest video platform", perms:["Upload & schedule videos","Manage channel","Post community updates","Read analytics"], status:"connected", accountCount:1, lastSync:"1h ago", publishing:"active", features:[{label:"Reels",enabled:true},{label:"Analytics",enabled:true},{label:"Comments",enabled:true}] },
   { id:"gb", name:"Google Business", icon:"fa-brands fa-google", color:"#4285F4", grad:"linear-gradient(135deg,#4285F4,#1A6CF0)", desc:"Manage your local Google presence", perms:["Publish business updates","Respond to reviews","Post offers & events","View insights"], status:"connected", accountCount:1, lastSync:"6h ago", publishing:"active", features:[{label:"Posts",enabled:true},{label:"Analytics",enabled:true},{label:"Schedule",enabled:true},{label:"Reels",enabled:false}] },
+  { id:"th", name:"Threads", icon:"fa-brands fa-threads", color:"#1A1A1A", grad:"linear-gradient(135deg,#1A1A1A,#3D3D3D)", desc:"Text-based conversations from Instagram", perms:["Post & reply to threads","Access profile & followers","Read engagement metrics"], status:"disconnected", accountCount:0, lastSync:"—", publishing:"—", features:[{label:"Posts",enabled:true},{label:"Replies",enabled:true},{label:"Analytics",enabled:false}] },
+  { id:"bs", name:"Bluesky", icon:"fa-solid fa-cloud", color:"#1185FE", grad:"linear-gradient(135deg,#1185FE,#0A66C2)", desc:"Decentralized social network for real conversations", perms:["Post & schedule content","Access profile & followers","Read engagement metrics"], status:"connected", accountCount:1, lastSync:"2d ago", publishing:"active", features:[{label:"Posts",enabled:true},{label:"Analytics",enabled:true},{label:"Schedule",enabled:true}] },
 ];
 
 const WORKSPACE_ACCOUNTS: ConnectedAccount[] = [
-  { id:"a1", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"ig", platformIcon:"fa-brands fa-instagram", platformColor:"#E1306C", platformGrad:"linear-gradient(135deg,#F77737,#E1306C,#833AB4)", handle:"@brightfit.studio", accountType:"Business", followers:"12.4k followers", role:"Owner", health:"Healthy", connectedDate:"Mar 2025", lastSync:"10 min ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish posts","Can publish reels","Can publish stories","Can read analytics","Can reply to comments","Can schedule"] },
-  { id:"a2", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"tk", platformIcon:"fa-brands fa-tiktok", platformColor:"#010101", platformGrad:"linear-gradient(135deg,#010101,#EE1D52)", handle:"@brightfitstudio", accountType:"Profile", followers:"8.1k followers", role:"Owner", health:"Healthy", connectedDate:"May 2025", lastSync:"25 min ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish reels","Can read analytics","Can reply to comments","Can schedule"] },
+  { id:"a1", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"ig", platformIcon:"fa-brands fa-instagram", platformColor:"#E1306C", platformGrad:"linear-gradient(135deg,#F77737,#E1306C,#833AB4)", handle:"@brightfit.studio", accountType:"Business", followers:"22.7K followers", posts:"1,204", engagement:"2.1%", role:"Owner", health:"Healthy", connectedDate:"Mar 2025", lastSync:"10 min ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish posts","Can publish reels","Can publish stories","Can read analytics","Can reply to comments","Can schedule"] },
+  { id:"a2", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"tk", platformIcon:"fa-brands fa-tiktok", platformColor:"#010101", platformGrad:"linear-gradient(135deg,#010101,#EE1D52)", handle:"@brightfitstudio", accountType:"Profile", followers:"8.1K followers", posts:"342", engagement:"5.4%", role:"Owner", health:"Healthy", connectedDate:"May 2025", lastSync:"25 min ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish reels","Can read analytics","Can reply to comments","Can schedule"] },
   { id:"a3", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"li", platformIcon:"fa-brands fa-linkedin", platformColor:"#0A66C2", platformGrad:"linear-gradient(135deg,#0A66C2,#0853A0)", handle:"BrightFit Studio", accountType:"Company page", followers:"", role:"Admin", health:"Healthy", connectedDate:"Apr 2025", lastSync:"2h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish posts","Can read analytics","Can reply to comments","Can schedule"] },
   { id:"a4", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"fb", platformIcon:"fa-brands fa-facebook", platformColor:"#1877F2", platformGrad:"linear-gradient(135deg,#1877F2,#0C52C5)", handle:"BrightFit Studio", accountType:"Page", followers:"", role:"Admin", health:"Needs refresh", connectedDate:"Mar 2025", lastSync:"3d ago", publishing:"at risk", workspace:"BrightFit Studio", permissions:["Can publish posts","Can publish reels","Can publish stories","Can read analytics","Can reply to comments","Can schedule"] },
-  { id:"a5", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"x", platformIcon:"fa-brands fa-x-twitter", platformColor:"#1A1A1A", platformGrad:"linear-gradient(135deg,#1A1A1A,#444)", handle:"@brightfit_blr", accountType:"Profile", followers:"2.3k followers", role:"Owner", health:"Healthy", connectedDate:"Mar 2025", lastSync:"1h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish posts","Can read analytics","Can reply to comments","Can schedule"] },
+  { id:"a5", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"x", platformIcon:"fa-brands fa-x-twitter", platformColor:"#1A1A1A", platformGrad:"linear-gradient(135deg,#1A1A1A,#444)", handle:"@brightfit_blr", accountType:"Profile", followers:"2.3K followers", posts:"876", engagement:"1.8%", role:"Owner", health:"Healthy", connectedDate:"Mar 2025", lastSync:"1h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish posts","Can read analytics","Can reply to comments","Can schedule"] },
   { id:"a6", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"yt", platformIcon:"fa-brands fa-youtube", platformColor:"#FF0000", platformGrad:"linear-gradient(135deg,#FF0000,#CC0000)", handle:"BrightFit Studio", accountType:"Channel", followers:"Shorts enabled", role:"Owner", health:"Healthy", connectedDate:"Mar 2025", lastSync:"1h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish videos","Can read analytics","Can reply to comments","Can schedule"] },
   { id:"a7", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"pi", platformIcon:"fa-brands fa-pinterest", platformColor:"#E60023", platformGrad:"linear-gradient(135deg,#E60023,#AD0019)", handle:"@brightfitstudio", accountType:"Business", followers:"", role:"Admin", health:"Healthy", connectedDate:"Jun 2025", lastSync:"4h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish pins","Can read analytics","Can schedule"] },
   { id:"a8", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"gb", platformIcon:"fa-brands fa-google", platformColor:"#4285F4", platformGrad:"linear-gradient(135deg,#4285F4,#1A6CF0)", handle:"BrightFit Studio", accountType:"Business Profile", followers:"", role:"Admin", health:"Healthy", connectedDate:"May 2025", lastSync:"6h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish posts","Can read analytics","Can schedule"] },
-  { id:"b1", brandName:"Wellness Hub", brandInitials:"WH", brandColor:"#059669", platformId:"ig", platformIcon:"fa-brands fa-instagram", platformColor:"#E1306C", platformGrad:"linear-gradient(135deg,#F77737,#E1306C,#833AB4)", handle:"@wellnesshub", accountType:"Profile", followers:"5.2k followers", role:"Owner", health:"Healthy", connectedDate:"May 2025", lastSync:"15 min ago", publishing:"active", workspace:"Wellness Hub", permissions:["Can publish posts","Can publish reels","Can read analytics","Can schedule"] },
-  { id:"b2", brandName:"Wellness Hub", brandInitials:"WH", brandColor:"#059669", platformId:"tk", platformIcon:"fa-brands fa-tiktok", platformColor:"#010101", platformGrad:"linear-gradient(135deg,#010101,#EE1D52)", handle:"@wellnesshub", accountType:"Profile", followers:"3.1k followers", role:"Owner", health:"Healthy", connectedDate:"Jun 2025", lastSync:"30 min ago", publishing:"active", workspace:"Wellness Hub", permissions:["Can publish reels","Can read analytics","Can schedule"] },
+  { id:"b1", brandName:"Wellness Hub", brandInitials:"WH", brandColor:"#059669", platformId:"ig", platformIcon:"fa-brands fa-instagram", platformColor:"#E1306C", platformGrad:"linear-gradient(135deg,#F77737,#E1306C,#833AB4)", handle:"@wellnesshub", accountType:"Profile", followers:"5.2K followers", posts:"512", engagement:"3.4%", role:"Owner", health:"Healthy", connectedDate:"May 2025", lastSync:"15 min ago", publishing:"active", workspace:"Wellness Hub", permissions:["Can publish posts","Can publish reels","Can read analytics","Can schedule"] },
+  { id:"b2", brandName:"Wellness Hub", brandInitials:"WH", brandColor:"#059669", platformId:"tk", platformIcon:"fa-brands fa-tiktok", platformColor:"#010101", platformGrad:"linear-gradient(135deg,#010101,#EE1D52)", handle:"@wellnesshub", accountType:"Profile", followers:"3.1K followers", posts:"128", engagement:"6.2%", role:"Owner", health:"Healthy", connectedDate:"Jun 2025", lastSync:"30 min ago", publishing:"active", workspace:"Wellness Hub", permissions:["Can publish reels","Can read analytics","Can schedule"] },
   { id:"b3", brandName:"Wellness Hub", brandInitials:"WH", brandColor:"#059669", platformId:"pi", platformIcon:"fa-brands fa-pinterest", platformColor:"#E60023", platformGrad:"linear-gradient(135deg,#E60023,#AD0019)", handle:"@wellnesshub", accountType:"Business", followers:"", role:"Admin", health:"Healthy", connectedDate:"Jun 2025", lastSync:"5h ago", publishing:"active", workspace:"Wellness Hub", permissions:["Can publish pins","Can read analytics","Can schedule"] },
 ];
 
@@ -99,7 +101,7 @@ function PlatCard({ p, onConnect, onDisconnect, showToast }: {
 
   return (
     <div
-      style={{ background:"#fff", border:`1px solid ${isAttn?"rgba(245,158,11,.25)":isConn?"rgba(16,185,129,.15)":"#E2E4F0"}`, borderRadius:12, overflow:"hidden", display:"flex", flexDirection:"column", boxShadow:"0 1px 4px rgba(11,12,26,.04)", transition:"all .18s" }}
+      style={{ background:"#fff", border:`1px solid ${isAttn?"rgba(245,158,11,.25)":isConn?"rgba(249,115,22,.2)":"#E2E4F0"}`, borderRadius:12, overflow:"hidden", display:"flex", flexDirection:"column", boxShadow:"0 1px 4px rgba(11,12,26,.04)", transition:"all .18s" }}
       onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow="0 6px 20px rgba(11,12,26,.08)"; (e.currentTarget as HTMLDivElement).style.transform="translateY(-2px)"; }}
       onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow="0 1px 4px rgba(11,12,26,.04)"; (e.currentTarget as HTMLDivElement).style.transform=""; }}
     >
@@ -112,19 +114,19 @@ function PlatCard({ p, onConnect, onDisconnect, showToast }: {
       </div>
 
       {/* Status strip */}
-      <div style={{ margin:"0 16px 10px", padding:"5px 10px", borderRadius:6, background:isAttn?"#FFFBEB":isConn?"#ECFDF5":"#F0F1F9", display:"flex", alignItems:"center", gap:6 }}>
-        <div style={{ width:7, height:7, borderRadius:"50%", background:isAttn?"#F59E0B":isConn?"#10B981":"#BFC1D9", animation:isConn?"connectedGlow 2s infinite":undefined, flexShrink:0 }} />
-        <span style={{ fontSize:11.5, fontWeight:700, color:isAttn?"#B45309":isConn?"#059669":"#8486AB" }}>
-          {isAttn?"Attention":isConn?"Connected":"Not Connected"}
+      <div style={{ margin:"0 16px 10px", padding:"5px 10px", borderRadius:6, background:isAttn?"#FFFBEB":isConn?"#FFF7ED":"#F0F1F9", display:"flex", alignItems:"center", gap:6 }}>
+        <div style={{ width:7, height:7, borderRadius:"50%", background:isAttn?"#F59E0B":isConn?"#F97316":"#BFC1D9", flexShrink:0 }} />
+        <span style={{ fontSize:11.5, fontWeight:700, color:isAttn?"#B45309":isConn?"#F97316":"#8486AB" }}>
+          {isAttn?"Attention":isConn?"Upcoming":"Not Connected"}
         </span>
       </div>
 
       {/* Account info */}
       {isActive && (
         <div style={{ padding:"0 16px 10px" }}>
-          <div style={{ fontSize:12, color:"#8486AB" }}>{p.accountCount} account{p.accountCount!==1?"s":""} · synced {p.lastSync}</div>
+          <div style={{ fontSize:12, color:"#8486AB" }}>Feature coming soon</div>
           <div style={{ fontSize:12, marginTop:3 }}>
-            Publishing: <span style={{ fontWeight:700, color:p.publishing==="at risk"?"#F59E0B":"#059669" }}>{p.publishing}</span>
+            Publishing: <span style={{ fontWeight:700, color:"#F97316" }}>upcoming</span>
           </div>
         </div>
       )}
@@ -151,7 +153,7 @@ function PlatCard({ p, onConnect, onDisconnect, showToast }: {
             onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor="#F97316"; (e.currentTarget as HTMLButtonElement).style.color="#F97316"; }}
             onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor="#E2E4F0"; (e.currentTarget as HTMLButtonElement).style.color="#3D3F60"; }}
           >
-            Manage
+            Upcoming
           </button>
         ) : (
           <button onClick={() => onConnect(p.id)} style={{ width:"100%", padding:"9px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"linear-gradient(115deg,#F97316,#EA580C)", color:"#fff", border:"none", boxShadow:"0 2px 8px rgba(249,115,22,.3)" }}>
@@ -172,7 +174,13 @@ function AccountRow({ acc, showToast, isLast }: { acc: ConnectedAccount; showToa
     x:"X", yt:"YouTube", pi:"Pinterest", gb:"Google Business",
   };
 
-  const meta = [platName[acc.platformId] || acc.platformId, acc.accountType, acc.followers].filter(Boolean).join(" · ");
+  const meta = [
+    platName[acc.platformId] || acc.platformId,
+    acc.accountType,
+    acc.followers,
+    acc.posts ? `${acc.posts} posts` : "",
+    acc.engagement ? `${acc.engagement} eng.` : "",
+  ].filter(Boolean).join(" · ");
 
   return (
     <div style={{ display:"flex", alignItems:"center", gap:16, padding:"16px 24px", borderBottom:isLast ? "none" : "1px solid #F0F1F9" }}>
@@ -483,7 +491,7 @@ export default function SocialAccountsPage() {
               <h2 style={{ fontSize:16, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif" }}>Supported platforms</h2>
               <span style={{ fontSize:12, color:"#8486AB" }}>Connected platforms appear first</span>
             </div>
-            <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:14 }}>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:14 }}>
               {sortedPlats.map(p => (
                 <PlatCard key={p.id} p={p} onConnect={openConnect} onDisconnect={openDisconnect} showToast={showToast} />
               ))}

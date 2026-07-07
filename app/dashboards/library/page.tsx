@@ -1107,7 +1107,7 @@ export default function LibraryPage() {
 
           {/* Topbar */}
           <AdminHeader
-            pageTitle="Image & Reel Library"
+            pageTitle="Content Library"
             userName={user?.name}
             userInitials={initials}
           />

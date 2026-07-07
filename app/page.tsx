@@ -902,34 +902,67 @@ const speeds = [120, 160, 110, 150, 130];
                     maskImage: "radial-gradient(ellipse 90% 80% at 50% 40%, black 30%, transparent 100%)"
                 }}></div>
 
-                <div className="relative z-10 w-full max-w-6xl mx-auto px-8 sm:px-12 pb-10 grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+                <div className="relative z-10 w-full max-w-6xl mx-auto px-8 sm:px-12 pb-6 grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
                     {/* Left Content */}
                     <div className="flex flex-col gap-6">
                         {/* Pill Badge */}
-                        <div className="inline-flex items-center gap-2 w-fit px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/30">
+                        <div className="mt-16 sm:mt-8 inline-flex items-center gap-2 w-fit px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/30">
                             <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse"></span>
                             <span className="text-xs font-bold uppercase tracking-wider text-orange-400">AI Social Media Automation</span>
                         </div>
 
                         {/* Heading */}
-                        <h1 className="text-3xl md:text-4xl font-black tracking-tight text-white leading-tight">
-                            Your Business Posts Every Day.<br />
+                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white leading-none">
+                            Stay Active on Social Media Every Day<br />
                             <span className="bg-gradient-to-r from-orange-400 via-red-400 to-rose-400 bg-clip-text text-transparent">365 Days of Social Media.</span>
                             <br />
                             Zero Effort.
                         </h1>
 
-                        {/* Subtitle */}
-                        <p className="text-base text-slate-300 leading-relaxed max-w-md">
-                            Stay active on Instagram, Facebook, LinkedIn, Google Business, X, Threads, Pinterest, TikTok, YouTube, and more without creating content yourself.
-                            <br /><br />
-                            Every post comes with a professionally designed poster, engaging caption, and ready-to-use hashtags, scheduled throughout the year so your business stays visible every single day.
-                        </p>
+                        {/* Platform Icons */}
+                        <div className="pt-2 pb-1">
+                            <p className="text-xs text-white/50 uppercase tracking-widest font-semibold mb-3">Post across 10 platforms</p>
+                            <div className="flex flex-wrap gap-2">
+                                {[
+                                    { icon: "fa-x-twitter",    bg: "#000000" },
+                                    { icon: "fa-linkedin-in",  bg: "#0A66C2" },
+                                    { icon: "fa-instagram",    bg: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)" },
+                                    { icon: "fa-tiktok",       bg: "#010101" },
+                                    { icon: "fa-facebook-f",   bg: "#1877F2" },
+                                    { icon: "fa-threads",      bg: "#000000" },
+                                    { icon: "fa-bluesky",      bg: "#0085ff" },
+                                    { icon: "fa-youtube",      bg: "#FF0000" },
+                                    { icon: "fa-pinterest-p",  bg: "#E60023" },
+                                    { icon: "fa-snapchat",     bg: "#FFFC00", color: "#000" },
+                                ].map(({ icon, bg, color }, i) => (
+                                    <div key={i} style={{
+                                        width: 36, height: 36, borderRadius: 10,
+                                        background: bg, display: "flex", alignItems: "center", justifyContent: "center",
+                                        flexShrink: 0
+                                    }}>
+                                        <i className={`fa-brands ${icon}`} style={{ fontSize: 16, color: color || "#fff" }} />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
 
                         {/* CTAs */}
+                        <style>{`
+                          .btn-start-now {
+                            background: linear-gradient(90deg, #F97316, #EF4444);
+                            border: 2px solid #F97316;
+                            color: #fff;
+                            transition: background .25s, color .25s, box-shadow .25s;
+                          }
+                          .btn-start-now:hover {
+                            background: #fff;
+                            color: #F97316;
+                            box-shadow: 0 8px 24px rgba(249,115,22,.35);
+                          }
+                        `}</style>
                         <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                            <button onClick={() => scrollToSectionInOneSecond('industry-cards')} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold hover:shadow-lg hover:shadow-orange-500/50 transition-all">
-                                Start Free Trial
+                            <button onClick={() => window.location.href = '/sign-in'} className="btn-start-now inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold">
+                                Start Now
                                 <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
                                     <path d="M2.5 7h9M8 3.5 11.5 7 8 10.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                                 </svg>

@@ -43,7 +43,7 @@ const navItems: NavItem[] = [
   },
   {
     icon: <BoxCubeIcon className="w-5 h-5" />,
-    name: "Image & Reel Library",
+    name: "Content Library",
     path: "/library",
   },
   {

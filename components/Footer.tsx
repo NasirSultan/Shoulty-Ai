@@ -31,8 +31,8 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { icon: <FaFacebook size={18} />, href: "https://facebook.com/shoutlyai", label: "Facebook" },
-    { icon: <FaInstagram size={18} />, href: "https://instagram.com/shoutlyai", label: "Instagram" },
+    { icon: <FaFacebook size={18} />, href: "https://www.facebook.com/people/Shoutly-AI/61583485633639/", label: "Facebook" },
+    { icon: <FaInstagram size={18} />, href: "https://www.instagram.com/ai.shoutly/", label: "Instagram" },
     { icon: <FaTwitter size={18} />, href: "https://twitter.com/shoutlyai", label: "Twitter" },
     { icon: <FaLinkedin size={18} />, href: "https://linkedin.com/company/shoutlyai", label: "LinkedIn" },
     { icon: <FaYoutube size={18} />, href: "https://youtube.com/@shoutlyai", label: "YouTube" }
@@ -117,16 +117,13 @@ const Footer = () => {
               <li><a href="https://blog.shoutlyai.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Blog</a></li>
               <li><Link href="/help-center" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Help Center</Link></li>
               <li><Link href="/join-community" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Join Community</Link></li>
-              <li><Link href="/case-studies" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Success Stories</Link></li>
               <li><Link href="/free-editorial" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Free Editorial Calendar</Link></li>
             </ul>
             <div className="text-xs font-bold uppercase tracking-widest text-orange-600 dark:text-orange-400 mb-5">Company</div>
             <ul className="space-y-2.5">
               <li><Link href="/about-us" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">About Us</Link></li>
               <li><Link href="/contact-us" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Contact Us</Link></li>
-              <li><Link href="/press-media" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Press & Media</Link></li>
               <li><Link href="/careers" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Careers</Link></li>
-              <li><Link href="/affiliate-program" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Affiliate Program</Link></li>
             </ul>
           </div>
 

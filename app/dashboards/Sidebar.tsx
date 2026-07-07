@@ -39,7 +39,7 @@ const NAV_GROUPS = [
       },
       {
         icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="2"/><path d="m3 17 5-4 3 2 5-5 5 5"/></svg>,
-        label: "Image and Reel Library",
+        label: "Content Library",
         href: "/dashboards/library",
       },
     ],
@@ -68,12 +68,6 @@ const NAV_GROUPS = [
   {
     section: "More",
     items: [
-      {
-        icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>,
-        label: "Notifications",
-        href: "/dashboards/notifications",
-        badge: "3",
-      },
       {
         icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>,
         label: "Back to Website",
