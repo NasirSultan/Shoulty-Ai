@@ -5,9 +5,8 @@ import { RefreshCcw, Image, Film, Zap, Lock } from "lucide-react";
 import PricingSection from "@/components/PricingSection";
 import Calender from "@/components/calender";
 import { fetchImages, fetchIndustries } from "@/api/homeApi";
-import { API_ENDPOINTS } from "@/api/configApi";
+import { API_ENDPOINTS, API_BASE_URL } from "@/api/configApi";
 import {
-    streamGeneratePosts,
     generatePromptOnlyImages,
     GeneratedPost,
 } from "@/api/postGeneratorApi";
@@ -50,7 +49,7 @@ const GENERATED_POSTS_KEY = "shoutly_generated_posts";
 
 const WHO_WE_HELP = [
     { key: "Health", emoji: "💪", title: "Health & Fitness", visible: [{ href: "/GYM.html", label: "Gym / Fitness Studio" }, { href: "/yoga-centre.html", label: "Yoga Centre" }, { href: "/zumba-aerobic-studio.html", label: "Zumba / Aerobic Studio" }, { href: "/Crossfit_Personal-Trainer.html", label: "CrossFit / Personal Trainer" }], extra: [{ href: "/physiotheraphy.html", label: "Physiotherapy Clinic" }, { href: "/Dieticians.html", label: "Dietician / Nutritionist" }, { href: "/wellness-supplements.html", label: "Wellness & Supplements" }, { href: "/weight-loss-body-transformation.html", label: "Weight Loss / Body Transformation" }] },
-    { key: "food", emoji: "🍔", title: "Food & Beverage", visible: [{ href: "/veg-multicuisine-restaurant.html", label: "Restaurants (veg / multicuisine)" }, { href: "/NV RESTAURANT.html", label: "Restaurants (non-veg / multicuisine)" }, { href: "/Cafe.html", label: "Cafes & Coffee Shops" }, { href: "/Juicebar_smoothiebar.html", label: "Juice Bars / Smoothie Bars" }], extra: [{ href: "/CAKE.html", label: "Bakery / Cake Shop" }, { href: "/Cloud-Kitchen.html", label: "Cloud Kitchen" }, { href: "/catering_.html", label: "Catering Services" }, { href: "/food-truck.html", label: "Food Trucks" }, { href: "/namkeen.html", label: "Sweets & Namkeen Stores" }, { href: "/organic-food.html", label: "Organic & Healthy Food Brands" }] },
+    { key: "food", emoji: "🍔", title: "Food & Beverage", visible: [{ href: "/veg-multicuisine-restaurant.html", label: "Restaurants (veg / multicuisine)" }, { href: "/NV RESTAURANT.html", label: "Restaurants (non-veg / multicuisine)" }, { href: "/Cafe.html", label: "Cafes & Coffee Shops" }, { href: "/Juicebar_smoothiebar.html", label: "Juice Bars / Smoothie Bars" }, { href: "/catering_.html", label: "Catering Services" }], extra: [{ href: "/CAKE.html", label: "Bakery / Cake Shop" }, { href: "/Cloud-Kitchen.html", label: "Cloud Kitchen" }, { href: "/food-truck.html", label: "Food Trucks" }, { href: "/namkeen.html", label: "Sweets & Namkeen Stores" }, { href: "/organic-food.html", label: "Organic & Healthy Food Brands" }] },
     { key: "fashion", emoji: "👗", title: "Fashion & Lifestyle", visible: [{ href: "/CLOTHING-AND-BOUTIQUE.html", label: "Clothing Store / Boutique" }, { href: "/FASHION-DESIGNER(1).html", label: "Fashion Designer" }, { href: "/textile.html", label: "Footwear" }, { href: "/watches-jewelry.html", label: "Watches / Jewelry" }], extra: [{ href: "/perfume.html", label: "Perfume / Fragrance Brand" }] },
     { key: "real", emoji: "🏗️", title: "Real Estate & Construction", visible: [{ href: "/real-estate.html", label: "Real Estate Agents" }, { href: "/DEVELOPERS_AND_BUILDERS.html", label: "Developers / Builders" }, { href: "/GATED-COMMUNITIES.html", label: "Farm Plots / Gated Communities" }, { href: "/interior.html", label: "Interior Design" }], extra: [{ href: "/Architecture.html", label: "Architecture Firms" }, { href: "/PROPERTY-CONSULTANT.html", label: "Property Consultants" }, { href: "/Construction-materials.html", label: "Home Construction Materials" }] },
     { key: "edu", emoji: "🎓", title: "Education & Coaching", visible: [{ href: "/SCHOOL-AND-CLG.html", label: "Schools & Colleges" }, { href: "/COACHING-INSTITUTE.html", label: "Coaching Institutes (NEET / JEE / UPSC / CAT)" }, { href: "/coding-academy.html", label: "Coding Academy / EdTech" }, { href: "/ONLINE-TUTOR.html", label: "Online Tutors" }, { href: "/Pre-school_Montessori.html", label: "Pre-School / Montessori" }], extra: [{ href: "/training-centers.html", label: "Skill Training Centres" }, { href: "/IELTS.html", label: "IELTS / Language Centres" }] },
@@ -228,6 +227,7 @@ export default function LandingPage() {
     const [streamError, setStreamError] = useState<string | null>(null);
     const [selectedPreviewPost, setSelectedPreviewPost] = useState<{ imageUrl: string; caption?: string } | null>(null);
     const streamAbortRef = useRef<AbortController | null>(null);
+    const previewTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
     const [generateSelectedSubIndustry, setGenerateSelectedSubIndustry] =
         useState<string | null>(null);
     const [generatePendingSubIndustry, setGeneratePendingSubIndustry] =
@@ -349,6 +349,10 @@ export default function LandingPage() {
             true,
         );
     };
+    useEffect(() => {
+        return () => { previewTimers.current.forEach(clearTimeout); };
+    }, []);
+
     useEffect(() => {
         const today = new Date().toDateString();
         try {
@@ -627,14 +631,12 @@ export default function LandingPage() {
         industryIdOverride?: string,
         subIndustryIdOverride?: string,
     ) => {
-        console.log("[Stream] Starting dual-stream preview generation...");
-        const effectiveIndustryId = industryIdOverride || generateSelectedIndustry;
         const effectiveSubIndustryId = subIndustryIdOverride || generatePendingSubIndustry;
-        if (!effectiveIndustryId || !effectiveSubIndustryId) return;
+        if (!effectiveSubIndustryId) return;
 
-        if (streamAbortRef.current) {
-            streamAbortRef.current.abort();
-        }
+        previewTimers.current.forEach(clearTimeout);
+        previewTimers.current = [];
+        streamAbortRef.current?.abort();
         const controller = new AbortController();
         streamAbortRef.current = controller;
 
@@ -642,112 +644,77 @@ export default function LandingPage() {
         setStreamedPosts([]);
         setStreamError(null);
 
-        const requestBody = {
-            subIndustryId: String(effectiveSubIndustryId),
-            prompt: brandDescription.trim(),
-        };
+        try {
+            const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null;
+            const res = await fetch(`${API_BASE_URL}/api/generator/posts`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                },
+                body: JSON.stringify({ subIndustryId: String(effectiveSubIndustryId) }),
+                signal: controller.signal,
+            });
 
-        const collectedPosts: GeneratedPost[] = [];
-        const completedAttempts = new Set<number>();
-        let lastStreamError: string | null = null;
+            const json = await res.json().catch(() => ({ success: false, posts: [] }));
+            const posts: GeneratedPost[] = Array.isArray(json.posts)
+                ? json.posts.filter((p: any) => p?.image?.imageUrl)
+                : [];
 
-        const handleChunk = (chunk: GeneratedPost & { post?: GeneratedPost }) => {
-            console.log("[Stream] Chunk received:", JSON.stringify(chunk).slice(0, 300));
+            if (posts.length > 0) {
+                setStreamError(null);
+                try { localStorage.setItem(GENERATED_POSTS_KEY, JSON.stringify(posts)); } catch { /* ignore */ }
 
-            // Normalise: API may return the post directly at root or nested under "post"
-            const rawPost: GeneratedPost = chunk.post ?? chunk;
-
-            if (!rawPost?.image?.imageUrl) return;
-
-            collectedPosts.push(rawPost);
-            setStreamedPosts([...collectedPosts]);
-            if (collectedPosts.length >= 7) {
-                controller.abort();
-            }
-        };
-
-        const markStreamDone = (attempt: number) => {
-            if (completedAttempts.has(attempt)) return;
-            completedAttempts.add(attempt);
-            setStreamLoading(false);
-        };
-
-        const runStream = async (attempt: number) => {
-            console.log("[Stream] Starting stream...");
-            try {
-                await streamGeneratePosts(requestBody, {
-                    onChunk: handleChunk,
-                    onDone: () => markStreamDone(attempt),
-                    signal: controller.signal,
+                // Show first post immediately, then reveal the rest one by one (4–7 s gaps)
+                setStreamedPosts([posts[0]]);
+                setStreamLoading(false);
+                let cumDelay = 0;
+                posts.slice(1).forEach((post) => {
+                    cumDelay += 4000 + Math.random() * 3000;
+                    const t = setTimeout(() => {
+                        setStreamedPosts(prev => [...prev, post]);
+                    }, cumDelay);
+                    previewTimers.current.push(t);
                 });
-            } catch (error: unknown) {
-                if (error instanceof Error && error.name === "AbortError") {
-                    console.log("[Stream] Stream aborted (intentional)");
-                    markStreamDone(attempt);
-                    return;
-                }
-                const msg = error instanceof Error ? error.message : "Stream error.";
-                lastStreamError = msg;
-                console.warn(`[Stream] Stream warning (attempt ${attempt}):`, msg);
-                markStreamDone(attempt);
-            }
-        };
+            } else {
+                // Fallback to stock / prompt images
+                const fallbackPrompt = brandDescription.trim() || "Generate social media post ideas for a business";
+                let fallbackPosts: GeneratedPost[] = previewStockImages
+                    .map((img) => img.file || img.url || "")
+                    .filter(Boolean)
+                    .slice(0, 4)
+                    .map((imageUrl, idx) => ({
+                        image: { imageUrl },
+                        text: `Try this caption style #${idx + 1}: ${fallbackPrompt.slice(0, 140)}`,
+                        source: "LLM" as const,
+                        index: idx,
+                    }));
 
-        await runStream(1);
-
-        if (collectedPosts.length > 0) {
-            setStreamError(null);
-        } else {
-            const fallbackPrompt = brandDescription.trim() || "Generate social media post ideas for a business";
-            const fallbackFromStock = previewStockImages
-                .map((img) => img.file || img.url || "")
-                .filter(Boolean)
-                .slice(0, 4)
-                .map((imageUrl, idx) => ({
-                    image: { imageUrl },
-                    text: `Try this caption style #${idx + 1}: ${fallbackPrompt.slice(0, 140)}`,
-                    source: "LLM" as const,
-                    index: idx,
-                }));
-
-            let fallbackPosts: GeneratedPost[] = fallbackFromStock;
-
-            if (fallbackPosts.length < 4) {
-                try {
-                    const promptImages = await generatePromptOnlyImages({
-                        prompt: fallbackPrompt,
-                        count: 4,
-                    });
-
-                    fallbackPosts = promptImages
-                        .slice(0, 4)
-                        .map((item, idx) => ({
+                if (fallbackPosts.length < 4) {
+                    try {
+                        const promptImages = await generatePromptOnlyImages({ prompt: fallbackPrompt, count: 4 });
+                        fallbackPosts = promptImages.slice(0, 4).map((item, idx) => ({
                             image: { imageUrl: item.url },
                             text: `AI caption idea #${idx + 1}: ${fallbackPrompt.slice(0, 140)}`,
                             source: "LLM" as const,
                             index: idx,
                         }));
-                } catch {
-                    // Keep stock fallback if prompt-image fallback fails.
+                    } catch { /* keep stock fallback */ }
+                }
+
+                if (fallbackPosts.length > 0) {
+                    setStreamedPosts(fallbackPosts);
+                } else {
+                    setStreamError("Could not generate posts. Please try again.");
                 }
             }
-
-            if (fallbackPosts.length > 0) {
-                setStreamedPosts(fallbackPosts);
-                setStreamError(null);
-            } else if (lastStreamError) {
-                setStreamError(lastStreamError);
-            }
+        } catch (error: unknown) {
+            if (error instanceof Error && error.name === "AbortError") return;
+            setStreamError(error instanceof Error ? error.message : "Failed to generate posts.");
+        } finally {
+            setStreamLoading(false);
+            streamAbortRef.current = null;
         }
-
-        console.log(`[Stream] All settled. Final AI posts: ${collectedPosts.length}`);
-        // Persist generated posts so they can be restored if the user revisits today
-        if (collectedPosts.length > 0) {
-            try {
-                localStorage.setItem(GENERATED_POSTS_KEY, JSON.stringify(collectedPosts));
-            } catch { /* ignore quota errors */ }
-        }
-        setStreamLoading(false);
     };
     useEffect(() => {
         const loadIndustries = async () => {
@@ -912,11 +879,8 @@ const speeds = [120, 160, 110, 150, 130];
                         </div>
 
                         {/* Heading */}
-                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white leading-none">
-                            Stay Active on Social Media Every Day<br />
-                            <span className="bg-gradient-to-r from-orange-400 via-red-400 to-rose-400 bg-clip-text text-transparent">365 Days of Social Media.</span>
-                            <br />
-                            Zero Effort.
+                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white leading-none">
+                            <span className="bg-gradient-to-r from-orange-400 via-red-400 to-rose-400 bg-clip-text text-transparent">365 Days of Social Media.</span> Zero Effort.
                         </h1>
 
                         {/* Platform Icons */}

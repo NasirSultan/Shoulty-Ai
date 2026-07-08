@@ -2,8 +2,9 @@
 // Base URL: https://backend.shoutlyai.com
 
 import axios from "axios";
+import { API_BASE_URL } from "./configApi";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://backend.shoutlyai.com";
+const BASE_URL = API_BASE_URL;
 
 // Create axios instance with automatic token injection
 const calendarClient = axios.create({
@@ -41,8 +42,6 @@ export interface CalendarPost {
 }
 
 export interface CreatePlanRequest {
-  prompt: string;
-  subIndustries: string[];
   postTime: string; // HH:MM format
 }
 
@@ -147,48 +146,33 @@ export async function createMonthlyPlan(
   const authToken = token || (typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null);
 
   if (!authToken) {
-    const error = "Authentication token is required";
-    console.error("❌ createMonthlyPlan:", error);
-    throw new Error(error);
-  }
-
-  // Validate input
-  if (!request.prompt || request.prompt.trim() === "") {
-    throw new Error("Prompt cannot be empty");
-  }
-  if (!Array.isArray(request.subIndustries) || request.subIndustries.length === 0) {
-    throw new Error("At least one sub-industry must be selected");
-  }
-  if (!request.postTime || !/^\d{2}:\d{2}$/.test(request.postTime)) {
-    throw new Error("Post time must be in HH:MM format");
+    return { success: false, message: "Authentication token is required" };
   }
 
   try {
-    console.log("📅 createMonthlyPlan: Creating plan with request:", request);
-    console.log("📅 createMonthlyPlan: Token present:", authToken ? "✓" : "✗");
-    
-    const response = await calendarClient.post("/api/calendar/plan", request, {
+    const res = await fetch(`${BASE_URL}/api/calendar/plan`, {
+      method: "POST",
       headers: {
-        Authorization: `Bearer ${authToken}`,
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${authToken}`,
       },
+      body: JSON.stringify({ postTime: request.postTime.slice(0, 5) }),
     });
 
-    console.log("✅ createMonthlyPlan: Success", response.data);
-    return response.data as CreatePlanResponse;
-  } catch (error: any) {
-    // ── Handle 401 Unauthorized (session expired) ──────────────────────────────
-    if (error.response?.status === 401) {
-      const err = new Error("Session expired. Please login again.");
-      (err as any).statusCode = 401;
-      throw err;
+    const data = await res.json().catch(() => ({}));
+
+    if (res.status === 401) {
+      return { success: false, message: "Session expired — unauthorized." };
     }
-    
-    const errorMsg = error.response?.data?.message || error.message || "Failed to create plan";
-    console.error("❌ createMonthlyPlan error:", errorMsg, error.response?.data);
-    const err = new Error(errorMsg);
-    (err as any).statusCode = error.response?.status || 500;
-    throw err;
+
+    // Return the body as-is — backend sends { success, message, ... }
+    // If backend returned a non-success shape without a success field, normalise it
+    if (typeof data.success === "undefined") {
+      return { success: !res.ok, message: data.message || (res.ok ? "OK" : "Request failed") };
+    }
+    return data as CreatePlanResponse;
+  } catch (error: any) {
+    return { success: false, message: error.message || "Failed to create plan" };
   }
 }
 

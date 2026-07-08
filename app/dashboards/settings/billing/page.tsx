@@ -1,30 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AdminHeader from "../../AdminHeader";
+import { API_BASE_URL } from "@/api/configApi";
 
-type Cycle    = "monthly" | "yearly";
 type Currency = "inr" | "usd";
-// Cycle type kept for activePlan state only
+
+const SUB_BASE = API_BASE_URL;
 
 const PRICING = {
   inr: { monthly: 10000, yearly: 8000, yearlyTotal: 96000, saving: 24000, equiv: { monthly: "≈ $119/mo in USD", yearly: "≈ $95/mo in USD" } },
   usd: { monthly: 119,   yearly: 95,   yearlyTotal: 1143,  saving: 286,   equiv: { monthly: "≈ ₹10,000/mo in INR", yearly: "≈ ₹8,000/mo in INR" } },
 };
-const SYM = { inr: "₹", usd: "$" };
-
-const HISTORY = [
-  { date: "Mar 8, 2026", plan: "Business Plan", desc: "Monthly subscription",     amt: "$197.00", status: "paid" },
-  { date: "Feb 8, 2026", plan: "Business Plan", desc: "Monthly subscription",     amt: "$197.00", status: "paid" },
-  { date: "Jan 8, 2026", plan: "Business Plan", desc: "Monthly subscription",     amt: "$197.00", status: "paid" },
-  { date: "Dec 8, 2025", plan: "Business Plan", desc: "Monthly subscription",     amt: "$197.00", status: "paid" },
-  { date: "Nov 8, 2025", plan: "Creator Plan",  desc: "Plan upgrade · pro-rated", amt: "$118.00", status: "paid" },
-  { date: "Nov 1, 2025", plan: "Creator Plan",  desc: "Monthly subscription",     amt: "$79.00",  status: "paid" },
-];
-const HISTORY_EXTRA = [
-  { date: "Oct 1, 2025", plan: "Creator Plan", desc: "Monthly subscription", amt: "$79.00", status: "paid" },
-  { date: "Sep 1, 2025", plan: "Solo Plan",    desc: "Monthly subscription", amt: "$29.00", status: "paid" },
-];
+const SYM: Record<string, string> = { inr: "₹", usd: "$", INR: "₹", USD: "$" };
 
 const PLAN_FEATURES = [
   "365 AI posts per year",
@@ -35,15 +23,116 @@ const PLAN_FEATURES = [
   "Priority support",
 ];
 
+interface CurrentSub {
+  hasActivePlan: boolean;
+  isTrial?: boolean;
+  billing?: "MONTHLY" | "YEARLY";
+  currency?: "INR" | "USD";
+  amount?: number;
+  startedAt?: string;
+  expiresAt?: string;
+  daysRemaining?: number;
+}
+
+interface HistoryRow {
+  id: string;
+  plan: string | null;
+  billing: "MONTHLY" | "YEARLY" | null;
+  amount: number | null;
+  currency: "INR" | "USD" | null;
+  isTrial: boolean;
+  startedAt: string;
+  expiresAt: string;
+  isActive: boolean;
+  createdAt: string;
+}
+
+const authHeaders = () => {
+  const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") ?? "" : "";
+  return {
+    "Authorization": `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+};
+
+const fmtDate = (iso: string) =>
+  new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+
+const fmtAmt = (amt: number | null, cur: string | null) => {
+  if (amt == null || !cur) return "—";
+  return `${SYM[cur] ?? ""}${amt.toLocaleString()}`;
+};
+
 export default function BillingPage() {
-  const [currency, setCurrency]   = useState<Currency>("inr");
-  const [activePlan, setActivePlan] = useState<Cycle>("yearly");
-  const [historyRows, setHistoryRows] = useState(HISTORY);
-  const [moreLoaded, setMoreLoaded]   = useState(false);
+  const [currency, setCurrency]     = useState<Currency>("inr");
+  const [currentSub, setCurrentSub] = useState<CurrentSub | null>(null);
+  const [history, setHistory]       = useState<HistoryRow[]>([]);
+  const [loadingSub, setLoadingSub] = useState(true);
+  const [buyLoading, setBuyLoading] = useState<"MONTHLY" | "YEARLY" | null>(null);
   const [defaultCard, setDefaultCard] = useState<"visa" | "mc">("visa");
+  const [toast, setToast]           = useState<{ msg: string; type: "green" | "red" | "amber" } | null>(null);
+
+  const showToast = (msg: string, type: "green" | "red" | "amber" = "green") => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 4000);
+  };
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      setLoadingSub(true);
+      try {
+        const [curRes, histRes] = await Promise.all([
+          fetch(`${SUB_BASE}/api/subscription/current`, { headers: authHeaders() }),
+          fetch(`${SUB_BASE}/api/subscription/history`, { headers: authHeaders() }),
+        ]);
+        if (curRes.ok) {
+          const cur: CurrentSub = await curRes.json();
+          setCurrentSub(cur);
+          if (cur.currency) setCurrency(cur.currency.toLowerCase() as Currency);
+        }
+        if (histRes.ok) {
+          const hist: HistoryRow[] = await histRes.json();
+          setHistory(Array.isArray(hist) ? hist : []);
+        }
+      } catch {
+        showToast("Could not load subscription data", "red");
+      } finally {
+        setLoadingSub(false);
+      }
+    };
+    fetchAll();
+  }, []);
+
+  const handleBuy = async (billing: "MONTHLY" | "YEARLY") => {
+    setBuyLoading(billing);
+    try {
+      const res = await fetch(`${SUB_BASE}/api/subscription/buy`, {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({ billing, currency: currency.toUpperCase() }),
+      });
+      if (res.status === 401) { window.location.href = "/sign-in"; return; }
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        showToast(err?.message || "Purchase failed — please try again", "red");
+        return;
+      }
+      showToast(`${billing === "YEARLY" ? "Yearly" : "Monthly"} plan activated!`, "green");
+      // Refresh current subscription
+      const cur: CurrentSub = await fetch(`${SUB_BASE}/api/subscription/current`, { headers: authHeaders() }).then(r => r.json());
+      setCurrentSub(cur);
+      const hist: HistoryRow[] = await fetch(`${SUB_BASE}/api/subscription/history`, { headers: authHeaders() }).then(r => r.json());
+      setHistory(Array.isArray(hist) ? hist : []);
+    } catch {
+      showToast("Network error — could not complete purchase", "red");
+    } finally {
+      setBuyLoading(null);
+    }
+  };
 
   const p   = PRICING[currency];
   const sym = SYM[currency];
+  const activeBilling = currentSub?.hasActivePlan ? currentSub.billing : null;
 
   return (
     <>
@@ -54,26 +143,38 @@ export default function BillingPage() {
         ::-webkit-scrollbar { width: 5px; height: 5px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: #E2E4F0; border-radius: 3px; }
         @keyframes fadeUp { from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)} }
         @keyframes gradMove { 0%{background-position:0%}50%{background-position:100%}100%{background-position:0%} }
+        @keyframes spin { from{transform:rotate(0deg)}to{transform:rotate(360deg)} }
         .plan-card { transition: transform .22s, box-shadow .22s; }
         .plan-card:hover { transform: translateY(-5px); box-shadow: 0 20px 48px rgba(11,12,26,.12) !important; }
         .btn-hover:hover { opacity: .88; }
         .row-hover:hover td { background: #F9FAFB !important; }
+        .bill-toast { position:fixed; top:80px; right:18px; z-index:9999; min-width:260px; max-width:360px; padding:10px 14px; border-radius:10px; font-size:13px; font-weight:700; display:flex; align-items:center; gap:8px; box-shadow:0 8px 28px rgba(0,0,0,.14); animation:fadeUp .25s ease both; }
+        .bill-toast.green { background:#ECFDF5; border:1px solid rgba(16,185,129,.35); color:#065F46; }
+        .bill-toast.red   { background:#FEF2F2; border:1px solid rgba(239,68,68,.35);  color:#991B1B; }
+        .bill-toast.amber { background:#FFFBEB; border:1px solid rgba(245,158,11,.35); color:#92400E; }
       `}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+
+      {toast && (
+        <div className={`bill-toast ${toast.type}`}>
+          <i className={`fa-solid ${toast.type === "green" ? "fa-circle-check" : toast.type === "red" ? "fa-circle-xmark" : "fa-triangle-exclamation"}`} />
+          {toast.msg}
+        </div>
+      )}
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
         <AdminHeader pageTitle="Subscription & Billing" searchPlaceholder="Search billing…" />
 
         <div style={{ flex: 1, overflowY: "auto", padding: "30px 28px 48px", background: "#F8F9FB" }}>
 
-          {/* ── Heading ── */}
+          {/* ── Heading + Currency toggle ── */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24, gap: 20, animation: "fadeUp .35s ease both" }}>
             <div>
               <h1 style={{ fontSize: 24, fontWeight: 900, color: "#0B0C1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.5px", marginBottom: 5 }}>One Plan. Full Power.</h1>
               <p style={{ fontSize: 13.5, color: "#6B7280", maxWidth: 460, lineHeight: 1.55 }}>Everything your business needs to stay visible — posts, reels, scheduling, and more.</p>
             </div>
             <div style={{ display: "flex", gap: 2, padding: 4, borderRadius: 10, background: "#fff", border: "1px solid #E2E4F0", boxShadow: "0 1px 3px rgba(11,12,26,.05)", flexShrink: 0 }}>
-              {(["inr","usd"] as Currency[]).map(c => (
+              {(["inr", "usd"] as Currency[]).map(c => (
                 <button key={c} onClick={() => setCurrency(c)} style={{ padding: "5px 14px", borderRadius: 7, fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "Sora,sans-serif", border: "none", background: currency === c ? "linear-gradient(135deg,#F97316,#EA580C)" : "transparent", color: currency === c ? "#fff" : "#6B7280", transition: "all .16s", boxShadow: currency === c ? "0 2px 8px rgba(249,115,22,.28)" : "none" }}>
                   {c === "inr" ? "₹ INR" : "$ USD"}
                 </button>
@@ -85,9 +186,14 @@ export default function BillingPage() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18, marginBottom: 28, animation: "fadeUp .35s ease .12s both" }}>
 
             {/* Yearly */}
-            <div className="plan-card" style={{ background: "#fff", borderRadius: 18, border: "2px solid #F97316", boxShadow: "0 8px 28px rgba(249,115,22,.13)", overflow: "hidden", display: "flex", flexDirection: "column", position: "relative" }}>
+            <div className="plan-card" style={{ background: "#fff", borderRadius: 18, border: `2px solid ${activeBilling === "YEARLY" ? "#10B981" : "#F97316"}`, boxShadow: "0 8px 28px rgba(249,115,22,.13)", overflow: "hidden", display: "flex", flexDirection: "column", position: "relative" }}>
               <div style={{ height: 4, background: "linear-gradient(90deg,#F97316,#EF4444,#FB923C,#F97316)", backgroundSize: "300%", animation: "gradMove 4s ease infinite" }} />
-              <div style={{ position: "absolute", top: 14, right: 14, padding: "3px 10px", borderRadius: 20, background: "linear-gradient(135deg,#F97316,#EF4444)", color: "#fff", fontSize: 9.5, fontWeight: 900, fontFamily: "Sora,sans-serif" }}>BEST VALUE</div>
+              {activeBilling === "YEARLY" && (
+                <div style={{ position: "absolute", top: 14, right: 14, padding: "3px 10px", borderRadius: 20, background: "linear-gradient(135deg,#10B981,#059669)", color: "#fff", fontSize: 9.5, fontWeight: 900, fontFamily: "Sora,sans-serif" }}>ACTIVE</div>
+              )}
+              {activeBilling !== "YEARLY" && (
+                <div style={{ position: "absolute", top: 14, right: 14, padding: "3px 10px", borderRadius: 20, background: "linear-gradient(135deg,#F97316,#EF4444)", color: "#fff", fontSize: 9.5, fontWeight: 900, fontFamily: "Sora,sans-serif" }}>BEST VALUE</div>
+              )}
               <div style={{ padding: "22px 24px 20px" }}>
                 <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".6px", color: "#F97316", fontFamily: "Sora,sans-serif", marginBottom: 10 }}>BEST VALUE — SAVE 20% · RATE LOCKED 12 MONTHS</div>
                 <div style={{ display: "flex", alignItems: "flex-start", gap: 1, marginBottom: 2 }}>
@@ -111,15 +217,27 @@ export default function BillingPage() {
                     <i className="fa-solid fa-check" style={{ fontSize: 9, color: "#10B981", flexShrink: 0 }} />Rate locked for 12 months
                   </li>
                 </ul>
-                <button onClick={() => setActivePlan("yearly")} className="btn-hover" style={{ width: "100%", padding: "12px", borderRadius: 10, fontSize: 14, fontWeight: 800, cursor: "pointer", fontFamily: "Sora,sans-serif", border: "none", background: "linear-gradient(135deg,#F97316,#EF4444)", color: "#fff", boxShadow: "0 4px 16px rgba(249,115,22,.38)", display: "flex", alignItems: "center", justifyContent: "center", gap: 7 }}>
-                  {activePlan === "yearly" ? <><i className="fa-solid fa-check" style={{ fontSize: 11 }} /> Current Plan</> : <><i className="fa-solid fa-bolt" style={{ fontSize: 11 }} /> Get Started — Yearly</>}
+                <button
+                  onClick={() => activeBilling !== "YEARLY" && handleBuy("YEARLY")}
+                  disabled={buyLoading === "YEARLY" || activeBilling === "YEARLY"}
+                  className="btn-hover"
+                  style={{ width: "100%", padding: "12px", borderRadius: 10, fontSize: 14, fontWeight: 800, cursor: activeBilling === "YEARLY" ? "default" : "pointer", fontFamily: "Sora,sans-serif", border: "none", background: activeBilling === "YEARLY" ? "linear-gradient(135deg,#10B981,#059669)" : "linear-gradient(135deg,#F97316,#EF4444)", color: "#fff", boxShadow: "0 4px 16px rgba(249,115,22,.38)", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, opacity: buyLoading === "YEARLY" ? .7 : 1 }}
+                >
+                  {buyLoading === "YEARLY"
+                    ? <><i className="fa-solid fa-spinner" style={{ animation: "spin 1s linear infinite", fontSize: 12 }} /> Processing…</>
+                    : activeBilling === "YEARLY"
+                      ? <><i className="fa-solid fa-check" style={{ fontSize: 11 }} /> Current Plan</>
+                      : <><i className="fa-solid fa-bolt" style={{ fontSize: 11 }} /> Get Started — Yearly</>}
                 </button>
               </div>
             </div>
 
             {/* Monthly */}
-            <div className="plan-card" style={{ background: "#fff", borderRadius: 18, border: "1.5px solid #E2E4F0", boxShadow: "0 4px 14px rgba(11,12,26,.05)", overflow: "hidden", display: "flex", flexDirection: "column" }}>
-              <div style={{ height: 4, background: "#E5E7EB" }} />
+            <div className="plan-card" style={{ background: "#fff", borderRadius: 18, border: `${activeBilling === "MONTHLY" ? "2px solid #10B981" : "1.5px solid #E2E4F0"}`, boxShadow: "0 4px 14px rgba(11,12,26,.05)", overflow: "hidden", display: "flex", flexDirection: "column", position: "relative" }}>
+              <div style={{ height: 4, background: activeBilling === "MONTHLY" ? "#10B981" : "#E5E7EB" }} />
+              {activeBilling === "MONTHLY" && (
+                <div style={{ position: "absolute", top: 14, right: 14, padding: "3px 10px", borderRadius: 20, background: "linear-gradient(135deg,#10B981,#059669)", color: "#fff", fontSize: 9.5, fontWeight: 900, fontFamily: "Sora,sans-serif" }}>ACTIVE</div>
+              )}
               <div style={{ padding: "22px 24px 20px" }}>
                 <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".6px", color: "#6B7280", fontFamily: "Sora,sans-serif", marginBottom: 10 }}>FLEXIBLE — CANCEL ANYTIME</div>
                 <div style={{ display: "flex", alignItems: "flex-start", gap: 1, marginBottom: 2 }}>
@@ -143,8 +261,17 @@ export default function BillingPage() {
                     <i className="fa-solid fa-check" style={{ fontSize: 9, color: "#10B981", flexShrink: 0 }} />No long-term commitment
                   </li>
                 </ul>
-                <button onClick={() => setActivePlan("monthly")} className="btn-hover" style={{ width: "100%", padding: "12px", borderRadius: 10, fontSize: 14, fontWeight: 800, cursor: "pointer", fontFamily: "Sora,sans-serif", border: activePlan === "monthly" ? "none" : "2px solid #E2E4F0", background: activePlan === "monthly" ? "#0B0C1A" : "#fff", color: activePlan === "monthly" ? "#fff" : "#374151", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, transition: "all .18s" }}>
-                  {activePlan === "monthly" ? <><i className="fa-solid fa-check" style={{ fontSize: 11 }} /> Current Plan</> : "Choose Monthly"}
+                <button
+                  onClick={() => activeBilling !== "MONTHLY" && handleBuy("MONTHLY")}
+                  disabled={buyLoading === "MONTHLY" || activeBilling === "MONTHLY"}
+                  className="btn-hover"
+                  style={{ width: "100%", padding: "12px", borderRadius: 10, fontSize: 14, fontWeight: 800, cursor: activeBilling === "MONTHLY" ? "default" : "pointer", fontFamily: "Sora,sans-serif", border: activeBilling === "MONTHLY" ? "none" : "2px solid #E2E4F0", background: activeBilling === "MONTHLY" ? "#10B981" : "#fff", color: activeBilling === "MONTHLY" ? "#fff" : "#374151", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, transition: "all .18s", opacity: buyLoading === "MONTHLY" ? .7 : 1 }}
+                >
+                  {buyLoading === "MONTHLY"
+                    ? <><i className="fa-solid fa-spinner" style={{ animation: "spin 1s linear infinite", fontSize: 12 }} /> Processing…</>
+                    : activeBilling === "MONTHLY"
+                      ? <><i className="fa-solid fa-check" style={{ fontSize: 11 }} /> Current Plan</>
+                      : "Choose Monthly"}
                 </button>
               </div>
             </div>
@@ -165,10 +292,10 @@ export default function BillingPage() {
             </span>
           </div>
 
-          {/* ── Bottom Grid: main + sidebar ── */}
+          {/* ── Bottom Grid ── */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 296px", gap: 20, animation: "fadeUp .35s ease .22s both" }}>
 
-            {/* ── LEFT: Payment Methods + Billing History ── */}
+            {/* LEFT: Payment Methods + Billing History */}
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
 
               {/* Payment Methods */}
@@ -182,7 +309,6 @@ export default function BillingPage() {
                   </button>
                 </div>
                 <div style={{ padding: "18px 22px", display: "flex", flexDirection: "column", gap: 9 }}>
-                  {/* Visa */}
                   <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderRadius: 10, background: "#F9FAFB", border: `1.5px solid ${defaultCard==="visa"?"rgba(249,115,22,.3)":"#F3F4F6"}`, position: "relative", overflow: "hidden", cursor: "pointer" }} onClick={() => setDefaultCard("visa")}>
                     {defaultCard === "visa" && <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 3, background: "#F97316", borderRadius: "10px 0 0 10px" }} />}
                     <div style={{ width: 48, height: 30, borderRadius: 6, background: "#1A1F71", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -193,16 +319,7 @@ export default function BillingPage() {
                       <div style={{ fontSize: 11, color: "#BFC1D9", fontFamily: "JetBrains Mono,monospace", marginTop: 1 }}>Expires 08 / 2027</div>
                     </div>
                     {defaultCard === "visa" && <span style={{ padding: "2px 8px", borderRadius: 5, background: "#FFF7ED", color: "#F97316", fontSize: 10, fontWeight: 800 }}>DEFAULT</span>}
-                    <div style={{ display: "flex", gap: 5 }}>
-                      <div style={{ width: 26, height: 26, borderRadius: 6, background: "#fff", border: "1px solid #E2E4F0", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#8486AB" }}>
-                        <i className="fa-solid fa-pen" style={{ fontSize: 9 }} />
-                      </div>
-                      <div style={{ width: 26, height: 26, borderRadius: 6, background: "#fff", border: "1px solid #E2E4F0", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#EF4444" }}>
-                        <i className="fa-solid fa-trash" style={{ fontSize: 9 }} />
-                      </div>
-                    </div>
                   </div>
-                  {/* Mastercard */}
                   <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderRadius: 10, background: "#F9FAFB", border: `1.5px solid ${defaultCard==="mc"?"rgba(249,115,22,.3)":"#F3F4F6"}`, position: "relative", overflow: "hidden", cursor: "pointer" }} onClick={() => setDefaultCard("mc")}>
                     {defaultCard === "mc" && <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 3, background: "#F97316", borderRadius: "10px 0 0 10px" }} />}
                     <div style={{ width: 48, height: 30, borderRadius: 6, background: "#1C1C1C", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -213,16 +330,7 @@ export default function BillingPage() {
                       <div style={{ fontSize: 11, color: "#BFC1D9", fontFamily: "JetBrains Mono,monospace", marginTop: 1 }}>Expires 12 / 2026</div>
                     </div>
                     {defaultCard === "mc" && <span style={{ padding: "2px 8px", borderRadius: 5, background: "#FFF7ED", color: "#F97316", fontSize: 10, fontWeight: 800 }}>DEFAULT</span>}
-                    <div style={{ display: "flex", gap: 5 }}>
-                      <div style={{ width: 26, height: 26, borderRadius: 6, background: "#fff", border: "1px solid #E2E4F0", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#8486AB" }}>
-                        <i className="fa-solid fa-star" style={{ fontSize: 9 }} />
-                      </div>
-                      <div style={{ width: 26, height: 26, borderRadius: 6, background: "#fff", border: "1px solid #E2E4F0", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#EF4444" }}>
-                        <i className="fa-solid fa-trash" style={{ fontSize: 9 }} />
-                      </div>
-                    </div>
                   </div>
-                  {/* Add new */}
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: 11, borderRadius: 10, border: "1.5px dashed #E2E4F0", background: "#fff", color: "#8486AB", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "Sora,sans-serif" }}>
                     <i className="fa-solid fa-plus" style={{ fontSize: 10 }} /> Add New Payment Method
                   </div>
@@ -240,84 +348,109 @@ export default function BillingPage() {
                   </button>
                 </div>
                 <div style={{ overflowX: "auto" }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                    <thead>
-                      <tr>
-                        {["Date","Plan","Description","Amount","Status","Invoice"].map(h => (
-                          <th key={h} style={{ padding: "10px 14px", fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".5px", color: "#8486AB", textAlign: "left", borderBottom: "2px solid #E2E4F0", fontFamily: "Sora,sans-serif", whiteSpace: "nowrap" }}>{h}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {historyRows.map((r, i) => (
-                        <tr key={i} className="row-hover">
-                          <td style={{ padding: "11px 14px", fontSize: 12.5, fontWeight: 600, color: "#0B0C1A", whiteSpace: "nowrap", borderBottom: "1px solid #ECEDF8" }}>{r.date}</td>
-                          <td style={{ padding: "11px 14px", borderBottom: "1px solid #ECEDF8" }}>
-                            <span style={{ padding: "2px 8px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: "#FFF7ED", color: "#F97316" }}>{r.plan}</span>
-                          </td>
-                          <td style={{ padding: "11px 14px", fontSize: 12.5, color: "#8486AB", borderBottom: "1px solid #ECEDF8" }}>{r.desc}</td>
-                          <td style={{ padding: "11px 14px", borderBottom: "1px solid #ECEDF8" }}>
-                            <span style={{ fontWeight: 800, color: "#0B0C1A", fontFamily: "JetBrains Mono,monospace" }}>{r.amt}</span>
-                          </td>
-                          <td style={{ padding: "11px 14px", borderBottom: "1px solid #ECEDF8" }}>
-                            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "3px 9px", borderRadius: 6, fontSize: 11, fontWeight: 700, background: r.status === "paid" ? "#ECFDF5" : "#FFFBEB", color: r.status === "paid" ? "#059669" : "#D97706" }}>
-                              <span style={{ width: 5, height: 5, borderRadius: "50%", background: "currentColor" }} />
-                              {r.status.charAt(0).toUpperCase() + r.status.slice(1)}
-                            </span>
-                          </td>
-                          <td style={{ padding: "11px 14px", borderBottom: "1px solid #ECEDF8" }}>
-                            <button style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, border: "1px solid #E2E4F0", background: "#F9FAFB", color: "#374151", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "Sora,sans-serif", whiteSpace: "nowrap" }}>
-                              <i className="fa-solid fa-file-arrow-down" style={{ fontSize: 10 }} /> Invoice
-                            </button>
-                          </td>
+                  {loadingSub ? (
+                    <div style={{ padding: "32px 0", textAlign: "center", color: "#8486AB", fontSize: 13 }}>
+                      <i className="fa-solid fa-spinner" style={{ animation: "spin 1s linear infinite", fontSize: 18 }} />
+                      <div style={{ marginTop: 10 }}>Loading history…</div>
+                    </div>
+                  ) : history.length === 0 ? (
+                    <div style={{ padding: "32px 0", textAlign: "center", color: "#8486AB", fontSize: 13 }}>No billing history yet.</div>
+                  ) : (
+                    <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                      <thead>
+                        <tr>
+                          {["Date", "Plan", "Billing", "Amount", "Status", "Invoice"].map(h => (
+                            <th key={h} style={{ padding: "10px 14px", fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: ".5px", color: "#8486AB", textAlign: "left", borderBottom: "2px solid #E2E4F0", fontFamily: "Sora,sans-serif", whiteSpace: "nowrap" }}>{h}</th>
+                          ))}
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <div style={{ padding: "12px 20px" }}>
-                  <button onClick={() => { if (!moreLoaded) { setHistoryRows([...historyRows, ...HISTORY_EXTRA]); setMoreLoaded(true); } }} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: 10, borderRadius: 9, border: "1px solid #E2E4F0", background: "#F9FAFB", color: "#374151", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "Sora,sans-serif" }}>
-                    <i className="fa-solid fa-chevron-down" style={{ fontSize: 10 }} /> {moreLoaded ? "All Invoices Loaded" : "Load Earlier Invoices"}
-                  </button>
+                      </thead>
+                      <tbody>
+                        {history.map((r) => (
+                          <tr key={r.id} className="row-hover">
+                            <td style={{ padding: "11px 14px", fontSize: 12.5, fontWeight: 600, color: "#0B0C1A", whiteSpace: "nowrap", borderBottom: "1px solid #ECEDF8" }}>{fmtDate(r.createdAt)}</td>
+                            <td style={{ padding: "11px 14px", borderBottom: "1px solid #ECEDF8" }}>
+                              <span style={{ padding: "2px 8px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: r.isTrial ? "#EFF6FF" : "#FFF7ED", color: r.isTrial ? "#3B82F6" : "#F97316" }}>
+                                {r.isTrial ? "Trial" : (r.plan ?? "—")}
+                              </span>
+                            </td>
+                            <td style={{ padding: "11px 14px", fontSize: 12.5, color: "#8486AB", borderBottom: "1px solid #ECEDF8" }}>
+                              {r.billing ? `${r.billing.charAt(0)}${r.billing.slice(1).toLowerCase()} subscription` : "—"}
+                            </td>
+                            <td style={{ padding: "11px 14px", borderBottom: "1px solid #ECEDF8" }}>
+                              <span style={{ fontWeight: 800, color: "#0B0C1A", fontFamily: "JetBrains Mono,monospace" }}>{fmtAmt(r.amount, r.currency)}</span>
+                            </td>
+                            <td style={{ padding: "11px 14px", borderBottom: "1px solid #ECEDF8" }}>
+                              <span style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "3px 9px", borderRadius: 6, fontSize: 11, fontWeight: 700, background: r.isActive ? "#ECFDF5" : "#F3F4F6", color: r.isActive ? "#059669" : "#6B7280" }}>
+                                <span style={{ width: 5, height: 5, borderRadius: "50%", background: "currentColor" }} />
+                                {r.isActive ? "Active" : "Expired"}
+                              </span>
+                            </td>
+                            <td style={{ padding: "11px 14px", borderBottom: "1px solid #ECEDF8" }}>
+                              <button style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, border: "1px solid #E2E4F0", background: "#F9FAFB", color: "#374151", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "Sora,sans-serif", whiteSpace: "nowrap" }}>
+                                <i className="fa-solid fa-file-arrow-down" style={{ fontSize: 10 }} /> Invoice
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* ── RIGHT: Next Billing + Quick Actions ── */}
+            {/* RIGHT: Next Billing + Security */}
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
 
-              {/* Next Billing — Upcoming */}
+              {/* Next Billing */}
               <div style={{ background: "#fff", borderRadius: 16, border: "1px solid #E2E4F0", overflow: "hidden", boxShadow: "0 1px 4px rgba(11,12,26,.05)" }}>
                 <div style={{ padding: "14px 17px", borderBottom: "1px solid #ECEDF8", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <div style={{ fontSize: 13.5, fontWeight: 800, color: "#0B0C1A", fontFamily: "Sora,sans-serif", display: "flex", alignItems: "center", gap: 7 }}>
                     <i className="fa-solid fa-calendar-days" style={{ fontSize: 12, color: "#F97316" }} /> Next Billing
                   </div>
-                  <span style={{ padding: "2px 9px", borderRadius: 20, background: "#FFF7ED", border: "1px solid rgba(249,115,22,.2)", color: "#F97316", fontSize: 10, fontWeight: 800, fontFamily: "Sora,sans-serif" }}>Upcoming</span>
+                  <span style={{ padding: "2px 9px", borderRadius: 20, background: currentSub?.hasActivePlan ? "#FFF7ED" : "#F3F4F6", border: `1px solid ${currentSub?.hasActivePlan ? "rgba(249,115,22,.2)" : "#E2E4F0"}`, color: currentSub?.hasActivePlan ? "#F97316" : "#6B7280", fontSize: 10, fontWeight: 800, fontFamily: "Sora,sans-serif" }}>
+                    {loadingSub ? "…" : currentSub?.hasActivePlan ? "Upcoming" : "No Plan"}
+                  </span>
                 </div>
                 <div style={{ padding: "15px 17px" }}>
-                  <div style={{ padding: 13, borderRadius: 11, background: "linear-gradient(135deg,#FFF7ED,#FFEDD5)", border: "1px solid rgba(249,115,22,.15)", marginBottom: 13 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: "#F97316", fontFamily: "Sora,sans-serif", marginBottom: 3 }}>Next Charge</div>
-                    <div style={{ fontSize: 16, fontWeight: 900, color: "#0B0C1A", fontFamily: "Sora,sans-serif" }}>April 8, 2026</div>
-                    <div style={{ fontSize: 12.5, fontWeight: 700, color: "#374151", marginTop: 2 }}>$197.00 · Business Plan</div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10.5, fontWeight: 700, color: "#F97316", marginTop: 7, fontFamily: "JetBrains Mono,monospace" }}>
-                      <i className="fa-solid fa-hourglass-half" style={{ fontSize: 9 }} /> 31 days remaining
+                  {loadingSub ? (
+                    <div style={{ textAlign: "center", padding: "24px 0", color: "#8486AB" }}>
+                      <i className="fa-solid fa-spinner" style={{ animation: "spin 1s linear infinite", fontSize: 16 }} />
                     </div>
-                  </div>
-                  {[
-                    { l: "This month",     v: "$197.00",    green: false },
-                    { l: "Last month",     v: "$197.00",    green: false },
-                    { l: "YTD 2026",       v: "$591.00",    green: false },
-                    { l: "Agency savings", v: "$4,803/mo",  green: true  },
-                  ].map(r => (
-                    <div key={r.l} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "7px 0", borderBottom: r.green ? undefined : "1px solid #ECEDF8" }}>
-                      <span style={{ fontSize: 12, color: r.green ? "#10B981" : "#8486AB", fontWeight: 600 }}>{r.l}</span>
-                      <span style={{ fontSize: 12, fontWeight: 800, color: r.green ? "#10B981" : "#0B0C1A", fontFamily: "JetBrains Mono,monospace" }}>{r.v}</span>
+                  ) : currentSub?.hasActivePlan ? (
+                    <>
+                      <div style={{ padding: 13, borderRadius: 11, background: "linear-gradient(135deg,#FFF7ED,#FFEDD5)", border: "1px solid rgba(249,115,22,.15)", marginBottom: 13 }}>
+                        <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: "#F97316", fontFamily: "Sora,sans-serif", marginBottom: 3 }}>Next Charge</div>
+                        <div style={{ fontSize: 16, fontWeight: 900, color: "#0B0C1A", fontFamily: "Sora,sans-serif" }}>{currentSub.expiresAt ? fmtDate(currentSub.expiresAt) : "—"}</div>
+                        <div style={{ fontSize: 12.5, fontWeight: 700, color: "#374151", marginTop: 2 }}>
+                          {fmtAmt(currentSub.amount ?? null, currentSub.currency ?? null)} · {currentSub.billing ? `${currentSub.billing.charAt(0)}${currentSub.billing.slice(1).toLowerCase()} Plan` : "—"}
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10.5, fontWeight: 700, color: "#F97316", marginTop: 7, fontFamily: "JetBrains Mono,monospace" }}>
+                          <i className="fa-solid fa-hourglass-half" style={{ fontSize: 9 }} /> {currentSub.daysRemaining ?? 0} days remaining
+                        </div>
+                      </div>
+                      {[
+                        { l: "Billing cycle", v: currentSub.billing ?? "—" },
+                        { l: "Currency",      v: currentSub.currency ?? "—" },
+                        { l: "Started",       v: currentSub.startedAt ? fmtDate(currentSub.startedAt) : "—" },
+                      ].map(r => (
+                        <div key={r.l} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "7px 0", borderBottom: "1px solid #ECEDF8" }}>
+                          <span style={{ fontSize: 12, color: "#8486AB", fontWeight: 600 }}>{r.l}</span>
+                          <span style={{ fontSize: 12, fontWeight: 800, color: "#0B0C1A", fontFamily: "JetBrains Mono,monospace" }}>{r.v}</span>
+                        </div>
+                      ))}
+                    </>
+                  ) : (
+                    <div style={{ textAlign: "center", padding: "20px 0", color: "#8486AB" }}>
+                      <i className="fa-solid fa-circle-xmark" style={{ fontSize: 28, color: "#E2E4F0", marginBottom: 10, display: "block" }} />
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "#374151", marginBottom: 4 }}>No Active Plan</div>
+                      <div style={{ fontSize: 12, color: "#8486AB", lineHeight: 1.5 }}>Choose a plan above to get started</div>
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
 
-              {/* Security trust */}
+              {/* Security */}
               <div style={{ background: "#fff", borderRadius: 16, border: "1px solid #E2E4F0", overflow: "hidden", boxShadow: "0 1px 4px rgba(11,12,26,.05)" }}>
                 <div style={{ padding: "14px 17px", borderBottom: "1px solid #ECEDF8" }}>
                   <div style={{ fontSize: 13.5, fontWeight: 800, color: "#0B0C1A", fontFamily: "Sora,sans-serif", display: "flex", alignItems: "center", gap: 7 }}>
@@ -347,6 +480,7 @@ export default function BillingPage() {
                   </div>
                 </div>
               </div>
+
             </div>
           </div>
         </div>

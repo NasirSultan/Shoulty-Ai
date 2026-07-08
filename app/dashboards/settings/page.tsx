@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import AdminHeader from '../AdminHeader';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { fetchProfile, setAccountPassword, setUserProfile } from '@/api/authApi';
+import { API_BASE_URL } from '@/api/configApi';
 
 // --- Types ---
 interface NotificationItem {
@@ -13,6 +14,17 @@ interface NotificationItem {
 
 interface NotifState {
   [key: number]: boolean;
+}
+
+interface SubIndustry {
+  id: string;
+  name: string;
+}
+
+interface Industry {
+  id: string;
+  name: string;
+  subIndustries: SubIndustry[];
 }
 
 // --- Data ---
@@ -28,6 +40,7 @@ const NAV_GROUPS: Array<{ label: string; items: Array<{ id: string; label: strin
   {
     label: 'Organization',
     items: [
+      { id: 'industry', label: 'Industry', icon: 'fa-industry' },
       { id: 'security', label: 'Security', icon: 'fa-shield-halved' },
       { id: 'danger', label: 'Danger Zone', icon: 'fa-triangle-exclamation', danger: true },
     ],
@@ -129,6 +142,13 @@ const SettingsPage: React.FC = () => {
   });
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('light');
   const [avatarUrl, setAvatarUrl] = useState('');
+  const [industries, setIndustries] = useState<Industry[]>([]);
+  const [industriesLoading, setIndustriesLoading] = useState(false);
+  const [industrySearch, setIndustrySearch] = useState('');
+  const [expandedIndustryId, setExpandedIndustryId] = useState<string | null>(null);
+  const [selectedIndustry, setSelectedIndustry] = useState<{ id: string; name: string } | null>(null);
+  const [selectedSubIndustry, setSelectedSubIndustry] = useState<{ id: string; name: string } | null>(null);
+  const [industryViewMode, setIndustryViewMode] = useState(false);
 
   // Load real user profile
   const { user, initials } = useUserProfile();
@@ -168,6 +188,43 @@ const SettingsPage: React.FC = () => {
         : '';
     setAvatarUrl(backendAvatar || '');
   }, [user]);
+
+  const authToken = () => (typeof window !== 'undefined' ? localStorage.getItem('shoutly_token') ?? '' : '');
+
+  // Fetch industry list + user's current selection when section opens
+  useEffect(() => {
+    if (activeSection !== 'industry') return;
+
+    // Fetch all industries (only once)
+    if (industries.length === 0) {
+      setIndustriesLoading(true);
+      fetch(`${API_BASE_URL}/api/industries/with-subindustries`)
+        .then(r => r.json())
+        .then(data => setIndustries(Array.isArray(data) ? data : (data?.data ?? [])))
+        .catch(() => {})
+        .finally(() => setIndustriesLoading(false));
+    }
+
+    // Fetch user's saved selection from API
+    const token = authToken();
+    if (!token) return;
+    fetch(`${API_BASE_URL}/api/users/me/industry-selection`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(r => {
+        if (r.status === 401) { window.location.href = '/sign-in'; return null; }
+        return r.ok ? r.json() : null;
+      })
+      .then(data => {
+        if (!data) return;
+        if (data.industry) setSelectedIndustry({ id: data.industry.id, name: data.industry.name });
+        if (data.subIndustry) {
+          setSelectedSubIndustry({ id: data.subIndustry.id, name: data.subIndustry.name });
+          setIndustryViewMode(true);
+        }
+      })
+      .catch(() => {});
+  }, [activeSection]);
 
   // Refs for modal
   const modalRef = useRef<HTMLDivElement>(null);
@@ -747,6 +804,7 @@ const SettingsPage: React.FC = () => {
         .toast.amber { background:rgba(245,158,11,.16); border-color:rgba(245,158,11,.4); color:#FCD34D; }
         .toast .t-x { cursor:pointer; color:inherit; font-weight:900; opacity:.75; }
         @media (max-width: 1024px) { .settings-wrap { grid-template-columns:1fr; } .settings-nav { position:static; } .form-row { grid-template-columns:1fr; } }
+        @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
       `}</style>
         <div id="main" style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
         {/* Topbar */}
@@ -891,6 +949,245 @@ const SettingsPage: React.FC = () => {
                     <button className="btn ghost" onClick={discardAll}>Cancel</button>
                     <button className="btn primary" onClick={() => saveSection('Profile')}><i className="fa-solid fa-check" style={{ fontSize: '10px' }}></i> Save Profile</button>
                   </div>
+                </div>
+              </div>
+
+              {/* Industry Section */}
+              <div className="sec" id="sec-industry" style={{ display: activeSection === 'industry' ? undefined : 'none' }}>
+                <div className="sec-hdr">
+                  <div>
+                    <div className="sec-title"><i className="fa-solid fa-industry"></i>Industry &amp; Niche</div>
+                    <div className="sec-sub">Select your industry and sub-industry to tailor AI content to your market</div>
+                  </div>
+                </div>
+                <div className="sec-body">
+                  {/* Search */}
+                  <div style={{ marginBottom: 14, position: 'relative' }}>
+                    <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--t4)', fontSize: 12, pointerEvents: 'none' }} />
+                    <input
+                      className="field"
+                      type="text"
+                      placeholder="Search industries…"
+                      value={industrySearch}
+                      onChange={e => { setIndustrySearch(e.target.value); }}
+                      style={{ paddingLeft: 30 }}
+                    />
+                  </div>
+
+                  {/* ── VIEW MODE: existing selection ── */}
+                  {industryViewMode && selectedIndustry && selectedSubIndustry ? (
+                    <>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 16 }}>
+                        {/* Selected industry card */}
+                        <div>
+                          <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--t4)', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 8, fontFamily: "'Sora',sans-serif" }}>Industry</div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <div style={{
+                              flex: 1, padding: '14px 16px', borderRadius: 12,
+                              border: '2px solid var(--brand)', background: 'var(--brand-l)',
+                              display: 'flex', alignItems: 'center', gap: 12,
+                            }}>
+                              <div style={{
+                                width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
+                                background: 'var(--brand)', color: '#fff',
+                                fontSize: 13, fontWeight: 700,
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              }}>
+                                {(industries.findIndex(i => i.id === selectedIndustry.id) + 1) || '✓'}
+                              </div>
+                              <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--brand)' }}>{selectedIndustry.name}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Selected sub-industry card */}
+                        <div>
+                          <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--t4)', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 8, fontFamily: "'Sora',sans-serif" }}>Sub-category</div>
+                          <div style={{
+                            padding: '14px 16px', borderRadius: 12,
+                            border: '2px solid var(--brand)', background: 'var(--brand-l)',
+                            display: 'flex', alignItems: 'center', gap: 12,
+                          }}>
+                            <div style={{
+                              width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
+                              background: 'var(--brand)', color: '#fff',
+                              fontSize: 13, fontWeight: 700,
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            }}>
+                              {(industries.find(i => i.id === selectedIndustry.id)?.subIndustries?.findIndex(s => s.id === selectedSubIndustry.id) ?? -1) + 1 || '✓'}
+                            </div>
+                            <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--brand)' }}>{selectedSubIndustry.name}</span>
+                            <i className="fa-solid fa-circle-check" style={{ marginLeft: 'auto', color: 'var(--brand)', fontSize: 16 }} />
+                          </div>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => { setIndustryViewMode(false); setSelectedIndustry(null); setSelectedSubIndustry(null); setIndustrySearch(''); }}
+                        style={{
+                          width: '100%', padding: '11px', borderRadius: 10,
+                          border: '1.5px dashed var(--bdr)', background: 'var(--surf2)',
+                          color: 'var(--t3)', fontSize: 13, fontWeight: 700, cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                        }}
+                      >
+                        <i className="fa-solid fa-pen" style={{ fontSize: 11 }} />
+                        Change Selection
+                      </button>
+                    </>
+                  ) : industriesLoading ? (
+                    <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--t4)' }}>
+                      <i className="fa-solid fa-spinner" style={{ fontSize: 22, animation: 'spin 1s linear infinite' }} />
+                      <div style={{ marginTop: 10, fontSize: 13 }}>Loading industries…</div>
+                    </div>
+                  ) : industries.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--t4)' }}>
+                      <i className="fa-solid fa-triangle-exclamation" style={{ fontSize: 22 }} />
+                      <div style={{ marginTop: 10, fontSize: 13 }}>Could not load industries. Check your connection.</div>
+                    </div>
+                  ) : (
+                    <>
+                      {/* If no industry selected: show full scrollable grid */}
+                      {!selectedIndustry ? (
+                        <div style={{ maxHeight: 340, overflowY: 'auto', paddingRight: 4, scrollbarWidth: 'thin', marginBottom: 16 }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+                            {industries
+                              .filter(ind => !industrySearch.trim() || ind.name.toLowerCase().includes(industrySearch.toLowerCase()))
+                              .map((ind, idx) => (
+                                <div
+                                  key={ind.id || ind.name}
+                                  onClick={() => { setSelectedIndustry({ id: ind.id, name: ind.name }); setSelectedSubIndustry(null); }}
+                                  style={{
+                                    padding: '14px 10px 12px', borderRadius: 12,
+                                    border: '2px solid var(--bdr)', background: 'var(--surf)',
+                                    cursor: 'pointer', textAlign: 'center',
+                                    transition: 'border-color .15s, background .15s', userSelect: 'none',
+                                  }}
+                                >
+                                  <div style={{
+                                    width: 28, height: 28, borderRadius: '50%',
+                                    background: 'var(--surf2)', color: 'var(--t3)',
+                                    fontSize: 11, fontWeight: 700,
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    margin: '0 auto 8px',
+                                  }}>
+                                    {idx + 1}
+                                  </div>
+                                  <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--t1)', lineHeight: 1.35 }}>
+                                    {ind.name}
+                                  </div>
+                                </div>
+                              ))}
+                          </div>
+                        </div>
+                      ) : (
+                        /* Industry selected: show only that one card + change button */
+                        <div style={{ marginBottom: 16 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <div style={{
+                              flex: 1, padding: '12px 14px', borderRadius: 12,
+                              border: '2px solid var(--brand)', background: 'var(--brand-l)',
+                              display: 'flex', alignItems: 'center', gap: 12,
+                            }}>
+                              <div style={{
+                                width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
+                                background: 'var(--brand)', color: '#fff',
+                                fontSize: 13, fontWeight: 700,
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              }}>
+                                {(industries.findIndex(i => i.id === selectedIndustry.id) + 1) || '✓'}
+                              </div>
+                              <span style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--brand)' }}>{selectedIndustry.name}</span>
+                            </div>
+                            <button
+                              onClick={() => { setSelectedIndustry(null); setSelectedSubIndustry(null); setIndustrySearch(''); }}
+                              style={{ padding: '9px 13px', borderRadius: 9, border: '1px solid var(--bdr)', background: 'var(--surf2)', color: 'var(--t3)', fontSize: 12, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
+                            >
+                              <i className="fa-solid fa-rotate-left" style={{ marginRight: 5, fontSize: 10 }} />Change
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Sub-industries — only shown when an industry is selected */}
+                      {selectedIndustry ? (
+                        <div style={{ borderTop: '1px solid var(--bdr2)', paddingTop: 14 }}>
+                          <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--t4)', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 10, fontFamily: "'Sora',sans-serif" }}>
+                            Sub-categories · <span style={{ color: 'var(--brand)' }}>{selectedIndustry.name}</span>
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+                            {(industries.find(i => i.id === selectedIndustry.id)?.subIndustries ?? []).map((sub, si) => {
+                              const subSel = selectedSubIndustry?.id === sub.id;
+                              return (
+                                <div
+                                  key={sub.id || `sub-${si}`}
+                                  onClick={() => setSelectedSubIndustry({ id: sub.id, name: sub.name })}
+                                  style={{
+                                    padding: '14px 10px 12px',
+                                    borderRadius: 12,
+                                    border: `2px solid ${subSel ? 'var(--brand)' : 'var(--bdr)'}`,
+                                    background: subSel ? 'var(--brand-l)' : 'var(--surf)',
+                                    cursor: 'pointer',
+                                    textAlign: 'center',
+                                    transition: 'border-color .15s, background .15s',
+                                    userSelect: 'none',
+                                  }}
+                                >
+                                  <div style={{
+                                    width: 28, height: 28, borderRadius: '50%',
+                                    background: subSel ? 'var(--brand)' : 'var(--surf2)',
+                                    color: subSel ? '#fff' : 'var(--t3)',
+                                    fontSize: 11, fontWeight: 700,
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    margin: '0 auto 8px',
+                                  }}>
+                                    {si + 1}
+                                  </div>
+                                  <div style={{ fontSize: 12, fontWeight: 600, color: subSel ? 'var(--brand)' : 'var(--t1)', lineHeight: 1.35 }}>
+                                    {sub.name}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      ) : (
+                        <div style={{ textAlign: 'center', color: 'var(--t4)', fontSize: 13, padding: '14px 0 4px' }}>
+                          Select an industry to see sub-categories
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {!industryViewMode && <div className="sec-footer">
+                    <button className="btn" onClick={() => { setSelectedIndustry(null); setSelectedSubIndustry(null); }}>Clear</button>
+                    <button className="btn primary" onClick={async () => {
+                      if (!selectedIndustry) { showToast('Please select an industry first', 'amber'); return; }
+                      if (!selectedSubIndustry) { showToast('Please select a sub-category', 'amber'); return; }
+                      try {
+                        const token = authToken();
+                        const res = await fetch(`${API_BASE_URL}/api/users/me/industry-selection`, {
+                          method: 'PATCH',
+                          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                          body: JSON.stringify({ subIndustryId: selectedSubIndustry.id }),
+                        });
+                        if (res.status === 401) { window.location.href = '/sign-in'; return; }
+                        if (res.status === 409) {
+                          showToast(`"${selectedSubIndustry.name}" is already taken — pick a different sub-category`, 'amber');
+                          return;
+                        }
+                        if (!res.ok) {
+                          const err = await res.json().catch(() => ({}));
+                          showToast(err?.message || 'Failed to save — try a different sub-category', 'red');
+                          return;
+                        }
+                        showToast('Industry preferences saved!', 'green');
+                        setIndustryViewMode(true);
+                      } catch { showToast('Network error — could not save industry', 'red'); }
+                    }}>
+                      <i className="fa-solid fa-check" style={{ fontSize: 10 }}></i> Save Industry
+                    </button>
+                  </div>}
                 </div>
               </div>
 

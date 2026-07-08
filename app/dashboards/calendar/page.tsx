@@ -1644,7 +1644,7 @@ export default function CalendarPage() {
   const [genCount, setGenCount] = useState(0);
   const [genStatus, setGenStatus] = useState("Preparing stream...");
   const [genInFlight, setGenInFlight] = useState(false);
-  const planPostTime = "10:00";
+  const [planPostTime, setPlanPostTime] = useState("10:00");
   const [planLoading, setPlanLoading] = useState(false);
   const { toast, show: showToast } = useToast();
 
@@ -1902,7 +1902,8 @@ export default function CalendarPage() {
     const effectiveSubIndustry = userSubIndustry || subIndustryId;
 
     if (!effectiveSubIndustry) {
-      showToast("Please set your sub-industry in your profile settings", "red");
+      showToast("Please select your industry in Settings first.", "red");
+      setTimeout(() => { window.location.href = "/dashboards/settings"; }, 1200);
       return;
     }
 
@@ -1912,18 +1913,30 @@ export default function CalendarPage() {
     setPlanLoading(true);
     showToast("Creating your monthly plan...", "brand");
     try {
-      const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") || "" : "";
+      const token = (typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null) ?? "";
+
       const response = await createMonthlyPlan(
-        {
-          prompt,
-          subIndustries: [effectiveSubIndustry],
-          postTime: planPostTime,
-        },
+        { postTime: planPostTime },
         token
       );
 
       if (!response.success) {
-        showToast(response.message || "Failed to create plan", "red");
+        const msg = response.message || "";
+        if (msg === "Please select an industry first.") {
+          showToast("Please select your industry in Settings first.", "red");
+          setTimeout(() => { window.location.href = "/dashboards/settings"; }, 1200);
+          return;
+        }
+        if (msg === "Payment required. Please subscribe to a plan to continue.") {
+          showToast("A subscription is required. Redirecting to billing…", "amber");
+          setTimeout(() => { window.location.href = "/dashboards/settings/billing"; }, 1200);
+          return;
+        }
+        if (msg.toLowerCase().includes("session expired") || msg.toLowerCase().includes("unauthorized")) {
+          showToast("Service authentication error — please contact support.", "red");
+          return;
+        }
+        showToast(msg || "Failed to create plan", "red");
         return;
       }
 
@@ -2328,6 +2341,15 @@ export default function CalendarPage() {
                 })}
               </div>
               <div style={{ width: 1, height: 24, background: "#E2E4F0", flexShrink: 0 }} />
+              <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+                <i className="fa-solid fa-clock" style={{ fontSize: 11, color: "#8486AB" }} />
+                <input
+                  type="time"
+                  value={planPostTime}
+                  onChange={e => setPlanPostTime(e.target.value)}
+                  style={{ padding: "6px 8px", borderRadius: 7, border: "1px solid #E2E4F0", background: "#fff", fontSize: 12.5, fontWeight: 600, color: "#0B0C1A", cursor: "pointer", outline: "none", fontFamily: "Sora,sans-serif" }}
+                />
+              </div>
               <button onClick={createPlanDirect} disabled={planLoading} style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 18px", borderRadius: 8, background: "#10B981", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: planLoading ? "not-allowed" : "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(16,185,129,.32)", whiteSpace: "nowrap", flexShrink: 0, opacity: planLoading ? 0.7 : 1 }}>
                 <i className="fa-solid fa-calendar-plus" style={{ fontSize: 12 }} /> {planLoading ? "Creating..." : "Create Plan"}
               </button>
