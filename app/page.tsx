@@ -225,6 +225,7 @@ export default function LandingPage() {
     const [streamedPosts, setStreamedPosts] = useState<GeneratedPost[]>([]);
     const [streamLoading, setStreamLoading] = useState(false);
     const [streamError, setStreamError] = useState<string | null>(null);
+    const [totalPreviewSlots, setTotalPreviewSlots] = useState(0);
     const [selectedPreviewPost, setSelectedPreviewPost] = useState<{ imageUrl: string; caption?: string } | null>(null);
     const streamAbortRef = useRef<AbortController | null>(null);
     const previewTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -643,6 +644,7 @@ export default function LandingPage() {
         setStreamLoading(true);
         setStreamedPosts([]);
         setStreamError(null);
+        setTotalPreviewSlots(7);
 
         try {
             const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null;
@@ -665,6 +667,8 @@ export default function LandingPage() {
                 setStreamError(null);
                 try { localStorage.setItem(GENERATED_POSTS_KEY, JSON.stringify(posts)); } catch { /* ignore */ }
 
+                // Adjust slots to match actual post count (API may return < 7)
+                setTotalPreviewSlots(posts.length);
                 // Show first post immediately, then reveal the rest one by one (4–7 s gaps)
                 setStreamedPosts([posts[0]]);
                 setStreamLoading(false);
@@ -1423,7 +1427,7 @@ const speeds = [120, 160, 110, 150, 130];
                                         const post = streamedPosts[i];
                                         const imageUrl = post?.image?.imageUrl;
                                         if (!imageUrl) {
-                                            if (!streamLoading) return null;
+                                            if (i >= totalPreviewSlots) return null;
                                             return (
                                                 <div
                                                     key={`r1-loading-${i}`}
@@ -1493,7 +1497,7 @@ const speeds = [120, 160, 110, 150, 130];
                                         const post = streamedPosts[i];
                                         const imageUrl = post?.image?.imageUrl;
                                         if (!imageUrl) {
-                                            if (!streamLoading) return null;
+                                            if (i >= totalPreviewSlots) return null;
                                             return (
                                                 <div
                                                     key={`r1-loading-${i}`}
