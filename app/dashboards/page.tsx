@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { API_ENDPOINTS } from "@/api/configApi";
@@ -113,7 +113,7 @@ function fmtUpcomingTime(iso: string, group: "today" | "tomorrow" | "thisWeek") 
   return fmtTime(iso);
 }
 
-function activityMeta(type: string): { icon: JSX.Element; ok: boolean } {
+function activityMeta(type: string): { icon: React.ReactElement; ok: boolean } {
   if (type === "post_published" || type === "posts_scheduled") return { icon: Icon.check, ok: true };
   if (type === "posts_generated") return { icon: Icon.star, ok: false };
   return { icon: Icon.clock, ok: false };
@@ -267,11 +267,13 @@ export default function DashboardPage() {
   const totalConnected = dash?.autopilot.platformsConnected.total ?? 10;
 
   // upcoming posts groups
-  const upcomingGroups: Array<{ day: string; group: "today" | "tomorrow" | "thisWeek"; items: DashData["upcomingPosts"]["today"] }> = dash ? [
-    { day: "Today",     group: "today",     items: dash.upcomingPosts.today },
-    { day: "Tomorrow",  group: "tomorrow",  items: dash.upcomingPosts.tomorrow },
-    { day: "This week", group: "thisWeek",  items: dash.upcomingPosts.thisWeek },
-  ].filter(g => g.items.length > 0) : [];
+  const upcomingGroups: Array<{ day: string; group: "today" | "tomorrow" | "thisWeek"; items: DashData["upcomingPosts"]["today"] }> = dash ? (
+    [
+      { day: "Today",     group: "today"     as const, items: dash.upcomingPosts.today },
+      { day: "Tomorrow",  group: "tomorrow"  as const, items: dash.upcomingPosts.tomorrow },
+      { day: "This week", group: "thisWeek"  as const, items: dash.upcomingPosts.thisWeek },
+    ] as const
+  ).filter(g => g.items.length > 0) : [];
 
   // trending hashtags
   const hashtags = dash?.trendingHashtags ?? ["#coffeeday", "#mondaymotivation", "#smallbusiness", "#reels", "#fitnessjourney", "#monsoon"];
