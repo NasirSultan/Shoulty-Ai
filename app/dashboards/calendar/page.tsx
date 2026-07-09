@@ -22,6 +22,7 @@ import {
 } from "@/api/postGeneratorApi";
 import { createMonthlyPlan, getUserPlan } from "@/api/calendarApi";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { API_BASE_URL } from "@/api/configApi";
 import { publishPost, schedulePosts, Platform } from "@/api/autopostApi";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -891,7 +892,9 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
       return `${hook}\n\n${caption.trim()}\n\n${cta}`;
     };
 
-    const { industryId, subIndustryId } = resolveGeneratorProfileFields(user as Record<string, unknown>);
+    const resolved = resolveGeneratorProfileFields(user as Record<string, unknown>);
+    const industryId = industrySelection?.industryId || resolved.industryId;
+    const subIndustryId = industrySelection?.subIndustryId || resolved.subIndustryId;
     if (!industryId || !subIndustryId) {
       // No profile industry — use smart local rewrite
       setTimeout(() => {
@@ -1550,23 +1553,50 @@ export default function CalendarPage() {
   const [nextId, setNextId] = useState(10000);
   const { user } = useUserProfile();
   const [profileSetupWarning, setProfileSetupWarning] = useState<string | null>(null);
+  const [industrySelection, setIndustrySelection] = useState<{
+    industryId: string;
+    subIndustryId: string;
+    industryName?: string;
+    subIndustryName?: string;
+  } | null>(null);
+
+  // ── Fetch industry selection from dedicated API ───────────────────────────
+  useEffect(() => {
+    const fetchIndustrySelection = async () => {
+      try {
+        const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null;
+        if (!token) return;
+        const res = await fetch(`${API_BASE_URL}/api/users/me/industry-selection`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        const industry = data?.industry;
+        const subIndustry = data?.subIndustry;
+        if (industry?.id && subIndustry?.id) {
+          setIndustrySelection({
+            industryId: String(industry.id),
+            subIndustryId: String(subIndustry.id),
+            industryName: industry.name,
+            subIndustryName: subIndustry.name,
+          });
+          setProfileSetupWarning(null);
+        } else {
+          setProfileSetupWarning("Industry and sub-industry are not set yet. Calendar is available, but AI planning and generation will be limited.");
+        }
+      } catch {
+        // silently fail — user can still use calendar
+      }
+    };
+    fetchIndustrySelection();
+  }, []);
 
   // ── Case #1: Profile Setup Guard (non-blocking) ───────────────────────────
-  // If industry/sub-industry are missing, keep user in calendar and show warning.
   useEffect(() => {
-    if (!user) return; // Wait for user profile to load
-
-    const subIndustryId = (user as any)?.subIndustryId || (user as any)?.sub_industry_id || (user as any)?.selectedSubIndustryId;
-    const industryId = (user as any)?.industryId || (user as any)?.industry_id || (user as any)?.selectedIndustryId;
-
-    if (!subIndustryId || !industryId) {
-      console.warn("[Calendar] Industry/sub-industry missing. Showing profile setup warning.");
-      setProfileSetupWarning("Industry and sub-industry are not set yet. Calendar is available, but AI planning and generation will be limited.");
-      return;
+    if (industrySelection) {
+      setProfileSetupWarning(null);
     }
-
-    setProfileSetupWarning(null);
-  }, [user]);
+  }, [industrySelection]);
 
   const mergeImportedPosts = useCallback((incoming: Post[]) => {
     if (!incoming.length) return;
@@ -1895,11 +1925,10 @@ export default function CalendarPage() {
   const createPlanDirect = async () => {
     if (planLoading) return;
 
-    const { subIndustryId } = resolveGeneratorProfileFields(
+    const resolved = resolveGeneratorProfileFields(
       (user ?? null) as Record<string, unknown> | null
     );
-    const userSubIndustry = (user as Record<string, unknown>)?.subIndustryId as string | undefined;
-    const effectiveSubIndustry = userSubIndustry || subIndustryId;
+    const effectiveSubIndustry = industrySelection?.subIndustryId || resolved.subIndustryId;
 
     if (!effectiveSubIndustry) {
       showToast("Please select your industry in Settings first.", "red");
