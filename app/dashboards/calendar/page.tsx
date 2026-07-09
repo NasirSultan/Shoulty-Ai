@@ -684,7 +684,7 @@ interface ModalState {
   initDate: Date | null;
 }
 
-function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelete, onDuplicate, showToast, user }: {
+function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelete, onDuplicate, showToast, user, industrySelection }: {
   state: ModalState;
   posts: Post[];
   today: Date;
@@ -695,6 +695,7 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
   onDuplicate: (id: number) => void;
   showToast: (msg: string, type: string) => void;
   user: Record<string, unknown> | null | undefined;
+  industrySelection: { industryId: string; subIndustryId: string } | null | undefined;
 }) {
   const p = state.postId ? posts.find(x => x.id === state.postId) : null;
   const [caption, setCaption] = useState("");
@@ -2444,7 +2445,7 @@ export default function CalendarPage() {
         </div>
 
       {/* Edit Modal */}
-      <EditModal state={modal} posts={posts} today={today} onClose={closeModal} onSave={savePost} onPublishNow={publishPostNow} onDelete={deletePost} onDuplicate={dupPost} showToast={showToast} user={user} />
+      <EditModal state={modal} posts={posts} today={today} onClose={closeModal} onSave={savePost} onPublishNow={publishPostNow} onDelete={deletePost} onDuplicate={dupPost} showToast={showToast} user={user} industrySelection={industrySelection} />
 
       {/* AI Generate Modal */}
       <GenModal open={genOpen} pct={genProgress} generatedCount={genCount} statusText={genStatus} />
