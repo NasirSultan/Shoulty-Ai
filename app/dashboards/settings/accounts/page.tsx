@@ -3,7 +3,12 @@
 import { useState, useRef, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import AdminHeader from "../../AdminHeader";
-import { getFacebookAuthUrl, getFacebookPages } from "@/api/facebookApi";
+import {
+  getConnectUrl,
+  getConnectionStatus,
+  getAccountsOverview,
+  handlePlatformCallback,
+} from "@/api/autopostApi";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 type PlatStatus = "connected" | "disconnected" | "attention";
@@ -29,47 +34,43 @@ interface ConnectedAccount {
   permissions: string[]; workspace: string;
 }
 
-// ── Data ───────────────────────────────────────────────────────────────────
+// ── Backend integration constants ───────────────────────────────────────────
+// Only these three go through /connect + /handle-callback successfully today.
+// (YouTube starts OAuth fine but normalizePlatform() has no 'youtube' case,
+// so its callback throws — keep it disabled until the backend adds it.)
+const PLATFORM_CONNECT_NAME: Record<string, string> = {
+  fb: "facebook",
+  ig: "instagram"
+};
+const BACKEND_TO_ID: Record<string, string> = {
+  FACEBOOK: "fb",
+  INSTAGRAM: "ig",
+  LINKEDIN: "li",
+};
+const SUPPORTED_IDS = new Set(Object.keys(PLATFORM_CONNECT_NAME));
+
+// ── Static platform metadata (cosmetic only — live status/counts come from the API) ──
 const INIT_PLATS: Platform[] = [
-  { id:"fb", name:"Facebook", icon:"fa-brands fa-facebook", color:"#1877F2", grad:"linear-gradient(135deg,#1877F2,#0C52C5)", desc:"Reach billions via Pages, Groups & Reels", perms:["Manage Facebook Pages","Publish posts & reels","Access Page analytics","Moderate comments"], status:"attention", accountCount:1, lastSync:"3d ago", publishing:"at risk", features:[{label:"Posts",enabled:true},{label:"Reels",enabled:true},{label:"Stories",enabled:true}] },
-  { id:"li", name:"LinkedIn", icon:"fa-brands fa-linkedin", color:"#0A66C2", grad:"linear-gradient(135deg,#0A66C2,#0853A0)", desc:"Professional network for B2B growth", perms:["Share posts & articles","Manage Company Page","View follower analytics","Post on behalf of company"], status:"connected", accountCount:2, lastSync:"2h ago", publishing:"active", features:[{label:"Posts",enabled:true},{label:"Analytics",enabled:true},{label:"Comments",enabled:true},{label:"Stories",enabled:false}] },
-  { id:"ig", name:"Instagram", icon:"fa-brands fa-instagram", color:"#E1306C", grad:"linear-gradient(135deg,#F77737,#E1306C,#C13584,#833AB4)", desc:"Share photos, Reels & Stories with 2B+ users", perms:["Publish photos & videos","Read post insights","Manage comments","Access follower data"], status:"connected", accountCount:2, lastSync:"10 min ago", publishing:"active", features:[{label:"Posts",enabled:true},{label:"Reels",enabled:true},{label:"Stories",enabled:true}] },
-  { id:"x", name:"X", icon:"fa-brands fa-x-twitter", color:"#1A1A1A", grad:"linear-gradient(135deg,#1A1A1A,#444)", desc:"Real-time conversations & viral reach", perms:["Post & schedule tweets","Read account timeline","Access engagement metrics","Manage replies"], status:"connected", accountCount:1, lastSync:"1h ago", publishing:"active", features:[{label:"Posts",enabled:true},{label:"Analytics",enabled:true},{label:"Comments",enabled:true},{label:"Reels",enabled:false}] },
-  { id:"tk", name:"TikTok", icon:"fa-brands fa-tiktok", color:"#010101", grad:"linear-gradient(135deg,#010101,#EE1D52,#69C9D0)", desc:"Short-form video for Gen-Z reach", perms:["Upload short videos","Read profile & followers","Access video analytics"], status:"connected", accountCount:1, lastSync:"25 min ago", publishing:"active", features:[{label:"Reels",enabled:true},{label:"Analytics",enabled:true},{label:"Comments",enabled:true},{label:"Stories",enabled:false}] },
-  { id:"pi", name:"Pinterest", icon:"fa-brands fa-pinterest", color:"#E60023", grad:"linear-gradient(135deg,#E60023,#AD0019)", desc:"Visual discovery for 450M+ monthly users", perms:["Create & schedule pins","Access analytics","Manage boards","Read audience insights"], status:"connected", accountCount:1, lastSync:"4h ago", publishing:"active", features:[{label:"Posts",enabled:true},{label:"Analytics",enabled:true},{label:"Schedule",enabled:true}] },
-  { id:"yt", name:"YouTube", icon:"fa-brands fa-youtube", color:"#FF0000", grad:"linear-gradient(135deg,#FF0000,#CC0000)", desc:"World's largest video platform", perms:["Upload & schedule videos","Manage channel","Post community updates","Read analytics"], status:"connected", accountCount:1, lastSync:"1h ago", publishing:"active", features:[{label:"Reels",enabled:true},{label:"Analytics",enabled:true},{label:"Comments",enabled:true}] },
-  { id:"gb", name:"Google Business", icon:"fa-brands fa-google", color:"#4285F4", grad:"linear-gradient(135deg,#4285F4,#1A6CF0)", desc:"Manage your local Google presence", perms:["Publish business updates","Respond to reviews","Post offers & events","View insights"], status:"connected", accountCount:1, lastSync:"6h ago", publishing:"active", features:[{label:"Posts",enabled:true},{label:"Analytics",enabled:true},{label:"Schedule",enabled:true},{label:"Reels",enabled:false}] },
+  { id:"fb", name:"Facebook", icon:"fa-brands fa-facebook", color:"#1877F2", grad:"linear-gradient(135deg,#1877F2,#0C52C5)", desc:"Reach billions via Pages, Groups & Reels", perms:["Manage Facebook Pages","Publish posts & reels","Access Page analytics","Moderate comments"], status:"disconnected", accountCount:0, lastSync:"—", publishing:"—", features:[{label:"Posts",enabled:true},{label:"Reels",enabled:true},{label:"Stories",enabled:true}] },
+  { id:"li", name:"LinkedIn", icon:"fa-brands fa-linkedin", color:"#0A66C2", grad:"linear-gradient(135deg,#0A66C2,#0853A0)", desc:"Professional network for B2B growth", perms:["Share posts & articles","Manage Company Page","View follower analytics","Post on behalf of company"], status:"disconnected", accountCount:0, lastSync:"—", publishing:"—", features:[{label:"Posts",enabled:true},{label:"Analytics",enabled:true},{label:"Comments",enabled:true},{label:"Stories",enabled:false}] },
+  { id:"ig", name:"Instagram", icon:"fa-brands fa-instagram", color:"#E1306C", grad:"linear-gradient(135deg,#F77737,#E1306C,#C13584,#833AB4)", desc:"Share photos, Reels & Stories with 2B+ users", perms:["Publish photos & videos","Read post insights","Manage comments","Access follower data"], status:"disconnected", accountCount:0, lastSync:"—", publishing:"—", features:[{label:"Posts",enabled:true},{label:"Reels",enabled:true},{label:"Stories",enabled:true}] },
+  { id:"x", name:"X", icon:"fa-brands fa-x-twitter", color:"#1A1A1A", grad:"linear-gradient(135deg,#1A1A1A,#444)", desc:"Real-time conversations & viral reach", perms:["Post & schedule tweets","Read account timeline","Access engagement metrics","Manage replies"], status:"disconnected", accountCount:0, lastSync:"—", publishing:"—", features:[{label:"Posts",enabled:true},{label:"Analytics",enabled:true},{label:"Comments",enabled:true},{label:"Reels",enabled:false}] },
+  { id:"tk", name:"TikTok", icon:"fa-brands fa-tiktok", color:"#010101", grad:"linear-gradient(135deg,#010101,#EE1D52,#69C9D0)", desc:"Short-form video for Gen-Z reach", perms:["Upload short videos","Read profile & followers","Access video analytics"], status:"disconnected", accountCount:0, lastSync:"—", publishing:"—", features:[{label:"Reels",enabled:true},{label:"Analytics",enabled:true},{label:"Comments",enabled:true},{label:"Stories",enabled:false}] },
+  { id:"pi", name:"Pinterest", icon:"fa-brands fa-pinterest", color:"#E60023", grad:"linear-gradient(135deg,#E60023,#AD0019)", desc:"Visual discovery for 450M+ monthly users", perms:["Create & schedule pins","Access analytics","Manage boards","Read audience insights"], status:"disconnected", accountCount:0, lastSync:"—", publishing:"—", features:[{label:"Posts",enabled:true},{label:"Analytics",enabled:true},{label:"Schedule",enabled:true}] },
+  { id:"yt", name:"YouTube", icon:"fa-brands fa-youtube", color:"#FF0000", grad:"linear-gradient(135deg,#FF0000,#CC0000)", desc:"World's largest video platform", perms:["Upload & schedule videos","Manage channel","Post community updates","Read analytics"], status:"disconnected", accountCount:0, lastSync:"—", publishing:"—", features:[{label:"Reels",enabled:true},{label:"Analytics",enabled:true},{label:"Comments",enabled:true}] },
+  { id:"gb", name:"Google Business", icon:"fa-brands fa-google", color:"#4285F4", grad:"linear-gradient(135deg,#4285F4,#1A6CF0)", desc:"Manage your local Google presence", perms:["Publish business updates","Respond to reviews","Post offers & events","View insights"], status:"disconnected", accountCount:0, lastSync:"—", publishing:"—", features:[{label:"Posts",enabled:true},{label:"Analytics",enabled:true},{label:"Schedule",enabled:true},{label:"Reels",enabled:false}] },
 ];
 
-const WORKSPACE_ACCOUNTS: ConnectedAccount[] = [
-  { id:"a1", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"ig", platformIcon:"fa-brands fa-instagram", platformColor:"#E1306C", platformGrad:"linear-gradient(135deg,#F77737,#E1306C,#833AB4)", handle:"@brightfit.studio", accountType:"Business", followers:"12.4k followers", role:"Owner", health:"Healthy", connectedDate:"Mar 2025", lastSync:"10 min ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish posts","Can publish reels","Can publish stories","Can read analytics","Can reply to comments","Can schedule"] },
-  { id:"a2", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"tk", platformIcon:"fa-brands fa-tiktok", platformColor:"#010101", platformGrad:"linear-gradient(135deg,#010101,#EE1D52)", handle:"@brightfitstudio", accountType:"Profile", followers:"8.1k followers", role:"Owner", health:"Healthy", connectedDate:"May 2025", lastSync:"25 min ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish reels","Can read analytics","Can reply to comments","Can schedule"] },
-  { id:"a3", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"li", platformIcon:"fa-brands fa-linkedin", platformColor:"#0A66C2", platformGrad:"linear-gradient(135deg,#0A66C2,#0853A0)", handle:"BrightFit Studio", accountType:"Company page", followers:"", role:"Admin", health:"Healthy", connectedDate:"Apr 2025", lastSync:"2h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish posts","Can read analytics","Can reply to comments","Can schedule"] },
-  { id:"a4", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"fb", platformIcon:"fa-brands fa-facebook", platformColor:"#1877F2", platformGrad:"linear-gradient(135deg,#1877F2,#0C52C5)", handle:"BrightFit Studio", accountType:"Page", followers:"", role:"Admin", health:"Needs refresh", connectedDate:"Mar 2025", lastSync:"3d ago", publishing:"at risk", workspace:"BrightFit Studio", permissions:["Can publish posts","Can publish reels","Can publish stories","Can read analytics","Can reply to comments","Can schedule"] },
-  { id:"a5", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"x", platformIcon:"fa-brands fa-x-twitter", platformColor:"#1A1A1A", platformGrad:"linear-gradient(135deg,#1A1A1A,#444)", handle:"@brightfit_blr", accountType:"Profile", followers:"2.3k followers", role:"Owner", health:"Healthy", connectedDate:"Mar 2025", lastSync:"1h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish posts","Can read analytics","Can reply to comments","Can schedule"] },
-  { id:"a6", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"yt", platformIcon:"fa-brands fa-youtube", platformColor:"#FF0000", platformGrad:"linear-gradient(135deg,#FF0000,#CC0000)", handle:"BrightFit Studio", accountType:"Channel", followers:"Shorts enabled", role:"Owner", health:"Healthy", connectedDate:"Mar 2025", lastSync:"1h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish videos","Can read analytics","Can reply to comments","Can schedule"] },
-  { id:"a7", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"pi", platformIcon:"fa-brands fa-pinterest", platformColor:"#E60023", platformGrad:"linear-gradient(135deg,#E60023,#AD0019)", handle:"@brightfitstudio", accountType:"Business", followers:"", role:"Admin", health:"Healthy", connectedDate:"Jun 2025", lastSync:"4h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish pins","Can read analytics","Can schedule"] },
-  { id:"a8", brandName:"BrightFit Studio", brandInitials:"BS", brandColor:"#7C3AED", platformId:"gb", platformIcon:"fa-brands fa-google", platformColor:"#4285F4", platformGrad:"linear-gradient(135deg,#4285F4,#1A6CF0)", handle:"BrightFit Studio", accountType:"Business Profile", followers:"", role:"Admin", health:"Healthy", connectedDate:"May 2025", lastSync:"6h ago", publishing:"active", workspace:"BrightFit Studio", permissions:["Can publish posts","Can read analytics","Can schedule"] },
-  { id:"b1", brandName:"Wellness Hub", brandInitials:"WH", brandColor:"#059669", platformId:"ig", platformIcon:"fa-brands fa-instagram", platformColor:"#E1306C", platformGrad:"linear-gradient(135deg,#F77737,#E1306C,#833AB4)", handle:"@wellnesshub", accountType:"Profile", followers:"5.2k followers", role:"Owner", health:"Healthy", connectedDate:"May 2025", lastSync:"15 min ago", publishing:"active", workspace:"Wellness Hub", permissions:["Can publish posts","Can publish reels","Can read analytics","Can schedule"] },
-  { id:"b2", brandName:"Wellness Hub", brandInitials:"WH", brandColor:"#059669", platformId:"tk", platformIcon:"fa-brands fa-tiktok", platformColor:"#010101", platformGrad:"linear-gradient(135deg,#010101,#EE1D52)", handle:"@wellnesshub", accountType:"Profile", followers:"3.1k followers", role:"Owner", health:"Healthy", connectedDate:"Jun 2025", lastSync:"30 min ago", publishing:"active", workspace:"Wellness Hub", permissions:["Can publish reels","Can read analytics","Can schedule"] },
-  { id:"b3", brandName:"Wellness Hub", brandInitials:"WH", brandColor:"#059669", platformId:"pi", platformIcon:"fa-brands fa-pinterest", platformColor:"#E60023", platformGrad:"linear-gradient(135deg,#E60023,#AD0019)", handle:"@wellnesshub", accountType:"Business", followers:"", role:"Admin", health:"Healthy", connectedDate:"Jun 2025", lastSync:"5h ago", publishing:"active", workspace:"Wellness Hub", permissions:["Can publish pins","Can read analytics","Can schedule"] },
-];
-
+// Still static — no backend endpoint powers AI suggestions or an activity feed yet.
 const AI_RECS = [
-  { id:"r1", icon:"fa-brands fa-facebook", iconBg:"#EEF2FF", iconColor:"#1877F2", title:"Reconnect Facebook to avoid failed publishing.", desc:"The security token expires Wednesday — it takes about 20 seconds.", action:"Reconnect", primary:true },
   { id:"r2", icon:"fa-brands fa-threads", iconBg:"#F0F1F9", iconColor:"#1A1A1A", title:"Connect Threads to increase your reach.", desc:"Your Instagram audience overlaps ~80% — same content, extra reach, zero effort.", action:"Connect Threads", primary:false },
   { id:"r3", icon:"fa-brands fa-youtube", iconBg:"#FEF2F2", iconColor:"#FF0000", title:"Your YouTube channel supports Shorts.", desc:"Shoutly can repurpose your 12 recent Reels into Shorts automatically.", action:"Enable Shorts", primary:false },
   { id:"r4", icon:"fa-brands fa-linkedin", iconBg:"#EFF6FF", iconColor:"#0A66C2", title:"You've connected LinkedIn but only scheduled 2 posts.", desc:"Your B2B audience is most active Tue–Thu mornings.", action:"Schedule posts", primary:false },
 ];
 
 const RECENT_ACT = [
-  { id:"t1", icon:"fa-brands fa-instagram", iconBg:"linear-gradient(135deg,#F77737,#E1306C)", text:"Instagram · @brightfit.studio synced", time:"10 min ago" },
   { id:"t2", icon:"fa-brands fa-linkedin", iconBg:"#0A66C2", text:"LinkedIn refreshed automatically", time:"2h ago" },
   { id:"t3", icon:"fa-brands fa-youtube", iconBg:"#FF0000", text:"YouTube permissions updated — Shorts enabled", time:"Yesterday" },
-  { id:"t4", icon:"fa-solid fa-cloud", iconBg:"#1DA1F2", text:"Bluesky connected", time:"Jul 2" },
-  { id:"t5", icon:"fa-brands fa-facebook", iconBg:"#1877F2", text:"Facebook token expiry warning issued", time:"Jul 2" },
-  { id:"t6", icon:"fa-brands fa-google", iconBg:"#4285F4", text:"Google Business reauthorized", time:"Jun 28" },
-  { id:"t7", icon:"fa-brands fa-pinterest", iconBg:"#E60023", text:"Pinterest board access granted", time:"Jun 24" },
 ];
 
 // ── Toast hook ─────────────────────────────────────────────────────────────
@@ -96,6 +97,7 @@ function PlatCard({ p, onConnect, onDisconnect, showToast }: {
   const isConn = p.status === "connected";
   const isAttn = p.status === "attention";
   const isActive = isConn || isAttn;
+  const isSupported = SUPPORTED_IDS.has(p.id);
 
   return (
     <div
@@ -115,7 +117,7 @@ function PlatCard({ p, onConnect, onDisconnect, showToast }: {
       <div style={{ margin:"0 16px 10px", padding:"5px 10px", borderRadius:6, background:isAttn?"#FFFBEB":isConn?"#ECFDF5":"#F0F1F9", display:"flex", alignItems:"center", gap:6 }}>
         <div style={{ width:7, height:7, borderRadius:"50%", background:isAttn?"#F59E0B":isConn?"#10B981":"#BFC1D9", animation:isConn?"connectedGlow 2s infinite":undefined, flexShrink:0 }} />
         <span style={{ fontSize:11.5, fontWeight:700, color:isAttn?"#B45309":isConn?"#059669":"#8486AB" }}>
-          {isAttn?"Attention":isConn?"Connected":"Not Connected"}
+          {isAttn?"Attention":isConn?"Connected":!isSupported?"Not available yet":"Not Connected"}
         </span>
       </div>
 
@@ -140,18 +142,26 @@ function PlatCard({ p, onConnect, onDisconnect, showToast }: {
 
       {/* Button */}
       <div style={{ padding:"11px 16px", borderTop:"1px solid #F0F1F9" }}>
-        {isAttn ? (
+        {!isSupported ? (
+          <button
+            disabled
+            style={{ width:"100%", padding:"9px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"not-allowed", fontFamily:"Sora,sans-serif", background:"#F0F1F9", border:"1.5px solid #E2E4F0", color:"#BFC1D9" }}
+          >
+            Coming Soon
+          </button>
+        ) : isAttn ? (
           <button onClick={() => onConnect(p.id,"reconnect")} style={{ width:"100%", padding:"9px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"linear-gradient(115deg,#F97316,#EA580C)", color:"#fff", border:"none", boxShadow:"0 2px 8px rgba(249,115,22,.3)" }}>
             Reconnect
           </button>
         ) : isConn ? (
           <button
             onClick={() => showToast(`Managing ${p.name}…`,"brand")}
-            style={{ width:"100%", padding:"9px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#fff", border:"1.5px solid #E2E4F0", color:"#3D3F60", transition:"all .14s" }}
+            style={{ width:"100%", padding:"9px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#059669", border:"1.5px solid #E2E4F0", color:"#fff", transition:"all .14s" }}
             onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor="#F97316"; (e.currentTarget as HTMLButtonElement).style.color="#F97316"; }}
             onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor="#E2E4F0"; (e.currentTarget as HTMLButtonElement).style.color="#3D3F60"; }}
+            disabled
           >
-            Manage
+            Connected
           </button>
         ) : (
           <button onClick={() => onConnect(p.id)} style={{ width:"100%", padding:"9px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"linear-gradient(115deg,#F97316,#EA580C)", color:"#fff", border:"none", boxShadow:"0 2px 8px rgba(249,115,22,.3)" }}>
@@ -176,26 +186,19 @@ function AccountRow({ acc, showToast, isLast }: { acc: ConnectedAccount; showToa
 
   return (
     <div style={{ display:"flex", alignItems:"center", gap:16, padding:"16px 24px", borderBottom:isLast ? "none" : "1px solid #F0F1F9" }}>
-      {/* Platform icon */}
       <div style={{ width:48, height:48, borderRadius:14, background:acc.platformGrad, display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, color:"#fff", flexShrink:0, boxShadow:"0 2px 8px rgba(11,12,26,.12)" }}>
         <i className={acc.platformIcon} />
       </div>
-
-      {/* Handle + meta */}
       <div style={{ flex:1, minWidth:0 }}>
         <div style={{ fontSize:15, fontWeight:700, color:"#0B0C1A", fontFamily:"Sora,sans-serif", marginBottom:3 }}>{acc.handle}</div>
         <div style={{ fontSize:12.5, color:"#8486AB" }}>{meta}</div>
       </div>
-
-      {/* Status badge */}
       <div style={{ display:"flex", alignItems:"center", gap:6, padding:"5px 12px", borderRadius:20, background:needsRefresh?"#FFF7ED":"#ECFDF5", border:`1px solid ${needsRefresh?"#FDBA74":"rgba(16,185,129,.25)"}`, flexShrink:0 }}>
         <span style={{ width:7, height:7, borderRadius:"50%", background:needsRefresh?"#F97316":"#10B981", flexShrink:0, display:"inline-block" }} />
         <span style={{ fontSize:12, fontWeight:700, color:needsRefresh?"#EA580C":"#059669", fontFamily:"Sora,sans-serif", whiteSpace:"nowrap" }}>
           {needsRefresh ? "Reconnect" : "Connected"}
         </span>
       </div>
-
-      {/* Action button */}
       {needsRefresh ? (
         <button
           onClick={() => showToast(`🔄 Reconnecting ${acc.handle}…`, "brand")}
@@ -208,7 +211,7 @@ function AccountRow({ acc, showToast, isLast }: { acc: ConnectedAccount; showToa
           style={{ padding:"9px 20px", borderRadius:9, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#fff", border:"1.5px solid #E2E4F0", color:"#3D3F60", whiteSpace:"nowrap", flexShrink:0, transition:"all .14s" }}
           onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor="#F97316"; (e.currentTarget as HTMLButtonElement).style.color="#F97316"; }}
           onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor="#E2E4F0"; (e.currentTarget as HTMLButtonElement).style.color="#3D3F60"; }}>
-          Manage
+          {/* Manage asd */}
         </button>
       )}
     </div>
@@ -216,7 +219,7 @@ function AccountRow({ acc, showToast, isLast }: { acc: ConnectedAccount; showToa
 }
 
 // ── Connect Modal ──────────────────────────────────────────────────────────
-function ConnectModal({ p, mode, onAuthorize, onClose }: { p: Platform; mode: string; onAuthorize: () => void; onClose: () => void }) {
+function ConnectModal({ p, mode, onAuthorize, onClose, authorizing }: { p: Platform; mode: string; onAuthorize: () => void; onClose: () => void; authorizing: boolean }) {
   return (
     <>
       <div style={{ display:"flex", alignItems:"center", gap:14, padding:"20px 22px", borderBottom:"1px solid #E2E4F0" }}>
@@ -245,32 +248,13 @@ function ConnectModal({ p, mode, onAuthorize, onClose }: { p: Platform; mode: st
         ))}
       </div>
       <div style={{ display:"flex", gap:8, padding:"14px 22px", borderTop:"1px solid #E2E4F0", background:"#F0F1F9" }}>
-        <button onClick={onClose} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#fff", border:"1.5px solid #E2E4F0", color:"#3D3F60" }}>Cancel</button>
-        <button onClick={onAuthorize} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"linear-gradient(115deg,#F97316,#EA580C)", color:"#fff", border:"none" }}>
-          <i className="fa-solid fa-lock" style={{ marginRight:6 }} /> Authorize {p.name}
+        <button onClick={onClose} disabled={authorizing} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#fff", border:"1.5px solid #E2E4F0", color:"#3D3F60" }}>Cancel</button>
+        <button onClick={onAuthorize} disabled={authorizing} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"linear-gradient(115deg,#F97316,#EA580C)", color:"#fff", border:"none", opacity:authorizing?0.7:1 }}>
+          <i className={authorizing ? "fa-solid fa-spinner fa-spin" : "fa-solid fa-lock"} style={{ marginRight:6 }} />
+          {authorizing ? "Redirecting…" : `Authorize ${p.name}`}
         </button>
       </div>
     </>
-  );
-}
-
-// ── OAuth Loading Modal ────────────────────────────────────────────────────
-function OAuthLoadingModal({ p, step }: { p: Platform; step: number }) {
-  const steps = ["Opening secure OAuth window","Awaiting user authorization","Exchanging access tokens","Syncing account profile & data"];
-  return (
-    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", padding:"32px 22px", gap:16 }}>
-      <div style={{ width:54, height:54, borderRadius:"50%", border:"3px solid #E2E4F0", borderTopColor:"#F97316", animation:"spin .8s linear infinite" }} />
-      <div style={{ fontSize:15, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif" }}>Connecting to {p.name}</div>
-      <div style={{ fontSize:12, color:"#8486AB", textAlign:"center", lineHeight:1.5 }}>Complete authorization in the popup window. Usually takes a few seconds.</div>
-      <div style={{ display:"flex", flexDirection:"column", gap:5, width:"100%" }}>
-        {steps.map((s, i) => (
-          <div key={s} style={{ display:"flex", alignItems:"center", gap:8, fontSize:12, color:i<step?"#10B981":i===step?"#0B0C1A":"#8486AB", fontWeight:i===step?700:400, padding:"4px 0" }}>
-            <i className={i<step?"fa-solid fa-check":i===step?"fa-solid fa-circle-notch":"fa-regular fa-circle"} style={{ fontSize:11, flexShrink:0, width:14, textAlign:"center", animation:i===step?"spin .8s linear infinite":undefined, color:i<step?"#10B981":i===step?"#F97316":"#BFC1D9" }} />
-            {s}
-          </div>
-        ))}
-      </div>
-    </div>
   );
 }
 
@@ -293,6 +277,9 @@ function DisconnectModal({ p, onConfirm, onClose }: { p: Platform; onConfirm: ()
             <i className={`fa-solid ${r.icon}`} style={{ fontSize:11, color:r.col, flexShrink:0, width:13, textAlign:"center" }} />{r.txt}
           </div>
         ))}
+        <div style={{ fontSize:11, color:"#BFC1D9", marginTop:4 }}>
+          Note: no disconnect API exists on the backend yet — this will only update what you see here, not revoke access with {p.name}.
+        </div>
       </div>
       <div style={{ display:"flex", gap:8, padding:"14px 22px", borderTop:"1px solid #E2E4F0", background:"#F0F1F9" }}>
         <button onClick={onClose} style={{ flex:1, padding:11, borderRadius:10, fontSize:13.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#fff", border:"1.5px solid #E2E4F0", color:"#3D3F60" }}>Cancel</button>
@@ -307,75 +294,179 @@ function DisconnectModal({ p, onConfirm, onClose }: { p: Platform; onConfirm: ()
 // ── Main Page ──────────────────────────────────────────────────────────────
 export default function SocialAccountsPage() {
   const [plats, setPlats] = useState<Platform[]>(INIT_PLATS);
+  const [liveAccounts, setLiveAccounts] = useState<ConnectedAccount[]>([]);
+  const [totals, setTotals] = useState<{ totalFollowers: number; avgEngagementRate: number } | null>(null);
   const [modal, setModal] = useState<{ type: ModalType; platId?: string; mode?: string }>({ type: null });
-  const [oauthStep, setOauthStep] = useState(0);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [authorizing, setAuthorizing] = useState(false);
   const [searchQ, setSearchQ] = useState("");
   const [syncing, setSyncing] = useState(false);
   const { toasts, show: showToast, remove: removeToast } = useToasts();
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  useEffect(() => {
-    if (searchParams.get("fb") === "connected") {
-      showToast("✅ Facebook connected successfully!", "green");
-      router.replace("/dashboards/settings/accounts");
-    }
+  // Pulls connection-status + accounts-overview and merges into `plats` / `liveAccounts`
+  const loadAccountsAndAnalytics = async () => {
     const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null;
     if (!token) return;
-    getFacebookPages().then(pages => {
-      if (Array.isArray(pages) && pages.length > 0) {
-        setPlats(prev => prev.map(p => p.id !== "fb" ? p : { ...p, status: "connected" as PlatStatus, accountCount: pages.length, publishing: "active" as const }));
+
+    try {
+      const [statusRes, overviewRes] = await Promise.all([
+        getConnectionStatus(),
+        getAccountsOverview(),
+      ]);
+
+      const statusByPlatform: Record<string, any> = {};
+      (statusRes?.platforms || []).forEach((p: any) => { statusByPlatform[p.platform] = p; });
+      const overviewByPlatform = overviewRes?.platforms || {};
+
+      setPlats(prev => prev.map(p => {
+        const backendKey = Object.keys(BACKEND_TO_ID).find(k => BACKEND_TO_ID[k] === p.id);
+        if (!backendKey) return p; // unsupported platform, leave static/disabled
+
+        const status = statusByPlatform[backendKey];
+        const overview = overviewByPlatform[backendKey];
+
+        if (!status || !status.connected) {
+          return { ...p, status: "disconnected" as PlatStatus, accountCount: 0, lastSync: "—", publishing: "—" as const };
+        }
+
+        const acc = status.accounts?.[0];
+        return {
+          ...p,
+          status: "connected" as PlatStatus,
+          accountCount: status.accounts?.length ?? 0,
+          lastSync: acc?.lastSync ? new Date(acc.lastSync).toLocaleString() : "—",
+          publishing: "active" as const,
+        };
+      }));
+
+      // Build the flat connected-accounts list. Role/health/connectedDate/workspace
+      // have no backend source today — placeholders are marked below.
+      const built: ConnectedAccount[] = [];
+      (statusRes?.platforms || []).forEach((p: any) => {
+        if (!p.connected) return;
+        const meta = plats.find(m => BACKEND_TO_ID[p.platform] === m.id) ?? INIT_PLATS.find(m => BACKEND_TO_ID[p.platform] === m.id);
+        if (!meta) return;
+        const overview = overviewByPlatform[p.platform];
+
+        (p.accounts || []).forEach((acc: any) => {
+          built.push({
+            id: acc.id,
+            brandName: "Your Workspace",       // placeholder — no brand/org field in schema
+            brandInitials: "YW",
+            brandColor: "#7C3AED",
+            platformId: BACKEND_TO_ID[p.platform],
+            platformIcon: meta.icon,
+            platformColor: meta.color,
+            platformGrad: meta.grad,
+            handle: acc.username ? `@${acc.username}` : "Connected Account",
+            accountType: "Account",             // placeholder — page/profile/channel type not stored
+            followers: overview?.followers != null ? `${overview.followers} followers` : "",
+            role: "Owner",                      // placeholder — no per-account role field
+            health: acc.status === "active" ? "Healthy" : "Needs refresh",
+            connectedDate: "—",                 // placeholder — createdAt isn't returned by connection-status today
+            lastSync: acc.lastSync ? new Date(acc.lastSync).toLocaleString() : "—",
+            publishing: acc.status === "active" ? "active" : "at risk",
+            permissions: meta.perms,
+            workspace: "Your Workspace",
+          });
+        });
+      });
+      setLiveAccounts(built);
+
+      setTotals(overviewRes?.totals
+        ? { totalFollowers: overviewRes.totals.totalFollowers, avgEngagementRate: overviewRes.totals.avgEngagementRate }
+        : null);
+    } catch (err) {
+      console.error("Failed to load account status/analytics:", err);
+      showToast("Couldn't load account data. Try refreshing.", "red");
+    }
+  };
+
+  // On mount: finalize an OAuth redirect if we just came back from Outstand, then load real data
+  useEffect(() => {
+    const sessionToken = searchParams.get("session_token"); // Facebook — snake_case in URL
+    const accountId = searchParams.get("account_id");       // Instagram / LinkedIn
+
+    const finalize = async () => {
+      try {
+        if (sessionToken) {
+          await handlePlatformCallback({ sessionToken });
+          showToast("✅ Account connected successfully!", "green");
+        } else if (accountId) {
+          await handlePlatformCallback({
+            account_id: accountId,
+            network_unique_id: searchParams.get("network_unique_id") ?? undefined,
+            username: searchParams.get("username") ?? undefined,
+            network: searchParams.get("network") ?? undefined,
+          });
+          showToast("✅ Account connected successfully!", "green");
+        }
+      } catch (err: any) {
+        showToast(err.message || "❌ Failed to finalize connection", "red");
+      } finally {
+        if (sessionToken || accountId) {
+          router.replace("/dashboards/settings/accounts");
+        }
+        loadAccountsAndAnalytics();
       }
-    }).catch(() => {});
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    };
+
+    finalize();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const connCount = plats.filter(p => p.status === "connected").length;
   const attnCount = plats.filter(p => p.status === "attention").length;
-  const totalAccs = WORKSPACE_ACCOUNTS.length;
-  const healthyAccs = WORKSPACE_ACCOUNTS.filter(a => a.health === "Healthy").length;
+  const totalAccs = liveAccounts.length;
+  const healthyAccs = liveAccounts.filter(a => a.health === "Healthy").length;
 
-  const openConnect = (platId: string, mode = "connect") => setModal({ type:"connect", platId, mode });
-  const openDisconnect = (platId: string) => setModal({ type:"disconnect", platId });
-  const closeModal = () => { setModal({ type:null }); setOauthStep(0); setShowSuccess(false); };
-
-  const startOAuth = async (platId: string) => {
-    if (platId === "fb") {
-      try { const url = await getFacebookAuthUrl(); window.location.href = url; }
-      catch { showToast("Facebook connect failed. Please try again.", "red"); closeModal(); }
+  const openConnect = (platId: string, mode = "connect") => {
+    if (!SUPPORTED_IDS.has(platId)) {
+      showToast("This platform isn't available to connect yet.", "amber" as any);
       return;
     }
-    setModal({ type:"oauthLoading", platId });
-    setOauthStep(0);
-    let step = 0;
-    const tick = () => {
-      step++;
-      setOauthStep(step);
-      if (step < 4) setTimeout(tick, 850);
-      else setTimeout(() => {
-        setShowSuccess(true);
-        setPlats(prev => prev.map(p => p.id !== platId ? p : { ...p, status:"connected" as PlatStatus, accountCount:1, lastSync:"Just now", publishing:"active" as const }));
-        setTimeout(() => { closeModal(); showToast(`✅ ${platId} connected successfully!`,"green"); }, 1900);
-      }, 400);
-    };
-    setTimeout(tick, 800);
+    setModal({ type:"connect", platId, mode });
+  };
+  const openDisconnect = (platId: string) => setModal({ type:"disconnect", platId });
+  const closeModal = () => { if (!authorizing) setModal({ type:null }); };
+
+  // Redirects the browser to Outstand's OAuth page for the given platform
+  const startOAuth = async (platId: string) => {
+    const network = PLATFORM_CONNECT_NAME[platId];
+    if (!network) {
+      showToast("This platform isn't available to connect yet.", "red");
+      return;
+    }
+    setAuthorizing(true);
+    try {
+      const { redirectUrl } = await getConnectUrl(network);
+      window.location.href = redirectUrl;
+    } catch (err: any) {
+      showToast(err.message || "Connect failed. Please try again.", "red");
+      setAuthorizing(false);
+    }
   };
 
+  // No backend disconnect endpoint yet — this is a local-only UI update
   const confirmDisconnect = (platId: string) => {
     setPlats(prev => prev.map(p => p.id !== platId ? p : { ...p, status:"disconnected" as PlatStatus, accountCount:0, publishing:"—" as const }));
+    setLiveAccounts(prev => prev.filter(a => a.platformId !== platId));
     closeModal();
-    showToast(`🔌 ${platId} disconnected.`,"red");
+    showToast(`🔌 ${platId} disconnected locally (not yet revoked server-side).`, "red");
   };
 
   const syncAll = () => {
     if (syncing) return;
     setSyncing(true);
-    showToast("🔄 Syncing all connected accounts…","brand");
-    setTimeout(() => { setSyncing(false); showToast("✅ All accounts synced!","green"); }, 2600);
+    showToast("🔄 Refreshing connected accounts…", "brand");
+    loadAccountsAndAnalytics().finally(() => {
+      setSyncing(false);
+      showToast("✅ Accounts refreshed!", "green");
+    });
   };
 
-  const filteredAccounts = WORKSPACE_ACCOUNTS.filter(a =>
+  const filteredAccounts = liveAccounts.filter(a =>
     searchQ === "" ||
     a.brandName.toLowerCase().includes(searchQ.toLowerCase()) ||
     a.handle.toLowerCase().includes(searchQ.toLowerCase()) ||
@@ -389,7 +480,7 @@ export default function SocialAccountsPage() {
   }, {});
 
   const activePlat = plats.find(p => p.id === modal.platId);
-  const toastColors: Record<string, string> = { default:"#0F1117", green:"#059669", red:"#EF4444", brand:"#F97316" };
+  const toastColors: Record<string, string> = { default:"#0F1117", green:"#059669", red:"#EF4444", brand:"#F97316", amber:"#F59E0B" };
 
   const sortedPlats = [...plats].sort((a, b) => {
     const order: Record<PlatStatus, number> = { attention:0, connected:1, disconnected:2 };
@@ -407,15 +498,11 @@ export default function SocialAccountsPage() {
         @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
         @keyframes connectedGlow { 0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.4)} 50%{box-shadow:0 0 0 6px rgba(16,185,129,0)} }
         @keyframes toastSlide { from{transform:translateX(120%)} to{transform:translateX(0)} }
-        @keyframes successPop { 0%{transform:scale(.8);opacity:0} 60%{transform:scale(1.12)} 100%{transform:scale(1);opacity:1} }
       `}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
       <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden" }}>
-        <AdminHeader
-          pageTitle="Social Accounts"
-          searchPlaceholder="Search accounts…"
-        />
+        <AdminHeader pageTitle="Social Accounts" searchPlaceholder="Search accounts…" />
 
         <div style={{ flex:1, overflowY:"auto", padding:"28px 28px 48px" }}>
 
@@ -437,25 +524,28 @@ export default function SocialAccountsPage() {
 
           {/* ── Health status card ── */}
           <div style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:14, marginBottom:28, overflow:"hidden" }}>
-            <div style={{ padding:"18px 22px 16px", borderBottom:"1px dashed #E2E4F0" }}>
+            <div style={{ padding:"18px 22px 16px", borderBottom: attnCount > 0 ? "1px dashed #E2E4F0" : undefined }}>
               <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:20 }}>
                 <div style={{ display:"flex", alignItems:"flex-start", gap:12 }}>
-                  <div style={{ width:36, height:36, borderRadius:10, background:"#FFFBEB", display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, color:"#F59E0B", flexShrink:0, marginTop:2 }}>
-                    <i className="fa-solid fa-triangle-exclamation" />
+                  <div style={{ width:36, height:36, borderRadius:10, background: attnCount > 0 ? "#FFFBEB" : "#ECFDF5", display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, color: attnCount > 0 ? "#F59E0B" : "#10B981", flexShrink:0, marginTop:2 }}>
+                    <i className={attnCount > 0 ? "fa-solid fa-triangle-exclamation" : "fa-solid fa-shield-halved"} />
                   </div>
                   <div>
-                    <div style={{ fontSize:15, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", marginBottom:3 }}>Almost everything is healthy</div>
-                    <div style={{ fontSize:12.5, color:"#8486AB", lineHeight:1.4 }}>1 account needs a quick reconnect — publishing continues everywhere else.</div>
+                    <div style={{ fontSize:15, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", marginBottom:3 }}>
+                      {attnCount > 0 ? "Almost everything is healthy" : "Everything is healthy"}
+                    </div>
+                    <div style={{ fontSize:12.5, color:"#8486AB", lineHeight:1.4 }}>
+                      {attnCount > 0 ? `${attnCount} platform${attnCount!==1?"s":""} need${attnCount===1?"s":""} a quick reconnect — publishing continues everywhere else.` : "All connected platforms are publishing normally."}
+                    </div>
                   </div>
                 </div>
-                {/* Stats */}
                 <div style={{ display:"flex", gap:0, flexShrink:0 }}>
                   {[
-                    { v:`${connCount+attnCount}/${plats.length}`, l:"PLATFORMS" },
+                    { v:`${connCount}/${SUPPORTED_IDS.size}`, l:"PLATFORMS" },
                     { v:String(totalAccs), l:"ACCOUNTS" },
                     { v:String(healthyAccs), l:"HEALTHY" },
                     { v:String(attnCount), l:"NEEDS ATTENTION", warn:true },
-                    { v:"Yes ✓", l:"PUBLISHING READY", green:true },
+                    { v: totals ? totals.totalFollowers.toLocaleString() : "—", l:"TOTAL FOLLOWERS", green:true },
                   ].map((s, i, arr) => (
                     <div key={s.l} style={{ display:"flex", flexDirection:"column", alignItems:"center", paddingRight:i<arr.length-1?20:0, marginRight:i<arr.length-1?20:0, borderRight:i<arr.length-1?"1px solid #ECEDF8":undefined }}>
                       <div style={{ fontSize:20, fontWeight:900, fontFamily:"Sora,sans-serif", color:s.warn?"#F59E0B":s.green?"#059669":"#0B0C1A", letterSpacing:"-.5px" }}>{s.v}</div>
@@ -465,16 +555,13 @@ export default function SocialAccountsPage() {
                 </div>
               </div>
             </div>
-            {/* Alert row */}
-            <div style={{ padding:"12px 22px", display:"flex", alignItems:"center", gap:12 }}>
-              <span style={{ flex:1, fontSize:13, color:"#3D3F60" }}>
-                <strong>Facebook · BrightFit Studio</strong> — token expires in 3 days.{" "}
-                <span style={{ color:"#8486AB" }}>Reconnect now to avoid paused posts.</span>
-              </span>
-              <button onClick={() => openConnect("fb","reconnect")} style={{ display:"flex", alignItems:"center", gap:6, padding:"8px 18px", borderRadius:8, fontSize:12.5, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"linear-gradient(115deg,#F97316,#EA580C)", color:"#fff", border:"none", whiteSpace:"nowrap", flexShrink:0, boxShadow:"0 2px 10px rgba(249,115,22,.3)" }}>
-                Reconnect Facebook
-              </button>
-            </div>
+            {attnCount > 0 && (
+              <div style={{ padding:"12px 22px", display:"flex", alignItems:"center", gap:12 }}>
+                <span style={{ flex:1, fontSize:13, color:"#3D3F60" }}>
+                  Some platforms need attention. <span style={{ color:"#8486AB" }}>Reconnect them to avoid paused posts.</span>
+                </span>
+              </div>
+            )}
           </div>
 
           {/* ── Supported Platforms ── */}
@@ -492,12 +579,15 @@ export default function SocialAccountsPage() {
 
           {/* ── Connected Accounts ── */}
           <div style={{ marginBottom:32 }}>
-            {Object.entries(workspaceGroups).map(([ws, accounts]) => {
+            {Object.keys(workspaceGroups).length === 0 ? (
+              <div style={{ background:"#fff", border:"1px dashed #E2E4F0", borderRadius:16, padding:"40px 24px", textAlign:"center", color:"#8486AB", fontSize:13.5 }}>
+                No accounts connected yet. Connect a platform above to get started.
+              </div>
+            ) : Object.entries(workspaceGroups).map(([ws, accounts]) => {
               const needsAttn = accounts.filter(a => a.health === "Needs refresh").length;
               const connectedCount = accounts.filter(a => a.health === "Healthy").length;
               return (
                 <div key={ws} style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:16, overflow:"hidden", marginBottom:20, boxShadow:"0 1px 4px rgba(11,12,26,.04)" }}>
-                  {/* Card header */}
                   <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", padding:"20px 24px 14px", borderBottom:"1px solid #F0F1F9" }}>
                     <div>
                       <h2 style={{ fontSize:17, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", marginBottom:5 }}>Connected accounts</h2>
@@ -517,7 +607,6 @@ export default function SocialAccountsPage() {
                       </div>
                     )}
                   </div>
-                  {/* Account rows */}
                   <div>
                     {accounts.map((acc, i) => (
                       <AccountRow key={acc.id} acc={acc} showToast={showToast} isLast={i === accounts.length - 1} />
@@ -528,8 +617,8 @@ export default function SocialAccountsPage() {
             })}
           </div>
 
-          {/* ── AI Recommendations ── */}
-          <div style={{ marginBottom:32 }}>
+          {/* ── AI Recommendations (static — no backend source yet) ── */}
+          {/* <div style={{ marginBottom:32 }}>
             <h2 style={{ fontSize:16, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", marginBottom:14 }}>AI recommendations</h2>
             <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
               {AI_RECS.map(r => (
@@ -550,11 +639,10 @@ export default function SocialAccountsPage() {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* ── Security + Recent Activity ── */}
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
-            {/* Security */}
             <div style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:14, padding:"22px 24px" }}>
               <h3 style={{ fontSize:15, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", marginBottom:14 }}>Security</h3>
               <div style={{ display:"flex", flexDirection:"column", gap:10, marginBottom:16 }}>
@@ -569,13 +657,8 @@ export default function SocialAccountsPage() {
                   </div>
                 ))}
               </div>
-              <div style={{ fontSize:11.5, color:"#BFC1D9", marginBottom:10 }}>Last security check: today, 6:00 AM · all clear</div>
-              <span onClick={() => showToast("Opening security guide…","brand")} style={{ fontSize:12.5, color:"#F97316", fontWeight:700, cursor:"pointer" }}>
-                Learn how Shoutly protects your accounts →
-              </span>
             </div>
 
-            {/* Recent Activity */}
             <div style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:14, padding:"22px 24px" }}>
               <h3 style={{ fontSize:15, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", marginBottom:14 }}>Recent activity</h3>
               <div style={{ display:"flex", flexDirection:"column" }}>
@@ -603,17 +686,7 @@ export default function SocialAccountsPage() {
           style={{ position:"fixed", inset:0, background:"rgba(11,12,26,.5)", backdropFilter:"blur(10px)", zIndex:500, display:"flex", alignItems:"center", justifyContent:"center", padding:20, animation:"fadeIn .18s ease" }}
         >
           <div style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:20, width:"100%", maxWidth:"500px", overflow:"hidden", boxShadow:"0 32px 80px rgba(11,12,26,.2)", animation:"scaleIn .22s cubic-bezier(.34,1.56,.64,1)", position:"relative" }}>
-            {showSuccess && (
-              <div style={{ position:"absolute", inset:0, background:"#fff", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:10, animation:"fadeIn .3s ease", borderRadius:20, zIndex:10 }}>
-                <div style={{ width:76, height:76, borderRadius:"50%", background:"#ECFDF5", border:"3px solid #10B981", display:"flex", alignItems:"center", justifyContent:"center", fontSize:30, color:"#10B981", animation:"successPop .5s cubic-bezier(.34,1.56,.64,1)" }}>
-                  <i className="fa-solid fa-check" />
-                </div>
-                <div style={{ fontSize:19, fontWeight:900, color:"#0B0C1A", fontFamily:"Sora,sans-serif" }}>Account Connected!</div>
-                <div style={{ fontSize:13, color:"#8486AB", textAlign:"center", maxWidth:300, lineHeight:1.55 }}>{activePlat?.name} is live. Shoutly AI will now auto-post and schedule content.</div>
-              </div>
-            )}
-            {modal.type==="connect" && activePlat && <ConnectModal p={activePlat} mode={modal.mode||"connect"} onAuthorize={() => startOAuth(activePlat.id)} onClose={closeModal} />}
-            {modal.type==="oauthLoading" && activePlat && <OAuthLoadingModal p={activePlat} step={oauthStep} />}
+            {modal.type==="connect" && activePlat && <ConnectModal p={activePlat} mode={modal.mode||"connect"} onAuthorize={() => startOAuth(activePlat.id)} onClose={closeModal} authorizing={authorizing} />}
             {modal.type==="disconnect" && activePlat && <DisconnectModal p={activePlat} onConfirm={() => confirmDisconnect(activePlat.id)} onClose={closeModal} />}
           </div>
         </div>
