@@ -75,6 +75,56 @@ const RECENT_ACT = [
   { id:"t3", icon:"fa-brands fa-youtube", iconBg:"#FF0000", text:"YouTube permissions updated — Shorts enabled", time:"Yesterday" },
 ];
 
+// ── Skeleton primitives ─────────────────────────────────────────────────────
+function Skel({ width, height, radius = 6, style = {} }: { width: string | number; height: string | number; radius?: number; style?: React.CSSProperties }) {
+  return <div className="skel-shimmer" style={{ width, height, borderRadius: radius, ...style }} />;
+}
+
+function PlatCardSkeleton() {
+  return (
+    <div style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:12, overflow:"hidden", display:"flex", flexDirection:"column", boxShadow:"0 1px 4px rgba(11,12,26,.04)" }}>
+      <div style={{ padding:"16px 16px 10px", display:"flex", alignItems:"center", gap:10 }}>
+        <Skel width={42} height={42} radius={10} />
+        <Skel width={74} height={14} />
+      </div>
+      <div style={{ margin:"0 16px 10px" }}>
+        <Skel width={96} height={20} radius={6} />
+      </div>
+      <div style={{ padding:"0 16px 14px", display:"flex", flexWrap:"wrap", gap:5 }}>
+        <Skel width={48} height={20} radius={20} />
+        <Skel width={54} height={20} radius={20} />
+        <Skel width={44} height={20} radius={20} />
+      </div>
+      <div style={{ padding:"11px 16px", borderTop:"1px solid #F0F1F9" }}>
+        <Skel width="100%" height={34} radius={8} />
+      </div>
+    </div>
+  );
+}
+
+function AccountRowSkeleton({ isLast }: { isLast?: boolean }) {
+  return (
+    <div style={{ display:"flex", alignItems:"center", gap:16, padding:"16px 24px", borderBottom:isLast ? "none" : "1px solid #F0F1F9" }}>
+      <Skel width={48} height={48} radius={14} />
+      <div style={{ flex:1, minWidth:0, display:"flex", flexDirection:"column", gap:8 }}>
+        <Skel width="30%" height={14} />
+        <Skel width="55%" height={12} />
+      </div>
+      <Skel width={96} height={26} radius={20} />
+      <Skel width={104} height={34} radius={9} />
+    </div>
+  );
+}
+
+function StatSkeleton({ i, arr }: { i: number; arr: unknown[] }) {
+  return (
+    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:6, paddingRight:i<arr.length-1?20:0, marginRight:i<arr.length-1?20:0, borderRight:i<arr.length-1?"1px solid #ECEDF8":undefined }}>
+      <Skel width={34} height={18} />
+      <Skel width={54} height={9} />
+    </div>
+  );
+}
+
 // ── Toast hook ─────────────────────────────────────────────────────────────
 interface ToastItem { id: number; msg: string; type: string }
 function useToasts() {
@@ -312,6 +362,7 @@ export default function SocialAccountsPage() {
   const [authorizing, setAuthorizing] = useState(false);
   const [searchQ, setSearchQ] = useState("");
   const [syncing, setSyncing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { toasts, show: showToast, remove: removeToast } = useToasts();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -319,7 +370,7 @@ export default function SocialAccountsPage() {
   // Pulls connection-status + accounts-overview and merges into `plats` / `liveAccounts`
   const loadAccountsAndAnalytics = async () => {
     const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null;
-    if (!token) return;
+    if (!token) { setIsLoading(false); return; }
 
     try {
       const [statusRes, overviewRes] = await Promise.all([
@@ -392,6 +443,8 @@ export default function SocialAccountsPage() {
     } catch (err) {
       console.error("Failed to load account status/analytics:", err);
       showToast("Couldn't load account data. Try refreshing.", "red");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -510,6 +563,8 @@ export default function SocialAccountsPage() {
         @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
         @keyframes connectedGlow { 0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.4)} 50%{box-shadow:0 0 0 6px rgba(16,185,129,0)} }
         @keyframes toastSlide { from{transform:translateX(120%)} to{transform:translateX(0)} }
+        @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+        .skel-shimmer { background:linear-gradient(90deg,#EEEFF6 25%,#E4E6F1 37%,#EEEFF6 63%); background-size:400% 100%; animation:shimmer 1.4s ease infinite; }
       `}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
@@ -539,31 +594,46 @@ export default function SocialAccountsPage() {
             <div style={{ padding:"18px 22px 16px", borderBottom: attnCount > 0 ? "1px dashed #E2E4F0" : undefined }}>
               <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:20 }}>
                 <div style={{ display:"flex", alignItems:"flex-start", gap:12 }}>
-                  <div style={{ width:36, height:36, borderRadius:10, background: attnCount > 0 ? "#FFFBEB" : "#ECFDF5", display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, color: attnCount > 0 ? "#F59E0B" : "#10B981", flexShrink:0, marginTop:2 }}>
-                    <i className={attnCount > 0 ? "fa-solid fa-triangle-exclamation" : "fa-solid fa-shield-halved"} />
-                  </div>
-                  <div>
-                    <div style={{ fontSize:15, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", marginBottom:3 }}>
-                      {attnCount > 0 ? "Almost everything is healthy" : "Everything is healthy"}
+                  {isLoading ? (
+                    <Skel width={36} height={36} radius={10} />
+                  ) : (
+                    <div style={{ width:36, height:36, borderRadius:10, background: attnCount > 0 ? "#FFFBEB" : "#ECFDF5", display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, color: attnCount > 0 ? "#F59E0B" : "#10B981", flexShrink:0, marginTop:2 }}>
+                      <i className={attnCount > 0 ? "fa-solid fa-triangle-exclamation" : "fa-solid fa-shield-halved"} />
                     </div>
-                    <div style={{ fontSize:12.5, color:"#8486AB", lineHeight:1.4 }}>
-                      {attnCount > 0 ? `${attnCount} platform${attnCount!==1?"s":""} need${attnCount===1?"s":""} a quick reconnect — publishing continues everywhere else.` : "All connected platforms are publishing normally."}
+                  )}
+                  {isLoading ? (
+                    <div style={{ display:"flex", flexDirection:"column", gap:7, marginTop:3 }}>
+                      <Skel width={190} height={14} />
+                      <Skel width={280} height={12} />
                     </div>
-                  </div>
+                  ) : (
+                    <div>
+                      <div style={{ fontSize:15, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", marginBottom:3 }}>
+                        {attnCount > 0 ? "Almost everything is healthy" : "Everything is healthy"}
+                      </div>
+                      <div style={{ fontSize:12.5, color:"#8486AB", lineHeight:1.4 }}>
+                        {attnCount > 0 ? `${attnCount} platform${attnCount!==1?"s":""} need${attnCount===1?"s":""} a quick reconnect — publishing continues everywhere else.` : "All connected platforms are publishing normally."}
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div style={{ display:"flex", gap:0, flexShrink:0 }}>
-                  {[
-                    { v:`${connCount}/${SUPPORTED_IDS.size}`, l:"PLATFORMS" },
-                    { v:String(totalAccs), l:"ACCOUNTS" },
-                    { v:String(healthyAccs), l:"HEALTHY" },
-                    { v:String(attnCount), l:"NEEDS ATTENTION", warn:true },
-                    { v: totals ? totals.totalFollowers.toLocaleString() : "—", l:"TOTAL FOLLOWERS", green:true },
-                  ].map((s, i, arr) => (
-                    <div key={s.l} style={{ display:"flex", flexDirection:"column", alignItems:"center", paddingRight:i<arr.length-1?20:0, marginRight:i<arr.length-1?20:0, borderRight:i<arr.length-1?"1px solid #ECEDF8":undefined }}>
-                      <div style={{ fontSize:20, fontWeight:900, fontFamily:"Sora,sans-serif", color:s.warn?"#F59E0B":s.green?"#059669":"#0B0C1A", letterSpacing:"-.5px" }}>{s.v}</div>
-                      <div style={{ fontSize:9.5, fontWeight:700, color:"#BFC1D9", letterSpacing:".5px", marginTop:2, textTransform:"uppercase" }}>{s.l}</div>
-                    </div>
-                  ))}
+                  {isLoading ? (
+                    [0,1,2,3,4].map((i, _, arr) => <StatSkeleton key={i} i={i} arr={arr} />)
+                  ) : (
+                    [
+                      { v:`${connCount}/${SUPPORTED_IDS.size}`, l:"PLATFORMS" },
+                      { v:String(totalAccs), l:"ACCOUNTS" },
+                      { v:String(healthyAccs), l:"HEALTHY" },
+                      { v:String(attnCount), l:"NEEDS ATTENTION", warn:true },
+                      { v: totals ? totals.totalFollowers.toLocaleString() : "—", l:"TOTAL FOLLOWERS", green:true },
+                    ].map((s, i, arr) => (
+                      <div key={s.l} style={{ display:"flex", flexDirection:"column", alignItems:"center", paddingRight:i<arr.length-1?20:0, marginRight:i<arr.length-1?20:0, borderRight:i<arr.length-1?"1px solid #ECEDF8":undefined }}>
+                        <div style={{ fontSize:20, fontWeight:900, fontFamily:"Sora,sans-serif", color:s.warn?"#F59E0B":s.green?"#059669":"#0B0C1A", letterSpacing:"-.5px" }}>{s.v}</div>
+                        <div style={{ fontSize:9.5, fontWeight:700, color:"#BFC1D9", letterSpacing:".5px", marginTop:2, textTransform:"uppercase" }}>{s.l}</div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             </div>
@@ -583,15 +653,30 @@ export default function SocialAccountsPage() {
               <span style={{ fontSize:12, color:"#8486AB" }}>Connected platforms appear first</span>
             </div>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:14 }}>
-              {sortedPlats.map(p => (
-                <PlatCard key={p.id} p={p} onConnect={openConnect} onDisconnect={openDisconnect} showToast={showToast} />
-              ))}
+              {isLoading
+                ? Array.from({ length: 8 }).map((_, i) => <PlatCardSkeleton key={i} />)
+                : sortedPlats.map(p => (
+                    <PlatCard key={p.id} p={p} onConnect={openConnect} onDisconnect={openDisconnect} showToast={showToast} />
+                  ))}
             </div>
           </div>
 
           {/* ── Connected Accounts ── */}
           <div style={{ marginBottom:32 }}>
-            {Object.keys(workspaceGroups).length === 0 ? (
+            {isLoading ? (
+              <div style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:16, overflow:"hidden", boxShadow:"0 1px 4px rgba(11,12,26,.04)" }}>
+                <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", padding:"20px 24px 14px", borderBottom:"1px solid #F0F1F9" }}>
+                  <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+                    <Skel width={170} height={17} />
+                    <Skel width={230} height={13} />
+                  </div>
+                  <Skel width={110} height={26} radius={20} />
+                </div>
+                <div>
+                  {[0,1,2].map(i => <AccountRowSkeleton key={i} isLast={i===2} />)}
+                </div>
+              </div>
+            ) : Object.keys(workspaceGroups).length === 0 ? (
               <div style={{ background:"#fff", border:"1px dashed #E2E4F0", borderRadius:16, padding:"40px 24px", textAlign:"center", color:"#8486AB", fontSize:13.5 }}>
                 No accounts connected yet. Connect a platform above to get started.
               </div>
