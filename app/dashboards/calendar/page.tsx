@@ -2313,21 +2313,6 @@ export default function CalendarPage() {
             }
           />
 
-          {profileSetupWarning && (
-            <div style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: 10, margin: "10px 20px 0", padding: "10px 12px", borderRadius: 10, background: "#FFF7ED", border: "1px solid #FDBA74", color: "#9A3412" }}>
-              <i className="fa-solid fa-circle-exclamation" style={{ fontSize: 14 }} />
-              <div style={{ fontSize: 12.5, fontWeight: 600, lineHeight: 1.45, flex: 1 }}>
-                {profileSetupWarning}
-              </div>
-              <button
-                onClick={() => router.push("/dashboards/settings/brand")}
-                style={{ padding: "7px 10px", borderRadius: 7, border: "1px solid #FDBA74", background: "#fff", color: "#9A3412", fontSize: 11.5, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}
-              >
-                Go to Brand Settings
-              </button>
-            </div>
-          )}
-
           {/* Cal Toolbar */}
           <div style={{ flexShrink: 0, background: "#fff", borderBottom: "1px solid #E2E4F0" }}>
             {/* Row 1: View tabs + nav */}

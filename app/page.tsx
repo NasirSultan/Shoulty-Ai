@@ -355,20 +355,10 @@ export default function LandingPage() {
     }, []);
 
     useEffect(() => {
-        const today = new Date().toDateString();
         try {
-            const stored = JSON.parse(localStorage.getItem(REGEN_STORAGE_KEY) || "{}");
-            setRegenCount(stored.date === today ? (stored.count ?? 0) : 0);
-        } catch { /* ignore */ }
-        try {
-            const genStored = JSON.parse(localStorage.getItem(GENERATE_STORAGE_KEY) || "{}");
-            if (genStored.date === today) {
-                setHasGeneratedToday(true);
-                // Restore previously generated posts so user can see them
-                const savedPosts = JSON.parse(localStorage.getItem(GENERATED_POSTS_KEY) || "[]");
-                if (Array.isArray(savedPosts) && savedPosts.length > 0) {
-                    setStreamedPosts(savedPosts);
-                }
+            const savedPosts = JSON.parse(localStorage.getItem(GENERATED_POSTS_KEY) || "[]");
+            if (Array.isArray(savedPosts) && savedPosts.length > 0) {
+                setStreamedPosts(savedPosts);
             }
         } catch { /* ignore */ }
     }, []);
@@ -498,11 +488,6 @@ export default function LandingPage() {
     };
 
     const handleGenerateClick = async () => {
-        if (hasGeneratedToday) {
-            setGenerateValidationError("You have already generated content today. Come back tomorrow!");
-            return;
-        }
-
         const missing = getGenerateMissingFields();
         if (missing.length > 0) {
             setGenerateValidationError(`Please select/fill: ${missing.join(", ")}.`);
@@ -540,28 +525,12 @@ export default function LandingPage() {
         setGenerateSubIndustries(selectedIndustryObj?.subIndustries || []);
         setGenerateSelectedSubIndustry(effectiveSubIndustryId);
 
-        // Mark as generated for today
-        setHasGeneratedToday(true);
-        try {
-            localStorage.setItem(GENERATE_STORAGE_KEY, JSON.stringify({ date: new Date().toDateString() }));
-        } catch { /* ignore */ }
-
         scrollToSectionInOneSecond("gcontent");
         await generateStreamPreview(effectiveIndustryId, effectiveSubIndustryId);
     };
 
     const handleRegenerateBrandDescription = async () => {
         if (isRegeneratingBrand) return;
-        if (regenCount >= MAX_REGENERATIONS_PER_DAY) {
-            setRegenerateBrandError(`Daily limit reached. You can regenerate ${MAX_REGENERATIONS_PER_DAY} times per day. Try again tomorrow.`);
-            return;
-        }
-
-        const newCount = regenCount + 1;
-        setRegenCount(newCount);
-        try {
-            localStorage.setItem(REGEN_STORAGE_KEY, JSON.stringify({ date: new Date().toDateString(), count: newCount }));
-        } catch {}
 
         setRegenerateBrandError(null);
         setIsRegeneratingBrand(true);
@@ -1186,24 +1155,21 @@ const speeds = [120, 160, 110, 150, 130];
                                         ? `Min ${MIN_BRAND_DESCRIPTION_CHARS} chars (${brandDescription.trim().length}/${MIN_BRAND_DESCRIPTION_CHARS})`
                                         : `${brandDescription.trim().length}/${MAX_BRAND_DESCRIPTION_CHARS}`}
                                 </p>
-                                <p className="text-xs text-slate-400">
-                                    Regenerate: <span className={regenCount >= MAX_REGENERATIONS_PER_DAY ? "text-red-500 font-bold" : "text-orange-500 font-bold"}>{MAX_REGENERATIONS_PER_DAY - regenCount}/{MAX_REGENERATIONS_PER_DAY}</span> left today
-                                </p>
                             </div>
 
                             <div className="mb-3 flex justify-end">
                                 <button
                                     type="button"
                                     onClick={handleRegenerateBrandDescription}
-                                    disabled={isRegeneratingBrand || brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS || regenCount >= MAX_REGENERATIONS_PER_DAY}
+                                    disabled={isRegeneratingBrand || brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS}
                                     className={`inline-flex items-center justify-center gap-2 rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all ${
-                                        isRegeneratingBrand || brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS || regenCount >= MAX_REGENERATIONS_PER_DAY
+                                        isRegeneratingBrand || brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS
                                             ? "cursor-not-allowed bg-slate-100 text-slate-400"
                                             : "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:brightness-110 cursor-pointer shadow-md shadow-orange-200"
                                     }`}
                                 >
                                     <RefreshCcw className={`h-4 w-4 ${isRegeneratingBrand ? "animate-spin" : ""}`} />
-                                    {isRegeneratingBrand ? "Regenerating..." : regenCount >= MAX_REGENERATIONS_PER_DAY ? "Limit Reached" : "Regenerate"}
+                                    {isRegeneratingBrand ? "Regenerating..." : "Regenerate"}
                                 </button>
                             </div>
                             {regenerateBrandError && (
@@ -1236,20 +1202,18 @@ const speeds = [120, 160, 110, 150, 130];
                             {/* CTA Button */}
                             <button
                                 onClick={handleGenerateClick}
-                                disabled={hasGeneratedToday}
+                                disabled={!isGenerateReady}
                                 className={`relative w-full py-3 rounded-xl text-sm sm:text-base font-black tracking-wide transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 overflow-hidden ${
-                                    hasGeneratedToday
-                                        ? "bg-slate-100 text-slate-400 cursor-not-allowed"
-                                        : isGenerateReady
+                                    isGenerateReady
                                         ? "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:brightness-110 hover:shadow-xl hover:shadow-orange-300/50 cursor-pointer"
                                         : "bg-slate-100 text-slate-400 cursor-not-allowed"
                                 }`}
                             >
-                                {isGenerateReady && !hasGeneratedToday && (
+                                {isGenerateReady && (
                                     <span className="absolute inset-0 animate-[shimmer_2.5s_infinite] bg-gradient-to-r from-transparent via-white/25 to-transparent" />
                                 )}
-                                {isGenerateReady && !hasGeneratedToday ? <Zap className="w-4 h-4 relative" /> : <Lock className="w-4 h-4 relative" />}
-                                <span className="relative">{hasGeneratedToday ? "Daily Limit Reached — Try Again Tomorrow" : "Preview First Post"}</span>
+                                {isGenerateReady ? <Zap className="w-4 h-4 relative" /> : <Lock className="w-4 h-4 relative" />}
+                                <span className="relative">Preview First Post</span>
                             </button>
                             {generateValidationError && (
                                 <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-700">

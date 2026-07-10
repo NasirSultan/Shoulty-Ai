@@ -204,7 +204,7 @@ const AnalyticsPage: React.FC = () => {
       }
 
       const query = getRangeQueryString(range);
-      const res = await fetch(`${API_BASE_URL}/autopost/analytics${query ? `?${query}` : ''}`, {
+      const res = await fetch(`${API_BASE_URL}/api/autopost/analytics${query ? `?${query}` : ''}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

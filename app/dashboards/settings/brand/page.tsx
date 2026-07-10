@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import AdminHeader from "../../AdminHeader";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { fetchIndustries, fetchImages } from "@/api/homeApi";
+import { fetchImages } from "@/api/homeApi";
 import { setUserProfile } from "@/api/authApi";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -29,17 +29,6 @@ interface OverlayState {
   showOvtext: boolean;
   showCorner: boolean;
   showTextbar: boolean;
-}
-
-interface SubIndustryOption {
-  id: string | number;
-  name: string;
-}
-
-interface IndustryOption {
-  id: string | number;
-  name: string;
-  subIndustries: SubIndustryOption[];
 }
 
 // ── Constants ──────────────────────────────────────────────────────────────
@@ -108,18 +97,6 @@ function sliderFill(pct: number): string {
   return `linear-gradient(90deg,#F97316 ${pct}%,#E4E5EF ${pct}%)`;
 }
 
-function pickStringField(
-  obj: Record<string, unknown> | null | undefined,
-  keys: string[],
-): string {
-  if (!obj) return "";
-  for (const key of keys) {
-    const value = obj[key];
-    if (typeof value === "string" && value.trim()) return value.trim();
-    if (typeof value === "number") return String(value);
-  }
-  return "";
-}
 
 // ── Toggle component ───────────────────────────────────────────────────────
 function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
@@ -181,28 +158,11 @@ export default function BrandOverlayPage() {
   const [brandName, setBrandName] = useState("Your Brand");
   const [phone, setPhone] = useState("+91 98765 43210");
   const [overlayText, setOverlayText] = useState("yourbrand.com");
-  const [industryId, setIndustryId] = useState("");
-  const [subIndustryId, setSubIndustryId] = useState("");
-  const [industries, setIndustries] = useState<IndustryOption[]>([]);
-  const [loadingIndustries, setLoadingIndustries] = useState(false);
   const { user } = useUserProfile();
   const [applyPlatforms, setApplyPlatforms] = useState<Record<string, boolean>>(
     Object.fromEntries(APPLY_PLATFORMS.map(p => [p.name, p.defaultOn]))
   );
 
-  useEffect(() => {
-    setLoadingIndustries(true);
-    fetchIndustries()
-      .then((data) => {
-        setIndustries((data || []) as IndustryOption[]);
-      })
-      .catch(() => {
-        setIndustries([]);
-      })
-      .finally(() => {
-        setLoadingIndustries(false);
-      });
-  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -218,19 +178,6 @@ export default function BrandOverlayPage() {
     if (backendBrandName) setBrandName(backendBrandName);
     if (backendPhone) setPhone(backendPhone);
     if (backendWebsite) setOverlayText(backendWebsite);
-    setIndustryId(
-      pickStringField(
-        user as Record<string, unknown>,
-        ["industryId", "industry_id", "selectedIndustryId"],
-      ),
-    );
-    setSubIndustryId(
-      pickStringField(
-        user as Record<string, unknown>,
-        ["subIndustryId", "sub_industry_id", "selectedSubIndustryId"],
-      ),
-    );
-
     if (backendLogoRaw) {
       setS((prev) => ({
         ...prev,
@@ -243,8 +190,6 @@ export default function BrandOverlayPage() {
 
   const mark = () => setDirty(true);
   const updS = (patch: Partial<OverlayState>) => { setS(s => ({ ...s, ...patch })); mark(); };
-  const selectedIndustry = industries.find((ind) => String(ind.id) === String(industryId));
-  const subIndustryOptions = selectedIndustry?.subIndustries || [];
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
@@ -260,11 +205,6 @@ export default function BrandOverlayPage() {
 
   const saveSettings = async () => {
     if (saving) return;
-
-    if (!industryId || !subIndustryId) {
-      showToast("Please select industry and sub-industry", "red");
-      return;
-    }
 
     setSaving(true);
     try {
@@ -286,8 +226,6 @@ export default function BrandOverlayPage() {
         website: overlayText.trim() || "https://shoutlyai.com",
         phone: phone.trim(),
         connectedSocials: [],
-        industryId,
-        subIndustryId,
       });
 
       const backendUser =
@@ -301,8 +239,6 @@ export default function BrandOverlayPage() {
         brandName: brandName.trim(),
         website: overlayText.trim(),
         phone: phone.trim(),
-        industryId,
-        subIndustryId,
       };
 
       if (typeof window !== "undefined") {
@@ -581,24 +517,6 @@ export default function BrandOverlayPage() {
                         <input value={f.val} onChange={e => { f.set(e.target.value); mark(); }} placeholder={f.placeholder} style={fieldStyle} />
                       </div>
                     ))}
-                    <div style={{ marginTop: 11 }}>
-                      <div style={{ ...labelStyle }}>Industry</div>
-                      <select value={industryId} onChange={(e) => { setIndustryId(e.target.value); setSubIndustryId(""); mark(); }} style={fieldStyle} disabled={loadingIndustries}>
-                        <option value="">{loadingIndustries ? "Loading industries..." : "Select industry"}</option>
-                        {industries.map((ind) => (
-                          <option key={String(ind.id)} value={String(ind.id)}>{ind.name}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div style={{ marginTop: 11 }}>
-                      <div style={{ ...labelStyle }}>Sub-industry</div>
-                      <select value={subIndustryId} onChange={(e) => { setSubIndustryId(e.target.value); mark(); }} style={fieldStyle} disabled={!industryId || subIndustryOptions.length === 0}>
-                        <option value="">Select sub-industry</option>
-                        {subIndustryOptions.map((sub) => (
-                          <option key={String(sub.id)} value={String(sub.id)}>{sub.name}</option>
-                        ))}
-                      </select>
-                    </div>
                   </div>
                 )}
               </div>
