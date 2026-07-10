@@ -5,9 +5,8 @@ import { RefreshCcw, Image, Film, Zap, Lock } from "lucide-react";
 import PricingSection from "@/components/PricingSection";
 import Calender from "@/components/calender";
 import { fetchImages, fetchIndustries } from "@/api/homeApi";
-import { API_ENDPOINTS } from "@/api/configApi";
+import { API_ENDPOINTS, API_BASE_URL } from "@/api/configApi";
 import {
-    streamGeneratePosts,
     generatePromptOnlyImages,
     GeneratedPost,
 } from "@/api/postGeneratorApi";
@@ -50,7 +49,7 @@ const GENERATED_POSTS_KEY = "shoutly_generated_posts";
 
 const WHO_WE_HELP = [
     { key: "Health", emoji: "💪", title: "Health & Fitness", visible: [{ href: "/GYM.html", label: "Gym / Fitness Studio" }, { href: "/yoga-centre.html", label: "Yoga Centre" }, { href: "/zumba-aerobic-studio.html", label: "Zumba / Aerobic Studio" }, { href: "/Crossfit_Personal-Trainer.html", label: "CrossFit / Personal Trainer" }], extra: [{ href: "/physiotheraphy.html", label: "Physiotherapy Clinic" }, { href: "/Dieticians.html", label: "Dietician / Nutritionist" }, { href: "/wellness-supplements.html", label: "Wellness & Supplements" }, { href: "/weight-loss-body-transformation.html", label: "Weight Loss / Body Transformation" }] },
-    { key: "food", emoji: "🍔", title: "Food & Beverage", visible: [{ href: "/veg-multicuisine-restaurant.html", label: "Restaurants (veg / multicuisine)" }, { href: "/NV RESTAURANT.html", label: "Restaurants (non-veg / multicuisine)" }, { href: "/Cafe.html", label: "Cafes & Coffee Shops" }, { href: "/Juicebar_smoothiebar.html", label: "Juice Bars / Smoothie Bars" }], extra: [{ href: "/CAKE.html", label: "Bakery / Cake Shop" }, { href: "/Cloud-Kitchen.html", label: "Cloud Kitchen" }, { href: "/catering_.html", label: "Catering Services" }, { href: "/food-truck.html", label: "Food Trucks" }, { href: "/namkeen.html", label: "Sweets & Namkeen Stores" }, { href: "/organic-food.html", label: "Organic & Healthy Food Brands" }] },
+    { key: "food", emoji: "🍔", title: "Food & Beverage", visible: [{ href: "/veg-multicuisine-restaurant.html", label: "Restaurants (veg / multicuisine)" }, { href: "/NV RESTAURANT.html", label: "Restaurants (non-veg / multicuisine)" }, { href: "/Cafe.html", label: "Cafes & Coffee Shops" }, { href: "/Juicebar_smoothiebar.html", label: "Juice Bars / Smoothie Bars" }, { href: "/catering_.html", label: "Catering Services" }], extra: [{ href: "/CAKE.html", label: "Bakery / Cake Shop" }, { href: "/Cloud-Kitchen.html", label: "Cloud Kitchen" }, { href: "/food-truck.html", label: "Food Trucks" }, { href: "/namkeen.html", label: "Sweets & Namkeen Stores" }, { href: "/organic-food.html", label: "Organic & Healthy Food Brands" }] },
     { key: "fashion", emoji: "👗", title: "Fashion & Lifestyle", visible: [{ href: "/CLOTHING-AND-BOUTIQUE.html", label: "Clothing Store / Boutique" }, { href: "/FASHION-DESIGNER(1).html", label: "Fashion Designer" }, { href: "/textile.html", label: "Footwear" }, { href: "/watches-jewelry.html", label: "Watches / Jewelry" }], extra: [{ href: "/perfume.html", label: "Perfume / Fragrance Brand" }] },
     { key: "real", emoji: "🏗️", title: "Real Estate & Construction", visible: [{ href: "/real-estate.html", label: "Real Estate Agents" }, { href: "/DEVELOPERS_AND_BUILDERS.html", label: "Developers / Builders" }, { href: "/GATED-COMMUNITIES.html", label: "Farm Plots / Gated Communities" }, { href: "/interior.html", label: "Interior Design" }], extra: [{ href: "/Architecture.html", label: "Architecture Firms" }, { href: "/PROPERTY-CONSULTANT.html", label: "Property Consultants" }, { href: "/Construction-materials.html", label: "Home Construction Materials" }] },
     { key: "edu", emoji: "🎓", title: "Education & Coaching", visible: [{ href: "/SCHOOL-AND-CLG.html", label: "Schools & Colleges" }, { href: "/COACHING-INSTITUTE.html", label: "Coaching Institutes (NEET / JEE / UPSC / CAT)" }, { href: "/coding-academy.html", label: "Coding Academy / EdTech" }, { href: "/ONLINE-TUTOR.html", label: "Online Tutors" }, { href: "/Pre-school_Montessori.html", label: "Pre-School / Montessori" }], extra: [{ href: "/training-centers.html", label: "Skill Training Centres" }, { href: "/IELTS.html", label: "IELTS / Language Centres" }] },
@@ -226,8 +225,10 @@ export default function LandingPage() {
     const [streamedPosts, setStreamedPosts] = useState<GeneratedPost[]>([]);
     const [streamLoading, setStreamLoading] = useState(false);
     const [streamError, setStreamError] = useState<string | null>(null);
+    const [totalPreviewSlots, setTotalPreviewSlots] = useState(0);
     const [selectedPreviewPost, setSelectedPreviewPost] = useState<{ imageUrl: string; caption?: string } | null>(null);
     const streamAbortRef = useRef<AbortController | null>(null);
+    const previewTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
     const [generateSelectedSubIndustry, setGenerateSelectedSubIndustry] =
         useState<string | null>(null);
     const [generatePendingSubIndustry, setGeneratePendingSubIndustry] =
@@ -350,20 +351,14 @@ export default function LandingPage() {
         );
     };
     useEffect(() => {
-        const today = new Date().toDateString();
+        return () => { previewTimers.current.forEach(clearTimeout); };
+    }, []);
+
+    useEffect(() => {
         try {
-            const stored = JSON.parse(localStorage.getItem(REGEN_STORAGE_KEY) || "{}");
-            setRegenCount(stored.date === today ? (stored.count ?? 0) : 0);
-        } catch { /* ignore */ }
-        try {
-            const genStored = JSON.parse(localStorage.getItem(GENERATE_STORAGE_KEY) || "{}");
-            if (genStored.date === today) {
-                setHasGeneratedToday(true);
-                // Restore previously generated posts so user can see them
-                const savedPosts = JSON.parse(localStorage.getItem(GENERATED_POSTS_KEY) || "[]");
-                if (Array.isArray(savedPosts) && savedPosts.length > 0) {
-                    setStreamedPosts(savedPosts);
-                }
+            const savedPosts = JSON.parse(localStorage.getItem(GENERATED_POSTS_KEY) || "[]");
+            if (Array.isArray(savedPosts) && savedPosts.length > 0) {
+                setStreamedPosts(savedPosts);
             }
         } catch { /* ignore */ }
     }, []);
@@ -493,11 +488,6 @@ export default function LandingPage() {
     };
 
     const handleGenerateClick = async () => {
-        if (hasGeneratedToday) {
-            setGenerateValidationError("You have already generated content today. Come back tomorrow!");
-            return;
-        }
-
         const missing = getGenerateMissingFields();
         if (missing.length > 0) {
             setGenerateValidationError(`Please select/fill: ${missing.join(", ")}.`);
@@ -535,28 +525,12 @@ export default function LandingPage() {
         setGenerateSubIndustries(selectedIndustryObj?.subIndustries || []);
         setGenerateSelectedSubIndustry(effectiveSubIndustryId);
 
-        // Mark as generated for today
-        setHasGeneratedToday(true);
-        try {
-            localStorage.setItem(GENERATE_STORAGE_KEY, JSON.stringify({ date: new Date().toDateString() }));
-        } catch { /* ignore */ }
-
         scrollToSectionInOneSecond("gcontent");
         await generateStreamPreview(effectiveIndustryId, effectiveSubIndustryId);
     };
 
     const handleRegenerateBrandDescription = async () => {
         if (isRegeneratingBrand) return;
-        if (regenCount >= MAX_REGENERATIONS_PER_DAY) {
-            setRegenerateBrandError(`Daily limit reached. You can regenerate ${MAX_REGENERATIONS_PER_DAY} times per day. Try again tomorrow.`);
-            return;
-        }
-
-        const newCount = regenCount + 1;
-        setRegenCount(newCount);
-        try {
-            localStorage.setItem(REGEN_STORAGE_KEY, JSON.stringify({ date: new Date().toDateString(), count: newCount }));
-        } catch {}
 
         setRegenerateBrandError(null);
         setIsRegeneratingBrand(true);
@@ -627,127 +601,93 @@ export default function LandingPage() {
         industryIdOverride?: string,
         subIndustryIdOverride?: string,
     ) => {
-        console.log("[Stream] Starting dual-stream preview generation...");
-        const effectiveIndustryId = industryIdOverride || generateSelectedIndustry;
         const effectiveSubIndustryId = subIndustryIdOverride || generatePendingSubIndustry;
-        if (!effectiveIndustryId || !effectiveSubIndustryId) return;
+        if (!effectiveSubIndustryId) return;
 
-        if (streamAbortRef.current) {
-            streamAbortRef.current.abort();
-        }
+        previewTimers.current.forEach(clearTimeout);
+        previewTimers.current = [];
+        streamAbortRef.current?.abort();
         const controller = new AbortController();
         streamAbortRef.current = controller;
 
         setStreamLoading(true);
         setStreamedPosts([]);
         setStreamError(null);
+        setTotalPreviewSlots(7);
 
-        const requestBody = {
-            subIndustryId: String(effectiveSubIndustryId),
-            prompt: brandDescription.trim(),
-        };
+        try {
+            const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null;
+            const res = await fetch(`${API_BASE_URL}/api/generator/posts`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                },
+                body: JSON.stringify({ subIndustryId: String(effectiveSubIndustryId) }),
+                signal: controller.signal,
+            });
 
-        const collectedPosts: GeneratedPost[] = [];
-        const completedAttempts = new Set<number>();
-        let lastStreamError: string | null = null;
+            const json = await res.json().catch(() => ({ success: false, posts: [] }));
+            const posts: GeneratedPost[] = Array.isArray(json.posts)
+                ? json.posts.filter((p: any) => p?.image?.imageUrl)
+                : [];
 
-        const handleChunk = (chunk: GeneratedPost & { post?: GeneratedPost }) => {
-            console.log("[Stream] Chunk received:", JSON.stringify(chunk).slice(0, 300));
+            if (posts.length > 0) {
+                setStreamError(null);
+                try { localStorage.setItem(GENERATED_POSTS_KEY, JSON.stringify(posts)); } catch { /* ignore */ }
 
-            // Normalise: API may return the post directly at root or nested under "post"
-            const rawPost: GeneratedPost = chunk.post ?? chunk;
-
-            if (!rawPost?.image?.imageUrl) return;
-
-            collectedPosts.push(rawPost);
-            setStreamedPosts([...collectedPosts]);
-            if (collectedPosts.length >= 7) {
-                controller.abort();
-            }
-        };
-
-        const markStreamDone = (attempt: number) => {
-            if (completedAttempts.has(attempt)) return;
-            completedAttempts.add(attempt);
-            setStreamLoading(false);
-        };
-
-        const runStream = async (attempt: number) => {
-            console.log("[Stream] Starting stream...");
-            try {
-                await streamGeneratePosts(requestBody, {
-                    onChunk: handleChunk,
-                    onDone: () => markStreamDone(attempt),
-                    signal: controller.signal,
+                // Adjust slots to match actual post count (API may return < 7)
+                setTotalPreviewSlots(posts.length);
+                // Show first post immediately, then reveal the rest one by one (4–7 s gaps)
+                setStreamedPosts([posts[0]]);
+                setStreamLoading(false);
+                let cumDelay = 0;
+                posts.slice(1).forEach((post) => {
+                    cumDelay += 4000 + Math.random() * 3000;
+                    const t = setTimeout(() => {
+                        setStreamedPosts(prev => [...prev, post]);
+                    }, cumDelay);
+                    previewTimers.current.push(t);
                 });
-            } catch (error: unknown) {
-                if (error instanceof Error && error.name === "AbortError") {
-                    console.log("[Stream] Stream aborted (intentional)");
-                    markStreamDone(attempt);
-                    return;
-                }
-                const msg = error instanceof Error ? error.message : "Stream error.";
-                lastStreamError = msg;
-                console.warn(`[Stream] Stream warning (attempt ${attempt}):`, msg);
-                markStreamDone(attempt);
-            }
-        };
+            } else {
+                // Fallback to stock / prompt images
+                const fallbackPrompt = brandDescription.trim() || "Generate social media post ideas for a business";
+                let fallbackPosts: GeneratedPost[] = previewStockImages
+                    .map((img) => img.file || img.url || "")
+                    .filter(Boolean)
+                    .slice(0, 4)
+                    .map((imageUrl, idx) => ({
+                        image: { imageUrl },
+                        text: `Try this caption style #${idx + 1}: ${fallbackPrompt.slice(0, 140)}`,
+                        source: "LLM" as const,
+                        index: idx,
+                    }));
 
-        await runStream(1);
-
-        if (collectedPosts.length > 0) {
-            setStreamError(null);
-        } else {
-            const fallbackPrompt = brandDescription.trim() || "Generate social media post ideas for a business";
-            const fallbackFromStock = previewStockImages
-                .map((img) => img.file || img.url || "")
-                .filter(Boolean)
-                .slice(0, 4)
-                .map((imageUrl, idx) => ({
-                    image: { imageUrl },
-                    text: `Try this caption style #${idx + 1}: ${fallbackPrompt.slice(0, 140)}`,
-                    source: "LLM" as const,
-                    index: idx,
-                }));
-
-            let fallbackPosts: GeneratedPost[] = fallbackFromStock;
-
-            if (fallbackPosts.length < 4) {
-                try {
-                    const promptImages = await generatePromptOnlyImages({
-                        prompt: fallbackPrompt,
-                        count: 4,
-                    });
-
-                    fallbackPosts = promptImages
-                        .slice(0, 4)
-                        .map((item, idx) => ({
+                if (fallbackPosts.length < 4) {
+                    try {
+                        const promptImages = await generatePromptOnlyImages({ prompt: fallbackPrompt, count: 4 });
+                        fallbackPosts = promptImages.slice(0, 4).map((item, idx) => ({
                             image: { imageUrl: item.url },
                             text: `AI caption idea #${idx + 1}: ${fallbackPrompt.slice(0, 140)}`,
                             source: "LLM" as const,
                             index: idx,
                         }));
-                } catch {
-                    // Keep stock fallback if prompt-image fallback fails.
+                    } catch { /* keep stock fallback */ }
+                }
+
+                if (fallbackPosts.length > 0) {
+                    setStreamedPosts(fallbackPosts);
+                } else {
+                    setStreamError("Could not generate posts. Please try again.");
                 }
             }
-
-            if (fallbackPosts.length > 0) {
-                setStreamedPosts(fallbackPosts);
-                setStreamError(null);
-            } else if (lastStreamError) {
-                setStreamError(lastStreamError);
-            }
+        } catch (error: unknown) {
+            if (error instanceof Error && error.name === "AbortError") return;
+            setStreamError(error instanceof Error ? error.message : "Failed to generate posts.");
+        } finally {
+            setStreamLoading(false);
+            streamAbortRef.current = null;
         }
-
-        console.log(`[Stream] All settled. Final AI posts: ${collectedPosts.length}`);
-        // Persist generated posts so they can be restored if the user revisits today
-        if (collectedPosts.length > 0) {
-            try {
-                localStorage.setItem(GENERATED_POSTS_KEY, JSON.stringify(collectedPosts));
-            } catch { /* ignore quota errors */ }
-        }
-        setStreamLoading(false);
     };
     useEffect(() => {
         const loadIndustries = async () => {
@@ -902,34 +842,64 @@ const speeds = [120, 160, 110, 150, 130];
                     maskImage: "radial-gradient(ellipse 90% 80% at 50% 40%, black 30%, transparent 100%)"
                 }}></div>
 
-                <div className="relative z-10 w-full max-w-6xl mx-auto px-8 sm:px-12 pb-10 grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+                <div className="relative z-10 w-full max-w-6xl mx-auto px-8 sm:px-12 pb-6 grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
                     {/* Left Content */}
                     <div className="flex flex-col gap-6">
                         {/* Pill Badge */}
-                        <div className="inline-flex items-center gap-2 w-fit px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/30">
+                        <div className="mt-16 sm:mt-8 inline-flex items-center gap-2 w-fit px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/30">
                             <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse"></span>
                             <span className="text-xs font-bold uppercase tracking-wider text-orange-400">AI Social Media Automation</span>
                         </div>
 
                         {/* Heading */}
-                        <h1 className="text-3xl md:text-4xl font-black tracking-tight text-white leading-tight">
-                            Your Business Posts Every Day.<br />
-                            <span className="bg-gradient-to-r from-orange-400 via-red-400 to-rose-400 bg-clip-text text-transparent">365 Days of Social Media.</span>
-                            <br />
-                            Zero Effort.
+                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white leading-none">
+                            <span className="bg-gradient-to-r from-orange-400 via-red-400 to-rose-400 bg-clip-text text-transparent">365 Days of Social Media.</span> Zero Effort.
                         </h1>
 
-                        {/* Subtitle */}
-                        <p className="text-base text-slate-300 leading-relaxed max-w-md">
-                            Stay active on Instagram, Facebook, LinkedIn, Google Business, X, Threads, Pinterest, TikTok, YouTube, and more without creating content yourself.
-                            <br /><br />
-                            Every post comes with a professionally designed poster, engaging caption, and ready-to-use hashtags, scheduled throughout the year so your business stays visible every single day.
-                        </p>
+                        {/* Platform Icons */}
+                        <div className="pt-2 pb-1">
+                            <p className="text-xs text-white/50 uppercase tracking-widest font-semibold mb-3">Post across 10 platforms</p>
+                            <div className="flex flex-wrap gap-2">
+                                {[
+                                    { icon: "fa-x-twitter",    bg: "#000000" },
+                                    { icon: "fa-linkedin-in",  bg: "#0A66C2" },
+                                    { icon: "fa-instagram",    bg: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)" },
+                                    { icon: "fa-tiktok",       bg: "#010101" },
+                                    { icon: "fa-facebook-f",   bg: "#1877F2" },
+                                    { icon: "fa-threads",      bg: "#000000" },
+                                    { icon: "fa-bluesky",      bg: "#0085ff" },
+                                    { icon: "fa-youtube",      bg: "#FF0000" },
+                                    { icon: "fa-pinterest-p",  bg: "#E60023" },
+                                    { icon: "fa-snapchat",     bg: "#FFFC00", color: "#000" },
+                                ].map(({ icon, bg, color }, i) => (
+                                    <div key={i} style={{
+                                        width: 36, height: 36, borderRadius: 10,
+                                        background: bg, display: "flex", alignItems: "center", justifyContent: "center",
+                                        flexShrink: 0
+                                    }}>
+                                        <i className={`fa-brands ${icon}`} style={{ fontSize: 16, color: color || "#fff" }} />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
 
                         {/* CTAs */}
+                        <style>{`
+                          .btn-start-now {
+                            background: linear-gradient(90deg, #F97316, #EF4444);
+                            border: 2px solid #F97316;
+                            color: #fff;
+                            transition: background .25s, color .25s, box-shadow .25s;
+                          }
+                          .btn-start-now:hover {
+                            background: #fff;
+                            color: #F97316;
+                            box-shadow: 0 8px 24px rgba(249,115,22,.35);
+                          }
+                        `}</style>
                         <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                            <button onClick={() => scrollToSectionInOneSecond('industry-cards')} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold hover:shadow-lg hover:shadow-orange-500/50 transition-all">
-                                Start Free Trial
+                            <button onClick={() => window.location.href = '/sign-in'} className="btn-start-now inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold">
+                                Start Now
                                 <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
                                     <path d="M2.5 7h9M8 3.5 11.5 7 8 10.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                                 </svg>
@@ -1185,24 +1155,21 @@ const speeds = [120, 160, 110, 150, 130];
                                         ? `Min ${MIN_BRAND_DESCRIPTION_CHARS} chars (${brandDescription.trim().length}/${MIN_BRAND_DESCRIPTION_CHARS})`
                                         : `${brandDescription.trim().length}/${MAX_BRAND_DESCRIPTION_CHARS}`}
                                 </p>
-                                <p className="text-xs text-slate-400">
-                                    Regenerate: <span className={regenCount >= MAX_REGENERATIONS_PER_DAY ? "text-red-500 font-bold" : "text-orange-500 font-bold"}>{MAX_REGENERATIONS_PER_DAY - regenCount}/{MAX_REGENERATIONS_PER_DAY}</span> left today
-                                </p>
                             </div>
 
                             <div className="mb-3 flex justify-end">
                                 <button
                                     type="button"
                                     onClick={handleRegenerateBrandDescription}
-                                    disabled={isRegeneratingBrand || brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS || regenCount >= MAX_REGENERATIONS_PER_DAY}
+                                    disabled={isRegeneratingBrand || brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS}
                                     className={`inline-flex items-center justify-center gap-2 rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all ${
-                                        isRegeneratingBrand || brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS || regenCount >= MAX_REGENERATIONS_PER_DAY
+                                        isRegeneratingBrand || brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS
                                             ? "cursor-not-allowed bg-slate-100 text-slate-400"
                                             : "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:brightness-110 cursor-pointer shadow-md shadow-orange-200"
                                     }`}
                                 >
                                     <RefreshCcw className={`h-4 w-4 ${isRegeneratingBrand ? "animate-spin" : ""}`} />
-                                    {isRegeneratingBrand ? "Regenerating..." : regenCount >= MAX_REGENERATIONS_PER_DAY ? "Limit Reached" : "Regenerate"}
+                                    {isRegeneratingBrand ? "Regenerating..." : "Regenerate"}
                                 </button>
                             </div>
                             {regenerateBrandError && (
@@ -1235,20 +1202,18 @@ const speeds = [120, 160, 110, 150, 130];
                             {/* CTA Button */}
                             <button
                                 onClick={handleGenerateClick}
-                                disabled={hasGeneratedToday}
+                                disabled={!isGenerateReady}
                                 className={`relative w-full py-3 rounded-xl text-sm sm:text-base font-black tracking-wide transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 overflow-hidden ${
-                                    hasGeneratedToday
-                                        ? "bg-slate-100 text-slate-400 cursor-not-allowed"
-                                        : isGenerateReady
+                                    isGenerateReady
                                         ? "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:brightness-110 hover:shadow-xl hover:shadow-orange-300/50 cursor-pointer"
                                         : "bg-slate-100 text-slate-400 cursor-not-allowed"
                                 }`}
                             >
-                                {isGenerateReady && !hasGeneratedToday && (
+                                {isGenerateReady && (
                                     <span className="absolute inset-0 animate-[shimmer_2.5s_infinite] bg-gradient-to-r from-transparent via-white/25 to-transparent" />
                                 )}
-                                {isGenerateReady && !hasGeneratedToday ? <Zap className="w-4 h-4 relative" /> : <Lock className="w-4 h-4 relative" />}
-                                <span className="relative">{hasGeneratedToday ? "Daily Limit Reached — Try Again Tomorrow" : "Preview First Post"}</span>
+                                {isGenerateReady ? <Zap className="w-4 h-4 relative" /> : <Lock className="w-4 h-4 relative" />}
+                                <span className="relative">Preview First Post</span>
                             </button>
                             {generateValidationError && (
                                 <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-700">
@@ -1426,7 +1391,7 @@ const speeds = [120, 160, 110, 150, 130];
                                         const post = streamedPosts[i];
                                         const imageUrl = post?.image?.imageUrl;
                                         if (!imageUrl) {
-                                            if (!streamLoading) return null;
+                                            if (i >= totalPreviewSlots) return null;
                                             return (
                                                 <div
                                                     key={`r1-loading-${i}`}
@@ -1496,7 +1461,7 @@ const speeds = [120, 160, 110, 150, 130];
                                         const post = streamedPosts[i];
                                         const imageUrl = post?.image?.imageUrl;
                                         if (!imageUrl) {
-                                            if (!streamLoading) return null;
+                                            if (i >= totalPreviewSlots) return null;
                                             return (
                                                 <div
                                                     key={`r1-loading-${i}`}

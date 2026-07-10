@@ -29,7 +29,7 @@ interface ConnectedAccount {
   platformId: string; platformIcon: string; platformColor: string; platformGrad: string;
   handle: string; accountType: string; role: "Admin" | "Owner" | "Member";
   health: "Healthy" | "Needs refresh";
-  followers: string;
+  followers: string; posts?: string; engagement?: string;
   connectedDate: string; lastSync: string; publishing: "active" | "at risk";
   permissions: string[]; workspace: string;
 }
@@ -51,6 +51,7 @@ const SUPPORTED_IDS = new Set(Object.keys(PLATFORM_CONNECT_NAME));
 
 // ── Static platform metadata (cosmetic only — live status/counts come from the API) ──
 const INIT_PLATS: Platform[] = [
+
   { id:"fb", name:"Facebook", icon:"fa-brands fa-facebook", color:"#1877F2", grad:"linear-gradient(135deg,#1877F2,#0C52C5)", desc:"Reach billions via Pages, Groups & Reels", perms:["Manage Facebook Pages","Publish posts & reels","Access Page analytics","Moderate comments"], status:"disconnected", accountCount:0, lastSync:"—", publishing:"—", features:[{label:"Posts",enabled:true},{label:"Reels",enabled:true},{label:"Stories",enabled:true}] },
   { id:"li", name:"LinkedIn", icon:"fa-brands fa-linkedin", color:"#0A66C2", grad:"linear-gradient(135deg,#0A66C2,#0853A0)", desc:"Professional network for B2B growth", perms:["Share posts & articles","Manage Company Page","View follower analytics","Post on behalf of company"], status:"disconnected", accountCount:0, lastSync:"—", publishing:"—", features:[{label:"Posts",enabled:true},{label:"Analytics",enabled:true},{label:"Comments",enabled:true},{label:"Stories",enabled:false}] },
   { id:"ig", name:"Instagram", icon:"fa-brands fa-instagram", color:"#E1306C", grad:"linear-gradient(135deg,#F77737,#E1306C,#C13584,#833AB4)", desc:"Share photos, Reels & Stories with 2B+ users", perms:["Publish photos & videos","Read post insights","Manage comments","Access follower data"], status:"disconnected", accountCount:0, lastSync:"—", publishing:"—", features:[{label:"Posts",enabled:true},{label:"Reels",enabled:true},{label:"Stories",enabled:true}] },
@@ -59,6 +60,7 @@ const INIT_PLATS: Platform[] = [
   { id:"pi", name:"Pinterest", icon:"fa-brands fa-pinterest", color:"#E60023", grad:"linear-gradient(135deg,#E60023,#AD0019)", desc:"Visual discovery for 450M+ monthly users", perms:["Create & schedule pins","Access analytics","Manage boards","Read audience insights"], status:"disconnected", accountCount:0, lastSync:"—", publishing:"—", features:[{label:"Posts",enabled:true},{label:"Analytics",enabled:true},{label:"Schedule",enabled:true}] },
   { id:"yt", name:"YouTube", icon:"fa-brands fa-youtube", color:"#FF0000", grad:"linear-gradient(135deg,#FF0000,#CC0000)", desc:"World's largest video platform", perms:["Upload & schedule videos","Manage channel","Post community updates","Read analytics"], status:"disconnected", accountCount:0, lastSync:"—", publishing:"—", features:[{label:"Reels",enabled:true},{label:"Analytics",enabled:true},{label:"Comments",enabled:true}] },
   { id:"gb", name:"Google Business", icon:"fa-brands fa-google", color:"#4285F4", grad:"linear-gradient(135deg,#4285F4,#1A6CF0)", desc:"Manage your local Google presence", perms:["Publish business updates","Respond to reviews","Post offers & events","View insights"], status:"disconnected", accountCount:0, lastSync:"—", publishing:"—", features:[{label:"Posts",enabled:true},{label:"Analytics",enabled:true},{label:"Schedule",enabled:true},{label:"Reels",enabled:false}] },
+
 ];
 
 // Still static — no backend endpoint powers AI suggestions or an activity feed yet.
@@ -101,7 +103,7 @@ function PlatCard({ p, onConnect, onDisconnect, showToast }: {
 
   return (
     <div
-      style={{ background:"#fff", border:`1px solid ${isAttn?"rgba(245,158,11,.25)":isConn?"rgba(16,185,129,.15)":"#E2E4F0"}`, borderRadius:12, overflow:"hidden", display:"flex", flexDirection:"column", boxShadow:"0 1px 4px rgba(11,12,26,.04)", transition:"all .18s" }}
+      style={{ background:"#fff", border:`1px solid ${isAttn?"rgba(245,158,11,.25)":isConn?"rgba(249,115,22,.2)":"#E2E4F0"}`, borderRadius:12, overflow:"hidden", display:"flex", flexDirection:"column", boxShadow:"0 1px 4px rgba(11,12,26,.04)", transition:"all .18s" }}
       onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow="0 6px 20px rgba(11,12,26,.08)"; (e.currentTarget as HTMLDivElement).style.transform="translateY(-2px)"; }}
       onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow="0 1px 4px rgba(11,12,26,.04)"; (e.currentTarget as HTMLDivElement).style.transform=""; }}
     >
@@ -118,15 +120,16 @@ function PlatCard({ p, onConnect, onDisconnect, showToast }: {
         <div style={{ width:7, height:7, borderRadius:"50%", background:isAttn?"#F59E0B":isConn?"#10B981":"#BFC1D9", animation:isConn?"connectedGlow 2s infinite":undefined, flexShrink:0 }} />
         <span style={{ fontSize:11.5, fontWeight:700, color:isAttn?"#B45309":isConn?"#059669":"#8486AB" }}>
           {isAttn?"Attention":isConn?"Connected":!isSupported?"Not available yet":"Not Connected"}
+
         </span>
       </div>
 
       {/* Account info */}
       {isActive && (
         <div style={{ padding:"0 16px 10px" }}>
-          <div style={{ fontSize:12, color:"#8486AB" }}>{p.accountCount} account{p.accountCount!==1?"s":""} · synced {p.lastSync}</div>
+          <div style={{ fontSize:12, color:"#8486AB" }}>Feature coming soon</div>
           <div style={{ fontSize:12, marginTop:3 }}>
-            Publishing: <span style={{ fontWeight:700, color:p.publishing==="at risk"?"#F59E0B":"#059669" }}>{p.publishing}</span>
+            Publishing: <span style={{ fontWeight:700, color:"#F97316" }}>upcoming</span>
           </div>
         </div>
       )}
@@ -161,7 +164,10 @@ function PlatCard({ p, onConnect, onDisconnect, showToast }: {
             onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor="#E2E4F0"; (e.currentTarget as HTMLButtonElement).style.color="#3D3F60"; }}
             disabled
           >
+
             Connected
+
+
           </button>
         ) : (
           <button onClick={() => onConnect(p.id)} style={{ width:"100%", padding:"9px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"linear-gradient(115deg,#F97316,#EA580C)", color:"#fff", border:"none", boxShadow:"0 2px 8px rgba(249,115,22,.3)" }}>
@@ -182,7 +188,13 @@ function AccountRow({ acc, showToast, isLast }: { acc: ConnectedAccount; showToa
     x:"X", yt:"YouTube", pi:"Pinterest", gb:"Google Business",
   };
 
-  const meta = [platName[acc.platformId] || acc.platformId, acc.accountType, acc.followers].filter(Boolean).join(" · ");
+  const meta = [
+    platName[acc.platformId] || acc.platformId,
+    acc.accountType,
+    acc.followers,
+    acc.posts ? `${acc.posts} posts` : "",
+    acc.engagement ? `${acc.engagement} eng.` : "",
+  ].filter(Boolean).join(" · ");
 
   return (
     <div style={{ display:"flex", alignItems:"center", gap:16, padding:"16px 24px", borderBottom:isLast ? "none" : "1px solid #F0F1F9" }}>
@@ -570,7 +582,7 @@ export default function SocialAccountsPage() {
               <h2 style={{ fontSize:16, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif" }}>Supported platforms</h2>
               <span style={{ fontSize:12, color:"#8486AB" }}>Connected platforms appear first</span>
             </div>
-            <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:14 }}>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:14 }}>
               {sortedPlats.map(p => (
                 <PlatCard key={p.id} p={p} onConnect={openConnect} onDisconnect={openDisconnect} showToast={showToast} />
               ))}

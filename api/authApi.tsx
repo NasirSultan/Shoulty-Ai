@@ -78,10 +78,10 @@ export const emailLogin = async (email: string, password: string) => {
         });
 
         console.log("🔑 Login response:", response.data);
-        const { token, user } = response.data;
-        // console.log("🔑 Token received:", token.substring(0, 20) + "...");
-        localStorage.setItem("shoutly_token", response.data.accessToken);
-        return { token, user };
+        const authToken = response.data.accessToken || response.data.token;
+        const { user } = response.data;
+        localStorage.setItem("shoutly_token", authToken);
+        return { token: authToken, user };
     } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
             const status = error.response?.status;

@@ -24,4 +24,6 @@ export const API_ENDPOINTS = {
     userProfile: `${API_BASE_URL}/api/users/profile`,
     profileUpdate: `${API_BASE_URL}/api/users/profile-update`,
     passwordUpdate: `${API_BASE_URL}/api/users/password`,
+    dashboard: `${API_BASE_URL}/api/dashboard`,
+    notes: `${API_BASE_URL}/api/notes`,
 };

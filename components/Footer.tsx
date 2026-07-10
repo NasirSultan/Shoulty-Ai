@@ -31,8 +31,8 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { icon: <FaFacebook size={18} />, href: "https://facebook.com/shoutlyai", label: "Facebook" },
-    { icon: <FaInstagram size={18} />, href: "https://instagram.com/shoutlyai", label: "Instagram" },
+    { icon: <FaFacebook size={18} />, href: "https://www.facebook.com/people/Shoutly-AI/61583485633639/", label: "Facebook" },
+    { icon: <FaInstagram size={18} />, href: "https://www.instagram.com/ai.shoutly/", label: "Instagram" },
     { icon: <FaTwitter size={18} />, href: "https://twitter.com/shoutlyai", label: "Twitter" },
     { icon: <FaLinkedin size={18} />, href: "https://linkedin.com/company/shoutlyai", label: "LinkedIn" },
     { icon: <FaYoutube size={18} />, href: "https://youtube.com/@shoutlyai", label: "YouTube" }
@@ -53,20 +53,21 @@ const Footer = () => {
               <div>
                 <span className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">Local Business</span>
                 <ul className="space-y-2.5 text-sm text-gray-600 dark:text-gray-400">
-                  <li><Link href="/real-estate.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Real Estate</Link></li>
-                  <li><Link href="/Cafe.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Food & Beverage</Link></li>
-                  <li><Link href="/textile.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Retail / E‑Comm</Link></li>
-                  <li><Link href="/Dieticians.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Beauty & Wellness</Link></li>
+                  <li><Link href="/GYM.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Gym</Link></li>
+                  <li><Link href="/Cafe.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Coffee Shop</Link></li>
+                  <li><Link href="/NV%20RESTAURANT.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Restaurants</Link></li>
+                  <li><Link href="/CLOTHING-AND-BOUTIQUE.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Boutique</Link></li>
+                  <li><Link href="/catering_.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Catering</Link></li>
                 </ul>
               </div>
               {/* Lifestyle Brands */}
               <div>
                 <span className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">Lifestyle Brands</span>
                 <ul className="space-y-2.5 text-sm text-gray-600 dark:text-gray-400">
-                  <li><Link href="/GYM.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Health & Fitness</Link></li>
-                  <li><Link href="/package.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Hospitality & Tourism</Link></li>
-                  <li><Link href="/Cafe.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Pet Services</Link></li>
-                  <li><Link href="/Business-Consultant.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Nonprofits</Link></li>
+                  <li><Link href="/travel-agencies.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Travel</Link></li>
+                  <li><Link href="/watches-jewelry.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Watches / Jewelry</Link></li>
+                  <li><Link href="/CAKE.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Bakery / Cake Shop</Link></li>
+                  <li><Link href="/tour-packages.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Tour Packages</Link></li>
                 </ul>
               </div>
             </div>
@@ -80,20 +81,20 @@ const Footer = () => {
               <div>
                 <span className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">Professional Services</span>
                 <ul className="space-y-2.5 text-sm text-gray-600 dark:text-gray-400">
-                  <li><Link href="/mutual-fund.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Finance & Legal</Link></li>
-                  <li><Link href="/COACHING-INSTITUTE.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Education & Coaching</Link></li>
-                  <li><Link href="/physiotheraphy.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Healthcare</Link></li>
-                  <li><Link href="/Business-Consultant.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Business Consulting</Link></li>
+                  <li><Link href="/catering_.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Wedding Photographers</Link></li>
+                  <li><Link href="/coding-academy.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Digital Marketing Agencies</Link></li>
+                  <li><Link href="/accounting-firm.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Accounting Firms</Link></li>
+                  <li><Link href="/catering_.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Event Planners</Link></li>
                 </ul>
               </div>
               {/* Specialized Industries */}
               <div>
                 <span className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">Specialized Industries</span>
                 <ul className="space-y-2.5 text-sm text-gray-600 dark:text-gray-400">
-                  <li><Link href="/Construction-materials.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Construction & Trades</Link></li>
-                  <li><Link href="/machinery.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Automotive</Link></li>
-                  <li><Link href="/coding-academy.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Technology</Link></li>
-                  <li><Link href="/interior.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Home Services</Link></li>
+                  <li><Link href="/DEVELOPERS_AND_BUILDERS.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Developers / Builders</Link></li>
+                  <li><Link href="/coding-academy.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Tech Startups</Link></li>
+                  <li><Link href="/interior.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Interior Design</Link></li>
+                  <li><Link href="/car-showrooms.html" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Car Showrooms</Link></li>
                 </ul>
               </div>
             </div>
@@ -116,17 +117,13 @@ const Footer = () => {
             <ul className="space-y-2.5 mb-8">
               <li><a href="https://blog.shoutlyai.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Blog</a></li>
               <li><Link href="/help-center" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Help Center</Link></li>
-              <li><Link href="/join-community" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Join Community</Link></li>
-              <li><Link href="/case-studies" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Success Stories</Link></li>
               <li><Link href="/free-editorial" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Free Editorial Calendar</Link></li>
             </ul>
             <div className="text-xs font-bold uppercase tracking-widest text-orange-600 dark:text-orange-400 mb-5">Company</div>
             <ul className="space-y-2.5">
               <li><Link href="/about-us" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">About Us</Link></li>
               <li><Link href="/contact-us" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Contact Us</Link></li>
-              <li><Link href="/press-media" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Press & Media</Link></li>
               <li><Link href="/careers" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Careers</Link></li>
-              <li><Link href="/affiliate-program" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Affiliate Program</Link></li>
             </ul>
           </div>
 

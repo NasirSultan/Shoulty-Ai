@@ -36,7 +36,7 @@ const NAV_SECTIONS = [
       },
       {
         icon: "fa-solid fa-photo-film",
-        label: "Image & Reel Library",
+        label: "Content Library",
         href: "/library",
         badge: null,
         badgeGrad: false,

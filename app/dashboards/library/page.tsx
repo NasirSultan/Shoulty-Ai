@@ -3,11 +3,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import AdminHeader from "../AdminHeader";
 import { saveDashboardCalendarPost } from "../calendarSync";
-import { fetchImages, fetchIndustries, fetchPosts, ApiPost } from "@/api/homeApi";
+import { fetchIndustries, fetchPosts, ApiPost } from "@/api/homeApi";
 import {
   resolveGeneratorProfileFields,
   streamGeneratePosts,
 } from "@/api/postGeneratorApi";
+import { API_BASE_URL } from "@/api/configApi";
 import { useUserProfile } from "@/hooks/useUserProfile";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -925,6 +926,7 @@ export default function LibraryPage() {
   const subIndBtnRef = useRef<HTMLButtonElement>(null);
   const indDropRef = useRef<HTMLDivElement>(null);
   const subIndDropRef = useRef<HTMLDivElement>(null);
+  const postTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const [loading, setLoading] = useState(false);
   const [compCard, setCompCard] = useState<LibCard | null>(null);
   const [generatorIdsByKey, setGeneratorIdsByKey] = useState<
@@ -974,34 +976,105 @@ export default function LibraryPage() {
   const [loadingMore, setLoadingMore] = useState(false);
 
   const loadPosts = async (p: number, subIndId?: string, append = false) => {
-    if (append) {
-      setLoadingMore(true);
-    } else {
-      setLoading(true);
+    // Cancel any in-progress queued timers from a previous load
+    postTimers.current.forEach(clearTimeout);
+    postTimers.current = [];
+
+    if (!subIndId) {
+      // No sub-industry — use library API (existing behaviour)
+      if (append) setLoadingMore(true);
+      else setLoading(true);
+      try {
+        const res = await fetchPosts(p, subIndId);
+        const data = res.data || [];
+        if (append) {
+          setPosts(prev => {
+            const off = prev.length;
+            setNewStartIdx(off);
+            return [...prev, ...data.map((post, i) => mapApiPost(post, i, off))];
+          });
+        } else {
+          setNewStartIdx(0);
+          setPosts(data.map((post, i) => mapApiPost(post, i, 0)));
+        }
+        setPage(res.meta?.page ?? p);
+        setTotalPages(res.meta?.totalPages ?? 1);
+      } catch {
+        if (!append) setPosts([]);
+      } finally {
+        if (append) setLoadingMore(false);
+        else setLoading(false);
+      }
+      return;
     }
+
+    // Sub-industry selected — use generator API with queue reveal effect
+    if (append) setLoadingMore(true);
+    else setLoading(true);
+
     try {
-      const res = await fetchPosts(p, subIndId);
-      const data = res.data || [];
-      if (append) {
+      const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null;
+      const res = await fetch(`${API_BASE_URL}/api/generator/posts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ subIndustryId: subIndId }),
+      });
+
+      const json = await res.json().catch(() => ({ success: false, posts: [] }));
+
+      if (!json.success || !Array.isArray(json.posts) || json.posts.length === 0) {
+        if (!append) { setPosts([]); setLoading(false); }
+        else setLoadingMore(false);
+        return;
+      }
+
+      const mapped: LibCard[] = json.posts.map((post: any, i: number) => ({
+        id: Date.now() + i,
+        type: "image" as ContentType,
+        cat: "",
+        cap: post.text || "",
+        tags: (post.hashtags || []).map((h: string) => h.startsWith("#") ? h : `#${h}`),
+        plats: PLAT_SETS[i % PLAT_SETS.length],
+        img: post.image?.imageUrl || "",
+        bestTime: "",
+        eng: ENG_VALS[i % ENG_VALS.length],
+        k: subIndId,
+      }));
+
+      if (!append) {
+        // Show first post immediately
+        setNewStartIdx(0);
+        setPosts([mapped[0]]);
+        setLoading(false);
+        setPage(1);
+        setTotalPages(1);
+
+        // Queue remaining posts with a random 3–6 s gap between each
+        let cumDelay = 0;
+        mapped.slice(1).forEach((post, qi) => {
+          cumDelay += 3000 + Math.random() * 3000;
+          const idxWhenAdded = 1 + qi;
+          const t = setTimeout(() => {
+            setNewStartIdx(idxWhenAdded);
+            setPosts(prev => [...prev, post]);
+          }, cumDelay);
+          postTimers.current.push(t);
+        });
+      } else {
+        // Append all at once (load more)
         setPosts(prev => {
           const off = prev.length;
           setNewStartIdx(off);
-          return [...prev, ...data.map((post, i) => mapApiPost(post, i, off))];
+          return [...prev, ...mapped];
         });
-      } else {
-        setNewStartIdx(0);
-        setPosts(data.map((post, i) => mapApiPost(post, i, 0)));
-      }
-      setPage(res.meta?.page ?? p);
-      setTotalPages(res.meta?.totalPages ?? 1);
-    } catch {
-      if (!append) setPosts([]);
-    } finally {
-      if (append) {
         setLoadingMore(false);
-      } else {
-        setLoading(false);
       }
+    } catch {
+      if (!append) { setPosts([]); setLoading(false); }
+      else setLoadingMore(false);
     }
   };
 
@@ -1064,6 +1137,11 @@ export default function LibraryPage() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  // Clean up queued post timers on unmount
+  useEffect(() => {
+    return () => { postTimers.current.forEach(clearTimeout); };
+  }, []);
+
   const copyText = (txt: string) => { navigator.clipboard?.writeText(txt).catch(() => {}); showToast("📋 Caption copied!"); };
 
   const searchTerm = searchInput.trim().toLowerCase();
@@ -1107,7 +1185,7 @@ export default function LibraryPage() {
 
           {/* Topbar */}
           <AdminHeader
-            pageTitle="Image & Reel Library"
+            pageTitle="Content Library"
             userName={user?.name}
             userInitials={initials}
           />

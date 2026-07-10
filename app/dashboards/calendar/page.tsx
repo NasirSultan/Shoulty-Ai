@@ -22,6 +22,7 @@ import {
 } from "@/api/postGeneratorApi";
 import { createMonthlyPlan, getUserPlan } from "@/api/calendarApi";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { API_BASE_URL } from "@/api/configApi";
 import { publishPost, schedulePosts, Platform } from "@/api/autopostApi";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -683,7 +684,7 @@ interface ModalState {
   initDate: Date | null;
 }
 
-function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelete, onDuplicate, showToast, user }: {
+function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelete, onDuplicate, showToast, user, industrySelection }: {
   state: ModalState;
   posts: Post[];
   today: Date;
@@ -694,6 +695,7 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
   onDuplicate: (id: number) => void;
   showToast: (msg: string, type: string) => void;
   user: Record<string, unknown> | null | undefined;
+  industrySelection: { industryId: string; subIndustryId: string } | null | undefined;
 }) {
   const p = state.postId ? posts.find(x => x.id === state.postId) : null;
   const [caption, setCaption] = useState("");
@@ -891,7 +893,9 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
       return `${hook}\n\n${caption.trim()}\n\n${cta}`;
     };
 
-    const { industryId, subIndustryId } = resolveGeneratorProfileFields(user as Record<string, unknown>);
+    const resolved = resolveGeneratorProfileFields(user as Record<string, unknown>);
+    const industryId = industrySelection?.industryId || resolved.industryId;
+    const subIndustryId = industrySelection?.subIndustryId || resolved.subIndustryId;
     if (!industryId || !subIndustryId) {
       // No profile industry — use smart local rewrite
       setTimeout(() => {
@@ -1550,23 +1554,50 @@ export default function CalendarPage() {
   const [nextId, setNextId] = useState(10000);
   const { user } = useUserProfile();
   const [profileSetupWarning, setProfileSetupWarning] = useState<string | null>(null);
+  const [industrySelection, setIndustrySelection] = useState<{
+    industryId: string;
+    subIndustryId: string;
+    industryName?: string;
+    subIndustryName?: string;
+  } | null>(null);
+
+  // ── Fetch industry selection from dedicated API ───────────────────────────
+  useEffect(() => {
+    const fetchIndustrySelection = async () => {
+      try {
+        const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null;
+        if (!token) return;
+        const res = await fetch(`${API_BASE_URL}/api/users/me/industry-selection`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        const industry = data?.industry;
+        const subIndustry = data?.subIndustry;
+        if (industry?.id && subIndustry?.id) {
+          setIndustrySelection({
+            industryId: String(industry.id),
+            subIndustryId: String(subIndustry.id),
+            industryName: industry.name,
+            subIndustryName: subIndustry.name,
+          });
+          setProfileSetupWarning(null);
+        } else {
+          setProfileSetupWarning("Industry and sub-industry are not set yet. Calendar is available, but AI planning and generation will be limited.");
+        }
+      } catch {
+        // silently fail — user can still use calendar
+      }
+    };
+    fetchIndustrySelection();
+  }, []);
 
   // ── Case #1: Profile Setup Guard (non-blocking) ───────────────────────────
-  // If industry/sub-industry are missing, keep user in calendar and show warning.
   useEffect(() => {
-    if (!user) return; // Wait for user profile to load
-
-    const subIndustryId = (user as any)?.subIndustryId || (user as any)?.sub_industry_id || (user as any)?.selectedSubIndustryId;
-    const industryId = (user as any)?.industryId || (user as any)?.industry_id || (user as any)?.selectedIndustryId;
-
-    if (!subIndustryId || !industryId) {
-      console.warn("[Calendar] Industry/sub-industry missing. Showing profile setup warning.");
-      setProfileSetupWarning("Industry and sub-industry are not set yet. Calendar is available, but AI planning and generation will be limited.");
-      return;
+    if (industrySelection) {
+      setProfileSetupWarning(null);
     }
-
-    setProfileSetupWarning(null);
-  }, [user]);
+  }, [industrySelection]);
 
   const mergeImportedPosts = useCallback((incoming: Post[]) => {
     if (!incoming.length) return;
@@ -1644,7 +1675,7 @@ export default function CalendarPage() {
   const [genCount, setGenCount] = useState(0);
   const [genStatus, setGenStatus] = useState("Preparing stream...");
   const [genInFlight, setGenInFlight] = useState(false);
-  const planPostTime = "10:00";
+  const [planPostTime, setPlanPostTime] = useState("10:00");
   const [planLoading, setPlanLoading] = useState(false);
   const { toast, show: showToast } = useToast();
 
@@ -1895,14 +1926,14 @@ export default function CalendarPage() {
   const createPlanDirect = async () => {
     if (planLoading) return;
 
-    const { subIndustryId } = resolveGeneratorProfileFields(
+    const resolved = resolveGeneratorProfileFields(
       (user ?? null) as Record<string, unknown> | null
     );
-    const userSubIndustry = (user as Record<string, unknown>)?.subIndustryId as string | undefined;
-    const effectiveSubIndustry = userSubIndustry || subIndustryId;
+    const effectiveSubIndustry = industrySelection?.subIndustryId || resolved.subIndustryId;
 
     if (!effectiveSubIndustry) {
-      showToast("Please set your sub-industry in your profile settings", "red");
+      showToast("Please select your industry in Settings first.", "red");
+      setTimeout(() => { window.location.href = "/dashboards/settings"; }, 1200);
       return;
     }
 
@@ -1912,18 +1943,30 @@ export default function CalendarPage() {
     setPlanLoading(true);
     showToast("Creating your monthly plan...", "brand");
     try {
-      const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") || "" : "";
+      const token = (typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null) ?? "";
+
       const response = await createMonthlyPlan(
-        {
-          prompt,
-          subIndustries: [effectiveSubIndustry],
-          postTime: planPostTime,
-        },
+        { postTime: planPostTime },
         token
       );
 
       if (!response.success) {
-        showToast(response.message || "Failed to create plan", "red");
+        const msg = response.message || "";
+        if (msg === "Please select an industry first.") {
+          showToast("Please select your industry in Settings first.", "red");
+          setTimeout(() => { window.location.href = "/dashboards/settings"; }, 1200);
+          return;
+        }
+        if (msg === "Payment required. Please subscribe to a plan to continue.") {
+          showToast("A subscription is required. Redirecting to billing…", "amber");
+          setTimeout(() => { window.location.href = "/dashboards/settings/billing"; }, 1200);
+          return;
+        }
+        if (msg.toLowerCase().includes("session expired") || msg.toLowerCase().includes("unauthorized")) {
+          showToast("Service authentication error — please contact support.", "red");
+          return;
+        }
+        showToast(msg || "Failed to create plan", "red");
         return;
       }
 
@@ -2270,21 +2313,6 @@ export default function CalendarPage() {
             }
           />
 
-          {profileSetupWarning && (
-            <div style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: 10, margin: "10px 20px 0", padding: "10px 12px", borderRadius: 10, background: "#FFF7ED", border: "1px solid #FDBA74", color: "#9A3412" }}>
-              <i className="fa-solid fa-circle-exclamation" style={{ fontSize: 14 }} />
-              <div style={{ fontSize: 12.5, fontWeight: 600, lineHeight: 1.45, flex: 1 }}>
-                {profileSetupWarning}
-              </div>
-              <button
-                onClick={() => router.push("/dashboards/settings/brand")}
-                style={{ padding: "7px 10px", borderRadius: 7, border: "1px solid #FDBA74", background: "#fff", color: "#9A3412", fontSize: 11.5, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}
-              >
-                Go to Brand Settings
-              </button>
-            </div>
-          )}
-
           {/* Cal Toolbar */}
           <div style={{ flexShrink: 0, background: "#fff", borderBottom: "1px solid #E2E4F0" }}>
             {/* Row 1: View tabs + nav */}
@@ -2328,6 +2356,15 @@ export default function CalendarPage() {
                 })}
               </div>
               <div style={{ width: 1, height: 24, background: "#E2E4F0", flexShrink: 0 }} />
+              <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+                <i className="fa-solid fa-clock" style={{ fontSize: 11, color: "#8486AB" }} />
+                <input
+                  type="time"
+                  value={planPostTime}
+                  onChange={e => setPlanPostTime(e.target.value)}
+                  style={{ padding: "6px 8px", borderRadius: 7, border: "1px solid #E2E4F0", background: "#fff", fontSize: 12.5, fontWeight: 600, color: "#0B0C1A", cursor: "pointer", outline: "none", fontFamily: "Sora,sans-serif" }}
+                />
+              </div>
               <button onClick={createPlanDirect} disabled={planLoading} style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 18px", borderRadius: 8, background: "#10B981", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: planLoading ? "not-allowed" : "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(16,185,129,.32)", whiteSpace: "nowrap", flexShrink: 0, opacity: planLoading ? 0.7 : 1 }}>
                 <i className="fa-solid fa-calendar-plus" style={{ fontSize: 12 }} /> {planLoading ? "Creating..." : "Create Plan"}
               </button>
@@ -2393,7 +2430,7 @@ export default function CalendarPage() {
         </div>
 
       {/* Edit Modal */}
-      <EditModal state={modal} posts={posts} today={today} onClose={closeModal} onSave={savePost} onPublishNow={publishPostNow} onDelete={deletePost} onDuplicate={dupPost} showToast={showToast} user={user} />
+      <EditModal state={modal} posts={posts} today={today} onClose={closeModal} onSave={savePost} onPublishNow={publishPostNow} onDelete={deletePost} onDuplicate={dupPost} showToast={showToast} user={user} industrySelection={industrySelection} />
 
       {/* AI Generate Modal */}
       <GenModal open={genOpen} pct={genProgress} generatedCount={genCount} statusText={genStatus} />

@@ -39,7 +39,7 @@ const NAV_GROUPS = [
       },
       {
         icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="2"/><path d="m3 17 5-4 3 2 5-5 5 5"/></svg>,
-        label: "Image and Reel Library",
+        label: "Content Library",
         href: "/dashboards/library",
       },
     ],
@@ -68,12 +68,6 @@ const NAV_GROUPS = [
   {
     section: "More",
     items: [
-      {
-        icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>,
-        label: "Notifications",
-        href: "/dashboards/notifications",
-        badge: "3",
-      },
       {
         icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>,
         label: "Back to Website",
@@ -260,6 +254,30 @@ export default function Sidebar({ slim = false }: SidebarProps) {
               })}
             </div>
           ))}
+        </div>
+
+        {/* Support / Chat button */}
+        <div style={{ padding: "0 8px 8px", flexShrink: 0 }}>
+          <button
+            onClick={() => document.dispatchEvent(new CustomEvent("shoutly:open-chat"))}
+            title="Chat with AI"
+            style={{
+              width: "100%", display: "flex", alignItems: "center",
+              gap: 10, padding: slim ? "9px 8px" : "9px 12px",
+              borderRadius: 9, cursor: "pointer", border: "none",
+              background: GRAD, color: "#fff",
+              justifyContent: slim ? "center" : "flex-start",
+              boxShadow: "0 4px 14px -4px rgba(249,115,22,.5)",
+              transition: "opacity .15s",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.opacity = ".88")}
+            onMouseLeave={e => (e.currentTarget.style.opacity = "1")}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16, flexShrink: 0 }}>
+              <path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5Z"/>
+            </svg>
+            {!slim && <span style={{ fontSize: ".84rem", fontWeight: 700 }}>Support</span>}
+          </button>
         </div>
 
         {/* User row */}

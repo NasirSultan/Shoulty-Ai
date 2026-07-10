@@ -1,51 +1,6 @@
 {
   "posts": [
     {
-      "id": 1783165195178,
-      "date": "2026-07-04T00:00:00.000Z",
-      "caption": "Believe in yourself and you will be unstoppable. 🌟🔥 #Motivation #Successdsfasdf",
-      "hashtags": [
-        "#Startup",
-        "#Entrepreneurship",
-        "#VentureCapital",
-        "#Founder",
-        "#TechStartup"
-      ],
-      "plats": [
-        "ig"
-      ],
-      "type": "image",
-      "timeStr": "5:45 PM",
-      "timesOptions": [
-        {
-          "t": "9:00 AM",
-          "e": "7.6%",
-          "best": false
-        },
-        {
-          "t": "12:30 PM",
-          "e": "8.2%",
-          "best": true
-        },
-        {
-          "t": "5:45 PM",
-          "e": "9.8%",
-          "best": true
-        },
-        {
-          "t": "8:30 PM",
-          "e": "7.1%",
-          "best": false
-        }
-      ],
-      "img": "/images/motivation.jpg",
-      "score": 92,
-      "status": "scheduled",
-      "reach": 0,
-      "engRate": "8.2%",
-      "isAI": true
-    },
-    {
       "id": 1783171337295,
       "date": "2026-07-04T00:00:00.000Z",
       "caption": "Believe in yourself and you will be unstoppable. 🌟🔥 #Motivation #Success",
@@ -92,6 +47,96 @@
       "reach": 0,
       "engRate": "8.2%",
       "isAI": true
+    },
+    {
+      "id": 1783165195178,
+      "date": "2026-07-04T00:00:00.000Z",
+      "caption": "Believe in yourself and you will be unstoppable. 🌟🔥 #Motivation #Successdsfasdf",
+      "hashtags": [
+        "#Startup",
+        "#Entrepreneurship",
+        "#VentureCapital",
+        "#Founder",
+        "#TechStartup"
+      ],
+      "plats": [
+        "ig"
+      ],
+      "type": "image",
+      "timeStr": "9:00 AM",
+      "timesOptions": [
+        {
+          "t": "9:00 AM",
+          "e": "7.6%",
+          "best": false
+        },
+        {
+          "t": "12:30 PM",
+          "e": "8.2%",
+          "best": true
+        },
+        {
+          "t": "5:45 PM",
+          "e": "9.8%",
+          "best": true
+        },
+        {
+          "t": "8:30 PM",
+          "e": "7.1%",
+          "best": false
+        }
+      ],
+      "img": "/images/motivation.jpg",
+      "score": 92,
+      "status": "scheduled",
+      "reach": 24000,
+      "engRate": "8.5%",
+      "isAI": false
+    },
+    {
+      "id": 1783171974830,
+      "date": "2026-07-09T00:00:00.000Z",
+      "caption": "Make every event memorable with our professional catering services. From intimate gatherings to grand celebrations, we deliver delicious food, flawless presentation, and warm hospitality that leave your guests delighted and satisfied.",
+      "hashtags": [
+        "#DeliciousMoments",
+        "#FoodExperience",
+        "#CateringServices",
+        "#EventCatering"
+      ],
+      "plats": [
+        "ig",
+        "fb"
+      ],
+      "type": "reel",
+      "timeStr": "12:00 PM",
+      "timesOptions": [
+        {
+          "t": "7:45 AM",
+          "e": "9.2%",
+          "best": true
+        },
+        {
+          "t": "12:00 PM",
+          "e": "6.1%",
+          "best": false
+        },
+        {
+          "t": "6:30 PM",
+          "e": "10.4%",
+          "best": true
+        },
+        {
+          "t": "9:00 PM",
+          "e": "7.8%",
+          "best": false
+        }
+      ],
+      "img": "https://shoultyai.s3.ap-south-1.amazonaws.com/images/84f9eae8-0342-4a41-a34a-aa723398c103.jpg",
+      "score": 89,
+      "status": "scheduled",
+      "reach": 21000,
+      "engRate": "8.5%",
+      "isAI": false
     },
     {
       "id": 1783171974829,
