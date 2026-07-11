@@ -452,7 +452,7 @@ export default function SocialAccountsPage() {
 
   // On mount: finalize an OAuth redirect if we just came back from Outstand, then load real data
   useEffect(() => {
-    const sessionToken = searchParams.get("session_token"); // Facebook — snake_case in URL
+    const sessionToken = searchParams.get("session"); // Facebook — snake_case in URL
     const accountId = searchParams.get("account_id");       // Instagram / LinkedIn
 
     const finalize = async () => {
