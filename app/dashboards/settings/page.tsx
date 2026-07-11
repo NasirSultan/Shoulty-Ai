@@ -149,6 +149,7 @@ const SettingsPage: React.FC = () => {
   const [selectedIndustry, setSelectedIndustry] = useState<{ id: string; name: string } | null>(null);
   const [selectedSubIndustry, setSelectedSubIndustry] = useState<{ id: string; name: string } | null>(null);
   const [industryViewMode, setIndustryViewMode] = useState(false);
+  const [savingIndustry, setSavingIndustry] = useState(false);
 
   // Load real user profile
   const { user, initials } = useUserProfile();
@@ -1116,28 +1117,42 @@ const SettingsPage: React.FC = () => {
                   )}
 
                   {!industryViewMode && <div className="sec-footer">
-                    <button className="btn" onClick={() => { setSelectedIndustry(null); setSelectedSubIndustry(null); }}>Clear</button>
-                    <button className="btn primary" onClick={async () => {
-                      if (!selectedIndustry) { showToast('Please select an industry first', 'amber'); return; }
-                      if (!selectedSubIndustry) { showToast('Please select a sub-category', 'amber'); return; }
-                      try {
-                        const token = authToken();
-                        const res = await fetch(`${API_BASE_URL}/api/users/me/industry-selection`, {
-                          method: 'PATCH',
-                          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                          body: JSON.stringify({ subIndustryId: selectedSubIndustry.id }),
-                        });
-                        if (res.status === 401) { window.location.href = '/sign-in'; return; }
-                        if (!res.ok) {
-                          const err = await res.json().catch(() => ({}));
-                          showToast(err?.message || 'Failed to save — try a different sub-category', 'red');
-                          return;
-                        }
-                        showToast('Industry preferences saved!', 'green');
-                        setIndustryViewMode(true);
-                      } catch { showToast('Network error — could not save industry', 'red'); }
-                    }}>
-                      <i className="fa-solid fa-check" style={{ fontSize: 10 }}></i> Save Industry
+                    <button className="btn" disabled={savingIndustry} onClick={() => { setSelectedIndustry(null); setSelectedSubIndustry(null); }}>Clear</button>
+                    <button
+                      className="btn primary"
+                      disabled={savingIndustry}
+                      style={{ opacity: savingIndustry ? 0.75 : 1, cursor: savingIndustry ? 'not-allowed' : 'pointer' }}
+                      onClick={async () => {
+                        if (!selectedIndustry) { showToast('Please select an industry first', 'amber'); return; }
+                        if (!selectedSubIndustry) { showToast('Please select a sub-category', 'amber'); return; }
+                        setSavingIndustry(true);
+                        try {
+                          const token = authToken();
+                          const res = await fetch(`${API_BASE_URL}/api/users/me/industry-selection`, {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                            body: JSON.stringify({ subIndustryId: selectedSubIndustry.id }),
+                          });
+                          if (res.status === 401) { window.location.href = '/sign-in'; return; }
+                          if (!res.ok) {
+                            const err = await res.json().catch(() => ({}));
+                            showToast(err?.message || 'Failed to save — try a different sub-category', 'red');
+                            return;
+                          }
+                          showToast('Industry preferences saved!', 'green');
+                          setIndustryViewMode(true);
+                        } catch { showToast('Network error — could not save industry', 'red'); }
+                        finally { setSavingIndustry(false); }
+                      }}>
+                      {savingIndustry ? (
+                        <>
+                          <i className="fa-solid fa-spinner" style={{ fontSize: 10, animation: 'spin 1s linear infinite' }}></i> Saving…
+                        </>
+                      ) : (
+                        <>
+                          <i className="fa-solid fa-check" style={{ fontSize: 10 }}></i> Save Industry
+                        </>
+                      )}
                     </button>
                   </div>}
                 </div>
