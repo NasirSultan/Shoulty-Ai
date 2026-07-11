@@ -185,6 +185,52 @@
       "isAI": true
     },
     {
+      "id": 1783171974862,
+      "date": "2026-07-29T05:00:00.000Z",
+      "caption": "",
+      "hashtags": [
+        "#GrowthHacking",
+        "#ContentStrategy",
+        "#DigitalMarketing",
+        "#SocialMedia",
+        "#BuildInPublic"
+      ],
+      "plats": [
+        "ig",
+        "fb"
+      ],
+      "type": "image",
+      "timeStr": "10:00 AM",
+      "timesOptions": [
+        {
+          "t": "7:45 AM",
+          "e": "9.2%",
+          "best": true
+        },
+        {
+          "t": "12:00 PM",
+          "e": "6.1%",
+          "best": false
+        },
+        {
+          "t": "6:30 PM",
+          "e": "10.4%",
+          "best": true
+        },
+        {
+          "t": "9:00 PM",
+          "e": "7.8%",
+          "best": false
+        }
+      ],
+      "img": "https://shoultyai.s3.ap-south-1.amazonaws.com/images/519ac534-98fb-4b82-a3d1-a4e1e561d21c.jpg",
+      "score": 95,
+      "status": "draft",
+      "reach": 23000,
+      "engRate": "8.5%",
+      "isAI": true
+    },
+    {
       "id": 1783171273619,
       "date": "2026-07-30T00:00:00.000Z",
       "caption": "Believe in yourself and you will be unstoppable. 🌟🔥 #Motivation #Success",

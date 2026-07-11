@@ -11,7 +11,6 @@ import {
   DashboardCalendarPost, DashboardPlatKey, DashboardPostType,
   DashboardStatus, DashboardTimeSlot, saveDashboardCalendarPost,
 } from "@/app/dashboards/calendarSync";
-import { upsertCalendarPostToBackend } from "@/api/calendarPostsApi";
 
 type Props = {
   isOpen: boolean;
@@ -97,7 +96,6 @@ export default function PostPopup({ isOpen, imageUrl, initialCaption, onClose, o
     setSaveError("");
     try {
       saveDashboardCalendarPost(post);
-      await upsertCalendarPostToBackend(post);
       onSaved?.(post);
       setSaved(true);
       setTimeout(() => onClose(), 800);

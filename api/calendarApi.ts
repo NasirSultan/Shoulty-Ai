@@ -217,6 +217,69 @@ export async function getUserPlan(token?: string): Promise<GetPlanResponse> {
 }
 
 // ────────────────────────────────────────────────────────────────────────────
+// 3b. CREATE CALENDAR POST
+// ────────────────────────────────────────────────────────────────────────────
+export interface CreatePostRequest {
+  subIndustryId: string;
+  /** "HH:mm" (24-hour) ONLY — the backend always uses today's date regardless
+   *  of anything else sent. There is currently no way to schedule a future day
+   *  through this endpoint (see calendar.service.ts toUTC()). */
+  postTime: string;
+  contentText?: string;
+  /** Existing hosted image URL. If both imageUrl and a file are provided, imageUrl wins. */
+  imageUrl?: string;
+}
+
+export interface CreatePostResponse {
+  success: boolean;
+  message: string;
+  post?: CalendarPost;
+}
+
+/** POST /api/calendar/post — always multipart/form-data (backend uses FileInterceptor).
+ *  Every created post is status SCHEDULED; there is no "publish immediately" flag. */
+export async function createCalendarPost(
+  request: CreatePostRequest,
+  token?: string,
+  file?: File
+): Promise<CreatePostResponse> {
+  const authToken = token || (typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null);
+
+  if (!authToken) {
+    throw new Error("Authentication token is required");
+  }
+  if (!request.subIndustryId) {
+    throw new Error("subIndustryId is required");
+  }
+  if (!/^\d{2}:\d{2}$/.test(request.postTime)) {
+    throw new Error("postTime must be in HH:mm format");
+  }
+
+  const formData = new FormData();
+  formData.append("subIndustryId", request.subIndustryId);
+  formData.append("postTime", request.postTime);
+  if (request.contentText) formData.append("contentText", request.contentText);
+  if (request.imageUrl) {
+    formData.append("imageUrl", request.imageUrl);
+  } else if (file) {
+    formData.append("image", file);
+  }
+
+  try {
+    const response = await calendarClient.post(`/api/calendar/post`, formData, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data as CreatePostResponse;
+  } catch (error: any) {
+    const errorMsg = error.response?.data?.message || error.message || "Failed to create post";
+    throw new Error(errorMsg);
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────────────
 // 4. UPDATE CALENDAR POST
 // ────────────────────────────────────────────────────────────────────────────
 export async function updateCalendarPost(

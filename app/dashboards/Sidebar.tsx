@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { API_ENDPOINTS } from "@/api/configApi";
 
 interface SidebarProps {
   slim?: boolean;
@@ -86,6 +88,17 @@ export default function Sidebar({ slim = false }: SidebarProps) {
   const { user, initials } = useUserProfile();
   const current = pathname || "/dashboards";
 
+  const [subscription, setSubscription] = useState<{ plan: string; isPurchased: boolean } | null>(null);
+
+  useEffect(() => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null;
+    if (!token) return;
+    fetch(API_ENDPOINTS.dashboard, { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => (r.ok ? r.json() : null))
+      .then(data => { if (data?.subscription) setSubscription(data.subscription); })
+      .catch(() => {});
+  }, []);
+
   const isActive = (href: string, exact?: boolean) => {
     if (exact) return current === href;
     if (href === "/dashboards/settings") {
@@ -166,18 +179,18 @@ export default function Sidebar({ slim = false }: SidebarProps) {
                 <Link href={TOP_ITEM.href} style={{ textDecoration: "none", display: "block" }}>
                   <div className="sb-nav-item" style={{
                     display: "flex", alignItems: "center",
-                    gap: 10, padding: slim ? "9px 8px" : "8px 10px",
-                    borderRadius: 8, position: "relative",
+                    gap: 8, padding: slim ? "7px 8px" : "6px 9px",
+                    borderRadius: 7, position: "relative",
                     justifyContent: slim ? "center" : "flex-start",
                     color: active ? "#111827" : "#6B7280",
                     fontWeight: active ? 600 : 500,
-                    fontSize: ".875rem",
+                    fontSize: ".8rem",
                     background: active ? "#FFF7ED" : "transparent",
                   }}>
                     {active && (
-                      <span style={{ position: "absolute", left: -8, top: 6, bottom: 6, width: 3, borderRadius: "0 3px 3px 0", background: GRAD }} />
+                      <span style={{ position: "absolute", left: -8, top: 5, bottom: 5, width: 3, borderRadius: "0 3px 3px 0", background: GRAD }} />
                     )}
-                    <span style={{ width: 17, height: 17, flexShrink: 0, color: active ? "#F97316" : "#9CA3AF" }}>
+                    <span style={{ width: 15, height: 15, flexShrink: 0, color: active ? "#F97316" : "#9CA3AF" }}>
                       {TOP_ITEM.icon}
                     </span>
                     {!slim && <span style={{ flex: 1 }}>{TOP_ITEM.label}</span>}
@@ -191,14 +204,14 @@ export default function Sidebar({ slim = false }: SidebarProps) {
             <div key={section}>
               {!slim ? (
                 <div style={{
-                  fontSize: 10, fontWeight: 700, textTransform: "uppercase",
+                  fontSize: 9.5, fontWeight: 700, textTransform: "uppercase",
                   letterSpacing: ".9px", color: "#9CA3AF",
-                  padding: "12px 16px 4px",
+                  padding: "10px 16px 3px",
                 }}>
                   {section}
                 </div>
               ) : (
-                <div style={{ height: 10 }} />
+                <div style={{ height: 8 }} />
               )}
 
               {items.map(({ icon, label, href, exact, badge }: any) => {
@@ -207,25 +220,25 @@ export default function Sidebar({ slim = false }: SidebarProps) {
                   <Link key={href} href={href} style={{ textDecoration: "none", display: "block" }}>
                     <div className="sb-nav-item" style={{
                       display: "flex", alignItems: "center",
-                      gap: 10, margin: "1px 8px",
-                      padding: slim ? "9px 8px" : "8px 10px",
-                      borderRadius: 8, position: "relative",
+                      gap: 8, margin: "1px 8px",
+                      padding: slim ? "7px 8px" : "6px 9px",
+                      borderRadius: 7, position: "relative",
                       justifyContent: slim ? "center" : "flex-start",
                       color: active ? "#111827" : "#6B7280",
                       fontWeight: active ? 600 : 500,
-                      fontSize: ".875rem",
+                      fontSize: ".8rem",
                       background: active ? "#FFF7ED" : "transparent",
                     }}>
                       {active && (
                         <span style={{
-                          position: "absolute", left: -8, top: 6, bottom: 6, width: 3,
+                          position: "absolute", left: -8, top: 5, bottom: 5, width: 3,
                           borderRadius: "0 3px 3px 0",
                           background: GRAD,
                         }} />
                       )}
 
                       <span style={{
-                        width: 17, height: 17, flexShrink: 0,
+                        width: 15, height: 15, flexShrink: 0,
                         color: active ? "#F97316" : "#9CA3AF",
                       }}>
                         {icon}
@@ -239,9 +252,9 @@ export default function Sidebar({ slim = false }: SidebarProps) {
 
                       {!slim && badge && (
                         <span style={{
-                          minWidth: 18, height: 18, padding: "0 5px", borderRadius: 99,
+                          minWidth: 16, height: 16, padding: "0 5px", borderRadius: 99,
                           background: GRAD,
-                          color: "#fff", fontSize: 10, fontWeight: 700,
+                          color: "#fff", fontSize: 9, fontWeight: 700,
                           display: "flex", alignItems: "center", justifyContent: "center",
                           flexShrink: 0,
                         }}>
@@ -263,8 +276,8 @@ export default function Sidebar({ slim = false }: SidebarProps) {
             title="Chat with AI"
             style={{
               width: "100%", display: "flex", alignItems: "center",
-              gap: 10, padding: slim ? "9px 8px" : "9px 12px",
-              borderRadius: 9, cursor: "pointer", border: "none",
+              gap: 8, padding: slim ? "7px 8px" : "7px 11px",
+              borderRadius: 8, cursor: "pointer", border: "none",
               background: GRAD, color: "#fff",
               justifyContent: slim ? "center" : "flex-start",
               boxShadow: "0 4px 14px -4px rgba(249,115,22,.5)",
@@ -273,35 +286,68 @@ export default function Sidebar({ slim = false }: SidebarProps) {
             onMouseEnter={e => (e.currentTarget.style.opacity = ".88")}
             onMouseLeave={e => (e.currentTarget.style.opacity = "1")}
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16, flexShrink: 0 }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 14, height: 14, flexShrink: 0 }}>
               <path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5Z"/>
             </svg>
-            {!slim && <span style={{ fontSize: ".84rem", fontWeight: 700 }}>Support</span>}
+            {!slim && <span style={{ fontSize: ".78rem", fontWeight: 700 }}>Support</span>}
           </button>
         </div>
 
+        {/* Plan / Upgrade */}
+        {subscription && (
+          <div style={{ padding: "0 8px 8px", flexShrink: 0 }}>
+            <div style={{
+              display: "flex", flexDirection: "column", gap: 6,
+              padding: slim ? "7px 8px" : "8px 10px",
+              borderRadius: 8,
+              background: subscription.isPurchased ? "#F0FDF4" : "#FFF7ED",
+              border: `1px solid ${subscription.isPurchased ? "#BBF7D0" : "#FED7AA"}`,
+            }}>
+              {!slim && (
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <span style={{ fontSize: ".62rem", letterSpacing: ".08em", textTransform: "uppercase", color: "#9CA3AF", fontWeight: 700 }}>Current plan</span>
+                  <span style={{ fontSize: ".68rem", fontWeight: 700, color: subscription.isPurchased ? "#16A34A" : "#D97706" }}>{subscription.plan}</span>
+                </div>
+              )}
+              {!subscription.isPurchased && (
+                <Link
+                  href="/dashboards/settings/billing"
+                  title="Upgrade plan"
+                  style={{
+                    display: "flex", alignItems: "center", justifyContent: "center", gap: 5,
+                    padding: "6px 9px", borderRadius: 6, textDecoration: "none",
+                    background: GRAD, color: "#fff", fontSize: ".74rem", fontWeight: 700,
+                  }}
+                >
+                  {slim ? "↑" : "Upgrade"}
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* User row */}
-        <div style={{ borderTop: "1px solid #F3F4F6", padding: 10, flexShrink: 0 }}>
+        <div style={{ borderTop: "1px solid #F3F4F6", padding: 8, flexShrink: 0 }}>
           <Link href="/dashboards/settings" style={{ textDecoration: "none" }}>
             <div className="sb-nav-item" style={{
               display: "flex", alignItems: "center",
-              gap: 9, padding: 8, borderRadius: 8, cursor: "pointer",
+              gap: 8, padding: 7, borderRadius: 7, cursor: "pointer",
               justifyContent: slim ? "center" : "flex-start",
             }}>
               <span style={{
-                width: 30, height: 30, borderRadius: "50%", flexShrink: 0,
+                width: 26, height: 26, borderRadius: "50%", flexShrink: 0,
                 background: GRAD,
                 color: "#fff", display: "grid", placeItems: "center",
-                fontWeight: 700, fontSize: ".72rem",
+                fontWeight: 700, fontSize: ".66rem",
               }}>
                 {initials}
               </span>
               {!slim && (
                 <span style={{ minWidth: 0, flex: 1 }}>
-                  <b style={{ display: "block", fontSize: ".82rem", lineHeight: 1.3, color: "#111827", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  <b style={{ display: "block", fontSize: ".76rem", lineHeight: 1.3, color: "#111827", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     {user?.name || "User"}
                   </b>
-                  <span style={{ fontSize: ".7rem", color: "#9CA3AF", display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  <span style={{ fontSize: ".65rem", color: "#9CA3AF", display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     {user?.email || "member"}
                   </span>
                 </span>

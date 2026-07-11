@@ -2,6 +2,7 @@
 
 import React from "react";
 import Sidebar from "./Sidebar";
+import ChatWidget from "./ChatWidget";
 import { useSidebarState } from "@/hooks/useSidebarState";
 
 export const SidebarContext = React.createContext<{
@@ -20,6 +21,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           {children}
         </div>
       </div>
+      <ChatWidget />
     </SidebarContext.Provider>
   );
 }

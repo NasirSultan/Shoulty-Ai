@@ -635,44 +635,6 @@ const SettingsPage: React.FC = () => {
     openModal(modalHtml);
   };
 
-  const openDeleteModal = () => {
-    const modalHtml = `
-      <div class="m-hdr"><div class="m-icon" style="background:var(--rd-l)"><i class="fa-solid fa-trash" style="color:var(--rd);font-size:17px"></i></div><div><div class="m-title">Delete Account?</div><div class="m-sub">Permanent — cannot be undone under any circumstances</div></div></div>
-      <div class="m-body">
-        <div class="info-box red"><i class="fa-solid fa-triangle-exclamation" style="color:var(--rd)"></i><div class="info-text">This will <strong>permanently delete</strong> everything associated with your account.</div></div>
-        <div class="del-checklist">
-          ${['All AI-generated posts, reels and creatives','All connected social accounts and tokens','All brand kits, logos and assets','All billing history and invoices','All team members and permissions'].map(t => `<div class="del-check-item"><i class="fa-solid fa-xmark" style="color:var(--rd);font-size:11px;flex-shrink:0"></i>${t}</div>`).join('')}
-        </div>
-        <div class="m-form-group" style="margin-bottom:0">
-          <label class="m-label">Type <span style="color:var(--rd);font-style:normal;font-weight:900">DELETE MY ACCOUNT</span> to confirm</label>
-          <input class="m-input del" id="del-input" type="text" placeholder="DELETE MY ACCOUNT" oninput="window.dispatchEvent(new CustomEvent('check-del', { detail: { value: this.value } }))">
-        </div>
-      </div>
-      <div class="m-footer"><button class="mbtn cancel" onclick="window.dispatchEvent(new CustomEvent('close-modal'))">Keep My Account</button><button class="mbtn danger" id="del-btn" disabled style="opacity:.4" onclick="window.dispatchEvent(new CustomEvent('do-delete'))"><i class="fa-solid fa-trash" style="margin-right:5px"></i>Delete Forever</button></div>`;
-    openModal(modalHtml);
-  };
-
-  const checkDelInput = (value: string) => {
-    const btn = document.getElementById('del-btn') as HTMLButtonElement;
-    if (btn) {
-      const ok = value === 'DELETE MY ACCOUNT';
-      btn.disabled = !ok;
-      btn.style.opacity = ok ? '1' : '.4';
-    }
-  };
-
-  const doDelete = () => {
-    if (modalContentRef.current) {
-      modalContentRef.current.innerHTML = `
-        <div style="padding:50px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px">
-          <div style="width:56px;height:56px;border-radius:14px;background:var(--rd-l);border:2px solid rgba(239,68,68,.25);display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--rd)"><i class="fa-solid fa-spinner" style="animation:spin 1s linear infinite"></i></div>
-          <div style="font-size:15px;font-weight:800;color:var(--t1);font-family:'Sora',sans-serif">Deleting account…</div>
-          <div style="font-size:13px;color:var(--t3)">Securely removing all your data</div>
-        </div>`;
-    }
-    setTimeout(() => { closeModal(); showToast('Account permanently deleted. Goodbye 👋', 'red'); }, 2500);
-  };
-
   // --- Render Helpers ---
   const renderNotifs = () => {
     return NOTIFS.map((n, i) => (
@@ -690,16 +652,12 @@ const SettingsPage: React.FC = () => {
     const handleToastPaused = () => showToast('Account paused for 1 month. Resume anytime.', 'amber');
     const handleToastUpload = () => showToast('Photo uploaded!', 'green');
     const handleToastPhoto = () => showToast('Profile photo updated!', 'green');
-    const handleCheckDel = (e: CustomEvent) => checkDelInput(e.detail.value);
-    const handleDoDelete = () => doDelete();
 
     window.addEventListener('close-modal', handleCloseModal);
     window.addEventListener('do-disconnect-all', handleDoDisconnectAll);
     window.addEventListener('toast-paused', handleToastPaused);
     window.addEventListener('toast-upload', handleToastUpload);
     window.addEventListener('toast-photo', handleToastPhoto);
-    window.addEventListener('check-del', handleCheckDel as EventListener);
-    window.addEventListener('do-delete', handleDoDelete);
 
     return () => {
       window.removeEventListener('close-modal', handleCloseModal);
@@ -707,8 +665,6 @@ const SettingsPage: React.FC = () => {
       window.removeEventListener('toast-paused', handleToastPaused);
       window.removeEventListener('toast-upload', handleToastUpload);
       window.removeEventListener('toast-photo', handleToastPhoto);
-      window.removeEventListener('check-del', handleCheckDel as EventListener);
-      window.removeEventListener('do-delete', handleDoDelete);
     };
   }, []);
 
@@ -1351,10 +1307,6 @@ const SettingsPage: React.FC = () => {
                   <div className="danger-row">
                     <div><div className="dr-title">Disconnect All Social Accounts</div><div className="dr-sub">Remove Shoutly AI access from all platforms. All scheduled posts will be cancelled immediately.</div></div>
                     <button className="danger-btn red" onClick={openDisconnectAllModal}><i className="fa-solid fa-link-slash" style={{ fontSize: '11px' }}></i> Disconnect All</button>
-                  </div>
-                  <div className="danger-row">
-                    <div><div className="dr-title">Delete Account</div><div className="dr-sub">Permanently delete your account and <strong>all data</strong> — brands, posts, reels, billing history. <strong>Cannot be undone.</strong></div></div>
-                    <button className="danger-btn red" onClick={openDeleteModal}><i className="fa-solid fa-trash" style={{ fontSize: '11px' }}></i> Delete Account</button>
                   </div>
                 </div>
               </div>

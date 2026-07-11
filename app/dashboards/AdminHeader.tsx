@@ -21,6 +21,10 @@ interface AdminHeaderProps {
   extra?: React.ReactNode;
   /** Button or element shown at the far right (e.g. "New Post", "Export PDF") */
   actionButton?: React.ReactNode;
+  /** Set to false to hide the notification bell icon (shown by default) */
+  showBell?: boolean;
+  /** Set to false to hide the help icon (shown by default) */
+  showHelp?: boolean;
   /** Real user's display name (shown in header) */
   userName?: string;
   /** Real user's initials (shown in avatar) */
@@ -39,6 +43,8 @@ export default function AdminHeader({
   actionButton,
   userName,
   userInitials,
+  showBell = true,
+  showHelp = true,
 }: AdminHeaderProps) {
   return (
     <div
@@ -127,49 +133,53 @@ export default function AdminHeader({
       {extra}
 
       {/* Bell notification */}
-      <div
-        style={{
-          width: 32,
-          height: 32,
-          borderRadius: 7,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "#4B4D6B",
-          cursor: "pointer",
-          position: "relative",
-        }}
-      >
-        <i className="fa-regular fa-bell" style={{ fontSize: 14 }} />
-        <span
+      {showBell && (
+        <div
           style={{
-            position: "absolute",
-            top: 6,
-            right: 6,
-            width: 7,
-            height: 7,
-            borderRadius: "50%",
-            background: "#EF4444",
-            border: "1.5px solid #fff",
+            width: 32,
+            height: 32,
+            borderRadius: 7,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#4B4D6B",
+            cursor: "pointer",
+            position: "relative",
           }}
-        />
-      </div>
+        >
+          <i className="fa-regular fa-bell" style={{ fontSize: 14 }} />
+          <span
+            style={{
+              position: "absolute",
+              top: 6,
+              right: 6,
+              width: 7,
+              height: 7,
+              borderRadius: "50%",
+              background: "#EF4444",
+              border: "1.5px solid #fff",
+            }}
+          />
+        </div>
+      )}
 
       {/* Help */}
-      <div
-        style={{
-          width: 32,
-          height: 32,
-          borderRadius: 7,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "#4B4D6B",
-          cursor: "pointer",
-        }}
-      >
-        <i className="fa-regular fa-circle-question" style={{ fontSize: 14 }} />
-      </div>
+      {showHelp && (
+        <div
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: 7,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#4B4D6B",
+            cursor: "pointer",
+          }}
+        >
+          <i className="fa-regular fa-circle-question" style={{ fontSize: 14 }} />
+        </div>
+      )}
 
       {/* Action button */}
       {actionButton}

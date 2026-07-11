@@ -1,26 +1,13 @@
 ﻿"use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import AdminHeader from "../AdminHeader";
 import {
-  DASHBOARD_CALENDAR_EVENT,
-  readDashboardCalendarPosts,
-  removeDashboardCalendarPost,
-  saveDashboardCalendarPost,
-  writeDashboardCalendarPosts,
-} from "../calendarSync";
-import {
-  deleteCalendarPostFromBackend,
-  fetchCalendarPostsFromBackend,
-  upsertCalendarPostToBackend,
-} from "@/api/calendarPostsApi";
-import {
   resolveGeneratorProfileFields,
-  streamGenerateAndSavePosts,
   streamGeneratePosts,
 } from "@/api/postGeneratorApi";
-import { createMonthlyPlan, getUserPlan } from "@/api/calendarApi";
+import { createMonthlyPlan, getUserPlan, getPostDetail, updateCalendarPost, createCalendarPost } from "@/api/calendarApi";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { API_BASE_URL } from "@/api/configApi";
 import { publishPost, schedulePosts, Platform } from "@/api/autopostApi";
@@ -29,12 +16,15 @@ import { publishPost, schedulePosts, Platform } from "@/api/autopostApi";
 type Status = "scheduled" | "draft" | "published";
 type PostType = "image" | "reel" | "carousel" | "story";
 type PlatKey = "ig" | "fb" | "li" | "tw" | "tk" | "yt" | "th";
-type ViewMode = "7d" | "month" | "pipeline";
+type ViewMode = "7d" | "month";
 type RpTab = "accounts" | "ideas" | "analytics";
 
 interface TimeSlot { t: string; e: string; best: boolean }
 interface Post {
   id: number;
+  /** Real backend postId (UUID) — set only for posts loaded from GET /api/calendar/plan.
+   *  Posts created locally (not yet synced) have no backendId. */
+  backendId?: string;
   date: Date;
   caption: string;
   hashtags: string[];
@@ -65,14 +55,28 @@ const PLAT_NAMES: Record<PlatKey, string> = {
   ig: "Instagram", li: "LinkedIn", tw: "Twitter/X",
   fb: "Facebook", tk: "TikTok", yt: "YouTube", th: "Threads",
 };
+// `backendKey` maps to GET /api/autopost/connection-status's `platform` field.
+// Platforms with no backendKey have no connect flow yet — always shown as not connected.
+const CONN_PLATS = [
+  { id:"tw",  name:"X",          icon:"fa-x-twitter", color:"#000000", backendKey: null            },
+  { id:"li",  name:"LinkedIn",   icon:"fa-linkedin",  color:"#0A66C2", backendKey: "LINKEDIN"       },
+  { id:"ig",  name:"Instagram",  icon:"fa-instagram", color:"#E1306C", backendKey: "INSTAGRAM"      },
+  { id:"tk",  name:"TikTok",     icon:"fa-tiktok",    color:"#333333", backendKey: null             },
+  { id:"fb",  name:"Facebook",   icon:"fa-facebook",  color:"#1877F2", backendKey: "FACEBOOK"       },
+  { id:"th",  name:"Threads",    icon:"fa-threads",   color:"#000000", backendKey: null             },
+  { id:"bs",  name:"Bluesky",    icon:"fa-bluesky",   color:"#0085FF", backendKey: null             },
+  { id:"yt",  name:"YouTube",    icon:"fa-youtube",   color:"#FF0000", backendKey: null             },
+  { id:"pi",  name:"Pinterest",  icon:"fa-pinterest", color:"#BD081C", backendKey: null             },
+  { id:"gb",  name:"Google Biz", icon:"fa-google",    color:"#4285F4", backendKey: null             },
+];
 const TYPE_INFO: Record<PostType, { label: string; icon: string; bg: string }> = {
   image:    { label: "Image",    icon: "fa-image",             bg: "#3B82F6" },
   reel:     { label: "Reel",     icon: "fa-clapperboard",      bg: "#EC4899" },
   carousel: { label: "Carousel", icon: "fa-table-cells-large", bg: "#F97316" },
   story:    { label: "Story",    icon: "fa-mobile-screen",     bg: "#F59E0B" },
 };
-const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DAY_NAMES = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
 const STOCK_IMAGES = [
   "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=75",
@@ -139,119 +143,6 @@ const TOPIC_IMAGE_MAP: Record<string, string[]> = {
     "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=75",
   ],
 };
-
-// Maps common industry identifier keywords → topic key for the image pool
-const INDUSTRY_TO_TOPIC: Record<string, string> = {
-  food: "food", restaurant: "food", beverage: "food", catering: "food", culinary: "food",
-  fitness: "fitness", gym: "fitness", health: "fitness", wellness: "fitness", sport: "fitness", training: "fitness",
-  technology: "tech", tech: "tech", software: "tech", saas: "tech", ai: "tech", digital: "tech", developer: "tech",
-  fashion: "fashion", apparel: "fashion", clothing: "fashion", style: "fashion", boutique: "fashion",
-  realestate: "realestate", real_estate: "realestate", property: "realestate", realtor: "realestate", housing: "realestate",
-  travel: "travel", tourism: "travel", adventure: "travel", hospitality: "travel", hotel: "travel",
-};
-
-// 7 distinct content angles — ensures each generated post has a unique theme
-const GENERATION_ANGLES = [
-  "Share a surprising quick-win tip",
-  "Behind-the-scenes story or moment",
-  "Before & after transformation",
-  "Myth-busting: what people get wrong",
-  "Top 3 tools or resources you recommend",
-  "Client or customer success story",
-  "Upcoming trend to watch in the industry",
-];
-
-// 7 unique angle-based captions per industry topic
-const LOCAL_CAPTIONS_BY_TOPIC: Record<string, string[]> = {
-  food: [
-    "Quick-win tip: batch-prep your sauces on Sunday and save 2 hours every week 🦪",
-    "Behind the scenes at 6 AM — here’s what opening the kitchen actually looks like 👨‍🍳",
-    "From bland to brand: how we overhauled our menu and doubled covers in 30 days ✨",
-    "Myth busted: you do NOT need a Michelin-trained chef to run a profitable food business 🔥",
-    "3 kitchen tools we can’t live without (and one we threw in the bin) 🔪",
-    "A guest drove 2 hours just for our signature dish — here’s their message 🙏",
-    "The biggest food trend coming this summer — are you ready? 🚀",
-  ],
-  fitness: [
-    "One quick win: swap your rest day scroll for a 10-min walk — your recovery will thank you 💪",
-    "6 AM behind the scenes — what a PT’s morning routine really looks like 🌅",
-    "12-week transformation: -18 lbs, +confidence, zero fad diets 💪",
-    "Myth: you need to go to the gym every day to see results. Hard disagree. Here’s why 🔥",
-    "Top 3 apps our trainers actually use (and 1 we deleted) ✅",
-    "Client message that made our whole team tear up — this is why we do it ❤️",
-    "The biggest fitness trend for 2026 that most gyms are ignoring 🚀",
-  ],
-  tech: [
-    "Quick win: automate your daily standup summary with 1 free tool — here’s how 🤖",
-    "Behind the scenes: what a product sprint actually looks like for a 5-person team 💻",
-    "Before vs after: switching to async comms cut our meeting load by 40% ✨",
-    "Myth: AI will replace your dev team. Here’s the nuanced truth nobody wants to say 🔥",
-    "3 tools our engineering team ships faster with every week ✅",
-    "Our early user told us the product saved their business. This is their story 🙏",
-    "The next big shift in SaaS UX — and how to get ahead of it 🚀",
-  ],
-  fashion: [
-    "One styling tip that instantly elevates any outfit — save this 📌",
-    "Behind the scenes of our new collection shoot — the chaos you never see 📸",
-    "Before vs after styling: the same person, 2 outfits, completely different energy ✨",
-    "Myth: sustainable fashion is always expensive. We’re proving that wrong 📋",
-    "3 wardrobe staples every capsule wardrobe needs (stylist-approved) ✅",
-    "A customer wore our piece to her job interview — and got the role 🌟",
-    "The fashion movement reshaping how we dress in 2026 🚀",
-  ],
-  realestate: [
-    "Quick win for buyers: get pre-approved before viewing — you’ll negotiate from a stronger position 🏠",
-    "Behind the scenes: what happens between offer accepted and keys in hand 🔑",
-    "Before vs after: this renovation added £42K to the listing value in 6 weeks ✨",
-    "Myth: you need a 20% deposit to buy property. Here’s what most people don’t know 🔥",
-    "3 online tools every first-time buyer should bookmark ✅",
-    "First-time buyer just got the keys — here’s the message they sent us 🙏",
-    "The neighbourhood everyone’s moving to in 2026 — and why 🚀",
-  ],
-  travel: [
-    "Quick win: book Tuesday flights — data shows average 18% cheaper than Fridays ✈️",
-    "Behind the scenes: how we plan a press trip for 12 journalists in 48 hours 📝",
-    "Before vs after: this itinerary overhaul made a 2-week trip feel like a month ✨",
-    "Myth: solo travel is lonely. Here’s what it’s actually like 🌍",
-    "3 packing hacks that fit a week into carry-on only 🧳",
-    "A traveller wrote to us from our recommended spot — read what happened 🙏",
-    "The destination that’s about to blow up in 2026 — visit before everyone else does 🚀",
-  ],
-  business: [
-    "Quick win: repurpose one long post into 5 short-form clips this week 📊",
-    "Behind the scenes: how we run a content calendar for 7 platforms solo 📝",
-    "Before vs after: posting consistently for 30 days tripled our inbound leads ✨",
-    "Myth: you need a huge following to generate revenue. Disproved 🔥",
-    "3 free tools that run our social media on autopilot ✅",
-    "A follower DMed us after 6 months — this is what happened to their brand 🙏",
-    "The content format dominating feeds in 2026 — and how to use it now 🚀",
-  ],
-};
-
-function resolveTopicFromIndustry(industryId: string, subIndustryId?: string): string {
-  const norm = (v: string) => v.toLowerCase().replace(/[-_\s]/g, "");
-  for (const input of [subIndustryId ?? "", industryId]) {
-    const n = norm(input);
-    for (const [key, topic] of Object.entries(INDUSTRY_TO_TOPIC)) {
-      const nk = norm(key);
-      if (n.includes(nk) || nk.includes(n)) return topic;
-    }
-  }
-  return "business";
-}
-
-function pickNonRepeatingImagePool(count: number, topic: string): string[] {
-  const rawTopicPool = TOPIC_IMAGE_MAP[topic] || TOPIC_IMAGE_MAP.business || STOCK_IMAGES;
-  const topicPool = Array.from(new Set(rawTopicPool));
-  if (!topicPool.length) return [STOCK_IMAGES[0]];
-
-  const shuffledTopic = [...topicPool].sort(() => Math.random() - 0.5);
-  const result: string[] = [];
-  for (let i = 0; i < count; i++) {
-    result.push(shuffledTopic[i % shuffledTopic.length]);
-  }
-  return result;
-}
 
 const KEYWORD_TO_TOPIC: Record<string, string> = {
   food:"food",restaurant:"food",kitchen:"food",cook:"food",eat:"food",menu:"food",chef:"food",
@@ -519,6 +410,48 @@ function normalizeGeneratedContent(
   return { caption: fallbackCaption, hashtags: fallbackHashtags };
 }
 
+/** Maps backend connectedSocials values (e.g. "FACEBOOK") to local PlatKey codes. */
+function mapConnectedSocialsToPlats(connectedSocials?: unknown[]): PlatKey[] {
+  const SOCIAL_TO_PLAT: Record<string, PlatKey> = {
+    FACEBOOK: "fb", INSTAGRAM: "ig", LINKEDIN: "li",
+    TWITTER: "tw", X: "tw", TIKTOK: "tk", YOUTUBE: "yt", THREADS: "th",
+  };
+  const mapped = (connectedSocials || [])
+    .map((s) => SOCIAL_TO_PLAT[String(s).toUpperCase()])
+    .filter((p): p is PlatKey => Boolean(p));
+  return mapped.length > 0 ? mapped : ["ig"];
+}
+
+/** Maps a single post from GET /api/calendar/plan into the calendar's local Post shape. */
+function mapBackendPlanPost(
+  backendPost: { postId?: string; postTime: string; status: string; content: { text: string; hashtags: string[] }; media: { type: string; file: string } },
+  id: number,
+  img: string,
+  plats: PlatKey[]
+): Post {
+  const postDate = new Date(backendPost.postTime);
+  const normalized = normalizeGeneratedContent(backendPost.content?.text, backendPost.content?.hashtags || []);
+  return {
+    id,
+    backendId: backendPost.postId,
+    date: postDate,
+    caption: normalized.caption,
+    hashtags: normalized.hashtags.length > 0 ? normalized.hashtags : buildRelevantHashtags(normalized.caption),
+    plats,
+    type: backendPost.media?.type === "REEL" ? "reel" : "image" as PostType,
+    timeStr: postDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    timesOptions: TIMES_POOL[0],
+    img,
+    score: rndInt(75, 95),
+    status: (backendPost.status?.toLowerCase() as Status) || "scheduled",
+    // The backend doesn't return reach/engagement for scheduled-but-unpublished
+    // posts — 0/"—" rather than a fabricated number.
+    reach: 0,
+    engRate: "—",
+    isAI: true,
+  };
+}
+
 function seedPosts(baseDate: Date): Post[] {
   const posts: Post[] = [];
   const today = startOfDay(baseDate);
@@ -565,43 +498,25 @@ function PostCard({ p, onOpen, onDup, onDel, onPublishNow }: { p: Post; onOpen: 
         <div style={{ position: "absolute", top: 5, left: 5, display: "flex", alignItems: "center", gap: 3, padding: "2px 7px", borderRadius: 4, background: meta.bg + "aa", color: "#fff", fontSize: 9.5, fontWeight: 800, fontFamily: "Sora,sans-serif" }}>
           <i className={`fa-solid ${meta.icon}`} style={{ fontSize: 8 }} />&nbsp;{meta.label}
         </div>
-        <div style={{ position: "absolute", top: 5, right: 5, width: 20, height: 20, borderRadius: 4, background: PLAT_COLORS[p.plats[0]] + "aa", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 9 }}>
-          <i className={`fa-brands ${PLAT_ICONS[p.plats[0]]}`} />
-        </div>
         <div style={{ position: "absolute", bottom: 5, right: 5, padding: "2px 6px", borderRadius: 4, background: "rgba(0,0,0,.5)", color: scoreColor, fontSize: 9.5, fontWeight: 800, fontFamily: "JetBrains Mono,monospace", display: "flex", alignItems: "center", gap: 2 }}>
           <i className="fa-solid fa-chart-simple" style={{ fontSize: 7 }} />{p.score}
-        </div>
-        {/* hover actions */}
-        <div className="pc-hover-actions" style={{ position: "absolute", top: 4, right: 4, display: "flex", gap: 3, zIndex: 5 }}>
-          {[
-            { title:"Edit", iconClass:"fa-solid fa-pen", action: onOpen },
-            { title:"Publish Now", iconClass:"fa-solid fa-paper-plane", action: onPublishNow },
-            { title:"Dup", iconClass:"fa-solid fa-copy", action: onDup },
-            { title:"Del", iconClass:"fa-solid fa-trash", action: onDel },
-          ].map(btn => (
-            <div key={btn.title} onClick={e => { e.stopPropagation(); btn.action(); }} style={{ width: 22, height: 22, borderRadius: 5, background: "rgba(255,255,255,.9)", display: "flex", alignItems: "center", justifyContent: "center", color: "#3D3F60", fontSize: 9, cursor: "pointer", border: "1px solid rgba(255,255,255,.6)" }}>
-              <i className={btn.iconClass} />
-            </div>
-          ))}
         </div>
       </div>
       <div style={{ height: 3, background: PLAT_COLORS[p.plats[0]] }} />
       <div style={{ padding: "7px 9px 9px" }}>
-        <div style={{ fontSize: 10, fontWeight: 700, color: "#10B981", fontFamily: "JetBrains Mono,monospace", marginBottom: 4, display: "flex", alignItems: "center", gap: 3 }}>
-          <i className="fa-regular fa-clock" style={{ fontSize: 9 }} />&nbsp;{p.timeStr}
+        <div style={{ fontSize: 11.5, color: p.caption?.trim() ? "#3D3F60" : "#BFC1D9", fontStyle: p.caption?.trim() ? "normal" : "italic", lineHeight: 1.45, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", marginBottom: 5 }}>{p.caption?.trim() || "No content"}</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 6 }}>
+          {p.hashtags.length > 0 && (
+            <span style={{ fontSize: 10, fontWeight: 600, color: "#F97316", fontFamily: "JetBrains Mono,monospace", padding: "1px 5px", borderRadius: 3, background: "#EEEEFF" }}>{p.hashtags[0]}</span>
+          )}
+          {p.hashtags.length > 1 && (
+            <span style={{ fontSize: 10, fontWeight: 700, color: "#BFC1D9" }}>…</span>
+          )}
         </div>
-        <div style={{ fontSize: 11.5, color: "#3D3F60", lineHeight: 1.45, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", marginBottom: 5 }}>{p.caption}</div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 3, marginBottom: 6 }}>
-          {p.hashtags.slice(0, 3).map(h => <span key={h} style={{ fontSize: 10, fontWeight: 600, color: "#F97316", fontFamily: "JetBrains Mono,monospace", padding: "1px 5px", borderRadius: 3, background: "#EEEEFF" }}>{h}</span>)}
-        </div>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", gap: 3 }}>
-            {p.plats.slice(0, 3).map(pl => (
-              <div key={pl} style={{ width: 14, height: 14, borderRadius: 3, background: PLAT_COLORS[pl], display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 6 }}>
-                <i className={`fa-brands ${PLAT_ICONS[pl]}`} />
-              </div>
-            ))}
-          </div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}>
+          <span style={{ fontSize: 10, fontWeight: 700, color: "#10B981", fontFamily: "JetBrains Mono,monospace", display: "flex", alignItems: "center", gap: 3 }}>
+            <i className="fa-regular fa-clock" style={{ fontSize: 9 }} />{p.timeStr}
+          </span>
           <span style={{ padding: "2px 7px", borderRadius: 10, fontSize: 10, fontWeight: 700, background: ss.bg, color: ss.color }}>
             {p.status.charAt(0).toUpperCase() + p.status.slice(1)}
           </span>
@@ -634,40 +549,17 @@ function MiniCard({ p, onOpen, onDup, onDel, onPublishNow }: { p: Post; onOpen: 
         <div style={{ position: "absolute", top: 4, left: 4, padding: "2px 6px", borderRadius: 3, background: meta.bg + "bb", color: "#fff", fontSize: 8.5, fontWeight: 800, fontFamily: "Sora,sans-serif" }}>
           <i className={`fa-solid ${meta.icon}`} style={{ fontSize: 7 }} />&nbsp;{meta.label}
         </div>
-        <div style={{ position: "absolute", top: 4, right: 4, width: 17, height: 17, borderRadius: 3, background: PLAT_COLORS[p.plats[0]] + "bb", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 8 }}>
-          <i className={`fa-brands ${PLAT_ICONS[p.plats[0]]}`} />
-        </div>
         <div style={{ position: "absolute", bottom: 3, right: 4, padding: "1px 5px", borderRadius: 3, background: "rgba(0,0,0,.52)", color: scoreColor, fontSize: 8.5, fontWeight: 800, fontFamily: "JetBrains Mono,monospace" }}>
           {p.score}
-        </div>
-        {/* hover overlay - action buttons only */}
-        <div className="mmc-actions" style={{ position: "absolute", inset: 0, background: "rgba(11,12,26,.5)", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, borderRadius: 8 }}>
-          {[
-            { title: "Edit", iconClass:"fa-solid fa-pen", action: onOpen },
-            { title: "Publish Now", iconClass:"fa-solid fa-paper-plane", action: onPublishNow },
-            { title: "Duplicate", iconClass:"fa-solid fa-copy", action: onDup },
-            { title: "Delete", iconClass:"fa-solid fa-trash", action: onDel },
-          ].map((btn, i) => (
-            <div key={i} title={btn.title} onClick={(e) => { e.stopPropagation(); btn.action(); }} style={{ width: 28, height: 28, borderRadius: 7, background: "rgba(255,255,255,.95)", display: "flex", alignItems: "center", justifyContent: "center", color: "#0B0C1A", fontSize: 10, cursor: "pointer" }}>
-              <i className={btn.iconClass} />
-            </div>
-          ))}
         </div>
       </div>
       <div style={{ height: 2.5, background: PLAT_COLORS[p.plats[0]] }} />
       <div style={{ padding: "5px 7px 6px" }}>
-        <div style={{ fontSize: 9, fontWeight: 700, color: "#10B981", fontFamily: "JetBrains Mono,monospace", marginBottom: 3 }}>
-          <i className="fa-regular fa-clock" style={{ fontSize: 8 }} />&nbsp;{p.timeStr}
-        </div>
-        <div style={{ fontSize: 10.5, color: "#3D3F60", lineHeight: 1.4, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", marginBottom: 4 }}>{p.caption}</div>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", gap: 2 }}>
-            {p.plats.slice(0, 3).map(pl => (
-              <div key={pl} style={{ width: 12, height: 12, borderRadius: 2, background: PLAT_COLORS[pl], display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 5.5 }}>
-                <i className={`fa-brands ${PLAT_ICONS[pl]}`} />
-              </div>
-            ))}
-          </div>
+        <div style={{ fontSize: 10.5, color: p.caption?.trim() ? "#3D3F60" : "#BFC1D9", fontStyle: p.caption?.trim() ? "normal" : "italic", lineHeight: 1.4, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", marginBottom: 4 }}>{p.caption?.trim() || "No content"}</div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 5 }}>
+          <span style={{ fontSize: 9, fontWeight: 700, color: "#10B981", fontFamily: "JetBrains Mono,monospace", display: "flex", alignItems: "center", gap: 2 }}>
+            <i className="fa-regular fa-clock" style={{ fontSize: 8 }} />{p.timeStr}
+          </span>
           <span style={{ padding: "1px 5px", borderRadius: 8, fontSize: 9, fontWeight: 700, background: ss.bg, color: ss.color }}>
             {p.status.charAt(0).toUpperCase() + p.status.slice(1)}
           </span>
@@ -709,12 +601,6 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
   const [timesOpts, setTimesOpts] = useState<TimeSlot[]>(TIMES_POOL[0]);
   const [score, setScore] = useState(75);
   const [img, setImg] = useState(STOCK_IMAGES[0]);
-  const [aiResult, setAiResult] = useState("");
-  const [aiLoading, setAiLoading] = useState(false);
-  const [aiIdx, setAiIdx] = useState(0);
-  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
-  const [imageSuccessMessage, setImageSuccessMessage] = useState("");
-  const [showCaptionPromptPopup, setShowCaptionPromptPopup] = useState(false);
   const [showImagePreviewPopup, setShowImagePreviewPopup] = useState(false);
   const [isPublishingNow, setIsPublishingNow] = useState(false);
   const [imageZoom, setImageZoom] = useState(1);
@@ -733,77 +619,6 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
     e.target.value = "";
   };
 
-  const browseStockImg = async () => {
-    const prompt = caption.trim();
-    if (!prompt) {
-      setShowCaptionPromptPopup(true);
-      setImageSuccessMessage("");
-      return;
-    }
-
-    setIsGeneratingImage(true);
-    setImageSuccessMessage("");
-
-    try {
-      const response = await fetch("/api/gemeini-image/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({ prompt }),
-      });
-
-      if (!response.ok) {
-        const text = await response.text().catch(() => "");
-        let parsed: any = null;
-        try {
-          parsed = text ? JSON.parse(text) : null;
-        } catch {
-          parsed = null;
-        }
-
-        throw new Error(
-          parsed?.message ||
-            text ||
-            `Image generation failed (${response.status}).`
-        );
-      }
-
-      const data = (await response.json()) as
-        | {
-            imageUrl?: string;
-            url?: string;
-            image?: { imageUrl?: string; url?: string };
-            data?: { imageUrl?: string; url?: string };
-          }
-        | undefined;
-
-      const nextImage =
-        data?.imageUrl ||
-        data?.url ||
-        data?.image?.imageUrl ||
-        data?.image?.url ||
-        data?.data?.imageUrl ||
-        data?.data?.url;
-
-      if (!nextImage) {
-        throw new Error("No image URL returned from image generation API.");
-      }
-
-      setImg(nextImage);
-      setImageSuccessMessage("Image generated successfully.");
-      showToast("✦ Image generated successfully", "green");
-    } catch (error) {
-      showToast(
-        error instanceof Error ? error.message : "Could not generate image.",
-        "red"
-      );
-    } finally {
-      setIsGeneratingImage(false);
-    }
-  };
-
   useEffect(() => {
     if (!state.open) return;
     if (p) {
@@ -816,7 +631,7 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
       const t = rnd(TIMES_POOL); setTimesOpts(t); setSelTime(t.find(x => x.best)?.t || t[0].t);
       setScore(rndInt(62, 94)); setImg(rnd(STOCK_IMAGES));
     }
-    setAiResult(""); setAiLoading(false); setImageSuccessMessage(""); setShowCaptionPromptPopup(false); setShowImagePreviewPopup(false);
+    setShowImagePreviewPopup(false);
     setImageZoom(1); setImagePan({ x: 0, y: 0 }); setIsPanningImage(false);
   }, [state.open, state.postId]);
 
@@ -868,115 +683,6 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
 
   const togglePlat = (pl: PlatKey) => setSelPlats(prev => prev.includes(pl) ? prev.filter(x => x !== pl) : [...prev, pl]);
 
-  const doAiRewrite = async () => {
-    setAiLoading(true); setAiResult("");
-
-    // Smart local rewrite based on the current caption — always relevant
-    const localRewrite = (): string => {
-      if (!caption.trim()) return AI_CAPTIONS_REWRITE[aiIdx % AI_CAPTIONS_REWRITE.length];
-      const hooks = [
-        "Here's what nobody tells you 👇",
-        "Stop scrolling. This matters 👀",
-        "Real talk:",
-        "This changed everything for us ⬇️",
-        "Worth sharing:",
-      ];
-      const ctas = [
-        "💬 What's your take? Drop it below.",
-        "❤️ Save this for later.",
-        "🔗 Tag someone who needs this.",
-        "📌 Share with your team.",
-        "🚀 Follow for more like this.",
-      ];
-      const hook = hooks[aiIdx % hooks.length];
-      const cta = ctas[(aiIdx + 1) % ctas.length];
-      return `${hook}\n\n${caption.trim()}\n\n${cta}`;
-    };
-
-    const resolved = resolveGeneratorProfileFields(user as Record<string, unknown>);
-    const industryId = industrySelection?.industryId || resolved.industryId;
-    const subIndustryId = industrySelection?.subIndustryId || resolved.subIndustryId;
-    if (!industryId || !subIndustryId) {
-      // No profile industry — use smart local rewrite
-      setTimeout(() => {
-        const fallback = localRewrite();
-        setAiResult(fallback);
-        setAiIdx(i => i + 1);
-        setAiLoading(false);
-        showToast("✦ AI caption generated", "brand");
-      }, 700);
-      return;
-    }
-
-    // Prefer detected topic from selected image, fallback to caption keyword topic.
-    const imageTopic = detectTopicFromImageUrl(img) || detectTopicFromCaption(caption);
-    const prompt = [
-      "You are an expert social media copywriter.",
-      caption
-        ? `Rewrite this caption while preserving the core message: "${caption}"`
-        : "Generate an engaging social media caption.",
-      imageTopic
-        ? `The selected image topic is: ${imageTopic}.`
-        : "Use the selected image as visual context.",
-      "The output must match the image context and must not introduce unrelated topics.",
-      "Tone: bold, modern, brand-safe. Include a strong hook and a clear CTA.",
-      "Keep it under 280 characters.",
-    ].filter(Boolean).join(" ");
-
-    const attemptStreamRewrite = async (): Promise<string | null> => {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 35000);
-      let accumulated = "";
-      try {
-        await streamGeneratePosts(
-          { industryId, subIndustryId, prompt },
-          {
-            onChunk: (chunk) => {
-              const text = chunk.post?.text;
-              if (text) {
-                accumulated = text;
-                setAiResult(text);
-              }
-            },
-            signal: controller.signal,
-          }
-        );
-      } finally {
-        clearTimeout(timeoutId);
-      }
-      return accumulated.trim() || null;
-    };
-
-    let generatedCaption: string | null = null;
-    try {
-      generatedCaption = await attemptStreamRewrite();
-    } catch (firstError) {
-      console.warn("AI rewrite first attempt failed:", firstError);
-    }
-
-    if (!generatedCaption) {
-      try {
-        // Retry once to handle cold-start/network blips.
-        generatedCaption = await attemptStreamRewrite();
-      } catch (retryError) {
-        console.warn("AI rewrite retry failed:", retryError);
-      }
-    }
-
-    try {
-      if (generatedCaption) {
-        showToast("✦ AI caption generated", "brand");
-      } else {
-        const fallback = localRewrite();
-        setAiResult(fallback);
-        showToast("⚠ AI unavailable. Applied local AI rewrite.", "amber");
-      }
-    } finally {
-      setAiIdx(i => i + 1);
-      setAiLoading(false);
-    }
-  };
-
   const applyCaptionWithRelatedTags = (nextCaption: string) => {
     setCaption(nextCaption);
     if (nextCaption.trim()) {
@@ -991,10 +697,6 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
       if (v && tags.length < 10) { setTags(prev => [...prev, "#" + v]); setTagInput(""); }
     }
   };
-
-  const scoreColor = score >= 80 ? "#10B981" : score >= 60 ? "#3B82F6" : "#F59E0B";
-  const circ = 113;
-  const dashOffset = circ - (score / 100) * circ;
 
   const handlePublishNowAction = async () => {
     if (isPublishingNow) return;
@@ -1071,10 +773,6 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
                 style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "6px 8px", borderRadius: 7, border: "1px solid #E2E4F0", background: "#fff", color: "#3D3F60", fontSize: 11.5, fontWeight: 700, cursor: "pointer" }}>
                 <i className="fa-solid fa-upload" style={{ fontSize: 10 }} /> Upload
               </button>
-              <button onClick={e => { e.stopPropagation(); void browseStockImg(); }} disabled={isGeneratingImage}
-                style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "6px 8px", borderRadius: 7, border: "1px solid #DDDDFB", background: "#EEEEFF", color: "#F97316", fontSize: 11.5, fontWeight: 700, cursor: isGeneratingImage ? "not-allowed" : "pointer", opacity: isGeneratingImage ? .6 : 1 }}>
-                <i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 10 }} /> {isGeneratingImage ? "Generating..." : "Generate Another"}
-              </button>
             </div>
             {/* Platforms */}
             <div style={{ padding: "10px 12px", borderTop: "1px solid #E2E4F0" }}>
@@ -1112,46 +810,6 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
           </div>
           {/* Form */}
           <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
-            {/* Score ring */}
-            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 7, background: "#F0F1F9", border: "1px solid #ECEDF8" }}>
-              <div style={{ position: "relative", width: 44, height: 44, flexShrink: 0 }}>
-                <svg width="44" height="44" viewBox="0 0 44 44" style={{ position: "absolute", inset: 0, transform: "rotate(-90deg)" }}>
-                  <circle cx="22" cy="22" r="18" fill="none" stroke="#E2E4F0" strokeWidth="4" />
-                  <circle cx="22" cy="22" r="18" fill="none" stroke={scoreColor} strokeWidth="4" strokeLinecap="round" strokeDasharray="113" strokeDashoffset={dashOffset} />
-                </svg>
-                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, fontFamily: "JetBrains Mono,monospace" }}>{score}</div>
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#0B0C1A" }}>Engagement Prediction</div>
-                <div style={{ fontSize: 11, color: "#8486AB", marginTop: 2 }}>AI score for this post</div>
-              </div>
-              <div style={{ padding: "4px 10px", borderRadius: 20, fontSize: 12, fontWeight: 800, fontFamily: "Sora,sans-serif", background: score >= 80 ? "#ECFDF5" : score >= 60 ? "#EFF6FF" : "#FFFBEB", color: score >= 80 ? "#10B981" : score >= 60 ? "#3B82F6" : "#F59E0B" }}>
-                {score >= 80 ? "🔥 Excellent" : score >= 60 ? "👍 Good" : "⚡ Needs Boost"}
-              </div>
-            </div>
-            {/* AI Rewrite */}
-            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 12px", borderRadius: 7, background: "linear-gradient(135deg,#EEEEFF,rgba(238,238,255,.45))", border: "1px solid #DDDDFB" }}>
-              <i className="fa-solid fa-wand-magic-sparkles" style={{ color: "#F97316", fontSize: 14, flexShrink: 0 }} />
-              <div style={{ flex: 1, fontSize: 12.5, color: "#3D3F60" }}><strong style={{ color: "#F97316" }}>AI Rewrite</strong> — Optimise caption for your brand</div>
-              <button onClick={doAiRewrite} disabled={aiLoading} style={{ display: "flex", alignItems: "center", gap: 5, padding: "6px 13px", borderRadius: 7, background: aiLoading ? "#BFC1D9" : "#F97316", color: "#fff", fontSize: 12, fontWeight: 700, cursor: aiLoading ? "not-allowed" : "pointer", border: "none", fontFamily: "Sora,sans-serif", flexShrink: 0 }}>
-                <i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 10 }} /> {aiLoading ? "Generating..." : "Rewrite"}
-              </button>
-            </div>
-            {(aiLoading || aiResult) && (
-              <div style={{ background: "#EEEEFF", border: "1px solid #DDDDFB", borderRadius: 7, padding: "10px 12px", fontSize: 13.5, color: "#0B0C1A", lineHeight: 1.7 }}>
-                {aiLoading ? "Generating caption with AI..." : aiResult}
-                {!aiLoading && !!aiResult && (
-                  <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
-                    {[{ label: "✓ Use This", action: () => { applyCaptionWithRelatedTags(aiResult); setAiResult(""); showToast("✦ Caption applied!", "brand"); } },
-                      { label: "↺ Again", action: doAiRewrite },
-                      { label: "✕", action: () => setAiResult("") }
-                    ].map(btn => (
-                      <div key={btn.label} onClick={btn.action} style={{ display: "flex", alignItems: "center", gap: 4, padding: "5px 10px", borderRadius: 4, border: "1px solid #DDDDFB", background: "#fff", color: "#F97316", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>{btn.label}</div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
             {/* Caption */}
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: "#8486AB", fontFamily: "Sora,sans-serif", marginBottom: 6 }}>Caption</div>
@@ -1159,11 +817,6 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
                 style={{ width: "100%", padding: "10px 12px", borderRadius: 7, border: "1px solid #E2E4F0", background: "#F0F1F9", color: "#0B0C1A", fontSize: 13.5, outline: "none", resize: "none", minHeight: 80, fontFamily: "inherit", lineHeight: 1.6 }} />
               <div style={{ textAlign: "right", fontSize: 11, color: "#BFC1D9", fontFamily: "JetBrains Mono,monospace", marginTop: 3 }}>{caption.length} / 2200</div>
             </div>
-            {imageSuccessMessage && (
-              <div style={{ fontSize: 12.5, color: "#10B981", fontWeight: 700 }}>
-                {imageSuccessMessage}
-              </div>
-            )}
             {/* Hashtags */}
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: "#8486AB", fontFamily: "Sora,sans-serif", marginBottom: 6, display: "flex", alignItems: "center" }}>
@@ -1328,79 +981,6 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
           </div>
         </div>
       )}
-      {showCaptionPromptPopup && (
-        <div
-          style={{ position: "absolute", inset: 0, zIndex: 700, background: "rgba(11,12,26,.35)", display: "flex", alignItems: "center", justifyContent: "center" }}
-          onClick={(event) => {
-            if (event.target === event.currentTarget) {
-              setShowCaptionPromptPopup(false);
-            }
-          }}
-        >
-          <div style={{ width: "100%", maxWidth: 360, background: "#fff", borderRadius: 12, border: "1px solid #E2E4F0", padding: "16px 18px", boxShadow: "0 20px 50px rgba(11,12,26,.2)" }}>
-            <div style={{ fontSize: 15, fontWeight: 800, color: "#0B0C1A", fontFamily: "Sora,sans-serif" }}>Caption Required</div>
-            <div style={{ marginTop: 8, fontSize: 13, color: "#3D3F60", lineHeight: 1.6 }}>Add a caption first so we can generate an image from it.</div>
-            <div style={{ marginTop: 14, display: "flex", justifyContent: "flex-end" }}>
-              <button
-                onClick={() => setShowCaptionPromptPopup(false)}
-                style={{ padding: "7px 14px", borderRadius: 7, border: "none", background: "linear-gradient(115deg,#F97316,#EA580C)", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "Sora,sans-serif" }}
-              >
-                OK
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ── AI Generate Modal ──────────────────────────────────────────────────────
-function GenModal({
-  open,
-  pct,
-  generatedCount,
-  statusText,
-}: {
-  open: boolean;
-  pct: number;
-  generatedCount: number;
-  statusText: string;
-}) {
-  const steps = [
-    "Connecting to post stream",
-    "Receiving DB and LLM posts",
-    "Updating dashboard calendar",
-    "Saving scheduled content",
-  ];
-  const stepIdx = Math.min(
-    steps.length - 1,
-    Math.max(0, Math.floor((pct / 100) * steps.length))
-  );
-
-  if (!open) return null;
-  return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(11,12,26,.55)", backdropFilter: "blur(8px)", zIndex: 600, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ background: "#fff", borderRadius: 18, padding: "32px 38px", width: 380, textAlign: "center", boxShadow: "0 32px 80px rgba(11,12,26,.2)" }}>
-        <div style={{ width: 72, height: 72, borderRadius: 20, background: "linear-gradient(135deg,#F97316,#EA580C)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 32, margin: "0 auto 16px", boxShadow: "0 4px 14px rgba(249,115,22,.4)" }}>✦</div>
-        <div style={{ fontSize: 20, fontWeight: 800, color: "#0B0C1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.3px", marginBottom: 4 }}>AI Generating Posts</div>
-        <div style={{ fontSize: 13, color: "#8486AB", lineHeight: 1.6, marginBottom: 20 }}>Streaming posts from backend and inserting them as they arrive.</div>
-        <div style={{ background: "#F0F1F9", borderRadius: 6, height: 8, overflow: "hidden", marginBottom: 8 }}>
-          <div style={{ height: "100%", background: "linear-gradient(90deg,#F97316,#EA580C)", width: pct + "%", borderRadius: 6, transition: "width .4s ease" }} />
-        </div>
-        <div style={{ fontSize: 12, color: "#8486AB", fontFamily: "JetBrains Mono,monospace", marginBottom: 8 }}>{pct}% · {generatedCount}/7 posts</div>
-        <div style={{ fontSize: 12, color: "#F97316", marginBottom: 14 }}>{statusText}</div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, textAlign: "left" }}>
-          {steps.map((s, i) => (
-            <div key={s} style={{ display: "flex", alignItems: "center", gap: 9, fontSize: 12.5, color: i < stepIdx ? "#10B981" : i === stepIdx ? "#F97316" : "#8486AB", fontWeight: i === stepIdx ? 700 : 400 }}>
-              <div style={{ width: 18, height: 18, borderRadius: "50%", border: `2px solid ${i < stepIdx ? "#10B981" : i === stepIdx ? "#F97316" : "#8486AB"}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, flexShrink: 0, background: i < stepIdx ? "#10B981" : "transparent", color: i < stepIdx ? "#fff" : "inherit" }}>
-                {i < stepIdx && <i className="fa-solid fa-check" style={{ fontSize: 8 }} />}
-              </div>
-              {s}
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
@@ -1552,6 +1132,8 @@ export default function CalendarPage() {
   const [today, setToday] = useState(() => startOfDay(new Date()));
   const [posts, setPosts] = useState<Post[]>([]);
   const [nextId, setNextId] = useState(10000);
+  const [connectedPlats, setConnectedPlats] = useState<Record<string, boolean>>({});
+  const [connLoading, setConnLoading] = useState(true);
   const { user } = useUserProfile();
   const [profileSetupWarning, setProfileSetupWarning] = useState<string | null>(null);
   const [industrySelection, setIndustrySelection] = useState<{
@@ -1599,61 +1181,41 @@ export default function CalendarPage() {
     }
   }, [industrySelection]);
 
-  const mergeImportedPosts = useCallback((incoming: Post[]) => {
-    if (!incoming.length) return;
-    setPosts((prev) => {
-      const seen = new Set(prev.map((post) => post.id));
-      const additions = incoming.filter((post) => !seen.has(post.id));
-      return additions.length ? [...prev, ...additions] : prev;
-    });
-    setNextId((prev) => Math.max(prev, ...incoming.map((post) => post.id + 1)));
-  }, []);
-
+  // ── Load the live plan from the authenticated backend on mount ───────────
+  // Replaces the old localStorage cache read: GET /api/calendar/plan is now
+  // the single source of truth for what's shown on this page — including which
+  // platforms are "connected" (meta.connectedSocials), so the Connected
+  // Accounts widget can never disagree with what the plan actually targets.
   useEffect(() => {
-    const imported = readDashboardCalendarPosts() as Post[];
-    setPosts(imported);
-    if (imported.length) {
-      setNextId(Math.max(10000, ...imported.map((post) => post.id + 1)));
-    }
+    const loadPlanFromBackend = async () => {
+      const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null;
+      if (!token) { setConnLoading(false); return; }
+      try {
+        const planResponse = await getUserPlan(token);
+
+        const connectedSocials = planResponse.meta?.connectedSocials || [];
+        const byPlatform: Record<string, boolean> = {};
+        connectedSocials.forEach((s) => { byPlatform[String(s).toUpperCase()] = true; });
+        setConnectedPlats(byPlatform);
+
+        if (!planResponse.success || !planResponse.posts || planResponse.posts.length === 0) return;
+
+        const plats = mapConnectedSocialsToPlats(connectedSocials);
+        const mapped = planResponse.posts.map((backendPost, index) =>
+          mapBackendPlanPost(backendPost, 10000 + index, backendPost.media?.file || FALLBACK_CALENDAR_IMAGE, plats)
+        );
+        setPosts(mapped);
+        setNextId(Math.max(10000, ...mapped.map((post) => post.id + 1)));
+      } catch (error) {
+        console.warn("Failed to load calendar plan from backend:", error);
+      } finally {
+        setConnLoading(false);
+      }
+    };
+    void loadPlanFromBackend();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    const hydrateFromBackend = async () => {
-      try {
-        const remote = (await fetchCalendarPostsFromBackend()) as Post[];
-        if (!remote.length) return;
-
-        setPosts((prev) => {
-          const byId = new Map<number, Post>();
-          prev.forEach((post) => byId.set(post.id, post));
-          remote.forEach((post) => byId.set(post.id, { ...post, date: new Date(post.date) } as Post));
-
-          const merged = Array.from(byId.values()).sort(
-            (a, b) => a.date.getTime() - b.date.getTime()
-          );
-          writeDashboardCalendarPosts(merged);
-          return merged;
-        });
-
-        setNextId((prev) => Math.max(prev, ...remote.map((post) => post.id + 1)));
-      } catch (error) {
-        console.warn("Failed to fetch backend calendar posts:", error);
-      }
-    };
-
-    void hydrateFromBackend();
-  }, []);
-  useEffect(() => {
-    const syncImported = () => mergeImportedPosts(readDashboardCalendarPosts() as Post[]);
-
-    window.addEventListener(DASHBOARD_CALENDAR_EVENT, syncImported);
-    window.addEventListener("storage", syncImported);
-    return () => {
-      window.removeEventListener(DASHBOARD_CALENDAR_EVENT, syncImported);
-      window.removeEventListener("storage", syncImported);
-    };
-  }, [mergeImportedPosts]);
   useEffect(() => {
     const syncToday = () => {
       const nextToday = startOfDay(new Date());
@@ -1670,13 +1232,9 @@ export default function CalendarPage() {
   const [search, setSearch] = useState("");
   const [rpTab, setRpTab] = useState<RpTab>("accounts");
   const [modal, setModal] = useState<ModalState>({ open: false, postId: null, initDate: null });
-  const [genOpen, setGenOpen] = useState(false);
-  const [genProgress, setGenProgress] = useState(0);
-  const [genCount, setGenCount] = useState(0);
-  const [genStatus, setGenStatus] = useState("Preparing stream...");
-  const [genInFlight, setGenInFlight] = useState(false);
   const [planPostTime, setPlanPostTime] = useState("10:00");
   const [planLoading, setPlanLoading] = useState(false);
+  const planTimeRef = useRef<HTMLInputElement>(null);
   const { toast, show: showToast } = useToast();
 
   const filtered = posts.filter(p => {
@@ -1685,30 +1243,118 @@ export default function CalendarPage() {
     return true;
   });
 
-  const getAnchor = useCallback(() => {
+  const getAnchorFor = useCallback((offsetVal: number) => {
     const d = new Date(today);
     if (view === "7d") {
       // ── Case #3: Weekly Filter (rolling 7 days) ─────────────────────────────────────
       // Weekly view starts from today and spans the next 7 days.
-      d.setDate(d.getDate() + offset * 7);
+      d.setDate(d.getDate() + offsetVal * 7);
     } else {
       d.setDate(1);
-      d.setMonth(d.getMonth() + offset);
+      d.setMonth(d.getMonth() + offsetVal);
     }
     return d;
-  }, [today, view, offset]);
+  }, [today, view]);
+
+  const getAnchor = useCallback(() => getAnchorFor(offset), [getAnchorFor, offset]);
+
+  // Disable "next" once there's nothing scheduled beyond the currently visible period.
+  const canGoForward = useMemo(() => {
+    if (!posts.length) return false;
+    const maxPostDate = posts.reduce((max, p) => (p.date > max ? p.date : max), posts[0].date);
+    const nextAnchor = getAnchorFor(offset + 1);
+    if (view === "7d") return nextAnchor <= maxPostDate;
+    return (
+      nextAnchor.getFullYear() < maxPostDate.getFullYear() ||
+      (nextAnchor.getFullYear() === maxPostDate.getFullYear() && nextAnchor.getMonth() <= maxPostDate.getMonth())
+    );
+  }, [posts, getAnchorFor, offset, view]);
 
   const periodTitle = (() => {
     const d = getAnchor();
     if (view === "7d") {
       const end = new Date(d); end.setDate(d.getDate() + 6);
-      return d.getMonth() === end.getMonth() ? `${fmt(d)} – ${end.getDate()}, ${d.getFullYear()}` : `${fmt(d)} – ${fmt(end)} ${end.getFullYear()}`;
+      const fmtFull = (x: Date) => `${MONTHS[x.getMonth()]} ${x.getDate()}`;
+      return d.getMonth() === end.getMonth()
+        ? `${fmtFull(d)} – ${end.getDate()}, ${d.getFullYear()}`
+        : `${fmtFull(d)} – ${fmtFull(end)}, ${end.getFullYear()}`;
     }
     return `${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
   })();
 
-  const openModal = (id: number | null, date?: Date) => setModal({ open: true, postId: id, initDate: date ?? null });
+  const openModal = (id: number | null, date?: Date) => {
+    setModal({ open: true, postId: id, initDate: date ?? null });
+
+    // Best-effort refresh from the authenticated backend so edits start from
+    // the latest saved state, not a possibly-stale in-memory copy.
+    const target = id ? posts.find(p => p.id === id) : null;
+    if (target?.backendId) {
+      const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null;
+      if (token) {
+        getPostDetail(target.backendId, token)
+          .then((res) => {
+            if (!res.success || !res.post) return;
+            const normalized = normalizeGeneratedContent(res.post.content?.text, res.post.content?.hashtags || []);
+            setPosts(prev => prev.map(p => p.id === id ? {
+              ...p,
+              caption: normalized.caption || p.caption,
+              hashtags: normalized.hashtags.length > 0 ? normalized.hashtags : p.hashtags,
+              img: res.post!.media?.file || p.img,
+              status: (res.post!.status?.toLowerCase() as Status) || p.status,
+            } : p));
+          })
+          .catch((error) => console.warn("Failed to refresh post detail from backend:", error));
+      }
+    }
+  };
   const closeModal = () => setModal(m => ({ ...m, open: false }));
+
+  /** Combines a post's date + "h:mm AM/PM" timeStr into a real Date object. */
+  const toScheduledDate = (post: Post) => {
+    const [time, modifier] = post.timeStr.split(" ");
+    let [hours, minutes] = time.split(":").map(Number);
+    if (modifier === "PM" && hours < 12) hours += 12;
+    if (modifier === "AM" && hours === 12) hours = 0;
+    const scheduledDate = new Date(post.date);
+    scheduledDate.setHours(hours, minutes, 0, 0);
+    return scheduledDate;
+  };
+
+  /** Syncs a brand-new local post to POST /api/calendar/post. Only possible for
+   *  today's date — the backend always uses today regardless of what's sent
+   *  (see createCalendarPost's docstring). Returns the new backendId, or null
+   *  if it couldn't be synced (kept local-only in that case). */
+  const syncNewPostToBackend = async (post: Post, opts?: { silent?: boolean }): Promise<string | undefined> => {
+    if (!sameDay(post.date, today)) {
+      if (!opts?.silent) {
+        showToast("Saved locally only — backend can't create posts for a future date yet.", "amber");
+      }
+      return undefined;
+    }
+    const resolved = resolveGeneratorProfileFields((user ?? null) as Record<string, unknown> | null);
+    const subIndustryId = industrySelection?.subIndustryId || resolved.subIndustryId;
+    if (!subIndustryId) return undefined;
+    const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null;
+    if (!token) return undefined;
+
+    const d = toScheduledDate(post);
+    const postTime = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+
+    try {
+      const res = await createCalendarPost({
+        subIndustryId,
+        postTime,
+        contentText: `${post.caption}\n\n${post.hashtags.join(" ")}`,
+        imageUrl: post.img || undefined,
+      }, token);
+      const created = res.post as { id?: string; postId?: string } | undefined;
+      return created?.id || created?.postId;
+    } catch (err) {
+      console.warn("Failed to sync new post to backend:", err);
+      showToast("Saved locally, but backend sync failed.", "amber");
+      return undefined;
+    }
+  };
 
   const savePost = async (data: PostUpsert) => {
     let savedPost: Post | undefined;
@@ -1716,13 +1362,25 @@ export default function CalendarPage() {
       setPosts(prev => {
         const updated = prev.map(p => p.id === data.id ? { ...p, ...data } as Post : p);
         savedPost = updated.find((item) => item.id === data.id);
-        if (savedPost) {
-          saveDashboardCalendarPost(savedPost);
-          void upsertCalendarPostToBackend(savedPost);
-        }
         return updated;
       });
       showToast("✅ Post updated!", "green");
+
+      if (savedPost?.backendId) {
+        const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null;
+        if (token) {
+          try {
+            await updateCalendarPost(savedPost.backendId, {
+              postTime: toScheduledDate(savedPost).toISOString(),
+              contentText: `${savedPost.caption}\n\n${savedPost.hashtags.join(" ")}`,
+              imageUrl: savedPost.img,
+            }, token);
+          } catch (err) {
+            console.warn("Failed to sync post update to backend:", err);
+            showToast("Updated locally, but backend sync failed.", "amber");
+          }
+        }
+      }
     } else {
       const defaultTimes = TIMES_POOL[0];
       const newPost: Post = {
@@ -1743,10 +1401,13 @@ export default function CalendarPage() {
       };
       savedPost = newPost;
       setPosts(prev => [...prev, newPost]);
-      saveDashboardCalendarPost(newPost);
-      void upsertCalendarPostToBackend(newPost);
       setNextId(n => n + 1);
       showToast("✅ Post scheduled!", "green");
+
+      const backendId = await syncNewPostToBackend(newPost);
+      if (backendId) {
+        setPosts(prev => prev.map(p => p.id === newPost.id ? { ...p, backendId } : p));
+      }
     }
 
     // —— Auto Posting Integration ——
@@ -1758,19 +1419,11 @@ export default function CalendarPage() {
       if (platforms.length > 0) {
         try {
           const content = `${savedPost.caption}\n\n${savedPost.hashtags.join(" ")}`;
-          const [time, modifier] = savedPost.timeStr.split(" ");
-          let [hours, minutes] = time.split(":").map(Number);
-          if (modifier === "PM" && hours < 12) hours += 12;
-          if (modifier === "AM" && hours === 12) hours = 0;
-          
-          const scheduledDate = new Date(savedPost.date);
-          scheduledDate.setHours(hours, minutes, 0, 0);
-
           await schedulePosts({
             platforms,
             posts: [{
               content,
-              scheduledAt: scheduledDate.toISOString(),
+              scheduledAt: toScheduledDate(savedPost).toISOString(),
               mediaUrls: savedPost.img ? [savedPost.img] : undefined,
             }]
           });
@@ -1842,8 +1495,6 @@ export default function CalendarPage() {
 
   const deletePost = (id: number) => {
     setPosts(prev => prev.filter(p => p.id !== id));
-    removeDashboardCalendarPost(id);
-    void deleteCalendarPostFromBackend(id);
     showToast("🗑️ Post deleted", "red");
   };
   const dupPost = (id: number) => {
@@ -1851,48 +1502,15 @@ export default function CalendarPage() {
     if (p) {
       const d = new Date(p.date);
       d.setDate(d.getDate() + 1);
-      const duplicated: Post = { ...p, id: nextId, status: "draft", date: d };
+      const duplicated: Post = { ...p, id: nextId, status: "draft", date: d, backendId: undefined };
       setPosts(prev => [...prev, duplicated]);
-      saveDashboardCalendarPost(duplicated);
-      void upsertCalendarPostToBackend(duplicated);
       setNextId(n => n + 1);
       showToast("📋 Duplicated", "brand");
-    }
-  };
 
-  const generatePostsLocally = (
-    ind: string,
-    subInd: string,
-    count: number,
-    scheduleAt: Date,
-    baseId: number,
-    images: string[]
-  ): Post[] => {
-    const topic = resolveTopicFromIndustry(ind, subInd);
-    const topicTags = TOPIC_HASHTAG_MAP[topic] || TOPIC_HASHTAG_MAP.business;
-    const captions = LOCAL_CAPTIONS_BY_TOPIC[topic] || LOCAL_CAPTIONS_BY_TOPIC.business;
-    const posts: Post[] = [];
-    for (let i = 0; i < count; i++) {
-      const postDate = new Date(scheduleAt);
-      postDate.setDate(postDate.getDate() + i);
-      posts.push({
-        id: baseId + i + 1,
-        date: postDate,
-        caption: captions[i % captions.length],
-        hashtags: [...topicTags, `#${ind}`, `#${subInd}`].slice(0, 5),
-        plats: rnd(PLAT_COMBOS),
-        type: "image",
-        timeStr: "9:00 AM",
-        timesOptions: rnd(TIMES_POOL),
-        img: images[i] ?? STOCK_IMAGES[i % STOCK_IMAGES.length],
-        score: rndInt(72, 94),
-        status: "scheduled",
-        reach: rndInt(15, 110) * 1000,
-        engRate: "8.5%",
-        isAI: true,
+      void syncNewPostToBackend(duplicated, { silent: true }).then((backendId) => {
+        if (backendId) setPosts(prev => prev.map(p2 => p2.id === duplicated.id ? { ...p2, backendId } : p2));
       });
     }
-    return posts;
   };
 
   const addIdeaPost = (idea: typeof IDEAS_LIST[0]) => {
@@ -1916,10 +1534,12 @@ export default function CalendarPage() {
         isAI: true,
       };
       setPosts(prev => [...prev, generatedPost]);
-      saveDashboardCalendarPost(generatedPost);
-      void upsertCalendarPostToBackend(generatedPost);
       setNextId(n => n + 1);
       showToast("✅ Post generated!", "green");
+
+      void syncNewPostToBackend(generatedPost, { silent: true }).then((backendId) => {
+        if (backendId) setPosts(prev => prev.map(p => p.id === generatedPost.id ? { ...p, backendId } : p));
+      });
     }, 1400);
   };
 
@@ -1941,14 +1561,17 @@ export default function CalendarPage() {
     const startId = nextId;
 
     setPlanLoading(true);
-    showToast("Creating your monthly plan...", "brand");
     try {
       const token = (typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null) ?? "";
+
+      console.log("📤 [createMonthlyPlan] request:", { postTime: planPostTime });
 
       const response = await createMonthlyPlan(
         { postTime: planPostTime },
         token
       );
+
+      console.log("📥 [createMonthlyPlan] response:", response);
 
       if (!response.success) {
         const msg = response.message || "";
@@ -1971,6 +1594,9 @@ export default function CalendarPage() {
       }
 
       const planResponse = await getUserPlan(token);
+
+      console.log("📥 [getUserPlan] response:", planResponse);
+
       if (!planResponse.success || !planResponse.posts || planResponse.posts.length === 0) {
         showToast("Monthly plan created, but no posts were returned", "amber");
         return;
@@ -1982,49 +1608,38 @@ export default function CalendarPage() {
         return;
       }
 
-      // Strict mode: use only selected sub-industry images.
-      // If there are fewer images than posts, cycle through selected images.
-      const choosePlanImage = (index: number) => selectedImages[index % selectedImages.length];
+      // Strict mode: use only selected sub-industry images. Build a shuffled
+      // pool sized to the post count — plain modulo cycling repeats the same
+      // image on the same weekday every week since 7 % selectedImages.length
+      // is usually 0, which looked broken across a full month.
+      const repeats = Math.ceil(planResponse.posts.length / selectedImages.length);
+      const imagePool = Array.from({ length: repeats }, () => selectedImages)
+        .flat()
+        .sort(() => Math.random() - 0.5);
+      const choosePlanImage = (index: number) => imagePool[index] ?? selectedImages[index % selectedImages.length];
 
-      const mappedPosts = planResponse.posts.map((backendPost, index) => {
-        const postDate = new Date(backendPost.postTime);
-        const normalized = normalizeGeneratedContent(
-          backendPost.content?.text,
-          backendPost.content?.hashtags || []
-        );
-        return {
-          id: startId + index,
-          date: postDate,
-          caption: normalized.caption,
-          hashtags: normalized.hashtags.length > 0 ? normalized.hashtags : buildRelevantHashtags(normalized.caption),
-          plats: ["ig", "fb"] as PlatKey[],
-          type: backendPost.media?.type === "REEL" ? "reel" : "image" as PostType,
-          timeStr: postDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-          timesOptions: TIMES_POOL[0],
-          img: choosePlanImage(index),
-          score: rndInt(75, 95),
-          status: (backendPost.status.toLowerCase() as Status) || "scheduled",
-          reach: rndInt(15, 110) * 1000,
-          engRate: "8.5%",
-          isAI: true,
-        };
-      });
+      const planPlats = mapConnectedSocialsToPlats(planResponse.meta?.connectedSocials);
+      const mappedPosts = planResponse.posts.map((backendPost, index) =>
+        mapBackendPlanPost(backendPost, startId + index, choosePlanImage(index), planPlats)
+      );
 
       setPosts((prev) => {
         const existingKeys = new Set(prev.map((p) => `${p.date.toISOString()}|${p.caption}`));
         const additions = mappedPosts.filter(
           (p) => !existingKeys.has(`${p.date.toISOString()}|${p.caption}`)
         );
-        const merged = [...prev, ...additions].sort((a, b) => a.date.getTime() - b.date.getTime());
-        writeDashboardCalendarPosts(merged);
-        return merged;
+        return [...prev, ...additions].sort((a, b) => a.date.getTime() - b.date.getTime());
       });
 
       setNextId((prev) => Math.max(prev, startId + mappedPosts.length + 1));
-      setView("month");
+      // Land on the week the plan actually starts (today), not month view —
+      // month view always renders from the 1st, showing empty days before
+      // the plan's first post even though it's scheduled starting today.
+      setView("7d");
       setOffset(0);
       showToast(`✅ Plan created and ${mappedPosts.length} posts added to calendar`, "green");
     } catch (error) {
+      console.log("❌ [createMonthlyPlan] error:", error);
       // ── Handle 401 Unauthorized (session expired) ────────────────────────────
       const statusCode = (error as any)?.statusCode;
       if (statusCode === 401 || (error instanceof Error && error.message.includes("Session expired"))) {
@@ -2048,149 +1663,6 @@ export default function CalendarPage() {
     }
   };
 
-  const startAiGeneration = async () => {
-    if (genInFlight) return;
-
-    const { userId, industryId, subIndustryId } = resolveGeneratorProfileFields(
-      (user ?? null) as Record<string, unknown> | null
-    );
-
-    if (!userId || !industryId || !subIndustryId) {
-      showToast("Add user, industry and sub-industry in profile first.", "red");
-      return;
-    }
-
-    const scheduleAt = new Date(today);
-    scheduleAt.setDate(scheduleAt.getDate() + 1);
-    scheduleAt.setHours(9, 0, 0, 0);
-
-    // Pre-allocate 7 unique images from the industry-relevant pool — prevents any repeats
-    const imageTopic = resolveTopicFromIndustry(industryId, subIndustryId);
-    const preAllocatedImages = pickNonRepeatingImagePool(7, imageTopic);
-    const usedImgs = new Set<string>();
-
-    // Build 7 distinct content-angle prompts derived from the user's industry
-    const anglesText = GENERATION_ANGLES.map((a, i) => `${i + 1}. ${a}`).join("; ");
-    const industryPrompt = `Generate 7 unique high-performing social media posts for the ${subIndustryId} space within the ${industryId} industry. Each post must cover a different content angle in this exact order: ${anglesText}. Make every post distinct, engaging, and platform-optimised.`;
-
-    let startId = nextId;
-    let received = 0;
-
-    setGenOpen(true);
-    setGenInFlight(true);
-    setGenProgress(5);
-    setGenCount(0);
-    setGenStatus("Connected. Waiting for chunks...");
-
-    try {
-      await streamGenerateAndSavePosts(
-        {
-          userId,
-          industryId,
-          subIndustryId,
-          prompt: industryPrompt,
-          postTime: scheduleAt.toISOString(),
-        },
-        {
-          onChunk: (chunk) => {
-            received += 1;
-            const slotIndex = received - 1;
-            const postDate = new Date(scheduleAt);
-            postDate.setDate(postDate.getDate() + Math.max(0, chunk.index));
-
-            // Use backend image only if it's non-empty and not already used in this batch
-            const backendImg = chunk.post?.image?.imageUrl ?? "";
-            let assignedImg: string;
-            if (backendImg && !usedImgs.has(backendImg)) {
-              assignedImg = backendImg;
-            } else {
-              // Use pre-allocated slot — guaranteed unique within the batch
-              assignedImg = preAllocatedImages[slotIndex] ?? preAllocatedImages[0];
-            }
-            usedImgs.add(assignedImg);
-
-            const normalized = normalizeGeneratedContent(
-              chunk.post?.text,
-              chunk.post?.hashtags
-            );
-
-            const localPost: Post = {
-              id: startId + received,
-              date: postDate,
-              caption: normalized.caption || CAPTIONS_POOL[slotIndex % CAPTIONS_POOL.length],
-              hashtags:
-                normalized.hashtags && normalized.hashtags.length
-                  ? normalized.hashtags
-                  : rnd(HASHTAG_POOLS),
-              plats: rnd(PLAT_COMBOS),
-              type: "image",
-              timeStr: "9:00 AM",
-              timesOptions: rnd(TIMES_POOL),
-              img: assignedImg,
-              score: chunk.post?.source === "LLM" ? rndInt(82, 96) : rndInt(70, 88),
-              status: "scheduled",
-              reach: rndInt(15, 110) * 1000,
-              engRate: chunk.post?.source === "LLM" ? "9.4%" : "8.3%",
-              isAI: true,
-            };
-
-            setPosts((prev) => [...prev, localPost]);
-            setGenCount(received);
-            setGenProgress(Math.min(95, Math.round((received / 7) * 100)));
-            setGenStatus(`Received post ${received}/7 from ${chunk.post?.source || "stream"}`);
-          },
-          onDone: () => {
-            setGenProgress(100);
-            setGenStatus("Stream complete.");
-          },
-        }
-      );
-
-      setNextId(startId + Math.max(received, 1) + 1);
-      showToast(`✦ ${received} AI posts generated & scheduled!`, "green");
-    } catch (error) {
-      const isNetworkError =
-        error instanceof TypeError &&
-        (error.message === "Failed to fetch" || error.message.includes("NetworkError") || error.message.includes("network"));
-      console.warn("Calendar generate-and-save stream failed:", error);
-
-      if (received === 0) {
-        // Backend unreachable — generate all 7 posts locally using industry context
-        setGenStatus("Backend unavailable. Generating locally...");
-        const fallbackPosts = generatePostsLocally(
-          industryId, subIndustryId, 7, scheduleAt, startId, preAllocatedImages
-        );
-        fallbackPosts.forEach((p, i) => {
-          // Animate posts appearing one-by-one with a small delay
-          setTimeout(() => {
-            setPosts((prev) => [...prev, p]);
-            saveDashboardCalendarPost(p);
-            void upsertCalendarPostToBackend(p);
-            setGenCount(i + 1);
-            setGenProgress(Math.round(((i + 1) / 7) * 100));
-            setGenStatus(`Generated post ${i + 1}/7`);
-          }, i * 160);
-        });
-        setNextId(startId + 8);
-        setTimeout(() => {
-          setGenProgress(100);
-          setGenStatus("Done.");
-        }, 7 * 160 + 100);
-        showToast(
-          isNetworkError
-            ? "✦ Backend offline — 7 posts generated locally!"
-            : "✦ 7 posts generated (fallback mode)!",
-          "brand"
-        );
-      } else {
-        showToast(`✦ ${received} posts saved. Backend closed early.`, "amber");
-      }
-    } finally {
-      setGenInFlight(false);
-      setTimeout(() => setGenOpen(false), 1300);
-    }
-  };
-
   // ── Calendar renderers ───────────────────────────────────────────────────
   const render7d = () => {
     const anchor = getAnchor();
@@ -2205,8 +1677,8 @@ export default function CalendarPage() {
           {/* Header */}
           <div style={{ padding: "10px 8px 8px", borderRight: "1px solid #ECEDF8", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, background: "#fff", position: "sticky", top: 0, zIndex: 10, borderBottom: "2px solid #E2E4F0" }}>
             <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".6px", color: "#8486AB" }}>{DAY_NAMES[d.getDay()]}</div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: isToday ? "#fff" : "#3D3F60", fontFamily: "Sora,sans-serif", lineHeight: 1.1, width: isToday ? 34 : undefined, height: isToday ? 34 : undefined, borderRadius: isToday ? "50%" : undefined, background: isToday ? "#F97316" : undefined, display: isToday ? "flex" : undefined, alignItems: isToday ? "center" : undefined, justifyContent: isToday ? "center" : undefined, boxShadow: isToday ? "0 4px 20px rgba(249,115,22,.32)" : undefined }}>
-              {isToday ? <span style={{ fontSize: 16 }}>{d.getDate()}</span> : d.getDate()}
+            <div style={{ fontSize: isToday ? 16 : 15, fontWeight: 800, color: isToday ? "#fff" : "#3D3F60", fontFamily: "Sora,sans-serif", lineHeight: 1.1, width: 34, height: 34, borderRadius: "50%", background: isToday ? "#F97316" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: isToday ? "0 4px 20px rgba(249,115,22,.32)" : "none" }}>
+              {d.getDate()}
             </div>
             <div style={{ fontSize: 10.5, color: "#BFC1D9", fontWeight: 500 }}>{dayPosts.length} post{dayPosts.length !== 1 ? "s" : ""}</div>
           </div>
@@ -2223,7 +1695,7 @@ export default function CalendarPage() {
     return <div style={{ display: "flex" }}>{cols}</div>;
   };
 
-  const renderMonthGrid = (usePipeline = false) => {
+  const renderMonthGrid = () => {
     const anchor = getAnchor();
     const y = anchor.getFullYear(), mo = anchor.getMonth();
     const firstDow = new Date(y, mo, 1).getDay();
@@ -2234,7 +1706,6 @@ export default function CalendarPage() {
     const addCell = (d: Date, isOther: boolean) => {
       const isToday = sameDay(d, today);
       const isWE = d.getDay() === 0 || d.getDay() === 6;
-      const isFuture = d > today;
       const dayPosts = !isOther ? filtered.filter(p => sameDay(p.date, d)).sort((a, b) => a.timeStr.localeCompare(b.timeStr)) : [];
       cells.push(
         <div key={d.toISOString()} style={{ borderRight: "1px solid #ECEDF8", borderBottom: "1px solid #ECEDF8", padding: 6, minHeight: 160, background: isOther ? "#F4F5FB" : isWE ? "rgba(235,236,248,.3)" : isToday ? "rgba(249,115,22,.03)" : "#fff", display: "flex", flexDirection: "column", gap: 5 }}>
@@ -2248,13 +1719,10 @@ export default function CalendarPage() {
           </div>
           {!isOther && (
             <>
-              {usePipeline && isFuture && dayPosts.length === 0 && d.getDate() % 3 === 1 && (
-                <div style={{ height: 70, borderRadius: 7, background: "linear-gradient(90deg,#EEEEFF 0%,#DDDDFB 50%,#EEEEFF 100%)", backgroundSize: "600px", animation: "shimmer 1.5s infinite" }} />
-              )}
-              {dayPosts.slice(0, 2).map(p => <MiniCard key={p.id} p={p} onOpen={() => openModal(p.id)} onDup={() => dupPost(p.id)} onDel={() => deletePost(p.id)} onPublishNow={() => { void publishExistingPostNow(p.id); }} />)}
-              {dayPosts.length > 2 && (
-                <div style={{ fontSize: 10, fontWeight: 700, color: "#F97316", padding: "3px 7px", borderRadius: 5, background: "#EEEEFF", cursor: "pointer", display: "flex", alignItems: "center", gap: 3, marginTop: 1 }}>
-                  <i className="fa-solid fa-layer-group" style={{ fontSize: 8 }} /> +{dayPosts.length - 2} more
+              {dayPosts.slice(0, 1).map(p => <MiniCard key={p.id} p={p} onOpen={() => openModal(p.id)} onDup={() => dupPost(p.id)} onDel={() => deletePost(p.id)} onPublishNow={() => { void publishExistingPostNow(p.id); }} />)}
+              {dayPosts.length > 1 && (
+                <div onClick={() => openModal(dayPosts[1].id)} style={{ fontSize: 10, fontWeight: 700, color: "#F97316", padding: "3px 7px", borderRadius: 5, background: "#EEEEFF", cursor: "pointer", display: "flex", alignItems: "center", gap: 3, marginTop: 1 }}>
+                  <i className="fa-solid fa-layer-group" style={{ fontSize: 8 }} /> +{dayPosts.length - 1} more
                 </div>
               )}
             </>
@@ -2289,23 +1757,30 @@ export default function CalendarPage() {
         @keyframes shimmer { 0%{background-position:-600px 0} 100%{background-position:600px 0} }
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
         @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
-        .mmc-actions { opacity: 0; transition: opacity .15s; pointer-events: none; }
-        .mmc:hover .mmc-actions { opacity: 1; pointer-events: auto; }
-        .pc-hover-actions { opacity: 0; transition: opacity .14s; pointer-events: none; }
-        .post-card:hover .pc-hover-actions { opacity: 1; pointer-events: auto; }
+        @keyframes spin { 100%{transform:rotate(360deg)} }
         .tb-search:focus-within { width: 260px !important; border-color: #F97316 !important; background: #fff !important; box-shadow: 0 0 0 3px rgba(249,115,22,.1) !important; }
         .sb-item-hover:hover { background: #1E1F2E; color: #F1F2FF; }
+        .skeleton { background: linear-gradient(90deg,#EEF0F8 25%,#E2E4F0 50%,#EEF0F8 75%); background-size: 200% 100%; animation: shimmer 1.2s ease-in-out infinite; border-radius: 10px; }
       `}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0, position: "relative" }}>
+
+          {planLoading && (
+            <div style={{ position: "absolute", inset: 0, zIndex: 200, background: "rgba(255,255,255,.72)", backdropFilter: "blur(2px)", WebkitBackdropFilter: "blur(2px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, padding: "28px 34px", borderRadius: 16, background: "#fff", border: "1px solid #E2E4F0", boxShadow: "0 20px 50px rgba(11,12,26,.14)" }}>
+                <div style={{ width: 40, height: 40, borderRadius: "50%", border: "3px solid #FED7AA", borderTopColor: "#F97316", animation: "spin 0.8s linear infinite" }} />
+                <div style={{ fontSize: 13.5, fontWeight: 700, color: "#0B0C1A", fontFamily: "Sora,sans-serif" }}>Creating your monthly plan…</div>
+                <div style={{ fontSize: 11.5, color: "#8486AB" }}>Generating posts and scheduling them across your calendar</div>
+              </div>
+            </div>
+          )}
 
           {/* Topbar */}
           <AdminHeader
             pageTitle="Content Calendar"
-            searchValue={search}
-            onSearchChange={setSearch}
-            searchPlaceholder="Search posts…"
+            showBell={false}
+            showHelp={false}
             actionButton={
               <button onClick={() => openModal(null)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 15px", borderRadius: 7, background: "linear-gradient(115deg,#F97316,#EA580C)", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 14px rgba(249,115,22,.4)" }}>
                 <i className="fa-solid fa-plus" style={{ fontSize: 11 }} /> New Post
@@ -2314,64 +1789,97 @@ export default function CalendarPage() {
           />
 
           {/* Cal Toolbar */}
-          <div style={{ flexShrink: 0, background: "#fff", borderBottom: "1px solid #E2E4F0" }}>
-            {/* Row 1: View tabs + nav */}
-            <div style={{ display: "flex", alignItems: "stretch", padding: "0 20px", gap: 4, borderBottom: "1px solid #ECEDF8" }}>
-              {([["7d","fa-calendar-week","Weekly"],["month","fa-calendar","Monthly"],["pipeline","fa-robot","AI Pipeline"]] as const).map(([v, icon, label]) => (
-                <div key={v} onClick={() => { setView(v); setOffset(0); }} style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 16px", fontSize: 13, fontWeight: 700, color: view === v ? "#F97316" : "#8486AB", cursor: "pointer", position: "relative", whiteSpace: "nowrap", fontFamily: "Sora,sans-serif", borderBottom: `2px solid ${view === v ? "#F97316" : "transparent"}`, height: 44 }}>
-                  <i className={`fa-solid ${icon} fa-xs`} /> {label}
-                  <span style={{ padding: "2px 7px", borderRadius: 8, fontSize: 10, fontWeight: 800, background: view === v ? "#EEEEFF" : "#F0F1F9", color: view === v ? "#F97316" : "#8486AB" }}>
-                    {v === "pipeline" ? "∞" : v === "7d" ? statSched : posts.filter(p => p.status !== "published").length}
-                  </span>
-                </div>
-              ))}
-              <div style={{ width: 1, background: "#ECEDF8", margin: "10px 8px" }} />
-              <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 0", marginLeft: "auto" }}>
-                <div onClick={() => setOffset(o => o - 1)} style={{ width: 28, height: 28, borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", color: "#3D3F60", cursor: "pointer", border: "1px solid #E2E4F0", background: "#fff", fontSize: 11 }}>
-                  <i className="fa-solid fa-chevron-left" />
-                </div>
-                <div style={{ fontSize: 14, fontWeight: 800, color: "#0B0C1A", fontFamily: "Sora,sans-serif", minWidth: 160, textAlign: "center", letterSpacing: "-.2px" }}>{periodTitle}</div>
-                <div onClick={() => setOffset(o => o + 1)} style={{ width: 28, height: 28, borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", color: "#3D3F60", cursor: "pointer", border: "1px solid #E2E4F0", background: "#fff", fontSize: 11 }}>
-                  <i className="fa-solid fa-chevron-right" />
-                </div>
-                <div onClick={() => setOffset(0)} style={{ padding: "5px 12px", borderRadius: 20, border: "1px solid #E2E4F0", background: "#fff", color: "#3D3F60", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Sora,sans-serif" }}>Today</div>
-              </div>
+          <div style={{ flexShrink: 0, background: "#fff", borderBottom: "1px solid #E2E4F0", padding: "10px 20px", display: "flex", alignItems: "center", gap: 12 }}>
+            {/* View tabs — segmented control */}
+            <div style={{ display: "flex", alignItems: "center", gap: 2, padding: 3, borderRadius: 9, background: "#F0F1F9", flexShrink: 0 }}>
+              {([["7d","fa-calendar-week","Weekly"],["month","fa-calendar","Monthly"]] as const).map(([v, icon, label]) => {
+                const active = view === v;
+                return (
+                  <div key={v} onClick={() => { setView(v); setOffset(0); }} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 7, fontSize: 12.5, fontWeight: 700, color: active ? "#F97316" : "#8486AB", cursor: "pointer", whiteSpace: "nowrap", fontFamily: "Sora,sans-serif", background: active ? "#fff" : "transparent", boxShadow: active ? "0 1px 4px rgba(11,12,26,.08)" : "none", transition: "all .15s" }}>
+                    <i className={`fa-solid ${icon} fa-xs`} /> {label}
+                    <span style={{ padding: "1px 6px", borderRadius: 8, fontSize: 10, fontWeight: 800, background: active ? "#FFF7ED" : "#E4E5EF", color: active ? "#F97316" : "#8486AB" }}>
+                      {v === "7d" ? statSched : posts.filter(p => p.status !== "published").length}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
-            {/* Row 2: Platform filters + AI Generate */}
-            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 20px" }}>
-              <div style={{ display: "flex", gap: 5, alignItems: "center", flexWrap: "wrap", flex: 1 }}>
-                {([
-                  ["all", "All", "fa-border-all"] as [PlatKey | "all", string, string],
-                  ...(Object.keys(PLAT_NAMES) as PlatKey[]).map(
-                    (p): [PlatKey | "all", string, string] => [p, PLAT_NAMES[p], `fa-brands ${PLAT_ICONS[p]}`],
-                  ),
-                ]).map(([p, label, icon]) => {
-                  const active = platFilter === p;
-                  const bg = active ? (p === "all" ? "#F97316" : PLAT_COLORS[p as PlatKey]) : undefined;
+
+            {/* Prev / Next / Today */}
+            <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+              <div onClick={() => setOffset(o => o - 1)} style={{ width: 28, height: 28, borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", color: "#3D3F60", cursor: "pointer", border: "1px solid #E2E4F0", background: "#fff", fontSize: 11 }}>
+                <i className="fa-solid fa-chevron-left" />
+              </div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: "#0B0C1A", fontFamily: "Sora,sans-serif", minWidth: 150, textAlign: "center", letterSpacing: "-.2px" }}>{periodTitle}</div>
+              <div
+                onClick={() => { if (canGoForward) setOffset(o => o + 1); }}
+                style={{ width: 28, height: 28, borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", color: canGoForward ? "#3D3F60" : "#C7C9DA", cursor: canGoForward ? "pointer" : "not-allowed", border: "1px solid #E2E4F0", background: canGoForward ? "#fff" : "#F4F5FB", fontSize: 11 }}
+              >
+                <i className="fa-solid fa-chevron-right" />
+              </div>
+              <div onClick={() => setOffset(0)} style={{ padding: "5px 12px", borderRadius: 20, border: "1px solid #E2E4F0", background: offset === 0 ? "#FFF7ED" : "#fff", color: offset === 0 ? "#F97316" : "#3D3F60", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Sora,sans-serif" }}>Today</div>
+            </div>
+
+            <div style={{ flex: 1 }} />
+
+            {/* Post time + actions */}
+            <div
+              onClick={() => { try { planTimeRef.current?.showPicker?.(); } catch { planTimeRef.current?.focus(); } }}
+              style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 10px", borderRadius: 8, border: "1px solid #E2E4F0", background: "#fff", flexShrink: 0, cursor: "pointer" }}
+            >
+              <i className="fa-solid fa-clock" style={{ fontSize: 11, color: "#8486AB", pointerEvents: "none" }} />
+              <input
+                ref={planTimeRef}
+                type="time"
+                value={planPostTime}
+                onChange={e => setPlanPostTime(e.target.value)}
+                style={{ border: "none", background: "transparent", fontSize: 12.5, fontWeight: 600, color: "#0B0C1A", cursor: "pointer", outline: "none", fontFamily: "Sora,sans-serif" }}
+              />
+            </div>
+            <button onClick={createPlanDirect} disabled={planLoading} style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 18px", borderRadius: 8, background: "#10B981", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: planLoading ? "not-allowed" : "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(16,185,129,.32)", whiteSpace: "nowrap", flexShrink: 0, opacity: planLoading ? 0.7 : 1 }}>
+              <i className="fa-solid fa-calendar-plus" style={{ fontSize: 12 }} /> {planLoading ? "Creating..." : "Create Plan"}
+            </button>
+          </div>
+
+          {/* Connected Accounts */}
+          <div style={{ flexShrink: 0, padding: "14px 20px 16px", background: "#F9FAFB", borderBottom: "1px solid #E4E5EF" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 12 }}>
+              <i className="fa-solid fa-link" style={{ color: "#9496B5", fontSize: 12 }} />
+              <span style={{ fontSize: 13, fontWeight: 700, color: "#0D0E1A", fontFamily: "Sora,sans-serif" }}>Connected Accounts</span>
+              {!connLoading && (
+                <span style={{ fontSize: 11.5, color: "#9496B5", fontWeight: 500 }}>
+                  {CONN_PLATS.filter(p => p.backendKey && connectedPlats[p.backendKey]).length} of {CONN_PLATS.length} connected
+                </span>
+              )}
+            </div>
+            {connLoading ? (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 8 }}>
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <div key={i} className="skeleton" style={{ height: 46 }} />
+                ))}
+              </div>
+            ) : (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 8 }}>
+                {CONN_PLATS.map(p => {
+                  const connected = Boolean(p.backendKey && connectedPlats[p.backendKey]);
                   return (
-                    <div key={p} onClick={() => setPlatFilter(p)} style={{ display: "flex", alignItems: "center", gap: 5, padding: "5px 11px", borderRadius: 20, border: `1.5px solid ${active ? (p === "all" ? "#F97316" : PLAT_COLORS[p as PlatKey]) : "#E2E4F0"}`, background: bg || "#fff", color: active ? "#fff" : "#8486AB", fontSize: 12, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}>
-                      <i className={icon} style={{ fontSize: 11 }} />{label}
+                    <div key={p.id}
+                      style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 12px", borderRadius: 10, border: `1.5px solid ${connected ? "#10B981" : "#E4E5EF"}`, background: connected ? "rgba(16,185,129,.05)" : "#fff", cursor: "pointer", transition: "all .15s" }}
+                      onMouseEnter={e => { if (!connected) (e.currentTarget as HTMLDivElement).style.borderColor = "#F97316"; }}
+                      onMouseLeave={e => { if (!connected) (e.currentTarget as HTMLDivElement).style.borderColor = "#E4E5EF"; }}>
+                      <div style={{ width: 28, height: 28, borderRadius: "50%", background: p.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, flexShrink: 0 }}>
+                        <i className={`fa-brands ${p.icon}`} />
+                      </div>
+                      <span style={{ fontSize: 12.5, fontWeight: 600, color: connected ? "#0D0E1A" : "#4B4D6B", flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: "Sora,sans-serif" }}>{p.name}</span>
+                      {connected
+                        ? <i className="fa-solid fa-check" style={{ color: "#10B981", fontSize: 11, flexShrink: 0 }} />
+                        : <span style={{ fontSize: 10.5, color: "#9496B5", fontWeight: 700, flexShrink: 0, fontFamily: "Sora,sans-serif" }}>Connect</span>
+                      }
                     </div>
                   );
                 })}
               </div>
-              <div style={{ width: 1, height: 24, background: "#E2E4F0", flexShrink: 0 }} />
-              <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-                <i className="fa-solid fa-clock" style={{ fontSize: 11, color: "#8486AB" }} />
-                <input
-                  type="time"
-                  value={planPostTime}
-                  onChange={e => setPlanPostTime(e.target.value)}
-                  style={{ padding: "6px 8px", borderRadius: 7, border: "1px solid #E2E4F0", background: "#fff", fontSize: 12.5, fontWeight: 600, color: "#0B0C1A", cursor: "pointer", outline: "none", fontFamily: "Sora,sans-serif" }}
-                />
-              </div>
-              <button onClick={createPlanDirect} disabled={planLoading} style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 18px", borderRadius: 8, background: "#10B981", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: planLoading ? "not-allowed" : "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(16,185,129,.32)", whiteSpace: "nowrap", flexShrink: 0, opacity: planLoading ? 0.7 : 1 }}>
-                <i className="fa-solid fa-calendar-plus" style={{ fontSize: 12 }} /> {planLoading ? "Creating..." : "Create Plan"}
-              </button>
-              <button onClick={startAiGeneration} style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 18px", borderRadius: 8, background: "linear-gradient(135deg,#F97316,#EA580C)", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 14px rgba(249,115,22,.4)", whiteSpace: "nowrap", flexShrink: 0 }}>
-                <i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 12 }} /> AI Generate
-              </button>
-            </div>
+            )}
           </div>
 
           {/* Stats Bar */}
@@ -2388,14 +1896,14 @@ export default function CalendarPage() {
                 <strong style={{ fontWeight: 800, color: "#0B0C1A", fontFamily: "JetBrains Mono,monospace" }}>{s.val}</strong>&nbsp;{s.label}
               </div>
             ))}
-            <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 20, background: "#EEEEFF", border: "1px solid #DDDDFB", color: "#F97316", fontSize: 12, fontWeight: 700, marginLeft: "auto", fontFamily: "Sora,sans-serif" }}>
-              <div style={{ width: 7, height: 7, borderRadius: "50%", background: "linear-gradient(115deg,#F97316,#EA580C)", animation: "pulse 2s ease-in-out infinite" }} />
-              AI Pipeline Active
+            <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 11px", borderRadius: 20, border: "1px solid #E2E4F0", background: "#fff", fontSize: 12, fontWeight: 700, color: "#F97316", whiteSpace: "nowrap", marginLeft: "auto" }}>
+              <i className="fa-solid fa-calendar" style={{ fontSize: 10 }} />
+              {MONTHS[getAnchor().getMonth()]} {getAnchor().getFullYear()}
             </div>
           </div>
 
           {/* Calendar Area */}
-          <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
+          <div style={{ flex: 1, display: "flex", overflow: "hidden", position: "relative" }}>
             <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
               {view === "7d" && render7d()}
               {view === "month" && (
@@ -2403,37 +1911,16 @@ export default function CalendarPage() {
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", position: "sticky", top: 0, zIndex: 10, background: "#fff", borderBottom: "2px solid #E2E4F0" }}>
                     {DAY_NAMES.map((n, i) => <div key={n} style={{ padding: 8, textAlign: "center", fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: i===0||i===6?"#BFC1D9":"#8486AB", borderRight: "1px solid #ECEDF8" }}>{n}</div>)}
                   </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)" }}>{renderMonthGrid(false)}</div>
-                </>
-              )}
-              {view === "pipeline" && (
-                <>
-                  <div style={{ background: "linear-gradient(135deg,#1e1b4b 0%,#312e81 45%,#4338ca 75%,#6d28d9 100%)", padding: "14px 20px", display: "flex", alignItems: "center", gap: 14, position: "sticky", top: 0, zIndex: 10 }}>
-                    <div style={{ width: 38, height: 38, borderRadius: 10, background: "rgba(255,255,255,.12)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>🤖</div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 13.5, fontWeight: 800, color: "#fff", fontFamily: "Sora,sans-serif" }}>AI Content Pipeline — Rolling Generation</div>
-                      <div style={{ fontSize: 11.5, color: "rgba(255,255,255,.6)", marginTop: 2 }}>New posts auto-generated · Brand voice · Best times</div>
-                    </div>
-                    <button onClick={startAiGeneration} style={{ padding: "7px 14px", borderRadius: 7, background: "rgba(255,255,255,.15)", border: "1px solid rgba(255,255,255,.22)", color: "rgba(255,255,255,.9)", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Sora,sans-serif" }}>+ Generate More</button>
-                  </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", position: "sticky", top: 66, zIndex: 9, background: "#fff", borderBottom: "2px solid #E2E4F0" }}>
-                    {DAY_NAMES.map((n, i) => <div key={n} style={{ padding: 8, textAlign: "center", fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: i===0||i===6?"#BFC1D9":"#8486AB", borderRight: "1px solid #ECEDF8" }}>{n}</div>)}
-                  </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)" }}>{renderMonthGrid(true)}</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)" }}>{renderMonthGrid()}</div>
                 </>
               )}
             </div>
 
-            /* {/* Right Panel */}
-            {/* <RightPanel rpTab={rpTab} setRpTab={setRpTab} posts={filtered} onOpen={id => openModal(id)} onAddIdea={addIdeaPost} showToast={showToast} onOpenFacebookConnect={() => router.push("/facebook")} /> */ }
           </div>
         </div>
 
       {/* Edit Modal */}
       <EditModal state={modal} posts={posts} today={today} onClose={closeModal} onSave={savePost} onPublishNow={publishPostNow} onDelete={deletePost} onDuplicate={dupPost} showToast={showToast} user={user} industrySelection={industrySelection} />
-
-      {/* AI Generate Modal */}
-      <GenModal open={genOpen} pct={genProgress} generatedCount={genCount} statusText={genStatus} />
 
       {/* Toast */}
       <div style={{

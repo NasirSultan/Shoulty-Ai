@@ -131,6 +131,23 @@ export default function BrandOverlayPage() {
   const toggleSection = (id: string) => setOpenSection(s => s === id ? null : id);
   const { toast, show: showToast } = useToast();
 
+  // Force the preview stage to be a true square by mirroring its measured
+  // width into an explicit pixel height (CSS aspect-ratio/padding tricks can
+  // end up off by a few px depending on parent flex/scrollbar reflow).
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [stageSize, setStageSize] = useState(0);
+
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(entries => {
+      const w = entries[0]?.contentRect?.width;
+      if (w) setStageSize(w);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
     fetchImages()
@@ -256,12 +273,6 @@ export default function BrandOverlayPage() {
     }
   };
 
-  const resetSettings = () => {
-    setS({ pos: "tl", logoUrl: null, logoName: "", logoSize: "", primary: "#F97316", opacity: 90, blur: 12, radius: 10, size: 48, style: "glass", textColor: "white", showLogo: true, showName: true, showContact: true, showOvtext: true, showCorner: false, showTextbar: false });
-    setBrandName("Your Brand"); setPhone(""); setOverlayText("");
-    setDirty(false); showToast("↺ Reset to defaults", "amber");
-  };
-
   // Badge style computation
   const getBadgeStyle = (): React.CSSProperties => {
     const base: React.CSSProperties = { ...POS_CSS[S.pos], position: "absolute", display: "flex", alignItems: "center", gap: 7, padding: "7px 11px", borderRadius: S.radius, opacity: S.opacity / 100, zIndex: 10, maxWidth: 200, transition: "all .25s", color: S.textColor === "white" ? "#fff" : "#0D0E1A" };
@@ -274,7 +285,6 @@ export default function BrandOverlayPage() {
   };
 
   const tc = S.textColor === "white" ? "#fff" : "#0D0E1A";
-  const stageAspect = "1/1";
   const opacityPct = ((S.opacity - 10) / 90) * 100;
   const blurPct = (S.blur / 24) * 100;
   const radiusPct = (S.radius / 28) * 100;
@@ -307,9 +317,6 @@ export default function BrandOverlayPage() {
         .bg-thumb:hover { transform: scale(1.06); }
         .mini-card-item:hover { box-shadow: 0 4px 12px rgba(13,14,26,.08); transform: translateY(-2px); }
         .upload-box-hover:hover { border-color: rgba(249,115,22,.4); background: #EEEEFF; }
-        .btn-save-hover:hover { background: #4A4AC4; transform: translateY(-1px); }
-        .btn-sec-hover:hover { border-color: #F97316; color: #F97316; background: #EEEEFF; }
-        .btn-danger-hover:hover { background: rgba(239,68,68,.15); }
       `}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 
@@ -600,26 +607,24 @@ export default function BrandOverlayPage() {
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
                 <div>
                   <div style={{ fontSize: 15, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.3px" }}>Live Preview</div>
-                  <div style={{ fontSize: 12, color: "#9496B5", marginTop: 2 }}>Reflects every change instantly</div>
                 </div>
               </div>
 
               {/* Preview Card */}
-              <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 18, overflow: "hidden", boxShadow: "0 12px 32px rgba(13,14,26,.10)", marginBottom: 14 }}>
+              <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 18, overflow: "hidden", boxShadow: "0 12px 32px rgba(13,14,26,.10)", marginBottom: 14, maxWidth: 420, marginLeft: "auto", marginRight: "auto" }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "11px 14px", borderBottom: "1px solid #E4E5EF" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
                     <div style={{ width: 20, height: 20, borderRadius: 5, background: "#E1306C", display: "flex", alignItems: "center", justifyContent: "center" }}>
                       <i className="fa-brands fa-instagram" style={{ color: "#fff", fontSize: 11 }} />
                     </div>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: "#4B4D6B" }}>Instagram Preview</div>
                   </div>
                   <div style={{ display: "flex", gap: 4 }}>
                     {["#EF4444","#F59E0B","#10B981"].map(c => <div key={c} style={{ width: 7, height: 7, borderRadius: "50%", background: c }} />)}
                   </div>
                 </div>
                 {/* Stage */}
-                <div style={{ position: "relative", overflow: "hidden", background: "#F0F1F8", aspectRatio: stageAspect }}>
-                  <img src={bgImg} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                <div ref={stageRef} style={{ position: "relative", overflow: "hidden", background: "#F0F1F8", width: "100%", height: stageSize || undefined, aspectRatio: stageSize ? undefined : "1 / 1" }}>
+                  <img src={bgImg} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }} />
                   {/* Brand badge overlay */}
                   <div style={getBadgeStyle()}>
                     {S.showLogo && S.logoUrl && <img src={S.logoUrl} alt="" style={{ width: S.size, height: S.size, objectFit: "contain", borderRadius: 6, display: "block", flexShrink: 0 }} />}
@@ -715,16 +720,6 @@ export default function BrandOverlayPage() {
                     </div>
                   ))}
                 </div>
-                {/* Action buttons */}
-                <button onClick={saveSettings} className="btn-save-hover" style={{ width: "100%", padding: 10, borderRadius: 7, background: "linear-gradient(115deg,#F97316,#EA580C)", color: "#fff", fontSize: 13.5, fontWeight: 800, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, boxShadow: "0 4px 14px rgba(249,115,22,.4)" }}>
-                  {saving ? <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: 11 }} /> : <i className="fa-solid fa-floppy-disk" style={{ fontSize: 11 }} />} Save & Apply
-                </button>
-                <button onClick={() => showToast("Opening preview mode…", "brand")} className="btn-sec-hover" style={{ width: "100%", padding: 8, borderRadius: 7, border: "1px solid #E4E5EF", background: "#fff", color: "#4B4D6B", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "Sora,sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 7 }}>
-                  <i className="fa-solid fa-eye" style={{ fontSize: 11 }} /> Preview All Posts
-                </button>
-                <button onClick={resetSettings} className="btn-danger-hover" style={{ width: "100%", padding: 8, borderRadius: 7, border: "1px solid rgba(239,68,68,.15)", background: "#FEF2F2", color: "#EF4444", fontSize: 12.5, fontWeight: 600, cursor: "pointer", fontFamily: "Sora,sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 7 }}>
-                  <i className="fa-solid fa-rotate-left" style={{ fontSize: 11 }} /> Reset to Defaults
-                </button>
               </div>
             </div>
 

@@ -39,21 +39,16 @@ const PLAT_MAP: Record<string, { nm: string; ch: string; cls: string }> = {
   BLUESKY:    { nm: "Bluesky",    ch: "B",  cls: "#1185FE" },
 };
 
-// ── quick actions (static) ────────────────────────────────────────────────────
-const QUICK = [
-  { label: "Generate content",  icon: Icon.star,     grad: GRAD,                                        href: "/" },
-  { label: "Generate images",   icon: Icon.img,      grad: "linear-gradient(125deg,#F97316,#DC2626)",   href: "/dashboards/library" },
-  { label: "Generate reel",     icon: Icon.reel,     grad: "linear-gradient(125deg,#EA580C,#7C3AED)",   href: "/dashboards/library" },
-  { label: "Schedule posts",    icon: Icon.calendar, grad: "linear-gradient(125deg,#16A34A,#F97316)",   href: "/dashboards/calendar" },
-  { label: "Browse library",    icon: Icon.book,     grad: "linear-gradient(125deg,#0E7490,#F97316)",   href: "/dashboards/library" },
-  { label: "Create campaign",   icon: Icon.campaign, grad: "linear-gradient(125deg,#1D4ED8,#F97316)",   href: "/dashboards/calendar" },
-  { label: "Connect account",   icon: Icon.link,     grad: "linear-gradient(125deg,#F97316,#EA580C)",   href: "/dashboards/settings/accounts" },
-  { label: "Brand kit",         icon: Icon.brand,    grad: "linear-gradient(125deg,#7C3AED,#F97316)",   href: "/dashboards/settings/brand" },
-];
-
 // ── API types ─────────────────────────────────────────────────────────────────
 interface DashData {
   greeting: { name: string; date: string; nextPostAt: string };
+  subIndustrySelected: {
+    selected: boolean;
+    id: string | null;
+    name: string | null;
+    industry: { id: string; name: string } | null;
+  };
+  subscription: { plan: string; isPurchased: boolean };
   insight: { message: string; engagementGrowthPct: number };
   autopilot: {
     active: boolean;
@@ -84,6 +79,33 @@ interface DashData {
     breakdown: { contentConsistency: number; postingFrequency: number; profileCompletion: number };
     suggestion: string;
   };
+}
+
+// ── dashboard cache (1 hour) ────────────────────────────────────────────────
+const DASH_CACHE_KEY = "shoutly:dashboard:v1";
+const DASH_CACHE_TTL_MS = 60 * 60 * 1000;
+
+function readDashCache(): DashData | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.sessionStorage.getItem(DASH_CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { timestamp: number; data: DashData };
+    if (!parsed?.timestamp || !parsed?.data) return null;
+    if (Date.now() - parsed.timestamp > DASH_CACHE_TTL_MS) return null;
+    return parsed.data;
+  } catch {
+    return null;
+  }
+}
+
+function writeDashCache(data: DashData) {
+  if (typeof window === "undefined") return;
+  try {
+    window.sessionStorage.setItem(DASH_CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data }));
+  } catch {
+    // ignore storage quota / private-mode errors
+  }
 }
 
 // ── helpers ───────────────────────────────────────────────────────────────────
@@ -121,7 +143,7 @@ function activityMeta(type: string): { icon: React.ReactElement; ok: boolean } {
 
 // ── component ─────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
-  const { user, initials } = useUserProfile();
+  const { user } = useUserProfile();
 
   // API state
   const [dash, setDash]           = useState<DashData | null>(null);
@@ -135,32 +157,37 @@ export default function DashboardPage() {
   const [counts, setCounts] = useState({ posts: 0, scheduled: 0, platforms: 0 });
   const ringRef = useRef<SVGCircleElement>(null);
 
-  // Chat state
-  const [chatOpen, setChatOpen]   = useState(false);
-  const [chatMsgs, setChatMsgs]   = useState<{ type: "bot" | "user"; text: string }[]>([
-    { type: "bot", text: "Hi! I'm Shoutly AI. Ask me anything about your account, features, or content strategy." },
-  ]);
-  const [chatInput, setChatInput] = useState("");
-  const [chatLoading, setChatLoading] = useState(false);
-  const chatEndRef = useRef<HTMLDivElement>(null);
-
   // ── auth helper ──
   const authHeaders = (): Record<string, string> => {
     const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null;
     return token ? { Authorization: `Bearer ${token}` } : {};
   };
 
-  // ── fetch dashboard + notes on mount ──
+  // ── fetch dashboard + notes on mount (dashboard cached for 1 hour) ──
   useEffect(() => {
     const headers = authHeaders();
-    setDashLoading(true);
+    const cached = readDashCache();
 
+    if (cached) {
+      // Fresh cache hit — skip the dashboard call entirely, notes still fetched live.
+      setDash(cached);
+      setDashLoading(false);
+      fetch(API_ENDPOINTS.notes, { headers }).then(r => r.ok ? r.json() : null)
+        .then(notesData => {
+          if (notesData?.text) setNoteText(notesData.text);
+          else if (cached.quickNotes?.text) setNoteText(cached.quickNotes.text);
+        })
+        .catch(console.error);
+      return;
+    }
+
+    setDashLoading(true);
     Promise.all([
       fetch(API_ENDPOINTS.dashboard, { headers }).then(r => r.ok ? r.json() : null),
       fetch(API_ENDPOINTS.notes,     { headers }).then(r => r.ok ? r.json() : null),
     ])
       .then(([dashData, notesData]) => {
-        if (dashData) setDash(dashData);
+        if (dashData) { setDash(dashData); writeDashCache(dashData); }
         if (notesData?.text) setNoteText(notesData.text);
         else if (dashData?.quickNotes?.text) setNoteText(dashData.quickNotes.text);
       })
@@ -198,18 +225,6 @@ export default function DashboardPage() {
     return () => clearTimeout(t);
   }, []);
 
-  // ── sidebar chat button listener ──
-  useEffect(() => {
-    const handler = () => setChatOpen(true);
-    document.addEventListener("shoutly:open-chat", handler);
-    return () => document.removeEventListener("shoutly:open-chat", handler);
-  }, []);
-
-  // ── scroll chat ──
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [chatMsgs, chatLoading]);
-
   // ── notes: debounced PATCH ──
   const handleNoteChange = (text: string) => {
     setNoteText(text);
@@ -228,31 +243,8 @@ export default function DashboardPage() {
     }, 800);
   };
 
-  // ── chat send ──
-  const sendChat = async () => {
-    if (!chatInput.trim() || chatLoading) return;
-    const q = chatInput.trim();
-    setChatInput("");
-    setChatMsgs(p => [...p, { type: "user", text: q }]);
-    setChatLoading(true);
-    try {
-      const r = await fetch(API_ENDPOINTS.ragChat, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "ngrok-skip-browser-warning": "true" },
-        body: JSON.stringify({ query: q, topK: 5 }),
-      });
-      const d = await r.json();
-      setChatMsgs(p => [...p, { type: "bot", text: r.ok && d.success ? d.answer : "Sorry, something went wrong. Please try again." }]);
-    } catch {
-      setChatMsgs(p => [...p, { type: "bot", text: "Couldn't connect. Please try again." }]);
-    } finally {
-      setChatLoading(false);
-    }
-  };
-
   // ── derived values ──
   const firstName      = user?.name?.split(" ")[0] || dash?.greeting.name || "there";
-  const userInitials   = initials || "U";
   const today          = new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
   const nextCountdown  = dash?.greeting.nextPostAt ? getCountdown(dash.greeting.nextPostAt) : "—";
   const insightMsg     = dash?.insight.message ?? "Your engagement grew 18% this week — keep it going!";
@@ -300,8 +292,6 @@ export default function DashboardPage() {
         .qa-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px -4px rgba(249,115,22,.18);border-color:rgba(249,115,22,.35);}
         .ichip:hover{border-color:rgba(249,115,22,.5);background:#FFF7ED!important;transform:translateY(-1px);}
         .uitem:hover{background:#FFF7ED}
-        @keyframes typingDot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
-        .chat-scroll::-webkit-scrollbar{width:3px}.chat-scroll::-webkit-scrollbar-thumb{background:rgba(249,115,22,.25);border-radius:3px}
         @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
         .skeleton{background:linear-gradient(90deg,#F3F4F6 25%,#E5E7EB 50%,#F3F4F6 75%);background-size:200% 100%;animation:shimmer 1.2s ease-in-out infinite;border-radius:6px;}
       `}</style>
@@ -313,22 +303,6 @@ export default function DashboardPage() {
           <nav style={{ fontSize: ".75rem", color: "#9CA3AF" }}>
             Workspace&nbsp;<span>/</span>&nbsp;<b style={{ color: "#111827", fontWeight: 500 }}>Dashboard</b>
           </nav>
-          <div style={{ display: "flex", gap: 9, alignItems: "center" }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 7, border: "1px solid #FED7AA", background: "#FFF7ED", borderRadius: 99, padding: "5px 13px", fontSize: ".75rem", color: "#6B7280" }}>
-              <span style={{ width: 13, height: 13, color: "#F97316" }}>{Icon.star}</span>
-              <b style={{ color: "#111827" }}>1,240</b>&nbsp;credits
-            </span>
-            <button style={{ width: 34, height: 34, borderRadius: 9, border: "1px solid #E5E7EB", background: "#fff", color: "#6B7280", display: "grid", placeItems: "center", cursor: "pointer", position: "relative" }}>
-              <span style={{ position: "absolute", top: 7, right: 8, width: 7, height: 7, borderRadius: "50%", background: "#DC2626", border: "1.5px solid #fff" }} />
-              <span style={{ width: 16, height: 16 }}>{Icon.bell}</span>
-            </button>
-            <Link href="/dashboards/settings/billing" style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "6px 14px", borderRadius: 8, fontSize: ".79rem", fontWeight: 600, textDecoration: "none", background: GRAD, color: "#fff", boxShadow: "0 4px 12px -3px rgba(249,115,22,.45)" }}>
-              Upgrade
-            </Link>
-            <span style={{ width: 32, height: 32, borderRadius: "50%", background: GRAD, color: "#fff", display: "grid", placeItems: "center", fontWeight: 700, fontSize: ".72rem", cursor: "pointer", boxShadow: "0 2px 8px -2px rgba(249,115,22,.5)" }}>
-              {userInitials}
-            </span>
-          </div>
         </div>
 
         {/* CONTENT */}
@@ -349,7 +323,37 @@ export default function DashboardPage() {
                 <span style={{ width: 13, height: 13, color: "#F97316", flexShrink: 0 }}>{Icon.star}</span>
                 {dashLoading ? <span className="skeleton" style={{ width: 280, height: 14 }} /> : insightMsg}
               </span>
+              {dash?.subIndustrySelected.selected && (
+                <Link
+                  href="/dashboards/settings"
+                  style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 10, marginLeft: 10, background: "#fff", border: "1px solid #E5E7EB", color: "#374151", fontSize: ".84rem", padding: "7px 13px", borderRadius: 99, textDecoration: "none" }}
+                >
+                  <span style={{ width: 13, height: 13, color: "#F97316", flexShrink: 0 }}>{Icon.brand}</span>
+                  <b style={{ color: "#111827", fontWeight: 600 }}>{dash.subIndustrySelected.name}</b>
+                  {dash.subIndustrySelected.industry && (
+                    <span style={{ color: "#9CA3AF" }}>· {dash.subIndustrySelected.industry.name}</span>
+                  )}
+                </Link>
+              )}
             </div>
+
+            {/* INDUSTRY NOT SELECTED */}
+            {dash && !dash.subIndustrySelected.selected && (
+              <section style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: 14, padding: "14px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <span style={{ width: 34, height: 34, borderRadius: 10, background: "#FEF3C7", display: "grid", placeItems: "center", color: "#D97706", flexShrink: 0 }}>
+                    <span style={{ width: 16, height: 16 }}>{Icon.brand}</span>
+                  </span>
+                  <div>
+                    <b style={{ fontSize: ".86rem", color: "#111827", display: "block" }}>Select your industry</b>
+                    <span style={{ fontSize: ".78rem", color: "#6B7280" }}>Choose your industry & sub-category so we can personalize your content.</span>
+                  </div>
+                </div>
+                <Link href="/dashboards/settings" style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 8, fontSize: ".8rem", fontWeight: 700, textDecoration: "none", background: GRAD, color: "#fff", boxShadow: "0 4px 12px -3px rgba(249,115,22,.45)", flexShrink: 0 }}>
+                  Select industry
+                </Link>
+              </section>
+            )}
 
             {/* HERO / Autopilot */}
             <section style={{ position: "relative", borderRadius: 20, overflow: "hidden", background: "linear-gradient(135deg,#FFF7ED 0%,#FFEDD5 50%,#FEF3C7 100%)", border: "1px solid #FED7AA", boxShadow: "0 4px 16px -4px rgba(249,115,22,.12)", padding: "28px 30px" }}>
@@ -389,46 +393,31 @@ export default function DashboardPage() {
               )}
             </section>
 
-            {/* QUICK ACTIONS */}
-            <section>
-              <h2 className="font-display" style={{ fontSize: "1rem", marginBottom: 12, color: "#111827" }}>Quick actions</h2>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 11 }}>
-                {QUICK.map(({ label, icon, grad, href }) => (
-                  <Link key={label} href={href} className="qa-card" style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 12, padding: "15px 13px", display: "flex", flexDirection: "column", gap: 10, textDecoration: "none", color: "#111827", transition: "all .2s", boxShadow: "0 1px 2px rgba(0,0,0,.04)" }}>
-                    <span style={{ width: 34, height: 34, borderRadius: 10, background: grad, display: "grid", placeItems: "center", color: "#fff" }}>
-                      <span style={{ width: 16, height: 16 }}>{icon}</span>
-                    </span>
-                    <b style={{ fontSize: ".84rem", fontWeight: 600 }}>{label}</b>
-                  </Link>
-                ))}
-              </div>
-            </section>
-
             {/* ACTIVITY + UPCOMING */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
               {/* Activity */}
-              <section style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 16, boxShadow: "0 1px 2px rgba(0,0,0,.04)" }}>
+              <section style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 16, boxShadow: "0 1px 2px rgba(0,0,0,.04)", overflow: "hidden" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", padding: "16px 18px 0" }}>
                   <h2 className="font-display" style={{ fontSize: "1rem", color: "#111827" }}>Today's activity</h2>
                 </div>
                 <div style={{ padding: "4px 18px 14px" }}>
                   {dashLoading ? (
-                    [0,1,2,3].map(i => (
+                    [0,1,2].map(i => (
                       <div key={i} style={{ display: "flex", gap: 12, padding: "10px 0" }}>
                         <span className="skeleton" style={{ width: 24, height: 24, borderRadius: "50%", flexShrink: 0 }} />
                         <span className="skeleton" style={{ flex: 1, height: 14, marginTop: 4 }} />
                       </div>
                     ))
                   ) : activity.length > 0 ? (
-                    activity.map((item, i) => {
+                    activity.slice(0, 3).map((item, i, arr) => {
                       const { icon, ok } = activityMeta(item.type);
                       return (
-                        <div key={i} style={{ display: "flex", gap: 12, padding: "10px 0", position: "relative" }}>
-                          {i < activity.length - 1 && <span style={{ position: "absolute", left: 11, top: 34, bottom: -8, width: 2, background: "#F3F4F6" }} />}
+                        <div key={i} style={{ display: "flex", gap: 12, padding: "10px 0", position: "relative", minWidth: 0 }}>
+                          {i < arr.length - 1 && <span style={{ position: "absolute", left: 11, top: 34, bottom: -8, width: 2, background: "#F3F4F6" }} />}
                           <span style={{ width: 24, height: 24, borderRadius: "50%", background: ok ? "#DCFCE7" : "#FFF7ED", color: ok ? "#16A34A" : "#F97316", display: "grid", placeItems: "center", flexShrink: 0, zIndex: 1 }}>
                             <span style={{ width: 11, height: 11 }}>{icon}</span>
                           </span>
-                          <span style={{ fontSize: ".85rem" }}>
+                          <span style={{ fontSize: ".85rem", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             <b style={{ fontWeight: 500 }}>{item.message}</b>
                             <span style={{ display: "block", fontSize: ".69rem", color: "#9CA3AF", marginTop: 1 }}>{fmtTime(item.time)}</span>
                           </span>
@@ -442,10 +431,10 @@ export default function DashboardPage() {
               </section>
 
               {/* Upcoming posts */}
-              <section style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 16, boxShadow: "0 1px 2px rgba(0,0,0,.04)" }}>
+              <section style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 16, boxShadow: "0 1px 2px rgba(0,0,0,.04)", overflow: "hidden" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", padding: "16px 18px 0" }}>
                   <h2 className="font-display" style={{ fontSize: "1rem", color: "#111827" }}>Upcoming posts</h2>
-                  <Link href="/dashboards/calendar" style={{ color: "#F97316", fontWeight: 600, fontSize: ".8rem", textDecoration: "none" }}>Full calendar →</Link>
+                  <Link href="/dashboards/calendar" style={{ color: "#F97316", fontWeight: 600, fontSize: ".8rem", textDecoration: "none", flexShrink: 0 }}>Full calendar →</Link>
                 </div>
                 <div style={{ padding: "4px 18px 14px" }}>
                   {dashLoading ? (
@@ -454,10 +443,10 @@ export default function DashboardPage() {
                     upcomingGroups.map(({ day, group, items }) => (
                       <div key={day}>
                         <div style={{ fontSize: ".66rem", letterSpacing: ".11em", textTransform: "uppercase", color: "#9CA3AF", padding: "10px 0 5px" }}>{day}</div>
-                        {items.map(post => (
-                          <div key={post.title} className="uitem" style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 8px", borderRadius: 9, cursor: "pointer", transition: "background .15s" }}>
+                        {items.slice(0, group === "thisWeek" ? 2 : 3).map(post => (
+                          <div key={post.title} className="uitem" style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 8px", borderRadius: 9, cursor: "pointer", transition: "background .15s", minWidth: 0 }}>
                             <span style={{ fontSize: ".72rem", color: "#6B7280", width: 52, flexShrink: 0 }}>{fmtUpcomingTime(post.time, group)}</span>
-                            <span style={{ flex: 1, fontSize: ".84rem", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{post.title}</span>
+                            <span style={{ flex: 1, minWidth: 0, fontSize: ".84rem", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{post.title}</span>
                             {post.platforms.slice(0, 3).map(pl => {
                               const pm = PLAT_MAP[pl];
                               if (!pm) return null;
@@ -505,6 +494,27 @@ export default function DashboardPage() {
                 })}
               </div>
             </section>
+
+            {/* UPCOMING FESTIVAL */}
+            {(dashLoading || festival) && (
+              <section style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 16, boxShadow: "0 1px 2px rgba(0,0,0,.04)", padding: "16px 18px" }}>
+                <h2 className="font-display" style={{ fontSize: "1rem", color: "#111827", marginBottom: 12 }}>Upcoming festival</h2>
+                {dashLoading ? (
+                  <div className="skeleton" style={{ height: 54, borderRadius: 12 }} />
+                ) : festival ? (
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, background: "#FFF7ED", border: "1px solid #FED7AA", borderRadius: 12, padding: "12px 14px" }}>
+                    <span style={{ width: 38, height: 38, borderRadius: 10, background: GRAD, display: "grid", placeItems: "center", color: "#fff", flexShrink: 0 }}>
+                      <span style={{ width: 17, height: 17 }}>{Icon.star}</span>
+                    </span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <b style={{ fontSize: ".88rem", color: "#111827", display: "block" }}>{festival.name}</b>
+                      <span style={{ fontSize: ".74rem", color: "#9CA3AF" }}>{fmtFestivalDate(festival.date)}</span>
+                    </div>
+                    <Link href="/dashboards/calendar" style={{ fontSize: ".8rem", fontWeight: 600, color: "#F97316", textDecoration: "none", flexShrink: 0 }}>Plan post →</Link>
+                  </div>
+                ) : null}
+              </section>
+            )}
 
             {/* PERFORMANCE SNAPSHOT */}
             <section>
@@ -581,68 +591,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* FOOTER */}
-        <footer style={{ borderTop: "1px solid #F3F4F6", marginTop: 32, padding: "20px 28px 28px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-          <b style={{ fontSize: ".9rem", color: "#111827" }}>Need help?</b>
-          <nav style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
-            {["Chat with AI", "Video tutorials", "Documentation", "Support"].map(l => (
-              <a key={l} href="#" style={{ color: "#6B7280", textDecoration: "none", fontSize: ".84rem", fontWeight: 500 }}>{l}</a>
-            ))}
-          </nav>
-        </footer>
       </div>
-
-      {/* CHAT POPUP */}
-      {chatOpen && (
-        <div style={{ position: "fixed", bottom: 24, right: 28, zIndex: 999, width: 340, display: "flex", flexDirection: "column", borderRadius: 18, overflow: "hidden", boxShadow: "0 24px 60px rgba(0,0,0,.15), 0 8px 20px rgba(249,115,22,.1)", border: "1px solid #FED7AA", animation: "chatSlideUp .22s ease-out" }}>
-          <style>{`@keyframes chatSlideUp{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}`}</style>
-          <div style={{ background: GRAD, padding: "11px 14px", display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-            <span style={{ width: 30, height: 30, borderRadius: 9, background: "rgba(255,255,255,.2)", display: "grid", placeItems: "center", flexShrink: 0 }}>
-              <span style={{ width: 15, height: 15, color: "#fff" }}>{Icon.chat}</span>
-            </span>
-            <span style={{ flex: 1 }}>
-              <b style={{ fontSize: ".85rem", color: "#fff", display: "block", lineHeight: 1.2 }}>Shoutly AI</b>
-              <span style={{ fontSize: ".69rem", color: "rgba(255,255,255,.8)" }}>Online · replies instantly</span>
-            </span>
-            <button onClick={() => setChatOpen(false)} style={{ width: 26, height: 26, borderRadius: 7, background: "rgba(255,255,255,.2)", border: "none", color: "#fff", cursor: "pointer", fontSize: 18, lineHeight: 1, display: "grid", placeItems: "center" }} title="Close">×</button>
-          </div>
-          <div className="chat-scroll" style={{ height: 320, overflowY: "auto", padding: "12px 14px", display: "flex", flexDirection: "column", gap: 9, background: "#fff" }}>
-            {chatMsgs.map((m, i) => (
-              <div key={i} style={{ display: "flex", justifyContent: m.type === "user" ? "flex-end" : "flex-start" }}>
-                <div style={{ maxWidth: "82%", padding: "8px 11px", borderRadius: m.type === "user" ? "13px 13px 3px 13px" : "13px 13px 13px 3px", background: m.type === "user" ? GRAD : "#F3F4F6", color: m.type === "user" ? "#fff" : "#111827", fontSize: ".8rem", lineHeight: 1.55 }}>
-                  {m.text}
-                </div>
-              </div>
-            ))}
-            {chatLoading && (
-              <div style={{ display: "flex" }}>
-                <div style={{ padding: "9px 13px", borderRadius: "13px 13px 13px 3px", background: "#F3F4F6", display: "flex", gap: 5, alignItems: "center" }}>
-                  {[0,1,2].map(i => <span key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: "#F97316", display: "inline-block", animation: `typingDot 1.2s ease-in-out ${i*0.2}s infinite` }} />)}
-                </div>
-              </div>
-            )}
-            <div ref={chatEndRef} />
-          </div>
-          <div style={{ padding: "9px 11px", borderTop: "1px solid #F3F4F6", display: "flex", gap: 8, alignItems: "center", background: "#fff" }}>
-            <input
-              value={chatInput}
-              onChange={e => setChatInput(e.target.value)}
-              onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); } }}
-              placeholder="Type a message…"
-              disabled={chatLoading}
-              autoFocus
-              style={{ flex: 1, border: "1px solid #E5E7EB", borderRadius: 9, padding: "7px 11px", fontSize: ".8rem", fontFamily: "inherit", outline: "none", background: "#F9FAFB", color: "#111827", minWidth: 0 }}
-            />
-            <button
-              onClick={sendChat}
-              disabled={chatLoading || !chatInput.trim()}
-              style={{ width: 34, height: 34, borderRadius: 9, background: GRAD, border: "none", color: "#fff", cursor: "pointer", display: "grid", placeItems: "center", flexShrink: 0, opacity: chatLoading || !chatInput.trim() ? 0.45 : 1, transition: "opacity .15s" }}
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 14, height: 14 }}><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9l20-7Z"/></svg>
-            </button>
-          </div>
-        </div>
-      )}
     </>
   );
 }
