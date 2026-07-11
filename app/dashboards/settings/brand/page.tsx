@@ -131,22 +131,6 @@ export default function BrandOverlayPage() {
   const toggleSection = (id: string) => setOpenSection(s => s === id ? null : id);
   const { toast, show: showToast } = useToast();
 
-  // Force the preview stage to be a true square by mirroring its measured
-  // width into an explicit pixel height (CSS aspect-ratio/padding tricks can
-  // end up off by a few px depending on parent flex/scrollbar reflow).
-  const stageRef = useRef<HTMLDivElement>(null);
-  const [stageSize, setStageSize] = useState(0);
-
-  useEffect(() => {
-    const el = stageRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(entries => {
-      const w = entries[0]?.contentRect?.width;
-      if (w) setStageSize(w);
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -167,7 +151,7 @@ export default function BrandOverlayPage() {
 
   const [S, setS] = useState<OverlayState>({
     pos: "tl", logoUrl: null, logoName: "", logoSize: "",
-    primary: "#F97316", opacity: 90, blur: 12, radius: 10, size: 48,
+    primary: "#F97316", opacity: 90, blur: 12, radius: 10, size: 32,
     style: "glass", textColor: "white",
     showLogo: true, showName: true, showContact: true, showOvtext: true, showCorner: false, showTextbar: false,
   });
@@ -275,7 +259,7 @@ export default function BrandOverlayPage() {
 
   // Badge style computation
   const getBadgeStyle = (): React.CSSProperties => {
-    const base: React.CSSProperties = { ...POS_CSS[S.pos], position: "absolute", display: "flex", alignItems: "center", gap: 7, padding: "7px 11px", borderRadius: S.radius, opacity: S.opacity / 100, zIndex: 10, maxWidth: 200, transition: "all .25s", color: S.textColor === "white" ? "#fff" : "#0D0E1A" };
+    const base: React.CSSProperties = { ...POS_CSS[S.pos], position: "absolute", display: "flex", alignItems: "center", gap: 5, padding: "5px 8px", borderRadius: S.radius, opacity: S.opacity / 100, zIndex: 10, maxWidth: 150, transition: "all .25s", color: S.textColor === "white" ? "#fff" : "#0D0E1A" };
     switch (S.style) {
       case "glass": return { ...base, background: hexToRgba(S.primary, .18), backdropFilter: `blur(${S.blur}px)`, border: `1px solid ${hexToRgba(S.primary, .3)}`, boxShadow: `0 4px 16px ${hexToRgba(S.primary, .2)}` };
       case "solid": return { ...base, background: S.primary, backdropFilter: "none", border: "1px solid rgba(255,255,255,.1)", boxShadow: `0 4px 16px ${hexToRgba(S.primary, .4)}` };
@@ -611,7 +595,7 @@ export default function BrandOverlayPage() {
               </div>
 
               {/* Preview Card */}
-              <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 18, overflow: "hidden", boxShadow: "0 12px 32px rgba(13,14,26,.10)", marginBottom: 14, maxWidth: 420, marginLeft: "auto", marginRight: "auto" }}>
+              <div style={{ background: "#fff", border: "1px solid #E4E5EF", borderRadius: 18, overflow: "hidden", boxShadow: "0 12px 32px rgba(13,14,26,.10)", marginBottom: 14, maxWidth: 560, marginLeft: "auto", marginRight: "auto" }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "11px 14px", borderBottom: "1px solid #E4E5EF" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
                     <div style={{ width: 20, height: 20, borderRadius: 5, background: "#E1306C", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -623,15 +607,15 @@ export default function BrandOverlayPage() {
                   </div>
                 </div>
                 {/* Stage */}
-                <div ref={stageRef} style={{ position: "relative", overflow: "hidden", background: "#F0F1F8", width: "100%", height: stageSize || undefined, aspectRatio: stageSize ? undefined : "1 / 1" }}>
+                <div style={{ position: "relative", overflow: "hidden", background: "#F0F1F8", width: "100%", height: 320 }}>
                   <img src={bgImg} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }} />
                   {/* Brand badge overlay */}
                   <div style={getBadgeStyle()}>
                     {S.showLogo && S.logoUrl && <img src={S.logoUrl} alt="" style={{ width: S.size, height: S.size, objectFit: "contain", borderRadius: 6, display: "block", flexShrink: 0 }} />}
                     <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
-                      {S.showName && <div style={{ fontSize: 11.5, fontWeight: 800, fontFamily: "Sora,sans-serif", color: tc, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 130 }}>{brandName}</div>}
-                      {S.showContact && <div style={{ fontSize: 10, fontWeight: 600, color: tc, opacity: .8, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 130 }}>{phone}</div>}
-                      {S.showOvtext && <div style={{ fontSize: 10, fontWeight: 500, color: tc, opacity: .7, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 130 }}>{overlayText}</div>}
+                      {S.showName && <div style={{ fontSize: 10, fontWeight: 800, fontFamily: "Sora,sans-serif", color: tc, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 100 }}>{brandName}</div>}
+                      {S.showContact && <div style={{ fontSize: 8.5, fontWeight: 600, color: tc, opacity: .8, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 100 }}>{phone}</div>}
+                      {S.showOvtext && <div style={{ fontSize: 8.5, fontWeight: 500, color: tc, opacity: .7, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 100 }}>{overlayText}</div>}
                     </div>
                   </div>
                   {/* Corner accent */}

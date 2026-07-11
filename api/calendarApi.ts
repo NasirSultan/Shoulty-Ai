@@ -50,8 +50,13 @@ export interface CreatePlanResponse {
   message: string;
   planType?: "FREE" | "PAID";
   startPlan?: string;
-  totalPosts?: number;
-  posts?: CalendarPost[];
+  // The create endpoint returns the fully resolved post list — same shape as
+  // GET /api/calendar/plan's `posts` (content text/hashtags, media file URL
+  // already resolved), not the raw CalendarPost row.
+  meta?: {
+    totalPosts: number;
+  };
+  posts?: Post[];
 }
 
 export interface GetPlanResponse {

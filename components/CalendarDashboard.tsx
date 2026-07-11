@@ -430,7 +430,7 @@ export default function CalendarDashboard() {
   const handleCreatePlan = async (data: { prompt: string; subIndustries: string[]; postTime: string }) => {
     const response = await createPlan(data);
     if (response?.success) {
-      showToast(`Plan created with ${response.totalPosts} posts!`, "success");
+      showToast(`Plan created with ${response.meta?.totalPosts} posts!`, "success");
       // Refresh posts after plan creation
       const planResponse = await fetchPlan();
       if (planResponse?.posts) {

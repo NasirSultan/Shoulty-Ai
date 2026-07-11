@@ -1128,10 +1128,6 @@ const SettingsPage: React.FC = () => {
                           body: JSON.stringify({ subIndustryId: selectedSubIndustry.id }),
                         });
                         if (res.status === 401) { window.location.href = '/sign-in'; return; }
-                        if (res.status === 409) {
-                          showToast(`"${selectedSubIndustry.name}" is already taken — pick a different sub-category`, 'amber');
-                          return;
-                        }
                         if (!res.ok) {
                           const err = await res.json().catch(() => ({}));
                           showToast(err?.message || 'Failed to save — try a different sub-category', 'red');

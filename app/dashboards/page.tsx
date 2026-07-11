@@ -42,12 +42,9 @@ const PLAT_MAP: Record<string, { nm: string; ch: string; cls: string }> = {
 // ── API types ─────────────────────────────────────────────────────────────────
 interface DashData {
   greeting: { name: string; date: string; nextPostAt: string };
-  subIndustrySelected: {
-    selected: boolean;
-    id: string | null;
-    name: string | null;
-    industry: { id: string; name: string } | null;
-  };
+  subIndustrySelected: boolean;
+  industry: { id: string; name: string } | null;
+  subIndustry: { id: string; name: string } | null;
   subscription: { plan: string; isPurchased: boolean };
   insight: { message: string; engagementGrowthPct: number };
   autopilot: {
@@ -323,22 +320,22 @@ export default function DashboardPage() {
                 <span style={{ width: 13, height: 13, color: "#F97316", flexShrink: 0 }}>{Icon.star}</span>
                 {dashLoading ? <span className="skeleton" style={{ width: 280, height: 14 }} /> : insightMsg}
               </span>
-              {dash?.subIndustrySelected.selected && (
+              {dash?.subIndustrySelected && (
                 <Link
                   href="/dashboards/settings"
                   style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 10, marginLeft: 10, background: "#fff", border: "1px solid #E5E7EB", color: "#374151", fontSize: ".84rem", padding: "7px 13px", borderRadius: 99, textDecoration: "none" }}
                 >
                   <span style={{ width: 13, height: 13, color: "#F97316", flexShrink: 0 }}>{Icon.brand}</span>
-                  <b style={{ color: "#111827", fontWeight: 600 }}>{dash.subIndustrySelected.name}</b>
-                  {dash.subIndustrySelected.industry && (
-                    <span style={{ color: "#9CA3AF" }}>· {dash.subIndustrySelected.industry.name}</span>
+                  <b style={{ color: "#111827", fontWeight: 600 }}>{dash.subIndustry?.name}</b>
+                  {dash.industry && (
+                    <span style={{ color: "#9CA3AF" }}>· {dash.industry.name}</span>
                   )}
                 </Link>
               )}
             </div>
 
             {/* INDUSTRY NOT SELECTED */}
-            {dash && !dash.subIndustrySelected.selected && (
+            {dash && !dash.subIndustrySelected && (
               <section style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: 14, padding: "14px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <span style={{ width: 34, height: 34, borderRadius: 10, background: "#FEF3C7", display: "grid", placeItems: "center", color: "#D97706", flexShrink: 0 }}>

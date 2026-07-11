@@ -290,9 +290,17 @@ const imageFingerprint = (src?: string | null) => {
   }
 };
 
+// Reel media can be a real video file (.mp4 etc.) — rendering it inside an
+// <img> tag never works, and the browser wastes several seconds downloading
+// the whole video before onError finally fires. Detect it up front and use
+// the fallback image immediately instead of waiting for that doomed load.
+const VIDEO_FILE_RE = /\.(mp4|mov|webm|m4v|avi)(\?|#|$)/i;
+const isVideoUrl = (src?: string | null) => !!src && VIDEO_FILE_RE.test(src.trim());
+
 const safeImageSrc = (src?: string | null) => {
   const value = (src || "").trim();
-  return value || FALLBACK_CALENDAR_IMAGE;
+  if (!value || isVideoUrl(value)) return FALLBACK_CALENDAR_IMAGE;
+  return value;
 };
 
 const onCalendarImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {
@@ -451,6 +459,7 @@ function mapBackendPlanPost(
     isAI: true,
   };
 }
+
 
 function seedPosts(baseDate: Date): Post[] {
   const posts: Post[] = [];
@@ -1201,9 +1210,11 @@ export default function CalendarPage() {
         if (!planResponse.success || !planResponse.posts || planResponse.posts.length === 0) return;
 
         const plats = mapConnectedSocialsToPlats(connectedSocials);
-        const mapped = planResponse.posts.map((backendPost, index) =>
-          mapBackendPlanPost(backendPost, 10000 + index, backendPost.media?.file || FALLBACK_CALENDAR_IMAGE, plats)
-        );
+        const mapped = planResponse.posts
+          .map((backendPost, index) =>
+            mapBackendPlanPost(backendPost, 10000 + index, backendPost.media?.file || FALLBACK_CALENDAR_IMAGE, plats)
+          )
+          .sort((a, b) => a.date.getTime() - b.date.getTime());
         setPosts(mapped);
         setNextId(Math.max(10000, ...mapped.map((post) => post.id + 1)));
       } catch (error) {
@@ -1561,7 +1572,7 @@ export default function CalendarPage() {
     // verify with the user before wiping their existing scheduled posts.
     if (posts.length > 0) {
       const confirmed = typeof window !== "undefined" && window.confirm(
-        `This will replace your current plan (${posts.length} post${posts.length === 1 ? "" : "s"}) with a brand-new one for ${industrySelection?.subIndustryName || "the selected industry"}. Continue?`
+        `This will replace your current plan with a brand-new one for ${industrySelection?.subIndustryName || "the selected industry"}. Continue?`
       );
       if (!confirmed) return;
     }
@@ -1602,35 +1613,23 @@ export default function CalendarPage() {
         return;
       }
 
-      const planResponse = await getUserPlan(token);
-
-      console.log("📥 [getUserPlan] response:", planResponse);
-
-      if (!planResponse.success || !planResponse.posts || planResponse.posts.length === 0) {
+      // The create response already contains the fully resolved post list
+      // (content text/hashtags, media file URL) — no need for a follow-up
+      // GET /api/calendar/plan call, and no risk of it disagreeing with what
+      // was just created.
+      if (!response.posts || response.posts.length === 0) {
         showToast("Monthly plan created, but no posts were returned", "amber");
         return;
       }
 
-      const selectedImages = await getSelectedSubIndustryImages(effectiveSubIndustry);
-      if (!selectedImages.length) {
-        showToast("No selected sub-industry images found. Please add sub-industry images first.", "red");
-        return;
-      }
-
-      // Strict mode: use only selected sub-industry images. Build a shuffled
-      // pool sized to the post count — plain modulo cycling repeats the same
-      // image on the same weekday every week since 7 % selectedImages.length
-      // is usually 0, which looked broken across a full month.
-      const repeats = Math.ceil(planResponse.posts.length / selectedImages.length);
-      const imagePool = Array.from({ length: repeats }, () => selectedImages)
-        .flat()
-        .sort(() => Math.random() - 0.5);
-      const choosePlanImage = (index: number) => imagePool[index] ?? selectedImages[index % selectedImages.length];
-
-      const planPlats = mapConnectedSocialsToPlats(planResponse.meta?.connectedSocials);
-      const mappedPosts = planResponse.posts
+      // Unlike GET /api/calendar/plan, the create response has no
+      // meta.connectedSocials field — reuse what was already loaded from the
+      // page-mount GET call instead of assuming/defaulting.
+      const connectedSocials = Object.keys(connectedPlats).filter((k) => connectedPlats[k]);
+      const planPlats = mapConnectedSocialsToPlats(connectedSocials);
+      const mappedPosts = response.posts
         .map((backendPost, index) =>
-          mapBackendPlanPost(backendPost, startId + index, choosePlanImage(index), planPlats)
+          mapBackendPlanPost(backendPost, startId + index, backendPost.media?.file || FALLBACK_CALENDAR_IMAGE, planPlats)
         )
         .sort((a, b) => a.date.getTime() - b.date.getTime());
 
