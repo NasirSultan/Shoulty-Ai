@@ -430,6 +430,14 @@ function mapConnectedSocialsToPlats(connectedSocials?: unknown[]): PlatKey[] {
   return mapped.length > 0 ? mapped : ["ig"];
 }
 
+/** The backend's status field isn't limited to our three known values (e.g.
+ *  PROCESSING/FAILED also appear elsewhere in the API) — normalize anything
+ *  unrecognized to "scheduled" instead of letting an unknown string through. */
+function normalizeStatus(raw?: string): Status {
+  const lower = raw?.toLowerCase();
+  return lower === "scheduled" || lower === "draft" || lower === "published" ? lower : "scheduled";
+}
+
 /** Maps a single post from GET /api/calendar/plan into the calendar's local Post shape. */
 function mapBackendPlanPost(
   backendPost: { postId?: string; postTime: string; status: string; content: { text: string; hashtags: string[] }; media: { type: string; file: string } },
@@ -451,7 +459,7 @@ function mapBackendPlanPost(
     timesOptions: TIMES_POOL[0],
     img,
     score: rndInt(75, 95),
-    status: (backendPost.status?.toLowerCase() as Status) || "scheduled",
+    status: normalizeStatus(backendPost.status),
     // The backend doesn't return reach/engagement for scheduled-but-unpublished
     // posts — 0/"—" rather than a fabricated number.
     reach: 0,
@@ -499,7 +507,7 @@ function PostCard({ p, onOpen, onDup, onDel, onPublishNow }: { p: Post; onOpen: 
     draft:     { bg: "#FFFBEB", color: "#F59E0B" },
     published: { bg: "#ECFDF5", color: "#10B981" },
   };
-  const ss = statusColors[p.status];
+  const ss = statusColors[p.status] || statusColors.scheduled;
   return (
     <div className="post-card" onClick={onOpen} style={{ background: "#fff", border: "1px solid #E2E4F0", borderRadius: 10, overflow: "hidden", cursor: "pointer", boxShadow: "0 1px 4px rgba(11,12,26,.06)", position: "relative", marginBottom: 6 }}>
       <div style={{ position: "relative", overflow: "hidden" }}>
@@ -543,8 +551,8 @@ function MiniCard({ p, onOpen, onDup, onDel, onPublishNow }: { p: Post; onOpen: 
     draft:     { bg: "#FFFBEB", color: "#F59E0B" },
     published: { bg: "#ECFDF5", color: "#10B981" },
   };
-  const ss = statusColors[p.status];
-  
+  const ss = statusColors[p.status] || statusColors.scheduled;
+
   // Handle card click - only open modal, prevent any other actions
   const handleCardClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -1306,12 +1314,15 @@ export default function CalendarPage() {
           .then((res) => {
             if (!res.success || !res.post) return;
             const normalized = normalizeGeneratedContent(res.post.content?.text, res.post.content?.hashtags || []);
+            const freshStatusLower = res.post.status?.toLowerCase();
             setPosts(prev => prev.map(p => p.id === id ? {
               ...p,
               caption: normalized.caption || p.caption,
               hashtags: normalized.hashtags.length > 0 ? normalized.hashtags : p.hashtags,
               img: res.post!.media?.file || p.img,
-              status: (res.post!.status?.toLowerCase() as Status) || p.status,
+              status: freshStatusLower === "scheduled" || freshStatusLower === "draft" || freshStatusLower === "published"
+                ? freshStatusLower
+                : p.status,
             } : p));
           })
           .catch((error) => console.warn("Failed to refresh post detail from backend:", error));
