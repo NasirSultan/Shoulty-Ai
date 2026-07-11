@@ -1557,6 +1557,15 @@ export default function CalendarPage() {
       return;
     }
 
+    // Creating a plan replaces whatever plan currently exists on the backend —
+    // verify with the user before wiping their existing scheduled posts.
+    if (posts.length > 0) {
+      const confirmed = typeof window !== "undefined" && window.confirm(
+        `This will replace your current plan (${posts.length} post${posts.length === 1 ? "" : "s"}) with a brand-new one for ${industrySelection?.subIndustryName || "the selected industry"}. Continue?`
+      );
+      if (!confirmed) return;
+    }
+
     const prompt = `Create a complete monthly content plan for ${effectiveSubIndustry}, including educational, engagement, promotional, and trend-based posts.`;
     const startId = nextId;
 
@@ -1619,19 +1628,18 @@ export default function CalendarPage() {
       const choosePlanImage = (index: number) => imagePool[index] ?? selectedImages[index % selectedImages.length];
 
       const planPlats = mapConnectedSocialsToPlats(planResponse.meta?.connectedSocials);
-      const mappedPosts = planResponse.posts.map((backendPost, index) =>
-        mapBackendPlanPost(backendPost, startId + index, choosePlanImage(index), planPlats)
-      );
+      const mappedPosts = planResponse.posts
+        .map((backendPost, index) =>
+          mapBackendPlanPost(backendPost, startId + index, choosePlanImage(index), planPlats)
+        )
+        .sort((a, b) => a.date.getTime() - b.date.getTime());
 
-      setPosts((prev) => {
-        const existingKeys = new Set(prev.map((p) => `${p.date.toISOString()}|${p.caption}`));
-        const additions = mappedPosts.filter(
-          (p) => !existingKeys.has(`${p.date.toISOString()}|${p.caption}`)
-        );
-        return [...prev, ...additions].sort((a, b) => a.date.getTime() - b.date.getTime());
-      });
-
-      setNextId((prev) => Math.max(prev, startId + mappedPosts.length + 1));
+      // GET /api/calendar/plan is the single source of truth — a newly created
+      // plan REPLACES whatever plan existed before on the backend, so the local
+      // state must fully replace too, not merge on top of stale posts from the
+      // previous industry/plan.
+      setPosts(mappedPosts);
+      setNextId(Math.max(10000, startId + mappedPosts.length + 1));
       // Land on the week the plan actually starts (today), not month view —
       // month view always renders from the 1st, showing empty days before
       // the plan's first post even though it's scheduled starting today.
