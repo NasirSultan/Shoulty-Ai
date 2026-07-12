@@ -435,7 +435,11 @@ function mapConnectedSocialsToPlats(connectedSocials?: unknown[]): PlatKey[] {
  *  unrecognized to "scheduled" instead of letting an unknown string through. */
 function normalizeStatus(raw?: string): Status {
   const lower = raw?.toLowerCase();
-  return lower === "scheduled" || lower === "draft" || lower === "published" ? lower : "scheduled";
+  if (lower === "scheduled") return "scheduled";
+  if (lower === "draft") return "draft";
+  // Backend uses "POSTED" for published content, not "PUBLISHED" — accept both.
+  if (lower === "published" || lower === "posted") return "published";
+  return "scheduled";
 }
 
 /** Maps a single post from GET /api/calendar/plan into the calendar's local Post shape. */
@@ -1315,14 +1319,18 @@ export default function CalendarPage() {
             if (!res.success || !res.post) return;
             const normalized = normalizeGeneratedContent(res.post.content?.text, res.post.content?.hashtags || []);
             const freshStatusLower = res.post.status?.toLowerCase();
+            const freshStatus: Status | null =
+              freshStatusLower === "scheduled" ? "scheduled" :
+              freshStatusLower === "draft" ? "draft" :
+              // Backend uses "POSTED" for published content, not "PUBLISHED".
+              (freshStatusLower === "published" || freshStatusLower === "posted") ? "published" :
+              null;
             setPosts(prev => prev.map(p => p.id === id ? {
               ...p,
               caption: normalized.caption || p.caption,
               hashtags: normalized.hashtags.length > 0 ? normalized.hashtags : p.hashtags,
               img: res.post!.media?.file || p.img,
-              status: freshStatusLower === "scheduled" || freshStatusLower === "draft" || freshStatusLower === "published"
-                ? freshStatusLower
-                : p.status,
+              status: freshStatus ?? p.status,
             } : p));
           })
           .catch((error) => console.warn("Failed to refresh post detail from backend:", error));
