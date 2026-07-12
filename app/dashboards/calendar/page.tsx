@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -562,7 +562,7 @@ function MiniCard({ p, onOpen, onDup, onDel, onPublishNow }: { p: Post; onOpen: 
     e.stopPropagation();
     onOpen();
   };
-  
+
   return (
     <div className="mmc" onClick={handleCardClick} style={{ background: "#fff", border: "1px solid #E2E4F0", borderRadius: 8, overflow: "hidden", cursor: "pointer", boxShadow: "0 1px 4px rgba(11,12,26,.06)", position: "relative", marginBottom: 5, flexShrink: 0 }}>
       <div style={{ position: "relative", overflow: "hidden" }}>
@@ -610,6 +610,7 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
   user: Record<string, unknown> | null | undefined;
   industrySelection: { industryId: string; subIndustryId: string } | null | undefined;
 }) {
+  console.log(state);
   const p = state.postId ? posts.find(x => x.id === state.postId) : null;
   const [caption, setCaption] = useState("");
   const [dateVal, setDateVal] = useState("");
@@ -725,11 +726,16 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
       showToast("Add a caption before publishing.", "red");
       return;
     }
+    if (!p?.backendId) {
+      showToast("This post hasn't been synced to the server yet, so it can't be published.", "red");
+      return;
+    }
 
     setIsPublishingNow(true);
     try {
       await onPublishNow({
         id: p?.id ?? null,
+        backendId: p?.backendId,
         caption,
         date: dateVal ? new Date(dateVal) : today,
         type: typeVal,
@@ -1466,39 +1472,33 @@ export default function CalendarPage() {
 
     closeModal();
   };
-
   const publishPostNow = async (data: PostUpsert) => {
-    const content = (data.caption || "").trim();
-    if (!content) {
-      throw new Error("Caption is required for publishing.");
-    }
-
-    const platKeys = data.plats || [];
-    const platforms = platKeys
-      .map(pk => mapPlatKeyToPlatform(pk))
-      .filter((p): p is Platform => p !== null && p !== "youtube");
-
-    if (platforms.length === 0) {
-      throw new Error("No publishable platforms selected.");
+    console.log(data.backendId);
+    if (!data.backendId) {
+      throw new Error("This post hasn't been synced to the server yet, so it can't be published.");
     }
 
     try {
-      const fullContent = `${content}\n\n${(data.hashtags || []).join(" ")}`;
-      const mediaUrls = data.img ? [data.img] : [];
+      const token = localStorage.getItem("shoutly_token");
 
-      await publishPost({
-        content: fullContent,
-        platforms,
-        mediaUrls: mediaUrls.length > 0 ? mediaUrls : undefined,
-      });
+      const res = await fetch(
+        `https://ai-shoutly-backend.onrender.com/api/calendar/post/${data.backendId}/publish`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      const updatedData: PostUpsert = {
-        ...data,
-        status: "published",
-      };
+      const result = await res.json();
 
-      await savePost(updatedData);
-      showToast(`✅ Posted to ${platforms.join(", ")}`, "green");
+      if (!res.ok || !result.success) {
+        throw new Error(result.message || "Failed to publish post.");
+      }
+
+      showToast(result.message || "✅ Post is being published now", "green");
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to publish post.";
       showToast(message, "red");
@@ -1512,11 +1512,16 @@ export default function CalendarPage() {
       showToast("Post not found.", "red");
       return;
     }
+    if (!post.backendId) {
+      showToast("This post hasn't been synced to the server yet, so it can't be published.", "red");
+      return;
+    }
 
     try {
       await publishPostNow({
         ...post,
         id: post.id,
+        backendId: post.backendId,
       });
     } catch (err) {
       // toast already shown in publishPostNow
@@ -1681,7 +1686,7 @@ export default function CalendarPage() {
         }, 1000);
         return;
       }
-      
+
       const message = error instanceof Error ? error.message : "Failed to create monthly plan";
       showToast(message, "red");
     } finally {
