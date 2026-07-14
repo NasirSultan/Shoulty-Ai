@@ -1,15 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { X, Hash, Calendar, CheckCircle2 } from "lucide-react";
+import { X, Hash, Calendar } from "lucide-react";
 import {
   FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok, FaYoutube,
 } from "react-icons/fa";
 import { FaThreads, FaXTwitter } from "react-icons/fa6";
 import { IconType } from "react-icons";
 import {
-  DashboardCalendarPost, DashboardPlatKey, DashboardPostType,
-  DashboardStatus, DashboardTimeSlot, saveDashboardCalendarPost,
+  DashboardPlatKey, DashboardPostType, DashboardTimeSlot,
 } from "@/app/dashboards/calendarSync";
 
 type Props = {
@@ -17,7 +16,6 @@ type Props = {
   imageUrl: string;
   initialCaption?: string;
   onClose: () => void;
-  onSaved?: (post: DashboardCalendarPost) => void;
 };
 
 const PLATFORMS: DashboardPlatKey[] = ["ig", "fb", "li", "tw", "tk", "yt", "th"];
@@ -42,16 +40,13 @@ const DEFAULT_TIMES: DashboardTimeSlot[] = [
 ];
 const toInputDate = (d: Date) => d.toISOString().slice(0, 10);
 
-export default function PostPopup({ isOpen, imageUrl, initialCaption, onClose, onSaved }: Props) {
+export default function PostPopup({ isOpen, imageUrl, initialCaption, onClose }: Props) {
   const [caption, setCaption] = useState(initialCaption || "");
   const [hashtags, setHashtags] = useState<string[]>(DEFAULT_HASHTAGS);
   const [tagInput, setTagInput] = useState("");
   const [platforms, setPlatforms] = useState<DashboardPlatKey[]>(["ig"]);
   const [dateVal, setDateVal] = useState(toInputDate(new Date()));
   const [selectedTime] = useState(DEFAULT_TIMES[2].t);
-  const [isSaving, setIsSaving] = useState(false);
-  const [saveError, setSaveError] = useState("");
-  const [saved, setSaved] = useState(false);
 
   const postDate = useMemo(() => {
     const parsed = new Date(dateVal);
@@ -72,38 +67,6 @@ export default function PostPopup({ isOpen, imageUrl, initialCaption, onClose, o
     const tag = `#${cleaned}`;
     if (!hashtags.includes(tag)) setHashtags((prev) => [...prev, tag]);
     setTagInput("");
-  };
-
-  const savePost = async (status: DashboardStatus) => {
-    if (!caption.trim()) { setSaveError("Caption is required."); return; }
-    const post: DashboardCalendarPost = {
-      id: Date.now(),
-      date: postDate,
-      caption: caption.trim(),
-      hashtags,
-      plats: platforms.length ? platforms : ["ig"],
-      type: "image" as DashboardPostType,
-      timeStr: selectedTime,
-      timesOptions: DEFAULT_TIMES,
-      img: imageUrl,
-      score: 92,
-      status,
-      reach: 0,
-      engRate: "8.2%",
-      isAI: true,
-    };
-    setIsSaving(true);
-    setSaveError("");
-    try {
-      saveDashboardCalendarPost(post);
-      onSaved?.(post);
-      setSaved(true);
-      setTimeout(() => onClose(), 800);
-    } catch {
-      setSaveError("Could not save. Please try again.");
-    } finally {
-      setIsSaving(false);
-    }
   };
 
   return (
@@ -207,26 +170,8 @@ export default function PostPopup({ isOpen, imageUrl, initialCaption, onClose, o
               className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
           </div>
-
-          {saveError && (
-            <p className="text-sm text-red-500 bg-red-50 border border-red-200 rounded-xl px-4 py-2">{saveError}</p>
-          )}
         </div>
 
-        {/* Footer */}
-        <div className="flex items-center justify-end gap-3 border-t border-gray-100 bg-gray-50 px-5 py-4">
-          <button onClick={onClose} className="px-4 py-2 rounded-xl border border-gray-200 bg-white text-sm font-semibold text-gray-600 hover:bg-gray-100 transition">
-            Cancel
-          </button>
-          <button
-            onClick={() => savePost("scheduled")}
-            disabled={isSaving}
-            className="px-5 py-2 rounded-xl text-sm font-bold text-white transition disabled:opacity-60 flex items-center gap-2"
-            style={{ background: "linear-gradient(135deg,#f97316,#ef4444)" }}
-          >
-            {saved ? <><CheckCircle2 size={15} /> Saved!</> : isSaving ? "Saving..." : "Save & Schedule"}
-          </button>
-        </div>
       </div>
     </div>
   );

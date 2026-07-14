@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -194,6 +195,56 @@ const Footer = () => {
   return (
     <footer className="bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
+
+        {/* Top band — brand blurb + newsletter */}
+        <div className="border-b border-gray-200 dark:border-gray-800 pb-12 mb-12 grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+          <div>
+            <Link href="/" className="inline-flex items-center gap-2 mb-4">
+              <span className="relative w-7 h-7 flex-shrink-0 bg-white">
+                <Image src="/images/just-logo-clean.png" alt="Shoutly AI logo" fill sizes="28px" className="object-contain" />
+              </span>
+              <span className="text-lg font-bold text-gray-900 dark:text-white">
+                Shoutly<span className="text-orange-600">AI</span>
+              </span>
+            </Link>
+            <p className="text-sm text-gray-600 dark:text-gray-400 max-w-sm leading-relaxed mb-4">
+              One workspace to write, design, schedule, and measure social content across every channel your business lives on.
+            </p>
+            <span
+              className="inline-flex items-center gap-2 text-xs text-gray-400 dark:text-gray-600 cursor-not-allowed select-none"
+              title="Coming soon"
+            >
+              <span className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0" />
+              All systems operational — <span className="underline">status</span>
+            </span>
+          </div>
+
+          <div className="rounded-2xl p-6 bg-orange-50 dark:bg-gray-900 border border-orange-100 dark:border-gray-800">
+            <div className="text-base font-bold text-gray-900 dark:text-white mb-1.5">The weekly signal</div>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              AI marketing tactics, product updates, and new feature releases. Sent Thursdays.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <input
+                type="email"
+                placeholder="you@company.com"
+                disabled
+                title="Coming soon"
+                className="flex-1 text-sm px-3.5 py-2.5 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-gray-900 dark:text-white placeholder-gray-400 cursor-not-allowed"
+              />
+              <button
+                type="button"
+                disabled
+                title="Coming soon"
+                className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white opacity-50 cursor-not-allowed flex-shrink-0"
+                style={{ background: "linear-gradient(115deg,#F97316,#EA580C)" }}
+              >
+                Subscribe
+              </button>
+            </div>
+            <p className="text-xs text-gray-400 dark:text-gray-600 mt-3">No spam. Unsubscribe anytime.</p>
+          </div>
+        </div>
 
         {/* Row 1 — 6 link columns */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8 sm:gap-8 mb-12">

@@ -1,7 +1,7 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
 import { SparklesIcon } from "@heroicons/react/24/outline";
-import { RefreshCcw, Image, Film, Zap, Lock } from "lucide-react";
+import { RefreshCcw, Image, Plus, Mic, Smartphone, Monitor, Heart, MessageCircle, MoreHorizontal, Share2 } from "lucide-react";
 import PricingSection from "@/components/PricingSection";
 import Calender from "@/components/calender";
 import { fetchImages, fetchIndustries } from "@/api/homeApi";
@@ -267,10 +267,13 @@ export default function LandingPage() {
         );
         setGenerateSubIndustries(selected?.subIndustries || []);
     };
-    const [selectedContent, setSelectedContent] = useState<"photos" | "reels" | null>(null);
+    const [selectedContent, setSelectedContent] = useState<"photos" | "reels" | null>("photos");
     const [isRegeneratingBrand, setIsRegeneratingBrand] = useState(false);
     const [regenerateBrandError, setRegenerateBrandError] = useState<string | null>(null);
     const [generateValidationError, setGenerateValidationError] = useState<string | null>(null);
+
+    const [previewMode, setPreviewMode] = useState<"phone" | "window">("phone");
+
     const regenerateBrandAbortRef = useRef<AbortController | null>(null);
     const getImageCacheKey = (
         type: "generate" | "library",
@@ -525,7 +528,6 @@ export default function LandingPage() {
         setGenerateSubIndustries(selectedIndustryObj?.subIndustries || []);
         setGenerateSelectedSubIndustry(effectiveSubIndustryId);
 
-        scrollToSectionInOneSecond("gcontent");
         await generateStreamPreview(effectiveIndustryId, effectiveSubIndustryId);
     };
 
@@ -986,240 +988,277 @@ const speeds = [120, 160, 110, 150, 130];
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
                     {/* Section Header */}
                     <div className="text-center mb-12 sm:mb-16">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold uppercase tracking-widest shadow-lg shadow-orange-200 mb-5">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-orange-200 text-orange-600 text-xs font-bold uppercase tracking-widest shadow-sm mb-5">
                             <SparklesIcon className="w-3.5 h-3.5" />
-                            3 Simple Steps
+                            Studio · set it up once
                         </div>
                         <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
-                            Let&apos;s Get Your Business{" "}
+                            Set it on the left.{" "}
                             <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-                                Ready to Post
+                                Watch it on the right.
                             </span>
                         </h2>
                         <p className="text-slate-500 max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-                            Tell us about your business and we&apos;ll prepare professionally designed social media posts for the year—including local festivals, special occasions, and seasonal campaigns.
+                            Pick your business, drop in your logo, say what you do. Your posts build themselves in the phone — branded, captioned, ready to schedule.
                         </p>
                     </div>
 
-                    {/* Cards Row */}
-                    <div id="industry-cards" className="relative grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-7">
+                    {/* Two-panel Studio */}
+                    <div id="industry-cards" className="relative grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 sm:gap-7 items-stretch">
 
-                        {/* CARD 1 - Industry Selection */}
-                        <div className="group/card border border-orange-100 rounded-2xl bg-white p-4 sm:p-6 relative overflow-hidden shadow-lg shadow-orange-100/40 hover:shadow-xl hover:shadow-orange-200/40 hover:-translate-y-1 transition-all duration-300">
+                        {/* LEFT — Your Setup */}
+                        <div className="h-full flex flex-col border border-orange-100 rounded-2xl bg-white p-4 sm:p-7 relative overflow-hidden shadow-lg shadow-orange-100/40">
                             <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-orange-50 to-transparent rounded-full -mr-16 -mt-16 pointer-events-none"></div>
-                            <div className="flex items-center justify-between mb-3 sm:mb-4">
-                                <div className="flex items-center gap-2.5">
-                                    <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 text-white flex items-center justify-center text-xs font-black shadow-md shadow-orange-200 group-hover/card:scale-110 transition-transform duration-300">
-                                        1
-                                    </span>
+                            <span className="relative text-[11px] font-bold uppercase tracking-widest text-orange-500 mb-6 flex items-center gap-1.5">
+                                <SparklesIcon className="w-3.5 h-3.5" /> Your setup
+                            </span>
+
+                            {/* 1 — Your Business */}
+                            <div className="relative mt-5 mb-6">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <span className="w-5 h-5 rounded-full bg-slate-900 text-white text-[10px] font-black flex items-center justify-center flex-shrink-0">1</span>
+                                    <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Your business</span>
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <div>
-                                        <div className="text-[9px] font-bold uppercase tracking-widest text-orange-500 mb-0.5">Step 1</div>
-                                        <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-none">
-                                            Choose Your Business
-                                        </h3>
+                                        <label className="block text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5">Industry</label>
+                                        <select
+                                            value={generateSelectedIndustry}
+                                            onChange={(e) => handleSelectGenerateIndustry(e.target.value)}
+                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50/70 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white transition-all duration-200 cursor-pointer hover:border-orange-300"
+                                        >
+                                            <option value="">Choose your industry</option>
+                                            {loadingIndustries ? (
+                                                <option>Loading industries...</option>
+                                            ) : (
+                                                industries.map((industry: Industry) => (
+                                                    <option key={industry.id} value={industry.id}>
+                                                        {industry.name}
+                                                    </option>
+                                                ))
+                                            )}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5">Business type</label>
+                                        <select
+                                            value={generatePendingSubIndustry ?? ""}
+                                            onChange={(e) => setGeneratePendingSubIndustry(e.target.value || null)}
+                                            disabled={!generateSelectedIndustry}
+                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50/70 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white transition-all duration-200 cursor-pointer hover:border-orange-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            <option value="">{generateSelectedIndustry ? "Choose business type" : "Select industry first"}</option>
+                                            {generateSubIndustries.map((sub, i) => (
+                                                <option key={sub.id || i} value={String(sub.id)}>
+                                                    {sub.name}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
                                 </div>
                             </div>
 
-                            <select
-                                value={generateSelectedIndustry}
-                                // REPLACE WITH:
-                                onChange={(e) => handleSelectGenerateIndustry(e.target.value)}
-                                className="w-full mb-3 px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/70 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white focus:shadow-md text-sm font-medium text-slate-700 transition-all duration-200 cursor-pointer hover:border-orange-300 hover:shadow-md"
-                            >
-                                <option value="">Choose your industry</option>
-                                {loadingIndustries ? (
-                                    <option>Loading industries...</option>
-                                ) : (
-                                    industries.map((industry: Industry) => (
-                                        <option
-                                            key={industry.id}
-                                            value={industry.id}
-                                        >
-                                            {industry.name}
-                                        </option>
-                                    ))
-                                )}
-                            </select>
-
-                            {!loadingIndustries && industries.length > 0 && !generateSelectedIndustry && (
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5 mb-4 sm:mb-5">
-                                    {industries.slice(0, 6).map((industry: Industry, i) => {
-                                        const isActive = String(generateSelectedIndustry) === String(industry.id);
-                                        return (
-                                            <div
-                                                key={industry.id}
-                                                onClick={() => handleSelectGenerateIndustry(String(industry.id))}
-                                                className={`group cursor-pointer relative overflow-hidden rounded-xl p-2.5 border-2 transition-all duration-200 flex flex-col items-center gap-1.5 ${
-                                                    isActive
-                                                        ? "border-orange-500 bg-gradient-to-br from-orange-50 to-red-50 shadow-lg shadow-orange-100"
-                                                        : "border-slate-100 bg-gradient-to-b from-white to-slate-50/80 shadow-sm hover:border-orange-300 hover:shadow-md hover:shadow-orange-100/60 hover:bg-orange-50/40"
-                                                }`}
-                                            >
-                                                {/* Number badge */}
-                                                <div className={`w-7 h-7 rounded-lg flex items-center justify-center font-black text-xs transition-all duration-200 ${
-                                                    isActive
-                                                        ? "bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-md shadow-orange-200"
-                                                        : "bg-slate-100 text-slate-500 group-hover:bg-orange-500 group-hover:text-white"
-                                                }`}>
-                                                    {i + 1}
-                                                </div>
-                                                <span className={`text-[11px] sm:text-xs text-center font-semibold leading-tight transition-colors duration-200 ${
-                                                    isActive ? "text-orange-600" : "text-slate-600 group-hover:text-slate-900"
-                                                }`}>
-                                                    {industry.name}
-                                                </span>
-                                                {isActive && (
-                                                    <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-orange-500 shadow shadow-orange-300" />
-                                                )}
-                                            </div>
-                                        );
-                                    })}
+                            {/* 2 — What you do */}
+                            <div className="relative mb-6 pt-6 border-t border-slate-100">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <span className="w-5 h-5 rounded-full bg-slate-900 text-white text-[10px] font-black flex items-center justify-center flex-shrink-0">2</span>
+                                    <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">What you do</span>
                                 </div>
-                            )}
 
-                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5">
-                                {generateSubIndustries.length === 0 ? (
-                                    <p className="text-sm text-slate-400 col-span-full text-center py-5 font-medium">
-                                        Select an industry to see sub-categories
+                                <div className="relative mb-2.5">
+                                    <span className="absolute top-3 right-3 z-10 text-slate-300" title="Voice input — coming soon">
+                                        <Mic className="w-4 h-4" />
+                                    </span>
+                                    <AnimatedTextarea
+                                        value={brandDescription}
+                                        onChange={setBrandDescription}
+                                        minLength={MIN_BRAND_DESCRIPTION_CHARS}
+                                        maxLength={MAX_BRAND_DESCRIPTION_CHARS}
+                                        className="w-full min-h-[90px] sm:min-h-[110px] p-3 pr-9 bg-slate-50/70 rounded-xl border border-slate-200 hover:border-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white resize-none text-sm font-medium text-slate-700 shadow-inner transition-all duration-200"
+                                    />
+                                </div>
+
+                                <div className="flex items-center justify-between mb-2.5">
+                                    <p className={`text-xs font-medium ${brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS ? "text-red-400" : "text-slate-400"}`}>
+                                        {brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS
+                                            ? `Min ${MIN_BRAND_DESCRIPTION_CHARS} chars (${brandDescription.trim().length}/${MIN_BRAND_DESCRIPTION_CHARS})`
+                                            : `${brandDescription.trim().length}/${MAX_BRAND_DESCRIPTION_CHARS}`}
                                     </p>
-                                ) : (
-                                    generateSubIndustries.map((sub, i) => {
-                                        const isActive = generatePendingSubIndustry === String(sub.id);
-                                        return (
-                                            <div
-                                                key={sub.id || i}
-                                                onClick={() => setGeneratePendingSubIndustry(String(sub.id))}
-                                                className={`group cursor-pointer relative overflow-hidden rounded-xl p-2.5 border-2 transition-all duration-200 flex flex-col items-center gap-1.5 ${
-                                                    isActive
-                                                        ? "border-orange-500 bg-gradient-to-br from-orange-50 to-red-50 shadow-lg shadow-orange-100"
-                                                        : "border-slate-100 bg-gradient-to-b from-white to-slate-50/80 shadow-sm hover:border-orange-300 hover:shadow-md hover:shadow-orange-100/60 hover:bg-orange-50/40"
-                                                }`}
-                                            >
-                                                {/* Number badge */}
-                                                <div className={`w-7 h-7 rounded-lg flex items-center justify-center font-black text-xs transition-all duration-200 ${
-                                                    isActive
-                                                        ? "bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-md shadow-orange-200"
-                                                        : "bg-slate-100 text-slate-500 group-hover:bg-orange-500 group-hover:text-white"
-                                                }`}>
-                                                    {i + 1}
-                                                </div>
-                                                <span className={`text-[11px] sm:text-xs text-center font-semibold leading-tight transition-colors duration-200 ${
-                                                    isActive ? "text-orange-600" : "text-slate-600 group-hover:text-slate-900"
-                                                }`}>
-                                                    {sub.name}
-                                                </span>
-                                                {isActive && (
-                                                    <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-orange-500 shadow shadow-orange-300" />
-                                                )}
-                                            </div>
-                                        );
-                                    })
+                                    <button
+                                        type="button"
+                                        onClick={handleRegenerateBrandDescription}
+                                        disabled={isRegeneratingBrand || brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS}
+                                        className={`inline-flex items-center justify-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold transition-all bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md shadow-orange-200 ${
+                                            isRegeneratingBrand || brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS
+                                                ? "cursor-not-allowed opacity-50"
+                                                : "hover:brightness-110 cursor-pointer"
+                                        }`}
+                                    >
+                                        <RefreshCcw className={`h-4 w-4 ${isRegeneratingBrand ? "animate-spin" : ""}`} />
+                                        {isRegeneratingBrand ? "Regenerating..." : "Regenerate"}
+                                    </button>
+                                </div>
+                                {regenerateBrandError && (
+                                    <div className="mb-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-700">
+                                        {regenerateBrandError}
+                                    </div>
                                 )}
-                            </div>
-                        </div>
-
-                        {/* CARD 2 - Prompt/Brand Description */}
-                        <div className="group/card border border-orange-100 rounded-2xl bg-white p-4 sm:p-6 relative overflow-hidden shadow-lg shadow-orange-100/40 hover:shadow-xl hover:shadow-orange-200/40 hover:-translate-y-1 transition-all duration-300">
-                            <div className="absolute -top-20 -right-20 w-60 h-60 bg-gradient-to-br from-orange-100 to-red-50 rounded-full blur-3xl opacity-60 pointer-events-none" />
-
-                            <div className="flex items-center gap-2.5 mb-3 sm:mb-4">
-                                <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 text-white flex items-center justify-center text-xs font-black shadow-md shadow-orange-200 group-hover/card:scale-110 transition-transform duration-300">
-                                    2
-                                </span>
-                                <div>
-                                    <div className="text-[9px] font-bold uppercase tracking-widest text-orange-500 mb-0.5">Step 2</div>
-                                    <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-none">
-                                        Describe Your Business or Website
-                                    </h3>
-                                </div>
-                            </div>
-
-                            {/* ... existing code ... */}
-
-                            <div className="relative mb-2.5">
-                                <SparklesIcon className="absolute top-3 right-3 w-4 h-4 text-orange-300 pointer-events-none" />
-                                <AnimatedTextarea
-                                    value={brandDescription}
-                                    onChange={setBrandDescription}
-                                    minLength={MIN_BRAND_DESCRIPTION_CHARS}
-                                    maxLength={MAX_BRAND_DESCRIPTION_CHARS}
-                                    className="w-full min-h-[90px] sm:min-h-[110px] p-3 pr-9 bg-slate-50/70 rounded-xl border border-slate-200 hover:border-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white resize-none text-sm font-medium text-slate-700 shadow-inner transition-all duration-200"
-                                />
-                            </div>
-
-                            {/* Char counter */}
-                            <div className="flex items-center justify-between mb-2.5">
-                                <p className={`text-xs font-medium ${brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS ? "text-red-400" : "text-slate-400"}`}>
-                                    {brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS
-                                        ? `Min ${MIN_BRAND_DESCRIPTION_CHARS} chars (${brandDescription.trim().length}/${MIN_BRAND_DESCRIPTION_CHARS})`
-                                        : `${brandDescription.trim().length}/${MAX_BRAND_DESCRIPTION_CHARS}`}
-                                </p>
-                            </div>
-
-                            <div className="mb-3 flex justify-end">
-                                <button
-                                    type="button"
-                                    onClick={handleRegenerateBrandDescription}
-                                    disabled={isRegeneratingBrand || brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS}
-                                    className={`inline-flex items-center justify-center gap-2 rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all ${
-                                        isRegeneratingBrand || brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS
-                                            ? "cursor-not-allowed bg-slate-100 text-slate-400"
-                                            : "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:brightness-110 cursor-pointer shadow-md shadow-orange-200"
-                                    }`}
-                                >
-                                    <RefreshCcw className={`h-4 w-4 ${isRegeneratingBrand ? "animate-spin" : ""}`} />
-                                    {isRegeneratingBrand ? "Regenerating..." : "Regenerate"}
-                                </button>
-                            </div>
-                            {regenerateBrandError && (
-                                <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-700">
-                                    {regenerateBrandError}
-                                </div>
-                            )}
-
-                            {/* ... rest of the buttons and CTA ... */}
-
-                            <div className="flex gap-2.5 mb-3">
-                                <button
-                                    onClick={() => setSelectedContent(selectedContent === "photos" ? null : "photos")}
-                                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-xl border-2 text-xs sm:text-sm font-bold transition-all duration-200 ${
-                                        selectedContent === "photos"
-                                            ? "bg-gradient-to-r from-orange-500 to-red-500 border-transparent text-white"
-                                            : "bg-white border-slate-200 text-slate-600 hover:border-orange-400 hover:text-orange-500"
-                                    }`}
-                                >
-                                    <Image className="w-4 h-4" /> Create Photos
-                                </button>
-                                <button
-                                    onClick={() => setShowReelsComingSoon(true)}
-                                    className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl border-2 text-xs sm:text-sm font-bold transition-all duration-200 bg-white border-slate-200 text-slate-600 hover:border-orange-400 hover:text-orange-500"
-                                >
-                                    <Film className="w-4 h-4" /> Create Reels
-                                </button>
                             </div>
 
                             {/* CTA Button */}
                             <button
                                 onClick={handleGenerateClick}
-                                disabled={!isGenerateReady}
-                                className={`relative w-full py-3 rounded-xl text-sm sm:text-base font-black tracking-wide transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 overflow-hidden ${
-                                    isGenerateReady
-                                        ? "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:brightness-110 hover:shadow-xl hover:shadow-orange-300/50 cursor-pointer"
-                                        : "bg-slate-100 text-slate-400 cursor-not-allowed"
+                                disabled={!isGenerateReady || streamLoading}
+                                className={`relative w-full py-3 rounded-full text-sm sm:text-base font-black tracking-wide transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 overflow-hidden bg-gradient-to-r from-orange-500 to-red-500 text-white ${
+                                    isGenerateReady && !streamLoading
+                                        ? "hover:brightness-110 hover:shadow-xl hover:shadow-orange-300/50 cursor-pointer"
+                                        : "opacity-50 cursor-not-allowed"
                                 }`}
                             >
-                                {isGenerateReady && (
+                                {isGenerateReady && !streamLoading && (
                                     <span className="absolute inset-0 animate-[shimmer_2.5s_infinite] bg-gradient-to-r from-transparent via-white/25 to-transparent" />
                                 )}
-                                {isGenerateReady ? <Zap className="w-4 h-4 relative" /> : <Lock className="w-4 h-4 relative" />}
-                                <span className="relative">Preview First Post</span>
+                                {streamLoading ? (
+                                    <RefreshCcw className="w-4 h-4 relative animate-spin" />
+                                ) : (
+                                    <Plus className="w-4 h-4 relative" />
+                                )}
+                                <span className="relative">{streamLoading ? "Creating..." : "Create my posts"}</span>
                             </button>
                             {generateValidationError && (
                                 <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-700">
                                     {generateValidationError}
                                 </div>
                             )}
+                        </div>
+
+                        {/* RIGHT — Live preview */}
+                        <div className="h-full flex flex-col border border-orange-100 rounded-2xl bg-white p-5 shadow-lg shadow-orange-100/40 lg:sticky lg:top-24">
+                            {/* Phone / Window toggle */}
+                            <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 mb-5 w-fit mx-auto">
+                                <button
+                                    type="button"
+                                    onClick={() => setPreviewMode("phone")}
+                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                                        previewMode === "phone" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"
+                                    }`}
+                                >
+                                    <Smartphone className="w-3.5 h-3.5" /> Phone
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setPreviewMode("window")}
+                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                                        previewMode === "window" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"
+                                    }`}
+                                >
+                                    <Monitor className="w-3.5 h-3.5" /> Window
+                                </button>
+                            </div>
+
+                            <div className="flex-1 flex flex-col justify-center">
+                            {(() => {
+                                const previewImage = streamedPosts[0]?.image?.imageUrl;
+                                const previewCaption = streamedPosts[0]?.text;
+                                const hasResult = !!previewImage;
+                                const businessName = industries.find(ind => String(ind.id) === String(generateSelectedIndustry))?.name || "Your Business";
+
+                                const content = (
+                                    <div className="relative w-full h-full bg-white flex flex-col overflow-hidden">
+                                        {/* Post header — avatar, name, timestamp */}
+                                        <div className={`flex items-center gap-2 flex-shrink-0 ${previewMode === "phone" ? "px-2.5 pt-6 pb-2" : "px-3 py-3"}`}>
+                                            <span
+                                                className={`rounded-full flex-shrink-0 flex items-center justify-center text-white font-black ${
+                                                    previewMode === "phone" ? "w-7 h-7 text-xs" : "w-10 h-10 text-base"
+                                                }`}
+                                                style={{ background: "linear-gradient(135deg,#F97316,#EA580C)" }}
+                                            >
+                                                {businessName.charAt(0).toUpperCase()}
+                                            </span>
+                                            <div className="min-w-0 flex-1">
+                                                <p className={`font-bold text-slate-900 truncate leading-tight ${previewMode === "phone" ? "text-[11px]" : "text-sm"}`}>
+                                                    {businessName}
+                                                </p>
+                                                <p className={`text-slate-400 mt-0.5 ${previewMode === "phone" ? "text-[9px]" : "text-[11px]"}`}>
+                                                    Just now · 🌐
+                                                </p>
+                                            </div>
+                                            <MoreHorizontal className={`text-slate-400 flex-shrink-0 ${previewMode === "phone" ? "w-3.5 h-3.5" : "w-4 h-4"}`} />
+                                        </div>
+
+                                        {/* Caption — above the image, like a real post */}
+                                        {hasResult && previewCaption && (
+                                            <div className="px-3 pb-2.5 flex-shrink-0 overflow-hidden" style={{ maxHeight: "3.9em" }}>
+                                                <p className="text-[11.5px] text-slate-700 leading-snug line-clamp-3">
+                                                    {previewCaption}
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        <div className="flex-1 relative bg-slate-50 flex items-center justify-center overflow-hidden">
+                                            {streamLoading ? (
+                                                <div className="flex flex-col items-center gap-2 text-slate-400">
+                                                    <RefreshCcw className="w-6 h-6 animate-spin text-orange-500" />
+                                                    <span className="text-xs font-semibold">Building your post…</span>
+                                                </div>
+                                            ) : hasResult ? (
+                                                <img src={previewImage} alt="Generated post" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="flex flex-col items-center gap-2 text-center px-6">
+                                                    <span className="w-11 h-11 rounded-full bg-orange-100 flex items-center justify-center">
+                                                        <Image className="w-5 h-5 text-orange-400" />
+                                                    </span>
+                                                    <p className="text-xs font-bold text-slate-700">Your feed is empty</p>
+                                                    <p className="text-[11px] text-slate-400 leading-relaxed">Fill in the left side and your posts land here.</p>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Engagement bar — like real post chrome */}
+                                        {hasResult && (
+                                            <div className="flex items-center gap-4 px-3 py-2.5 border-t border-slate-100 flex-shrink-0 text-slate-500 flex-wrap">
+                                                <span className="flex items-center gap-1.5 text-[11px] font-semibold">
+                                                    <Heart className="w-3.5 h-3.5 text-red-400 fill-red-400" /> 428
+                                                </span>
+                                                <span className="flex items-center gap-1.5 text-[11px] font-semibold">
+                                                    <MessageCircle className="w-3.5 h-3.5" /> 36
+                                                </span>
+                                                <span className="flex items-center gap-1.5 text-[11px] font-semibold ml-auto">
+                                                    <Share2 className="w-3.5 h-3.5" /> 12
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+
+                                if (previewMode === "phone") {
+                                    return (
+                                        <div className="mx-auto w-[220px] h-[440px] rounded-[2rem] border-[8px] border-slate-900 bg-slate-900 shadow-xl overflow-hidden relative">
+                                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-4 bg-slate-900 rounded-b-xl z-10" />
+                                            <div className="w-full h-full rounded-[1.4rem] overflow-hidden">{content}</div>
+                                        </div>
+                                    );
+                                }
+                                return (
+                                    <div className="mx-auto w-full max-w-[340px] rounded-xl border border-slate-200 shadow-xl overflow-hidden">
+                                        <div className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 border-b border-slate-200">
+                                            <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
+                                            <span className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
+                                            <span className="w-2.5 h-2.5 rounded-full bg-green-400" />
+                                        </div>
+                                        <div className="h-[360px]">{content}</div>
+                                    </div>
+                                );
+                            })()}
+                            </div>
+
+                            <div className="mt-4 text-center">
+                                <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-400 bg-slate-50 border border-slate-100 rounded-full px-3 py-1.5">
+                                    {generateSelectedIndustry
+                                        ? `Ready for ${industries.find(ind => String(ind.id) === String(generateSelectedIndustry))?.name?.toLowerCase() || "your business"}`
+                                        : "Waiting for your business details"}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
