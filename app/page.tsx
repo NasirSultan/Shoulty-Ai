@@ -1,7 +1,7 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
 import { SparklesIcon } from "@heroicons/react/24/outline";
-import { RefreshCcw, Image, Plus, Mic, Smartphone, Monitor, Heart, MessageCircle, MoreHorizontal, Share2 } from "lucide-react";
+import { RefreshCcw, Image, Plus, Mic, Smartphone, Monitor, Heart, MessageCircle, MoreHorizontal, Share2, ClipboardList } from "lucide-react";
 import PricingSection from "@/components/PricingSection";
 import Calender from "@/components/calender";
 import { fetchImages, fetchIndustries } from "@/api/homeApi";
@@ -13,6 +13,25 @@ import {
 import PostPopup from "@/components/PostPopup";
 import { Testimonials } from "@/components/SocialProof";
 import { HomepageFAQ } from "@/components/FAQ";
+
+// Generic local placeholder images — shown in the content library grid before
+// an industry is picked, so the section isn't just empty dashed boxes.
+const LIBRARY_PLACEHOLDER_IMAGES = [
+    "/images/img1.jpeg", "/images/img2.jpeg", "/images/3.png", "/images/4.png",
+    "/images/5.png", "/images/6.png", "/images/7.png", "/images/8.png",
+    "/images/9.png", "/images/10.png", "/images/11.png", "/images/12.png",
+    "/images/13.png", "/images/14.png", "/images/15.png", "/images/16.png",
+    "/images/17.png", "/images/18.png", "/images/19.png", "/images/20.png",
+];
+
+function pickRandomImages(pool: string[], count: number): string[] {
+    const shuffled = [...pool];
+    for (let i = shuffled.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled.slice(0, count);
+}
 
 
 // Type definitions
@@ -247,6 +266,8 @@ export default function LandingPage() {
     const [librarySelectedSubIndustry, setLibrarySelectedSubIndustry] =
         useState<string | null>(null);
     const [libraryImages, setLibraryImages] = useState<ImageItem[]>([]);
+    const [libraryPlaceholderImages] = useState(() => pickRandomImages(LIBRARY_PLACEHOLDER_IMAGES, 7));
+    const [placeholderPreview, setPlaceholderPreview] = useState<string | null>(null);
     const [libraryLoadingImages, setLibraryLoadingImages] = useState(false);
     const [libraryFilterTerm, setLibraryFilterTerm] = useState("");
     const [activeLibraryImageId, setActiveLibraryImageId] = useState<string | number | null>(null);
@@ -696,16 +717,6 @@ export default function LandingPage() {
             const data = await fetchIndustries();
             setIndustries(data);
             setLoadingIndustries(false);
-
-            // Pre-select "Food & Beverage" for the library to avoid empty state
-            const defaultIndustry = data.find((ind: Industry) => ind.name === "Food & Beverage");
-            if (defaultIndustry) {
-                setLibrarySelectedIndustry(String(defaultIndustry.id));
-                const firstSub = defaultIndustry.subIndustries?.[0];
-                if (firstSub) {
-                    setLibrarySelectedSubIndustry(String(firstSub.id));
-                }
-            }
         };
         loadIndustries();
     }, []);
@@ -998,8 +1009,8 @@ const speeds = [120, 160, 110, 150, 130];
                                 Watch it on the right.
                             </span>
                         </h2>
-                        <p className="text-slate-500 max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-                            Pick your business, drop in your logo, say what you do. Your posts build themselves in the phone — branded, captioned, ready to schedule.
+                        <p className="text-slate-500 max-w-3xl mx-auto text-sm sm:text-base leading-relaxed">
+                            Pick your business, tell us what you do, and your social media posts build themselves-complete with branded visuals, engaging captions, and ready to schedule in minutes.
                         </p>
                     </div>
 
@@ -1007,25 +1018,27 @@ const speeds = [120, 160, 110, 150, 130];
                     <div id="industry-cards" className="relative grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 sm:gap-7 items-stretch">
 
                         {/* LEFT — Your Setup */}
-                        <div className="h-full flex flex-col border-2 border-orange-200 rounded-2xl bg-white shadow-xl shadow-orange-200/50 p-4 sm:p-7 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-orange-50 to-transparent rounded-full -mr-16 -mt-16 pointer-events-none"></div>
-                            <span className="relative text-[11px] font-bold uppercase tracking-widest text-orange-500 mb-6 flex items-center gap-1.5">
-                                <SparklesIcon className="w-3.5 h-3.5" /> Your setup
-                            </span>
+                        <div className="h-full flex flex-col rounded-2xl bg-white shadow-[0_0_14px_rgba(249,115,22,0.4)] p-4 sm:p-7 relative overflow-hidden">
+                            <div className="relative flex items-center gap-3 mb-6">
+                                <span className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-white" style={{ background: "linear-gradient(135deg,#F97316,#EA580C)" }}>
+                                    <ClipboardList className="w-4 h-4" />
+                                </span>
+                                <h3 className="text-lg font-bold text-slate-900 tracking-tight">Your setup</h3>
+                            </div>
 
                             {/* 1 — Your Business */}
                             <div className="relative mt-5 mb-6">
                                 <div className="flex items-center gap-2 mb-3">
-                                    <span className="w-5 h-5 rounded-full bg-slate-900 text-white text-[10px] font-black flex items-center justify-center flex-shrink-0">1</span>
-                                    <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Your business</span>
+                                    <span className="w-5 h-5 rounded-full bg-orange-500 text-white text-[10px] font-black flex items-center justify-center flex-shrink-0">1</span>
+                                    <span className="text-sm font-bold text-slate-900">Your business</span>
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <div>
-                                        <label className="block text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5">Industry</label>
+                                        <label className="block text-xs font-semibold text-slate-500 mb-1.5">Industry</label>
                                         <select
                                             value={generateSelectedIndustry}
                                             onChange={(e) => handleSelectGenerateIndustry(e.target.value)}
-                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50/70 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white transition-all duration-200 cursor-pointer hover:border-orange-300"
+                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 cursor-pointer hover:border-orange-300"
                                         >
                                             <option value="">Choose your industry</option>
                                             {loadingIndustries ? (
@@ -1040,12 +1053,12 @@ const speeds = [120, 160, 110, 150, 130];
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1.5">Business type</label>
+                                        <label className="block text-xs font-semibold text-slate-500 mb-1.5">Business type</label>
                                         <select
                                             value={generatePendingSubIndustry ?? ""}
                                             onChange={(e) => setGeneratePendingSubIndustry(e.target.value || null)}
                                             disabled={!generateSelectedIndustry}
-                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50/70 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white transition-all duration-200 cursor-pointer hover:border-orange-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 cursor-pointer hover:border-orange-300 disabled:bg-slate-100 disabled:text-slate-400 disabled:opacity-100 disabled:cursor-not-allowed"
                                         >
                                             <option value="">{generateSelectedIndustry ? "Choose business type" : "Select industry first"}</option>
                                             {generateSubIndustries.map((sub, i) => (
@@ -1061,42 +1074,49 @@ const speeds = [120, 160, 110, 150, 130];
                             {/* 2 — What you do */}
                             <div className="relative mb-6 pt-6 border-t border-slate-100">
                                 <div className="flex items-center gap-2 mb-3">
-                                    <span className="w-5 h-5 rounded-full bg-slate-900 text-white text-[10px] font-black flex items-center justify-center flex-shrink-0">2</span>
-                                    <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">What you do</span>
+                                    <span className="w-5 h-5 rounded-full bg-orange-500 text-white text-[10px] font-black flex items-center justify-center flex-shrink-0">2</span>
+                                    <span className="text-sm font-bold text-slate-900">What you do</span>
                                 </div>
 
                                 <div className="relative mb-2.5">
-                                    <span className="absolute top-3 right-3 z-10 text-slate-300" title="Voice input — coming soon">
-                                        <Mic className="w-4 h-4" />
-                                    </span>
                                     <AnimatedTextarea
                                         value={brandDescription}
                                         onChange={setBrandDescription}
                                         minLength={MIN_BRAND_DESCRIPTION_CHARS}
                                         maxLength={MAX_BRAND_DESCRIPTION_CHARS}
-                                        className="w-full min-h-[90px] sm:min-h-[110px] p-3 pr-9 bg-slate-50/70 rounded-xl border border-slate-200 hover:border-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white resize-none text-sm font-medium text-slate-700 shadow-inner transition-all duration-200"
+                                        className="w-full min-h-[90px] sm:min-h-[110px] p-3 bg-slate-50/70 rounded-xl border border-slate-200 hover:border-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white resize-none text-sm font-medium text-slate-700 shadow-inner transition-all duration-200"
                                     />
-                                </div>
-
-                                <div className="flex items-center justify-between mb-2.5">
-                                    <p className={`text-xs font-medium ${brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS ? "text-red-400" : "text-slate-400"}`}>
-                                        {brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS
-                                            ? `Min ${MIN_BRAND_DESCRIPTION_CHARS} chars (${brandDescription.trim().length}/${MIN_BRAND_DESCRIPTION_CHARS})`
-                                            : `${brandDescription.trim().length}/${MAX_BRAND_DESCRIPTION_CHARS}`}
-                                    </p>
                                     <button
                                         type="button"
                                         onClick={handleRegenerateBrandDescription}
                                         disabled={isRegeneratingBrand || brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS}
-                                        className={`inline-flex items-center justify-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold transition-all bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md shadow-orange-200 ${
+                                        className={`absolute top-3 right-3 inline-flex items-center justify-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold transition-all bg-orange-500 text-white ${
                                             isRegeneratingBrand || brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS
                                                 ? "cursor-not-allowed opacity-50"
                                                 : "hover:brightness-110 cursor-pointer"
                                         }`}
                                     >
-                                        <RefreshCcw className={`h-4 w-4 ${isRegeneratingBrand ? "animate-spin" : ""}`} />
-                                        {isRegeneratingBrand ? "Regenerating..." : "Regenerate"}
+                                        {isRegeneratingBrand ? (
+                                            <RefreshCcw className="h-3.5 w-3.5 animate-spin" />
+                                        ) : (
+                                            <Plus className="h-3.5 w-3.5" />
+                                        )}
+                                        {isRegeneratingBrand ? "Regenerating..." : "Write it"}
                                     </button>
+                                </div>
+
+                                <div className="flex items-center justify-between mb-2.5">
+                                    <button
+                                        type="button"
+                                        disabled
+                                        title="Voice input — coming soon"
+                                        className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold border border-slate-200 text-slate-400 bg-white cursor-not-allowed opacity-70"
+                                    >
+                                        <Mic className="w-3.5 h-3.5" /> Speak
+                                    </button>
+                                    <p className="text-xs font-medium text-slate-400">
+                                        {brandDescription.trim().length}/{brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS ? MIN_BRAND_DESCRIPTION_CHARS : MAX_BRAND_DESCRIPTION_CHARS}
+                                    </p>
                                 </div>
                                 {regenerateBrandError && (
                                     <div className="mb-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-700">
@@ -1109,9 +1129,9 @@ const speeds = [120, 160, 110, 150, 130];
                             <button
                                 onClick={handleGenerateClick}
                                 disabled={!isGenerateReady || streamLoading}
-                                className={`relative w-full py-3 rounded-full text-sm sm:text-base font-black tracking-wide transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 overflow-hidden bg-gradient-to-r from-orange-500 to-red-500 text-white ${
+                                className={`relative w-full py-3 rounded-full text-sm sm:text-base font-black tracking-wide transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 overflow-hidden bg-orange-500 text-white ${
                                     isGenerateReady && !streamLoading
-                                        ? "hover:brightness-110 hover:shadow-xl hover:shadow-orange-300/50 cursor-pointer"
+                                        ? "hover:brightness-110 cursor-pointer"
                                         : "opacity-50 cursor-not-allowed"
                                 }`}
                             >
@@ -1133,7 +1153,7 @@ const speeds = [120, 160, 110, 150, 130];
                         </div>
 
                         {/* RIGHT — Live preview */}
-                        <div className="h-full flex flex-col border-2 border-orange-200 rounded-2xl bg-white shadow-xl shadow-orange-200/50 p-5 lg:sticky lg:top-24">
+                        <div className="h-full flex flex-col rounded-2xl bg-white shadow-[0_0_14px_rgba(249,115,22,0.4)] p-5 lg:sticky lg:top-24">
                             {/* Phone / Window toggle */}
                             <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 mb-5 w-fit mx-auto">
                                 <button
@@ -1202,7 +1222,7 @@ const speeds = [120, 160, 110, 150, 130];
                                                     <span className="text-xs font-semibold">Building your post…</span>
                                                 </div>
                                             ) : hasResult ? (
-                                                <img src={previewImage} alt="Generated post" className="w-full h-full object-cover" />
+                                                <img src={previewImage} alt="Generated post" className="w-full h-full object-contain" />
                                             ) : (
                                                 <div className="flex flex-col items-center gap-2 text-center px-6">
                                                     <span className="w-11 h-11 rounded-full bg-orange-100 flex items-center justify-center">
@@ -1853,6 +1873,12 @@ const speeds = [120, 160, 110, 150, 130];
                         </div>
 
                         {/* Templates Grid */}
+                        {!librarySelectedSubIndustry && !libraryLoadingImages && (
+                            <div className="text-center mb-4">
+                                <p className="text-sm font-semibold text-gray-600">Choose your industry to see templates</p>
+                                <p className="text-xs text-gray-400">Pick a business type above to load matching posts.</p>
+                            </div>
+                        )}
                         <div className={`grid gap-4 ${
                             libraryContentType === "reels"
                                 ? "grid-cols-2 sm:grid-cols-4 md:grid-cols-8"
@@ -1866,6 +1892,18 @@ const speeds = [120, 160, 110, 150, 130];
                                             libraryContentType === "reels" ? "aspect-[9/16]" : "h-48"
                                         }`}
                                     />
+                                ))
+                            ) : !librarySelectedSubIndustry ? (
+                                libraryPlaceholderImages.map((src, i) => (
+                                    <div
+                                        key={src + i}
+                                        onClick={() => setPlaceholderPreview(src)}
+                                        className={`w-full rounded-xl overflow-hidden cursor-pointer transition-transform duration-200 hover:scale-[1.02] hover:ring-2 hover:ring-orange-300 hover:ring-offset-1 ${
+                                            libraryContentType === "reels" ? "aspect-[9/16]" : "h-48"
+                                        }`}
+                                    >
+                                        <img src={src} alt="Sample template" className="w-full h-full object-cover" />
+                                    </div>
                                 ))
                             ) : libraryFilteredImages.length === 0 ? (
                                 <p className="col-span-full text-center text-gray-400 py-12">
@@ -1944,6 +1982,29 @@ const speeds = [120, 160, 110, 150, 130];
                     </div>
                 </div>
             </section>
+
+            {/* Placeholder image preview popup */}
+            {placeholderPreview && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+                    onClick={() => setPlaceholderPreview(null)}
+                >
+                    <div className="relative max-w-xl w-full" onClick={(e) => e.stopPropagation()}>
+                        <button
+                            onClick={() => setPlaceholderPreview(null)}
+                            className="absolute -top-10 right-0 sm:-right-10 sm:top-0 w-9 h-9 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-gray-700 text-lg font-bold shadow-lg"
+                            aria-label="Close preview"
+                        >
+                            ✕
+                        </button>
+                        <img
+                            src={placeholderPreview}
+                            alt="Sample template preview"
+                            className="w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl bg-white"
+                        />
+                    </div>
+                </div>
+            )}
 
             {/* Pricing Section */}
             <div id="pricing" className="bg-[#faf6ef]">
