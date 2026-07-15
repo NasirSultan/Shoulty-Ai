@@ -1401,15 +1401,24 @@ export default function CalendarPage() {
         return updated;
       });
       showToast("✅ Post updated!", "green");
-
+  console.log(savedPost)
       if (savedPost?.backendId) {
+        
         const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null;
         if (token) {
           try {
+            const statusMap: Partial<Record<Status, string>> = {
+              scheduled: "SCHEDULED",
+              published: "POSTED",
+              // "draft" intentionally omitted — no backend equivalent exists yet,
+              // so we leave the post's existing backend status untouched.
+            };
+
             await updateCalendarPost(savedPost.backendId, {
               postTime: toScheduledDate(savedPost).toISOString(),
               contentText: `${savedPost.caption}\n\n${savedPost.hashtags.join(" ")}`,
               imageUrl: savedPost.img,
+              ...(statusMap[savedPost.status] ? { status: statusMap[savedPost.status] } : {}),
             }, token);
           } catch (err) {
             console.warn("Failed to sync post update to backend:", err);
