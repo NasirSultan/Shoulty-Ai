@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+import { API_BASE_URL } from '@/api/configApi';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -77,6 +78,46 @@ function FooterColumn({ title, links }: { title: string; links: FooterLink[] }) 
 
 const Footer = () => {
   const pathname = usePathname();
+
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterState, setNewsletterState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [newsletterMessage, setNewsletterMessage] = useState('');
+
+  const handleNewsletterSubscribe = async () => {
+    const email = newsletterEmail.trim();
+    if (!email) {
+      setNewsletterState('error');
+      setNewsletterMessage('Please enter your email.');
+      return;
+    }
+    setNewsletterState('loading');
+    setNewsletterMessage('');
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/newsletter/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (res.status === 409) {
+        setNewsletterState('success');
+        setNewsletterMessage("You're already subscribed!");
+        return;
+      }
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        setNewsletterState('error');
+        setNewsletterMessage(err?.message || 'Something went wrong — please try again.');
+        return;
+      }
+      setNewsletterState('success');
+      setNewsletterMessage("Subscribed! Check your inbox Thursday.");
+      setNewsletterEmail('');
+    } catch {
+      setNewsletterState('error');
+      setNewsletterMessage('Network error — please try again.');
+    }
+  };
+
   if (pathname === "/dashboards" || pathname?.startsWith("/dashboards/")) return null;
 
   const currentYear = new Date().getFullYear();
@@ -199,13 +240,15 @@ const Footer = () => {
         {/* Top band — brand blurb + newsletter */}
         <div className="border-b border-gray-200 dark:border-gray-800 pb-12 mb-12 grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
           <div>
-            <Link href="/" className="inline-flex items-center gap-2 mb-4">
-              <span className="relative w-7 h-7 flex-shrink-0 bg-white">
-                <Image src="/images/just-logo-clean.png" alt="Shoutly AI logo" fill sizes="28px" className="object-contain" />
-              </span>
-              <span className="text-lg font-bold text-gray-900 dark:text-white">
-                Shoutly<span className="text-orange-600">AI</span>
-              </span>
+            <Link href="/" className="inline-block mb-4 -ml-4">
+              <Image
+                src="/images/logo.png"
+                alt="Shoutly AI logo"
+                width={160}
+                height={56}
+                sizes="144px"
+                className="w-36 h-12 object-contain"
+              />
             </Link>
             <p className="text-sm text-gray-600 dark:text-gray-400 max-w-sm leading-relaxed mb-4">
               One workspace to write, design, schedule, and measure social content across every channel your business lives on.
@@ -228,21 +271,29 @@ const Footer = () => {
               <input
                 type="email"
                 placeholder="you@company.com"
-                disabled
-                title="Coming soon"
-                className="flex-1 text-sm px-3.5 py-2.5 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-gray-900 dark:text-white placeholder-gray-400 cursor-not-allowed"
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') handleNewsletterSubscribe(); }}
+                disabled={newsletterState === 'loading'}
+                className="flex-1 text-sm px-3.5 py-2.5 rounded-lg border border-orange-200 dark:border-orange-900/50 bg-white dark:bg-gray-950 text-gray-900 dark:text-white placeholder-gray-400 outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 disabled:opacity-60"
               />
               <button
                 type="button"
-                disabled
-                title="Coming soon"
-                className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white opacity-50 cursor-not-allowed flex-shrink-0"
+                onClick={handleNewsletterSubscribe}
+                disabled={newsletterState === 'loading'}
+                className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white flex-shrink-0 disabled:opacity-60 disabled:cursor-not-allowed"
                 style={{ background: "linear-gradient(115deg,#F97316,#EA580C)" }}
               >
-                Subscribe
+                {newsletterState === 'loading' ? 'Subscribing…' : 'Subscribe'}
               </button>
             </div>
-            <p className="text-xs text-gray-400 dark:text-gray-600 mt-3">No spam. Unsubscribe anytime.</p>
+            {newsletterMessage ? (
+              <p className={`text-xs mt-3 ${newsletterState === 'error' ? 'text-red-500' : 'text-green-600 dark:text-green-500'}`}>
+                {newsletterMessage}
+              </p>
+            ) : (
+              <p className="text-xs text-gray-400 dark:text-gray-600 mt-3">No spam. Unsubscribe anytime.</p>
+            )}
           </div>
         </div>
 

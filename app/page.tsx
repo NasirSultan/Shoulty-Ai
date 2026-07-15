@@ -1007,7 +1007,7 @@ const speeds = [120, 160, 110, 150, 130];
                     <div id="industry-cards" className="relative grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 sm:gap-7 items-stretch">
 
                         {/* LEFT — Your Setup */}
-                        <div className="h-full flex flex-col border border-orange-100 rounded-2xl bg-white p-4 sm:p-7 relative overflow-hidden shadow-lg shadow-orange-100/40">
+                        <div className="h-full flex flex-col border-2 border-orange-200 rounded-2xl bg-white shadow-xl shadow-orange-200/50 p-4 sm:p-7 relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-orange-50 to-transparent rounded-full -mr-16 -mt-16 pointer-events-none"></div>
                             <span className="relative text-[11px] font-bold uppercase tracking-widest text-orange-500 mb-6 flex items-center gap-1.5">
                                 <SparklesIcon className="w-3.5 h-3.5" /> Your setup
@@ -1133,7 +1133,7 @@ const speeds = [120, 160, 110, 150, 130];
                         </div>
 
                         {/* RIGHT — Live preview */}
-                        <div className="h-full flex flex-col border border-orange-100 rounded-2xl bg-white p-5 shadow-lg shadow-orange-100/40 lg:sticky lg:top-24">
+                        <div className="h-full flex flex-col border-2 border-orange-200 rounded-2xl bg-white shadow-xl shadow-orange-200/50 p-5 lg:sticky lg:top-24">
                             {/* Phone / Window toggle */}
                             <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 mb-5 w-fit mx-auto">
                                 <button
