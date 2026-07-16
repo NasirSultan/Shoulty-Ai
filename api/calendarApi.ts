@@ -423,3 +423,22 @@ export async function createPlanAndFetch(
 
   return planResponse.posts || [];
 }
+
+export async function createManualPost(
+  body: { postTime: string; contentText?: string; imageUrl?: string; timezone?: string },
+  token: string
+) {
+  const res = await fetch(`https://ai-shoutly-backend.onrender.com/api/calendar/post/manual`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || "Failed to create post");
+  }
+  return data;
+}

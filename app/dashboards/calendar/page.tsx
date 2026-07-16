@@ -7,7 +7,7 @@ import {
   resolveGeneratorProfileFields,
   streamGeneratePosts,
 } from "@/api/postGeneratorApi";
-import { createMonthlyPlan, getUserPlan, getPostDetail, updateCalendarPost, createCalendarPost } from "@/api/calendarApi";
+import { createMonthlyPlan, getUserPlan, getPostDetail, updateCalendarPost, createCalendarPost, createManualPost } from "@/api/calendarApi";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { API_BASE_URL } from "@/api/configApi";
 import { publishPost, schedulePosts, Platform } from "@/api/autopostApi";
@@ -1359,39 +1359,35 @@ export default function CalendarPage() {
   /** Syncs a brand-new local post to POST /api/calendar/post. Only possible for
    *  today's date — the backend always uses today regardless of what's sent
    *  (see createCalendarPost's docstring). Returns the new backendId, or null
-   *  if it couldn't be synced (kept local-only in that case). */
+*/
+  /** Syncs a brand-new local post to POST /api/calendar/post/manual. Any date is
+   *  supported now — the backend no longer restricts creation to today, and no
+   *  longer needs subIndustryId from the client (it resolves the user's real
+   *  niche server-side). Returns the new backendId, or undefined if it couldn't
+   *  be synced (kept local-only in that case). */
   const syncNewPostToBackend = async (post: Post, opts?: { silent?: boolean }): Promise<string | undefined> => {
-    if (!sameDay(post.date, today)) {
-      if (!opts?.silent) {
-        showToast("Saved locally only — backend can't create posts for a future date yet.", "amber");
-      }
-      return undefined;
-    }
-    const resolved = resolveGeneratorProfileFields((user ?? null) as Record<string, unknown> | null);
-    const subIndustryId = industrySelection?.subIndustryId || resolved.subIndustryId;
-    if (!subIndustryId) return undefined;
     const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null;
     if (!token) return undefined;
 
     const d = toScheduledDate(post);
-    const postTime = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 
     try {
-      const res = await createCalendarPost({
-        subIndustryId,
-        postTime,
+      const res = await createManualPost({
+        postTime: d.toISOString(),
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         contentText: `${post.caption}\n\n${post.hashtags.join(" ")}`,
         imageUrl: post.img || undefined,
       }, token);
-      const created = res.post as { id?: string; postId?: string } | undefined;
-      return created?.id || created?.postId;
+      const created = res.post as { postId?: string } | undefined;
+      return created?.postId;
     } catch (err) {
       console.warn("Failed to sync new post to backend:", err);
-      showToast("Saved locally, but backend sync failed.", "amber");
+      if (!opts?.silent) {
+        showToast("Saved locally, but backend sync failed.", "amber");
+      }
       return undefined;
     }
   };
-
   const savePost = async (data: PostUpsert) => {
     let savedPost: Post | undefined;
     if (data.id) {
