@@ -99,9 +99,9 @@ const MEGA_MENUS: MegaMenu[] = [
             {
                 title: "By channel",
                 items: [
-                    { label: "X", icon: FaXTwitter },
+                    { label: "X", href: "/channel/twitter-x", icon: FaXTwitter },
                     { label: "Instagram", icon: FaInstagram },
-                    { label: "Facebook", icon: FaFacebook },
+                    { label: "Facebook", href: "/channel/facebook", icon: FaFacebook },
                     { label: "Bluesky", icon: FaBluesky },
                     { label: "LinkedIn", icon: FaLinkedin },
                     { label: "TikTok", icon: FaTiktok },
@@ -168,9 +168,9 @@ const MEGA_MENUS: MegaMenu[] = [
             {
                 title: "Popular comparisons",
                 items: [
-                    { label: "Buffer vs Shoutly AI", icon: ArrowLeftRight },
-                    { label: "Hootsuite vs Shoutly AI", icon: ArrowLeftRight },
-                    { label: "Later vs Shoutly AI", icon: ArrowLeftRight },
+                    { label: "Buffer vs Shoutly AI", href: "/compare/buffer-vs-shoutly-ai", icon: ArrowLeftRight },
+                    { label: "Hootsuite vs Shoutly AI", href: "/compare/hootsuite-vs-shoutly-ai", icon: ArrowLeftRight },
+                    { label: "Later vs Shoutly AI", href: "/compare/later-vs-shoutly-ai", icon: ArrowLeftRight },
                     { label: "SocialPilot vs Shoutly AI", icon: ArrowLeftRight },
                     { label: "Metricool vs Shoutly AI", icon: ArrowLeftRight },
                     { label: "Publer vs Shoutly AI", icon: ArrowLeftRight },

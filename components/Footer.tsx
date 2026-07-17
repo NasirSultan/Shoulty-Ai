@@ -149,12 +149,12 @@ const Footer = () => {
   ];
 
   const channelsLinks: FooterLink[] = [
-    { label: "Facebook" },
+    { label: "Facebook", href: "/channel/facebook" },
     { label: "Instagram" },
     { label: "LinkedIn" },
     { label: "YouTube" },
     { label: "TikTok" },
-    { label: "X" },
+    { label: "X", href: "/channel/twitter-x" },
     { label: "Google Business Profile" },
     { label: "Pinterest" },
     { label: "Threads" },
@@ -163,8 +163,8 @@ const Footer = () => {
   ];
 
   const compareLinks: FooterLink[] = [
-    { label: "Buffer vs Shoutly AI" },
-    { label: "Hootsuite vs Shoutly AI" },
+    { label: "Buffer vs Shoutly AI", href: "/compare/buffer-vs-shoutly-ai" },
+    { label: "Hootsuite vs Shoutly AI", href: "/compare/hootsuite-vs-shoutly-ai" },
     { label: "Later vs Shoutly AI" },
     { label: "SocialPilot vs Shoutly AI" },
     { label: "Metricool vs Shoutly AI" },
@@ -242,7 +242,7 @@ const Footer = () => {
           <div>
             <Link href="/" className="inline-block mb-4 -ml-4">
               <Image
-                src="/images/logo.png"
+                src="/images/logo2.png"
                 alt="Shoutly AI logo"
                 width={160}
                 height={56}

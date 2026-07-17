@@ -282,22 +282,7 @@ export default function ContactPage() {
                             </a>
                         </div>
 
-                        {/* New York */}
-                        <div className="bg-white p-8 rounded-3xl border border-orange-100 shadow-xl shadow-orange-100/40 hover:border-orange-500 hover:bg-orange-50 hover:-translate-y-1 transition-all duration-300">
-                            <h3 className="text-2xl font-bold mb-2 flex items-center gap-2">
-                                🇺🇸 New York
-                            </h3>
-
-                            <p className="text-gray-500 mb-4">
-                                20 W 34th St, Suite 1010,
-                                <br />
-                                New York, NY 10001
-                            </p>
-
-                            <p className="text-orange-500 font-semibold text-sm mb-6">
-                                ⚡ AMERICAS HQ · EST (GMT-5)
-                            </p>
-                        </div>
+                        
                     </div>
                 </section>
 
@@ -384,13 +369,9 @@ export default function ContactPage() {
                 <footer className="border-t border-orange-100 mt-20 pt-8 flex flex-col md:flex-row justify-between gap-4 text-sm text-gray-500">
                     <div className="flex gap-6 flex-wrap">
                         <span className="text-orange-500 font-semibold">BANGALORE</span>
-                        <span className="text-orange-500 font-semibold">NEW YORK</span>
-                        <span>SINGAPORE</span>
-                        <span>LONDON</span>
-                        <span>DUBAI</span>
                     </div>
 
-                    <div>© 2025 ShoutlyAI · Global AI Operations</div>
+                    <div>© 2026 ShoutlyAI · Global AI Operations</div>
                 </footer>
             </div>
         </main>
