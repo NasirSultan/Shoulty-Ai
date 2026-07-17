@@ -242,7 +242,7 @@ const Footer = () => {
           <div>
             <Link href="/" className="inline-block mb-4 -ml-4">
               <Image
-                src="/images/logo.png"
+                src="/images/logo2.png"
                 alt="Shoutly AI logo"
                 width={160}
                 height={56}
