@@ -597,13 +597,14 @@ interface ModalState {
   initDate: Date | null;
 }
 
-function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelete, onDuplicate, showToast, user, industrySelection }: {
+function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreateAndPublishNow, onDelete, onDuplicate, showToast, user, industrySelection }: {
   state: ModalState;
   posts: Post[];
   today: Date;
   onClose: () => void;
   onSave: (data: PostUpsert) => void;
   onPublishNow: (data: PostUpsert) => Promise<void>;
+  onCreateAndPublishNow: (data: PostUpsert) => Promise<void>;
   onDelete: (id: number) => void;
   onDuplicate: (id: number) => void;
   showToast: (msg: string, type: string) => void;
@@ -726,30 +727,34 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onDelet
       showToast("Add a caption before publishing.", "red");
       return;
     }
-    if (!p?.backendId) {
-      showToast("This post hasn't been synced to the server yet, so it can't be published.", "red");
-      return;
-    }
+
+    const payload: PostUpsert = {
+      id: p?.id ?? null,
+      backendId: p?.backendId,
+      caption,
+      date: dateVal ? new Date(dateVal) : today,
+      type: typeVal,
+      plats: selPlats.length ? selPlats : ["ig"],
+      hashtags: tags,
+      status: "published",
+      timeStr: selTime,
+      timesOptions: timesOpts,
+      img,
+      score,
+      reach: rndInt(10, 80) * 1000,
+      engRate: "8.5%",
+      isAI: false,
+    };
 
     setIsPublishingNow(true);
     try {
-      await onPublishNow({
-        id: p?.id ?? null,
-        backendId: p?.backendId,
-        caption,
-        date: dateVal ? new Date(dateVal) : today,
-        type: typeVal,
-        plats: selPlats.length ? selPlats : ["ig"],
-        hashtags: tags,
-        status: "published",
-        timeStr: selTime,
-        timesOptions: timesOpts,
-        img,
-        score,
-        reach: rndInt(10, 80) * 1000,
-        engRate: "8.5%",
-        isAI: false,
-      });
+      if (p?.backendId) {
+        // Editing an existing, already-synced post — unchanged behavior.
+        await onPublishNow(payload);
+      } else {
+        // Brand-new post from "Add Post" — create it first, then publish it.
+        await onCreateAndPublishNow(payload);
+      }
     } catch (error) {
       // toast shown in parent
     } finally {
@@ -1399,7 +1404,7 @@ export default function CalendarPage() {
       showToast("✅ Post updated!", "green");
   console.log(savedPost)
       if (savedPost?.backendId) {
-        
+
         const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null;
         if (token) {
           try {
@@ -1509,6 +1514,47 @@ export default function CalendarPage() {
       showToast(message, "red");
       throw error;
     }
+  };
+
+  /** Used when "Publish Now" is clicked from the create modal (no existing post
+   *  yet). Creates the post via the same path savePost's create-branch uses
+   *  (syncNewPostToBackend → createManualPost), then immediately publishes it
+   *  via the existing publishPostNow. If sync fails, the post still exists
+   *  locally as "scheduled" — nothing is lost, it just can't auto-publish yet.
+   *  If publish fails after a successful sync, the post stays saved and
+   *  "scheduled" in the calendar so it can be published manually later. */
+  const createAndPublishNow = async (data: PostUpsert) => {
+    const defaultTimes = TIMES_POOL[0];
+    const newPost: Post = {
+      id: nextId,
+      date: data.date || today,
+      caption: data.caption || "",
+      hashtags: data.hashtags || [],
+      plats: data.plats || ["ig"],
+      type: data.type || "image",
+      timeStr: data.timeStr || defaultTimes[0].t,
+      timesOptions: data.timesOptions || defaultTimes,
+      img: data.img || "",
+      score: data.score || 80,
+      status: "scheduled",
+      reach: data.reach || 0,
+      engRate: data.engRate || "8.5%",
+      isAI: data.isAI || false,
+    };
+
+    setPosts(prev => [...prev, newPost]);
+    setNextId(n => n + 1);
+
+    const backendId = await syncNewPostToBackend(newPost, { silent: true });
+    if (!backendId) {
+      showToast("Saved locally, but couldn't sync to the server — publish it manually once it's synced.", "amber");
+      return;
+    }
+
+    setPosts(prev => prev.map(p => p.id === newPost.id ? { ...p, backendId } : p));
+
+    await publishPostNow({ ...data, id: newPost.id, backendId });
+    setPosts(prev => prev.map(p => p.id === newPost.id ? { ...p, status: "published" } : p));
   };
 
   const publishExistingPostNow = async (id: number) => {
@@ -1956,7 +2002,7 @@ export default function CalendarPage() {
         </div>
 
       {/* Edit Modal */}
-      <EditModal state={modal} posts={posts} today={today} onClose={closeModal} onSave={savePost} onPublishNow={publishPostNow} onDelete={deletePost} onDuplicate={dupPost} showToast={showToast} user={user} industrySelection={industrySelection} />
+      <EditModal state={modal} posts={posts} today={today} onClose={closeModal} onSave={savePost} onPublishNow={publishPostNow} onCreateAndPublishNow={createAndPublishNow} onDelete={deletePost} onDuplicate={dupPost} showToast={showToast} user={user} industrySelection={industrySelection} />
 
       {/* Toast */}
       <div style={{
