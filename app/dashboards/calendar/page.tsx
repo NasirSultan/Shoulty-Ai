@@ -40,7 +40,7 @@ interface Post {
   isAI: boolean;
 }
 
-type PostUpsert = Omit<Partial<Post>, "id"> & { id: number | null };
+type PostUpsert = Omit<Partial<Post>, "id"> & { id: number | null; imgFile?: File | null };
 
 // ── Constants ──────────────────────────────────────────────────────────────
 const PLAT_COLORS: Record<PlatKey, string> = {
@@ -624,6 +624,7 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
   const [timesOpts, setTimesOpts] = useState<TimeSlot[]>(TIMES_POOL[0]);
   const [score, setScore] = useState(75);
   const [img, setImg] = useState(STOCK_IMAGES[0]);
+  const [imgFile, setImgFile] = useState<File | null>(null);
   const [showImagePreviewPopup, setShowImagePreviewPopup] = useState(false);
   const [isPublishingNow, setIsPublishingNow] = useState(false);
   const [imageZoom, setImageZoom] = useState(1);
@@ -637,7 +638,8 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
     const file = e.target.files?.[0];
     if (!file) return;
     const url = URL.createObjectURL(file);
-    setImg(url);
+    setImg(url);       // local preview only — never sent to the backend
+    setImgFile(file);  // the actual file — this is what gets uploaded
     showToast("🖼️ Image updated!", "green");
     e.target.value = "";
   };
@@ -648,11 +650,13 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
       setCaption(p.caption); setDateVal(toIso(p.date)); setTypeVal(p.type);
       setSelPlats(p.plats); setStatus(p.status); setTags(p.hashtags);
       setSelTime(p.timeStr); setTimesOpts(p.timesOptions); setScore(p.score); setImg(p.img);
+      setImgFile(null); // editing an existing post — no new file selected yet
     } else {
       setCaption(""); setDateVal(toIso(state.initDate || today)); setTypeVal("image");
       setSelPlats(["ig"]); setStatus("scheduled"); setTags(rnd(HASHTAG_POOLS));
       const t = rnd(TIMES_POOL); setTimesOpts(t); setSelTime(t.find(x => x.best)?.t || t[0].t);
       setScore(rndInt(62, 94)); setImg(rnd(STOCK_IMAGES));
+      setImgFile(null); // starting with a stock image, not an uploaded file
     }
     setShowImagePreviewPopup(false);
     setImageZoom(1); setImagePan({ x: 0, y: 0 }); setIsPanningImage(false);
@@ -740,6 +744,7 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
       timeStr: selTime,
       timesOptions: timesOpts,
       img,
+      imgFile,
       score,
       reach: rndInt(10, 80) * 1000,
       engRate: "8.5%",
@@ -928,7 +933,7 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
               <i className="fa-solid fa-paper-plane" style={{ fontSize: 12 }} />
               {isPublishingNow ? "Publishing..." : "Publish Now"}
             </button>
-            <button onClick={() => onSave({ id: p?.id ?? null, caption, date: dateVal ? new Date(dateVal) : today, type: typeVal, plats: selPlats.length ? selPlats : ["ig"], hashtags: tags, status, timeStr: selTime, timesOptions: timesOpts, img, score, reach: rndInt(10, 80) * 1000, engRate: "8.5%", isAI: false })}
+            <button onClick={() => onSave({ id: p?.id ?? null, caption, date: dateVal ? new Date(dateVal) : today, type: typeVal, plats: selPlats.length ? selPlats : ["ig"], hashtags: tags, status, timeStr: selTime, timesOptions: timesOpts, img, imgFile, score, reach: rndInt(10, 80) * 1000, engRate: "8.5%", isAI: false })}
               style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 20px", borderRadius: 7, background: "linear-gradient(115deg,#F97316,#EA580C)", color: "#fff", fontSize: 13.5, fontWeight: 800, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 14px rgba(249,115,22,.4)" }}>
               <i className="fa-solid fa-calendar-check" style={{ fontSize: 12 }} /> Save & Schedule
             </button>
@@ -1361,18 +1366,19 @@ export default function CalendarPage() {
     return scheduledDate;
   };
 
-  /** Syncs a brand-new local post to POST /api/calendar/post. Only possible for
-   *  today's date — the backend always uses today regardless of what's sent
-   *  (see createCalendarPost's docstring). Returns the new backendId, or null
-*/
   /** Syncs a brand-new local post to POST /api/calendar/post/manual. Any date is
    *  supported now — the backend no longer restricts creation to today, and no
    *  longer needs subIndustryId from the client (it resolves the user's real
-   *  niche server-side). Returns the new backendId, or undefined if it couldn't
-   *  be synced (kept local-only in that case). */
-  const syncNewPostToBackend = async (post: Post, opts?: { silent?: boolean }): Promise<string | undefined> => {
+   *  niche server-side). Returns the new backendId and the real hosted image
+   *  URL (if an image was involved), or undefined values if it couldn't be
+   *  synced (kept local-only in that case). */
+  const syncNewPostToBackend = async (
+    post: Post,
+    imgFile?: File | null,
+    opts?: { silent?: boolean }
+  ): Promise<{ backendId?: string; imageUrl?: string }> => {
     const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null;
-    if (!token) return undefined;
+    if (!token) return {};
 
     const d = toScheduledDate(post);
 
@@ -1381,16 +1387,20 @@ export default function CalendarPage() {
         postTime: d.toISOString(),
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         contentText: `${post.caption}\n\n${post.hashtags.join(" ")}`,
-        imageUrl: post.img || undefined,
-      }, token);
-      const created = res.post as { postId?: string } | undefined;
-      return created?.postId;
+        // Only send imageUrl when there's no raw file — otherwise the file
+        // itself is uploaded instead, and sending a blob: preview here was
+        // the original bug (blob: URLs are only valid in the tab that
+        // created them, so they never load anywhere else).
+        imageUrl: imgFile ? undefined : (post.img || undefined),
+      }, token, imgFile ?? undefined);
+      const created = res.post as { postId?: string; media?: { file?: string } } | undefined;
+      return { backendId: created?.postId, imageUrl: created?.media?.file };
     } catch (err) {
       console.warn("Failed to sync new post to backend:", err);
       if (!opts?.silent) {
         showToast("Saved locally, but backend sync failed.", "amber");
       }
-      return undefined;
+      return {};
     }
   };
   const savePost = async (data: PostUpsert) => {
@@ -1402,9 +1412,7 @@ export default function CalendarPage() {
         return updated;
       });
       showToast("✅ Post updated!", "green");
-  console.log(savedPost)
       if (savedPost?.backendId) {
-
         const token = typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null;
         if (token) {
           try {
@@ -1415,12 +1423,22 @@ export default function CalendarPage() {
               // so we leave the post's existing backend status untouched.
             };
 
-            await updateCalendarPost(savedPost.backendId, {
+            const res = await updateCalendarPost(savedPost.backendId, {
               postTime: toScheduledDate(savedPost).toISOString(),
               contentText: `${savedPost.caption}\n\n${savedPost.hashtags.join(" ")}`,
-              imageUrl: savedPost.img,
+              // Only send imageUrl when there's no new raw file — sending a
+              // stale blob: preview here was the original bug.
+              imageUrl: data.imgFile ? undefined : savedPost.img,
               ...(statusMap[savedPost.status] ? { status: statusMap[savedPost.status] } : {}),
-            }, token);
+            }, token, data.imgFile ?? undefined);
+
+            // Swap the local blob preview for the real hosted URL the backend
+            // returns, so this session's view matches what everyone else sees
+            // right away instead of only after the next reload.
+            const updatedMedia = (res?.post as { media?: { file?: string } } | undefined)?.media;
+            if (data.imgFile && updatedMedia?.file) {
+              setPosts(prev => prev.map(p => p.id === data.id ? { ...p, img: updatedMedia.file! } : p));
+            }
           } catch (err) {
             console.warn("Failed to sync post update to backend:", err);
             showToast("Updated locally, but backend sync failed.", "amber");
@@ -1450,9 +1468,12 @@ export default function CalendarPage() {
       setNextId(n => n + 1);
       showToast("✅ Post scheduled!", "green");
 
-      const backendId = await syncNewPostToBackend(newPost);
+      const { backendId, imageUrl } = await syncNewPostToBackend(newPost, data.imgFile);
       if (backendId) {
-        setPosts(prev => prev.map(p => p.id === newPost.id ? { ...p, backendId } : p));
+        setPosts(prev => prev.map(p => p.id === newPost.id
+          ? { ...p, backendId, ...(data.imgFile && imageUrl ? { img: imageUrl } : {}) }
+          : p
+        ));
       }
     }
 
@@ -1545,13 +1566,16 @@ export default function CalendarPage() {
     setPosts(prev => [...prev, newPost]);
     setNextId(n => n + 1);
 
-    const backendId = await syncNewPostToBackend(newPost, { silent: true });
+    const { backendId, imageUrl } = await syncNewPostToBackend(newPost, data.imgFile, { silent: true });
     if (!backendId) {
       showToast("Saved locally, but couldn't sync to the server — publish it manually once it's synced.", "amber");
       return;
     }
 
-    setPosts(prev => prev.map(p => p.id === newPost.id ? { ...p, backendId } : p));
+    setPosts(prev => prev.map(p => p.id === newPost.id
+      ? { ...p, backendId, ...(data.imgFile && imageUrl ? { img: imageUrl } : {}) }
+      : p
+    ));
 
     await publishPostNow({ ...data, id: newPost.id, backendId });
     setPosts(prev => prev.map(p => p.id === newPost.id ? { ...p, status: "published" } : p));
@@ -1593,7 +1617,7 @@ export default function CalendarPage() {
       setNextId(n => n + 1);
       showToast("📋 Duplicated", "brand");
 
-      void syncNewPostToBackend(duplicated, { silent: true }).then((backendId) => {
+      void syncNewPostToBackend(duplicated, undefined, { silent: true }).then(({ backendId }) => {
         if (backendId) setPosts(prev => prev.map(p2 => p2.id === duplicated.id ? { ...p2, backendId } : p2));
       });
     }
@@ -1623,7 +1647,7 @@ export default function CalendarPage() {
       setNextId(n => n + 1);
       showToast("✅ Post generated!", "green");
 
-      void syncNewPostToBackend(generatedPost, { silent: true }).then((backendId) => {
+      void syncNewPostToBackend(generatedPost, undefined, { silent: true }).then(({ backendId }) => {
         if (backendId) setPosts(prev => prev.map(p => p.id === generatedPost.id ? { ...p, backendId } : p));
       });
     }, 1400);

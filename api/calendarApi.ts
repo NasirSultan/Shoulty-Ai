@@ -90,12 +90,20 @@ export interface UpdatePostRequest {
   contentText?: string;
   reelId?: string;
   imageUrl?: string;
+  /** Only forward this when it maps to a real backend PostStatus value
+   *  (SCHEDULED/POSTING/SKIP/POSTED/FAILED) — omit rather than send an
+   *  unmapped value like a frontend-only "draft" status. */
+  status?: string;
+  /** IANA timezone, e.g. "Asia/Karachi". Used to interpret postTime. */
+  timezone?: string;
 }
 
 export interface UpdatePostResponse {
   success: boolean;
   message: string;
-  post?: CalendarPost;
+  // updatePost now returns through formatPost() on the backend, same shape
+  // as GET /calendar/plan and GET /calendar/post/:id — not the raw row.
+  post?: Post;
 }
 
 export interface GetPostDetailResponse {
@@ -212,7 +220,7 @@ export async function getUserPlan(token?: string): Promise<GetPlanResponse> {
       (err as any).statusCode = 401;
       throw err;
     }
-    
+
     const errorMsg = error.response?.data?.message || error.message || "Failed to fetch plan";
     console.error("❌ getUserPlan error:", errorMsg, error.response?.data);
     const err = new Error(errorMsg);
@@ -319,6 +327,8 @@ export async function updateCalendarPost(
       if (request.postTime) formData.append("postTime", request.postTime);
       if (request.contentText) formData.append("contentText", request.contentText);
       if (request.reelId) formData.append("reelId", request.reelId);
+      if (request.status) formData.append("status", request.status);
+      if (request.timezone) formData.append("timezone", request.timezone);
 
       const response = await calendarClient.patch(`/api/calendar/post/${postId}`, formData, {
         headers: {
@@ -424,21 +434,77 @@ export async function createPlanAndFetch(
   return planResponse.posts || [];
 }
 
+export interface CreateManualPostRequest {
+  /** Full ISO datetime, e.g. "2026-07-25T14:30:00" — any date, not just today. */
+  postTime: string;
+  contentText?: string;
+  /** Existing hosted image URL. Ignored if imageFile is provided — the file
+   *  itself is uploaded instead. */
+  imageUrl?: string;
+  /** IANA timezone, e.g. "Asia/Karachi". Defaults to the user's saved
+   *  profile timezone on the backend if omitted. */
+  timezone?: string;
+}
+
+export interface CreateManualPostResponse {
+  success: boolean;
+  message: string;
+  // createManualPost returns through formatPost() on the backend, same shape
+  // as GET /calendar/plan and GET /calendar/post/:id.
+  post?: Post;
+}
+
+/** POST /api/calendar/post/manual — for user-created personal posts (as
+ *  opposed to auto-generated ones from the monthly plan). Does not require
+ *  subIndustryId — the backend resolves the user's own industry server-side.
+ *  Supports any postTime date, not just today.
+ *
+ *  Pass imageFile for a real upload (sent as multipart/form-data, matching
+ *  the backend's FileInterceptor). Only fall back to imageUrl when there is
+ *  no new file — e.g. reusing an already-hosted URL. Never pass a blob:
+ *  object URL here; those only resolve inside the tab that created them and
+ *  will silently fail to load for everyone else once saved. */
 export async function createManualPost(
-  body: { postTime: string; contentText?: string; imageUrl?: string; timezone?: string },
-  token: string
-) {
-  const res = await fetch(`https://ai-shoutly-backend.onrender.com/api/calendar/post/manual`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(body),
-  });
-  const data = await res.json();
-  if (!res.ok || !data.success) {
-    throw new Error(data.message || "Failed to create post");
+  request: CreateManualPostRequest,
+  token?: string,
+  imageFile?: File
+): Promise<CreateManualPostResponse> {
+  const authToken = token || (typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null);
+
+  if (!authToken) {
+    throw new Error("Authentication token is required");
   }
-  return data;
+
+  try {
+    if (imageFile) {
+      // File upload: multipart/form-data
+      const formData = new FormData();
+      formData.append("postTime", request.postTime);
+      if (request.contentText) formData.append("contentText", request.contentText);
+      if (request.timezone) formData.append("timezone", request.timezone);
+      formData.append("image", imageFile);
+
+      const response = await calendarClient.post(`/api/calendar/post/manual`, formData, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      return response.data as CreateManualPostResponse;
+    } else {
+      // JSON only
+      const response = await calendarClient.post(`/api/calendar/post/manual`, request, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      return response.data as CreateManualPostResponse;
+    }
+  } catch (error: any) {
+    const errorMsg = error.response?.data?.message || error.message || "Failed to create post";
+    throw new Error(errorMsg);
+  }
 }
