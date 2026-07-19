@@ -633,6 +633,7 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
   const panStartRef = useRef({ x: 0, y: 0 });
   const panOriginRef = useRef({ x: 0, y: 0 });
   const imgInputRef = useRef<HTMLInputElement>(null);
+  const captionRef = useRef<HTMLTextAreaElement>(null);
 
   const handleImgUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -728,7 +729,7 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
   const handlePublishNowAction = async () => {
     if (isPublishingNow) return;
     if (!caption.trim()) {
-      showToast("Add a caption before publishing.", "red");
+      captionRef.current?.reportValidity();
       return;
     }
 
@@ -760,8 +761,9 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
         // Brand-new post from "Add Post" — create it first, then publish it.
         await onCreateAndPublishNow(payload);
       }
+      onClose();
     } catch (error) {
-      // toast shown in parent
+      // toast shown in parent — keep the modal open so the user can retry.
     } finally {
       setIsPublishingNow(false);
     }
@@ -825,32 +827,13 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
                 })}
               </div>
             </div>
-            {/* Status */}
-            <div style={{ padding: "10px 12px", borderTop: "1px solid #E2E4F0" }}>
-              <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: "#8486AB", marginBottom: 6, fontFamily: "Sora,sans-serif" }}>Status</div>
-              <div style={{ display: "flex", gap: 5 }}>
-                {(["scheduled","draft","published"] as Status[]).map(s => {
-                  const cols: Record<Status, { bg: string; color: string; border: string }> = {
-                    scheduled: { bg: "#EFF6FF", color: "#3B82F6", border: "#3B82F6" },
-                    draft:     { bg: "#FFFBEB", color: "#F59E0B", border: "#F59E0B" },
-                    published: { bg: "#ECFDF5", color: "#10B981", border: "#10B981" },
-                  };
-                  const on = status === s;
-                  return (
-                    <div key={s} onClick={() => setStatus(s)} style={{ flex: 1, padding: "6px 4px", borderRadius: 7, border: `1.5px solid ${on ? cols[s].border : "#E2E4F0"}`, background: on ? cols[s].bg : "#F0F1F9", fontSize: 11.5, fontWeight: 700, cursor: "pointer", color: on ? cols[s].color : "#8486AB", textAlign: "center" }}>
-                      {s.charAt(0).toUpperCase() + s.slice(1)}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
           </div>
           {/* Form */}
           <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
             {/* Caption */}
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: "#8486AB", fontFamily: "Sora,sans-serif", marginBottom: 6 }}>Caption</div>
-              <textarea value={caption} onChange={e => applyCaptionWithRelatedTags(e.target.value)} placeholder="Write your caption here…"
+              <textarea ref={captionRef} required value={caption} onChange={e => applyCaptionWithRelatedTags(e.target.value)} placeholder="Write your caption here…"
                 style={{ width: "100%", padding: "10px 12px", borderRadius: 7, border: "1px solid #E2E4F0", background: "#F0F1F9", color: "#0B0C1A", fontSize: 13.5, outline: "none", resize: "none", minHeight: 80, fontFamily: "inherit", lineHeight: 1.6 }} />
               <div style={{ textAlign: "right", fontSize: 11, color: "#BFC1D9", fontFamily: "JetBrains Mono,monospace", marginTop: 3 }}>{caption.length} / 2200</div>
             </div>
@@ -933,7 +916,10 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
               <i className="fa-solid fa-paper-plane" style={{ fontSize: 12 }} />
               {isPublishingNow ? "Publishing..." : "Publish Now"}
             </button>
-            <button onClick={() => onSave({ id: p?.id ?? null, caption, date: dateVal ? new Date(dateVal) : today, type: typeVal, plats: selPlats.length ? selPlats : ["ig"], hashtags: tags, status, timeStr: selTime, timesOptions: timesOpts, img, imgFile, score, reach: rndInt(10, 80) * 1000, engRate: "8.5%", isAI: false })}
+            <button onClick={() => {
+                if (!caption.trim()) { captionRef.current?.reportValidity(); return; }
+                onSave({ id: p?.id ?? null, caption, date: dateVal ? new Date(dateVal) : today, type: typeVal, plats: selPlats.length ? selPlats : ["ig"], hashtags: tags, status, timeStr: selTime, timesOptions: timesOpts, img, imgFile, score, reach: rndInt(10, 80) * 1000, engRate: "8.5%", isAI: false });
+              }}
               style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 20px", borderRadius: 7, background: "linear-gradient(115deg,#F97316,#EA580C)", color: "#fff", fontSize: 13.5, fontWeight: 800, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 14px rgba(249,115,22,.4)" }}>
               <i className="fa-solid fa-calendar-check" style={{ fontSize: 12 }} /> Save & Schedule
             </button>
