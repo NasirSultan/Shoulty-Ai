@@ -2,8 +2,8 @@ import PricingSection from "@/components/PricingSection";
 import { PricingFAQ } from "@/components/FAQ";
 
 export const metadata = {
-  title: "Pricing | ShoutlyAI - AI Social Media Automation for India",
-  description: "Simple, transparent pricing for Indian SMBs. Start with 14 days free. Save 20% with annual billing.",
+  title: "Social Media for Small Businesses Pricing | Shoutly AI",
+  description: "Explore Social Media for Small Businesses with Shoutly AI. Create, schedule, publish and track content across 10 platforms with one simple pricing plan.",
 };
 
 export default function PricingPage() {

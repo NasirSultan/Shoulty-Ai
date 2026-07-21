@@ -1,8 +1,8 @@
 export default function Head() {
     const title =
-        "Shoutly AI | AI Social Media Automation & 365 Days of Content";
+        "AI Social Media Automation for 365 Days | Shoutly AI";
     const description =
-        "Shoutly AI is an AI social media automation platform that generates 365 days of branded posts, reels, captions, and a social media calendar in minutes.";
+        "Use AI Social Media Automation with Shoutly AI to create branded posts, captions and reels, then schedule and publish across 10 platforms from one dashboard.";
     const image = "https://shoutlyai.com/opengraph-image";
     const schema = {
         "@context": "https://schema.org",

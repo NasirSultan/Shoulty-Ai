@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Industry Solutions | Shoutly AI",
+  title: "Social Media Automation Software | Shoutly AI",
   description:
-    "Explore AI social media automation solutions for restaurants, fitness studios, real estate, and more.",
+    "The smartest social media automation software for SMBs. Schedule posts, auto-publish to 4 platforms and grow your brand on autopilot with Shoutly AI.",
   alternates: {
     canonical: "https://shoutlyai.com/for",
   },

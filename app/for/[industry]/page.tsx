@@ -21,9 +21,9 @@ const industries: IndustryPage[] = [
     slug: "restaurants",
     name: "Restaurants",
     keyword: "social media for restaurants",
-    title: "AI Social Media for Restaurants | Shoutly AI",
+    title: "Social Media for Restaurants | Shoutly AI",
     description:
-      "Generate and schedule restaurant social media posts, reels, captions, and festival creatives in minutes with Shoutly AI.",
+      "Simplify Social Media for Restaurants with Shoutly AI. Create food posts, captions, reels and festive campaigns, then schedule content to drive bookings.",
     hero: "AI Social Media Content for Restaurants",
     intro:
       "From lunch offers to festive campaigns, restaurants need daily content that drives bookings and repeat visits. Shoutly AI helps restaurant teams create, brand, and schedule months of posts in one workflow.",
@@ -49,10 +49,10 @@ const industries: IndustryPage[] = [
   {
     slug: "fitness-studios",
     name: "Fitness Studios",
-    keyword: "social media for fitness studios",
-    title: "AI Social Media for Fitness Studios | Shoutly AI",
+    keyword: "social media for gyms",
+    title: "Social Media for Gyms & Fitness Studios | Shoutly AI",
     description:
-      "Create high-converting social media content for gyms and fitness studios with AI-generated captions, reels, and monthly plans.",
+      "Simplify Social Media for Gyms with Shoutly AI. Create daily fitness posts, captions, reels, member testimonials and promotional campaigns in minutes.",
     hero: "AI Social Media Content for Fitness Studios",
     intro:
       "Fitness brands need consistency to win attention. Shoutly AI helps gyms, trainers, and studio owners create daily high-energy content across platforms without spending hours every week.",
@@ -78,10 +78,10 @@ const industries: IndustryPage[] = [
   {
     slug: "real-estate",
     name: "Real Estate",
-    keyword: "social media for real estate",
-    title: "AI Social Media for Real Estate | Shoutly AI",
+    keyword: "social media for small businesses",
+    title: "Social Media for Small Businesses & Realtors | Shoutly AI",
     description:
-      "Scale listing and lead-gen content with AI social media automation for real estate agents, teams, and brokerages.",
+      "Simplify Social Media for Small Businesses with Shoutly AI. Create property posts, market updates and testimonials, then schedule real estate content easily.",
     hero: "AI Social Media Content for Real Estate",
     intro:
       "Real estate marketing requires high-frequency posting across property showcases, market updates, and trust-building content. Shoutly AI helps agents create and schedule a complete content pipeline quickly.",
