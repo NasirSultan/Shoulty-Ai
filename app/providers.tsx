@@ -2,6 +2,7 @@
 
 import { SessionProvider } from "next-auth/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { MobileSidebarProvider } from "@/context/MobileSidebarContext";
 
 export default function Providers({
     children,
@@ -12,7 +13,11 @@ export default function Providers({
 
     return (
         <GoogleOAuthProvider clientId={googleClientId}>
-            <SessionProvider refetchOnWindowFocus={false}>{children}</SessionProvider>
+            <SessionProvider refetchOnWindowFocus={false}>
+                <MobileSidebarProvider>
+                    {children}
+                </MobileSidebarProvider>
+            </SessionProvider>
         </GoogleOAuthProvider>
     );
 }

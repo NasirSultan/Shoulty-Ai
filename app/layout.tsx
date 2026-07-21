@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import FloatingChatBot from '../components/FloatingChatBot';
 import Providers from "./providers";
+import MobileHeader from '../components/MobileHeader';
 
 const siteUrl = "https://shoutlyai.com";
 
@@ -186,6 +187,14 @@ export default function RootLayout({
                     }}
                 />
                 <Providers>
+                    <style>{`
+                      @media (max-width: 767px) {
+                        body {
+                          padding-top: 60px;
+                        }
+                      }
+                    `}</style>
+                    <MobileHeader />
                     <Header />
                     {children}
                     <Footer />

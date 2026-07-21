@@ -586,9 +586,18 @@ export default function Header() {
                 )}
             </div>
 
+            {/* Mobile Menu Backdrop */}
+            {menuOpen && (
+                <div
+                    className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 min-[930px]:hidden"
+                    onClick={() => setMenuOpen(false)}
+                    style={{ top: 0, left: 0, right: 0, bottom: 0 }}
+                />
+            )}
+
             {/* Mobile Menu */}
             {menuOpen && (
-                <div className="min-[930px]:hidden bg-white border-t px-5 py-5 space-y-3 max-h-[calc(100vh-4rem)] overflow-y-auto shadow-lg">
+                <div className="min-[930px]:hidden fixed left-0 right-0 top-12 sm:top-14 bg-white border-t px-5 py-5 space-y-3 max-h-[calc(100vh-4rem)] overflow-y-auto shadow-lg z-50">
                     {MEGA_MENUS.map((menu) => {
                         const expanded = mobileAccordion === menu.label;
 

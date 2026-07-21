@@ -246,26 +246,30 @@ function TestimonialAvatar() {
 
 export function Testimonials() {
     return (
-        <section className="py-24 bg-gray-50 border-y border-gray-200">
-            <div className="max-w-7xl mx-auto px-6">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl font-bold text-gray-900">Loved by Creators</h2>
-                    <p className="mt-4 text-gray-600">Don&apos;t just take our word for it.</p>
+        <section className="py-6 sm:py-12 lg:py-20 bg-gray-50 border-y border-gray-200">
+            <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6">
+                <div className="text-center mb-6 sm:mb-8 md:mb-12">
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">Loved by Creators</h2>
+                    <p className="mt-2 sm:mt-3 text-xs sm:text-sm md:text-base text-gray-600">Don&apos;t just take our word for it.</p>
                 </div>
-                <div className="grid md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
                     {testimonials.map((t, i) => (
-                        <div key={i} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                            <div className="flex items-center gap-1 mb-6 text-yellow-400">
+                        <div key={i} className="bg-white p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl md:rounded-2xl shadow-sm border border-gray-100">
+                            <div className="flex items-center gap-1 mb-3 sm:mb-4 text-yellow-400">
                                 {[...Array(5)].map((_, i) => (
-                                    <svg key={i} className="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                                    <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
                                 ))}
                             </div>
-                            <p className="text-lg text-gray-700 mb-6 italic">&quot;{t.quote}&quot;</p>
-                            <div className="flex items-center gap-4">
-                                <TestimonialAvatar />
-                                <div>
-                                    <h4 className="font-bold text-gray-900">{t.author}</h4>
-                                    <p className="text-sm text-gray-500">{t.role}</p>
+                            <p className="text-xs sm:text-sm md:text-base text-gray-700 mb-3 sm:mb-4 italic leading-relaxed">&quot;{t.quote}&quot;</p>
+                            <div className="flex items-center gap-2 sm:gap-3">
+                                <div className="w-9 sm:w-10 h-9 sm:h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center flex-shrink-0">
+                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z" />
+                                    </svg>
+                                </div>
+                                <div className="min-w-0">
+                                    <h4 className="font-bold text-gray-900 text-xs sm:text-sm truncate">{t.author}</h4>
+                                    <p className="text-[10px] sm:text-xs text-gray-500 truncate">{t.role}</p>
                                 </div>
                             </div>
                         </div>

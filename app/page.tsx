@@ -846,7 +846,7 @@ const speeds = [120, 160, 110, 150, 130];
                 {/* Orbs */}
                 <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-orange-500 to-red-600 rounded-full blur-3xl opacity-10 -ml-48 -mt-32 animate-pulse" style={{animation: "f1 20s ease-in-out infinite alternate"}}></div>
                 <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-full blur-3xl opacity-10 -mr-40 -mt-20 animate-pulse" style={{animation: "f2 24s ease-in-out infinite alternate"}}></div>
-                
+
                 {/* Grid Background */}
                 <div className="absolute inset-0 pointer-events-none" style={{
                     backgroundImage: "linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px), linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px)",
@@ -855,24 +855,24 @@ const speeds = [120, 160, 110, 150, 130];
                     maskImage: "radial-gradient(ellipse 90% 80% at 50% 40%, black 30%, transparent 100%)"
                 }}></div>
 
-                <div className="relative z-10 w-full max-w-6xl mx-auto px-8 sm:px-12 pb-6 grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+                <div className="relative z-10 w-full max-w-6xl mx-auto px-3 sm:px-6 md:px-8 lg:px-12 py-8 sm:py-12 md:py-16 lg:py-0 lg:pb-6 grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-14 items-center">
                     {/* Left Content */}
-                    <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-4 sm:gap-6">
                         {/* Pill Badge */}
-                        <div className="mt-16 sm:mt-8 inline-flex items-center gap-2 w-fit px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/30">
-                            <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse"></span>
-                            <span className="text-xs font-bold uppercase tracking-wider text-orange-400">AI Social Media Automation</span>
+                        <div className="mt-8 sm:mt-6 inline-flex items-center gap-1.5 w-fit px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-orange-500/10 border border-orange-500/30">
+                            <span className="w-1 sm:w-1.5 h-1 sm:h-1.5 bg-orange-500 rounded-full animate-pulse"></span>
+                            <span className="text-[9px] sm:text-xs font-bold uppercase tracking-wider text-orange-400">AI Social Media Automation</span>
                         </div>
 
                         {/* Heading */}
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white leading-none">
-                            <span className="bg-gradient-to-r from-orange-400 via-red-400 to-rose-400 bg-clip-text text-transparent">365 Days of Social Media.</span> Zero Effort.
+                        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black tracking-tight text-white leading-tight">
+                            <span className="bg-gradient-to-r from-orange-400 via-red-400 to-rose-400 bg-clip-text text-transparent">365 Days of Social Media.</span> <br className="hidden sm:block" />Zero Effort.
                         </h1>
 
                         {/* Platform Icons */}
                         <div className="pt-2 pb-1">
-                            <p className="text-xs text-white/50 uppercase tracking-widest font-semibold mb-3">Post across 10 platforms</p>
-                            <div className="flex flex-wrap gap-2">
+                            <p className="text-[10px] sm:text-xs text-white/50 uppercase tracking-widest font-semibold mb-3 text-center">Post across 10 platforms</p>
+                            <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center">
                                 {[
                                     { icon: "fa-x-twitter",    bg: "#000000" },
                                     { icon: "fa-linkedin-in",  bg: "#0A66C2" },
@@ -886,11 +886,11 @@ const speeds = [120, 160, 110, 150, 130];
                                     { icon: "fa-snapchat",     bg: "#FFFC00", color: "#000" },
                                 ].map(({ icon, bg, color }, i) => (
                                     <div key={i} style={{
-                                        width: 36, height: 36, borderRadius: 10,
+                                        width: "1.75rem", height: "1.75rem", borderRadius: 7,
                                         background: bg, display: "flex", alignItems: "center", justifyContent: "center",
                                         flexShrink: 0
                                     }}>
-                                        <i className={`fa-brands ${icon}`} style={{ fontSize: 16, color: color || "#fff" }} />
+                                        <i className={`fa-brands ${icon}`} style={{ fontSize: "13px", color: color || "#fff" }} />
                                     </div>
                                 ))}
                             </div>
@@ -910,10 +910,10 @@ const speeds = [120, 160, 110, 150, 130];
                             box-shadow: 0 8px 24px rgba(249,115,22,.35);
                           }
                         `}</style>
-                        <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                            <button onClick={() => window.location.href = '/sign-in'} className="btn-start-now inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold">
+                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2 sm:pt-4">
+                            <button onClick={() => window.location.href = '/sign-in'} className="btn-start-now inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-sm sm:text-base">
                                 Start Now
-                                <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="sm:w-4 sm:h-4">
                                     <path d="M2.5 7h9M8 3.5 11.5 7 8 10.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                                 </svg>
                             </button>
@@ -921,8 +921,8 @@ const speeds = [120, 160, 110, 150, 130];
                     </div>
 
                     {/* Right - Mosaic Gallery with Perfectly Matched Labels */}
-<div className="relative">
-  <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur p-4 h-[340px] sm:h-[400px] lg:h-[480px]">
+<div className="relative hidden sm:block">
+  <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur p-3 sm:p-4 h-[280px] sm:h-[350px] lg:h-[480px]">
     {/* Badge */}
     <div className="w-max max-w-[90%] absolute top-4 left-1/2 -translate-x-1/2 z-20 px-3 sm:px-4 py-2 rounded-full bg-slate-900/80 border border-white/10 backdrop-blur flex items-center justify-center gap-2 text-[10px] sm:text-xs font-bold text-slate-300 whitespace-nowrap overflow-hidden text-ellipsis">
       <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shrink-0"></span>
@@ -986,39 +986,39 @@ const speeds = [120, 160, 110, 150, 130];
 
             <section
                 id="generator"
-                className="py-16 sm:py-28 text-slate-900 overflow-hidden relative"
+                className="py-6 sm:py-12 lg:py-20 text-slate-900 overflow-hidden relative"
                 style={{ background: "linear-gradient(135deg, #fff7f0 0%, #ffffff 40%, #fff3ee 100%)" }}
             >
                 {/* Background decoration */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-orange-200/30 to-transparent rounded-full blur-3xl -mr-60 -mt-60"></div>
-                    <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-red-100/20 to-transparent rounded-full blur-3xl -ml-40 -mb-40"></div>
+                    <div className="absolute top-0 right-0 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-gradient-to-bl from-orange-200/30 to-transparent rounded-full blur-3xl -mr-40 sm:-mr-60 -mt-40 sm:-mt-60"></div>
+                    <div className="absolute bottom-0 left-0 w-[250px] sm:w-[400px] h-[250px] sm:h-[400px] bg-gradient-to-tr from-red-100/20 to-transparent rounded-full blur-3xl -ml-32 sm:-ml-40 -mb-32 sm:-mb-40"></div>
                     <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(circle, rgba(249,115,22,0.04) 1px, transparent 1px)", backgroundSize: "40px 40px" }}></div>
                 </div>
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+                <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 relative z-10">
                     {/* Section Header */}
-                    <div className="text-center mb-12 sm:mb-16">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-orange-200 text-orange-600 text-xs font-bold uppercase tracking-widest shadow-sm mb-5">
-                            <SparklesIcon className="w-3.5 h-3.5" />
+                    <div className="text-center mb-4 sm:mb-6 md:mb-8">
+                        <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full bg-white border border-orange-200 text-orange-600 text-[9px] sm:text-xs font-bold uppercase tracking-widest shadow-sm mb-2 sm:mb-3">
+                            <SparklesIcon className="w-2.5 sm:w-3 h-2.5 sm:h-3" />
                             Studio · set it up once
                         </div>
-                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight mb-2 sm:mb-3">
                             Set it on the left.{" "}
                             <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
                                 Watch it on the right.
                             </span>
                         </h2>
-                        <p className="text-slate-500 max-w-3xl mx-auto text-sm sm:text-base leading-relaxed">
+                        <p className="text-slate-500 max-w-3xl mx-auto text-[11px] sm:text-xs lg:text-sm leading-relaxed px-2">
                             Pick your business, tell us what you do, and your social media posts build themselves-complete with branded visuals, engaging captions, and ready to schedule in minutes.
                         </p>
                     </div>
 
                     {/* Two-panel Studio */}
-                    <div id="industry-cards" className="relative grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 sm:gap-7 items-stretch">
+                    <div id="industry-cards" className="relative grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-4 sm:gap-6 lg:gap-7 items-stretch">
 
                         {/* LEFT — Your Setup */}
-                        <div className="h-full flex flex-col rounded-2xl bg-white shadow-[0_0_14px_rgba(249,115,22,0.4)] p-4 sm:p-7 relative overflow-hidden">
+                        <div className="h-full flex flex-col rounded-2xl bg-white shadow-[0_0_14px_rgba(249,115,22,0.4)] p-4 sm:p-6 lg:p-7 relative overflow-hidden">
                             <div className="relative flex items-center gap-3 mb-6">
                                 <span className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-white" style={{ background: "linear-gradient(135deg,#F97316,#EA580C)" }}>
                                     <ClipboardList className="w-4 h-4" />
@@ -1027,18 +1027,18 @@ const speeds = [120, 160, 110, 150, 130];
                             </div>
 
                             {/* 1 — Your Business */}
-                            <div className="relative mt-5 mb-6">
-                                <div className="flex items-center gap-2 mb-3">
-                                    <span className="w-5 h-5 rounded-full bg-orange-500 text-white text-[10px] font-black flex items-center justify-center flex-shrink-0">1</span>
-                                    <span className="text-sm font-bold text-slate-900">Your business</span>
+                            <div className="relative mt-3 sm:mt-5 mb-4 sm:mb-6">
+                                <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                                    <span className="w-4 sm:w-5 h-4 sm:h-5 rounded-full bg-orange-500 text-white text-[8px] sm:text-[10px] font-black flex items-center justify-center flex-shrink-0">1</span>
+                                    <span className="text-xs sm:text-sm font-bold text-slate-900">Your business</span>
                                 </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-500 mb-1.5">Industry</label>
+                                        <label className="block text-[10px] sm:text-xs font-semibold text-slate-500 mb-1">Industry</label>
                                         <select
                                             value={generateSelectedIndustry}
                                             onChange={(e) => handleSelectGenerateIndustry(e.target.value)}
-                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 cursor-pointer hover:border-orange-300"
+                                            className="w-full px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg sm:rounded-xl border border-slate-300 bg-white text-xs sm:text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 cursor-pointer hover:border-orange-300"
                                         >
                                             <option value="">Choose your industry</option>
                                             {loadingIndustries ? (
@@ -1053,12 +1053,12 @@ const speeds = [120, 160, 110, 150, 130];
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-semibold text-slate-500 mb-1.5">Business type</label>
+                                        <label className="block text-[10px] sm:text-xs font-semibold text-slate-500 mb-1">Business type</label>
                                         <select
                                             value={generatePendingSubIndustry ?? ""}
                                             onChange={(e) => setGeneratePendingSubIndustry(e.target.value || null)}
                                             disabled={!generateSelectedIndustry}
-                                            className="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 cursor-pointer hover:border-orange-300 disabled:bg-slate-100 disabled:text-slate-400 disabled:opacity-100 disabled:cursor-not-allowed"
+                                            className="w-full px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg sm:rounded-xl border border-slate-300 bg-white text-xs sm:text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 cursor-pointer hover:border-orange-300 disabled:bg-slate-100 disabled:text-slate-400 disabled:opacity-100 disabled:cursor-not-allowed"
                                         >
                                             <option value="">{generateSelectedIndustry ? "Choose business type" : "Select industry first"}</option>
                                             {generateSubIndustries.map((sub, i) => (
@@ -1072,10 +1072,10 @@ const speeds = [120, 160, 110, 150, 130];
                             </div>
 
                             {/* 2 — What you do */}
-                            <div className="relative mb-6 pt-6 border-t border-slate-100">
-                                <div className="flex items-center gap-2 mb-3">
-                                    <span className="w-5 h-5 rounded-full bg-orange-500 text-white text-[10px] font-black flex items-center justify-center flex-shrink-0">2</span>
-                                    <span className="text-sm font-bold text-slate-900">What you do</span>
+                            <div className="relative mb-4 sm:mb-6 pt-4 sm:pt-6 border-t border-slate-100">
+                                <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                                    <span className="w-4 sm:w-5 h-4 sm:h-5 rounded-full bg-orange-500 text-white text-[8px] sm:text-[10px] font-black flex items-center justify-center flex-shrink-0">2</span>
+                                    <span className="text-xs sm:text-sm font-bold text-slate-900">What you do</span>
                                 </div>
 
                                 <div className="relative mb-2.5">
@@ -1084,7 +1084,7 @@ const speeds = [120, 160, 110, 150, 130];
                                         onChange={setBrandDescription}
                                         minLength={MIN_BRAND_DESCRIPTION_CHARS}
                                         maxLength={MAX_BRAND_DESCRIPTION_CHARS}
-                                        className="w-full min-h-[90px] sm:min-h-[110px] p-3 bg-slate-50/70 rounded-xl border border-slate-200 hover:border-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white resize-none text-sm font-medium text-slate-700 shadow-inner transition-all duration-200"
+                                        className="w-full min-h-[80px] sm:min-h-[100px] p-2.5 sm:p-3 bg-slate-50/70 rounded-xl border border-slate-200 hover:border-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent focus:bg-white resize-none text-sm font-medium text-slate-700 shadow-inner transition-all duration-200"
                                     />
                                     <button
                                         type="button"
@@ -1105,16 +1105,16 @@ const speeds = [120, 160, 110, 150, 130];
                                     </button>
                                 </div>
 
-                                <div className="flex items-center justify-between mb-2.5">
+                                <div className="flex items-center justify-between mb-2">
                                     <button
                                         type="button"
                                         disabled
                                         title="Voice input — coming soon"
-                                        className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold border border-slate-200 text-slate-400 bg-white cursor-not-allowed opacity-70"
+                                        className="inline-flex items-center gap-1 rounded-full px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs font-bold border border-slate-200 text-slate-400 bg-white cursor-not-allowed opacity-70"
                                     >
-                                        <Mic className="w-3.5 h-3.5" /> Speak
+                                        <Mic className="w-3 sm:w-3.5 h-3 sm:h-3.5" /> Speak
                                     </button>
-                                    <p className="text-xs font-medium text-slate-400">
+                                    <p className="text-[10px] sm:text-xs font-medium text-slate-400">
                                         {brandDescription.trim().length}/{brandDescription.trim().length < MIN_BRAND_DESCRIPTION_CHARS ? MIN_BRAND_DESCRIPTION_CHARS : MAX_BRAND_DESCRIPTION_CHARS}
                                     </p>
                                 </div>
@@ -1129,7 +1129,7 @@ const speeds = [120, 160, 110, 150, 130];
                             <button
                                 onClick={handleGenerateClick}
                                 disabled={!isGenerateReady || streamLoading}
-                                className={`relative w-full py-3 rounded-full text-sm sm:text-base font-black tracking-wide transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 overflow-hidden bg-orange-500 text-white ${
+                                className={`relative w-full py-2 sm:py-3 rounded-lg sm:rounded-full text-xs sm:text-sm lg:text-base font-black tracking-wide transition-all duration-200 active:scale-95 flex items-center justify-center gap-1.5 sm:gap-2 overflow-hidden bg-orange-500 text-white ${
                                     isGenerateReady && !streamLoading
                                         ? "hover:brightness-110 cursor-pointer"
                                         : "opacity-50 cursor-not-allowed"
@@ -1139,11 +1139,11 @@ const speeds = [120, 160, 110, 150, 130];
                                     <span className="absolute inset-0 animate-[shimmer_2.5s_infinite] bg-gradient-to-r from-transparent via-white/25 to-transparent" />
                                 )}
                                 {streamLoading ? (
-                                    <RefreshCcw className="w-4 h-4 relative animate-spin" />
+                                    <RefreshCcw className="w-3 sm:w-4 h-3 sm:h-4 relative animate-spin" />
                                 ) : (
-                                    <Plus className="w-4 h-4 relative" />
+                                    <Plus className="w-3 sm:w-4 h-3 sm:h-4 relative" />
                                 )}
-                                <span className="relative">{streamLoading ? "Creating..." : "Create my posts"}</span>
+                                <span className="relative">{streamLoading ? "Creating..." : "Create posts"}</span>
                             </button>
                             {generateValidationError && (
                                 <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-700">
@@ -1153,7 +1153,7 @@ const speeds = [120, 160, 110, 150, 130];
                         </div>
 
                         {/* RIGHT — Live preview */}
-                        <div className="h-full flex flex-col rounded-2xl bg-white shadow-[0_0_14px_rgba(249,115,22,0.4)] p-5 lg:sticky lg:top-24">
+                        <div className="h-full flex flex-col rounded-2xl bg-white shadow-[0_0_14px_rgba(249,115,22,0.4)] p-3 sm:p-4 lg:p-5 lg:sticky lg:top-24">
                             {/* Phone / Window toggle */}
                             <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 mb-5 w-fit mx-auto">
                                 <button
@@ -1253,20 +1253,20 @@ const speeds = [120, 160, 110, 150, 130];
 
                                 if (previewMode === "phone") {
                                     return (
-                                        <div className="mx-auto w-[220px] h-[440px] rounded-[2rem] border-[8px] border-slate-900 bg-slate-900 shadow-xl overflow-hidden relative">
+                                        <div className="mx-auto w-[160px] sm:w-[200px] lg:w-[220px] h-[320px] sm:h-[400px] lg:h-[440px] rounded-[1.5rem] sm:rounded-[2rem] border-[6px] sm:border-[8px] border-slate-900 bg-slate-900 shadow-xl overflow-hidden relative">
                                             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-4 bg-slate-900 rounded-b-xl z-10" />
                                             <div className="w-full h-full rounded-[1.4rem] overflow-hidden">{content}</div>
                                         </div>
                                     );
                                 }
                                 return (
-                                    <div className="mx-auto w-full max-w-[340px] rounded-xl border border-slate-200 shadow-xl overflow-hidden">
-                                        <div className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 border-b border-slate-200">
-                                            <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
-                                            <span className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
-                                            <span className="w-2.5 h-2.5 rounded-full bg-green-400" />
+                                    <div className="mx-auto w-full max-w-[280px] sm:max-w-[320px] lg:max-w-[340px] rounded-lg sm:rounded-xl border border-slate-200 shadow-xl overflow-hidden">
+                                        <div className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 bg-slate-100 border-b border-slate-200">
+                                            <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-red-400" />
+                                            <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-yellow-400" />
+                                            <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-green-400" />
                                         </div>
-                                        <div className="h-[360px]">{content}</div>
+                                        <div className="h-[280px] sm:h-[340px] lg:h-[360px]">{content}</div>
                                     </div>
                                 );
                             })()}
@@ -1283,22 +1283,22 @@ const speeds = [120, 160, 110, 150, 130];
                     </div>
                 </div>
             </section>
-            <section id="gcontent" className="py-16 sm:py-28 overflow-hidden relative" style={{ background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 50%, #ffffff 100%)" }}>
+            <section id="gcontent" className="py-6 sm:py-12 lg:py-20 overflow-hidden relative" style={{ background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 50%, #ffffff 100%)" }}>
                 <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "radial-gradient(circle, rgba(15,23,42,0.03) 1px, transparent 1px)", backgroundSize: "32px 32px" }}></div>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+                <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 relative z-10">
                     {/* Title */}
-                    <div className="text-center mb-12 sm:mb-16">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold uppercase tracking-widest shadow-lg shadow-orange-200 mb-5">
-                            <SparklesIcon className="w-3.5 h-3.5" />
+                    <div className="text-center mb-4 sm:mb-6 md:mb-8">
+                        <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-[10px] sm:text-xs font-bold uppercase tracking-widest shadow-lg shadow-orange-200 mb-2 sm:mb-3">
+                            <SparklesIcon className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
                             See Exactly What Your Customers Will See
                         </div>
-                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight mb-2 sm:mb-3">
                             Your First 7 Posts Are{" "}
                             <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
                                 Already Ready
                             </span>
                         </h2>
-                        <p className="text-slate-500 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+                        <p className="text-slate-500 max-w-2xl mx-auto text-xs sm:text-sm lg:text-base leading-relaxed px-2">
                             This is exactly what Shoutly AI creates for your business—professionally designed posters, captions, and hashtags, ready to publish automatically.
                         </p>
                     </div>
@@ -1310,7 +1310,7 @@ const speeds = [120, 160, 110, 150, 130];
                     )}
 
                     {/* Main Card */}
-                    <div className="relative bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-lg border border-gray-100">
+                    <div className="relative bg-white rounded-xl sm:rounded-2xl lg:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-lg border border-gray-100">
 
                         <div className="space-y-8">
                             {streamError && (
@@ -1340,14 +1340,14 @@ const speeds = [120, 160, 110, 150, 130];
                             {!streamLoading && streamedPosts.length === 0 && <div>
                                 {generateLoadingImages ? (
                                     <>
-                                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-3 sm:mb-4">
+                                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3 lg:gap-4 mb-2 sm:mb-3 lg:mb-4">
                                             {Array.from({ length: 4 }).map((_, i) => (
-                                                <div key={`r2-loading-${i}`} className="aspect-square rounded-xl bg-gray-100 animate-pulse" />
+                                                <div key={`r2-loading-${i}`} className="aspect-square rounded-lg sm:rounded-xl bg-gray-100 animate-pulse" />
                                             ))}
                                         </div>
-                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:gap-4">
                                             {Array.from({ length: 3 }).map((_, i) => (
-                                                <div key={`r2-loading-b${i}`} className="aspect-square rounded-xl bg-gray-100 animate-pulse" />
+                                                <div key={`r2-loading-b${i}`} className="aspect-square rounded-lg sm:rounded-xl bg-gray-100 animate-pulse" />
                                             ))}
                                         </div>
                                     </>
@@ -1355,7 +1355,7 @@ const speeds = [120, 160, 110, 150, 130];
                                     <p className="text-center text-gray-400 py-10">No stock templates found</p>
                                 ) : (
                                     <>
-                                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-3 sm:mb-4">
+                                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3 lg:gap-4 mb-2 sm:mb-3 lg:mb-4">
                                             {previewPrimaryStockImages.slice(0, 4).map((img, index) => {
                                                 const url = img.file || img.url || "";
                                                 const isActiveStock = selectedPreviewPost?.imageUrl === url;
@@ -1396,7 +1396,7 @@ const speeds = [120, 160, 110, 150, 130];
                                                 );
                                             })}
                                         </div>
-                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:gap-4">
                                             {previewPrimaryStockImages.slice(4, 7).map((img, index) => {
                                                 const actualIndex = index + 4;
                                                 const url = img.file || img.url || "";
@@ -1445,7 +1445,7 @@ const speeds = [120, 160, 110, 150, 130];
                             {/* AI Generated Posts — shown below stock, only when streaming or posts available */}
                             {(streamLoading || streamedPosts.length > 0) && (
                             <div>
-                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-3 sm:mb-4">
+                                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3 lg:gap-4 mb-2 sm:mb-3 lg:mb-4">
                                     {[0,1,2,3].map((i) => {
                                         const post = streamedPosts[i];
                                         const imageUrl = post?.image?.imageUrl;
@@ -1515,7 +1515,7 @@ const speeds = [120, 160, 110, 150, 130];
                                         );
                                     })}
                                 </div>
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:gap-4">
                                     {[4,5,6].map((i) => {
                                         const post = streamedPosts[i];
                                         const imageUrl = post?.image?.imageUrl;
@@ -1599,43 +1599,43 @@ const speeds = [120, 160, 110, 150, 130];
 
             <section
                 id="who-we-help"
-                className="py-16 sm:py-28 overflow-hidden relative"
+                className="py-6 sm:py-12 lg:py-20 overflow-hidden relative"
                 style={{ background: "linear-gradient(180deg, #fff7f0 0%, #ffffff 60%, #f8fafc 100%)" }}
             >
                 <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-orange-100/30 to-transparent rounded-full blur-3xl"></div>
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] sm:w-[800px] h-[250px] sm:h-[400px] bg-gradient-to-b from-orange-100/30 to-transparent rounded-full blur-3xl"></div>
                 </div>
-                <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
+                <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 text-center relative z-10">
                     {/* Badge */}
-                    <div className="flex justify-center mb-5">
-                        <span className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold uppercase tracking-widest shadow-lg shadow-orange-200">
-                            <SparklesIcon className="w-3.5 h-3.5" />
+                    <div className="flex justify-center mb-3 sm:mb-4">
+                        <span className="inline-flex items-center gap-2 px-4 sm:px-5 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-[10px] sm:text-xs font-bold uppercase tracking-widest shadow-lg shadow-orange-200">
+                            <SparklesIcon className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
                             Built for Business
                         </span>
                     </div>
 
                     {/* Title + Subtitle */}
-                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight mb-2 sm:mb-3">
                         Made for Your Business
                     </h2>
 
-                    <p className="text-slate-500 max-w-2xl mx-auto mb-14 text-sm sm:text-base leading-relaxed">
+                    <p className="text-slate-500 max-w-2xl mx-auto mb-6 sm:mb-8 text-xs sm:text-sm lg:text-base leading-relaxed px-2">
                         Every business has a unique story. That's why your social media is tailored to your business, with relevant posts, promotions, festival greetings, and seasonal campaigns designed to engage your audience throughout the year.
                     </p>
 
                     {/* Cards Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
                         {(showAllIndustries ? WHO_WE_HELP : WHO_WE_HELP.slice(0, 4)).map((item, idx) => {
                             const moreId = `more${idx + 1}`;
                             const lessId = `less${idx + 1}`;
                             return (
-                                <div key={item.key} className="group rounded-2xl p-5 bg-white border border-orange-100 text-left relative overflow-hidden shadow-sm hover:shadow-xl hover:shadow-orange-100/50 hover:-translate-y-1 transition-all duration-300">
-                                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-orange-50 to-transparent rounded-bl-full pointer-events-none"></div>
-                                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-orange-50 to-red-50 border border-orange-100 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                                <div key={item.key} className="group rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-5 bg-white border border-orange-100 text-left relative overflow-hidden shadow-sm hover:shadow-xl hover:shadow-orange-100/50 hover:-translate-y-1 transition-all duration-300">
+                                    <div className="absolute top-0 right-0 w-16 sm:w-20 h-16 sm:h-20 bg-gradient-to-bl from-orange-50 to-transparent rounded-bl-full pointer-events-none"></div>
+                                    <div className="w-9 sm:w-11 h-9 sm:h-11 rounded-lg sm:rounded-xl bg-gradient-to-br from-orange-50 to-red-50 border border-orange-100 flex items-center justify-center text-xl sm:text-2xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300">
                                         {item.emoji}
                                     </div>
-                                    <h3 className="font-bold text-slate-900 text-sm mb-3">{item.title}</h3>
-                                    <ul className="text-xs text-slate-500 space-y-1.5 mb-3">
+                                    <h3 className="font-bold text-slate-900 text-xs sm:text-sm mb-2 sm:mb-3">{item.title}</h3>
+                                    <ul className="text-[10px] sm:text-xs text-slate-500 space-y-1 sm:space-y-1.5 mb-2 sm:mb-3">
                                         {item.visible.map((li, i) => (
                                             <li key={i}><a href={li.href} className="hover:text-orange-500 transition-colors">• {li.label}</a></li>
                                         ))}
@@ -1649,8 +1649,8 @@ const speeds = [120, 160, 110, 150, 130];
                                     </ul>
                                     {item.extra.length > 0 && (
                                         <>
-                                            <a id={moreId} onClick={() => more(item.key, moreId, lessId)} className="text-xs font-semibold text-orange-500 hover:text-orange-700 cursor-pointer">+ show more</a>
-                                            <a id={lessId} style={{ display: "none" }} onClick={() => less(item.key, moreId, lessId)} className="text-xs font-semibold text-orange-500 hover:text-orange-700 cursor-pointer">− show less</a>
+                                            <a id={moreId} onClick={() => more(item.key, moreId, lessId)} className="text-[10px] sm:text-xs font-semibold text-orange-500 hover:text-orange-700 cursor-pointer">+ show more</a>
+                                            <a id={lessId} style={{ display: "none" }} onClick={() => less(item.key, moreId, lessId)} className="text-[10px] sm:text-xs font-semibold text-orange-500 hover:text-orange-700 cursor-pointer">− show less</a>
                                         </>
                                     )}
                                 </div>
@@ -1686,41 +1686,41 @@ const speeds = [120, 160, 110, 150, 130];
             </section>
             <section
                 id="library"
-                className="py-16 sm:py-28 overflow-hidden relative"
+                className="py-6 sm:py-12 lg:py-20 overflow-hidden relative"
                 style={{ background: "linear-gradient(180deg, #f8fafc 0%, #ffffff 50%, #fff7f0 100%)" }}
             >
                 <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute bottom-0 right-0 w-[600px] h-[400px] bg-gradient-to-tl from-orange-100/20 to-transparent rounded-full blur-3xl"></div>
+                    <div className="absolute bottom-0 right-0 w-[350px] sm:w-[600px] h-[250px] sm:h-[400px] bg-gradient-to-tl from-orange-100/20 to-transparent rounded-full blur-3xl"></div>
                 </div>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+                <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 relative z-10">
                     {/* Badge */}
-                    <div className="flex justify-center mb-5">
-                        <span className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold uppercase tracking-widest shadow-lg shadow-orange-200">
-                            <SparklesIcon className="w-3.5 h-3.5" />
+                    <div className="flex justify-center mb-4 sm:mb-5">
+                        <span className="inline-flex items-center gap-2 px-4 sm:px-5 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-[10px] sm:text-xs font-bold uppercase tracking-widest shadow-lg shadow-orange-200">
+                            <SparklesIcon className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
                             Thousands of Ready-to-Publish Posts
                         </span>
                     </div>
 
                     {/* Title */}
-                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-center text-slate-900 tracking-tight mb-4">
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-center text-slate-900 tracking-tight mb-3 sm:mb-4">
                         Find the Perfect Post
                     </h2>
 
                     {/* Subtitle */}
-                    <p className="text-center text-slate-500 text-sm sm:text-base max-w-2xl mx-auto mb-12 sm:mb-16 px-2 leading-relaxed">
+                    <p className="text-center text-slate-500 text-xs sm:text-sm lg:text-base max-w-2xl mx-auto mb-8 sm:mb-12 lg:mb-16 px-2 leading-relaxed">
                         From restaurants and salons to healthcare, real estate, retail, education, and 155+ business categories — Shoutly AI creates professional social media content tailored to your business.
                     </p>
 
                     {/* Main Card */}
-                    <div className="relative bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-orange-100 overflow-hidden">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-orange-50/80 to-transparent rounded-full pointer-events-none"></div>
+                    <div className="relative bg-white rounded-xl sm:rounded-2xl lg:rounded-3xl p-4 sm:p-6 lg:p-8 border border-orange-100 overflow-hidden">
+                        <div className="absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 bg-gradient-to-bl from-orange-50/80 to-transparent rounded-full pointer-events-none"></div>
 
                         {/* Top Controls — single row */}
-                        <div className="flex items-center gap-3 mb-8 sm:mb-10 relative z-10 flex-wrap">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8 lg:mb-10 relative z-10 flex-wrap">
                             {/* Tabs */}
                             <button
                                 onClick={() => { setLibraryContentType("photos"); setActiveLibraryImageId(null); }}
-                                className={`whitespace-nowrap px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 ${
+                                className={`whitespace-nowrap px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs lg:text-sm font-semibold transition-all duration-200 ${
                                     libraryContentType === "photos"
                                         ? "bg-gradient-to-r from-orange-500 to-red-500 text-white"
                                         : "bg-white text-gray-600 border border-gray-300 hover:border-orange-300 hover:text-orange-500"
@@ -1730,7 +1730,7 @@ const speeds = [120, 160, 110, 150, 130];
                             </button>
                             <button
                                 onClick={() => setShowReelsComingSoon(true)}
-                                className="whitespace-nowrap px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 bg-white text-gray-600 border border-gray-300 hover:border-orange-300 hover:text-orange-500"
+                                className="whitespace-nowrap px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs lg:text-sm font-semibold transition-all duration-200 bg-white text-gray-600 border border-gray-300 hover:border-orange-300 hover:text-orange-500"
                             >
                                 Reels
                             </button>
