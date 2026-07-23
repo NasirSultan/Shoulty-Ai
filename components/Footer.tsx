@@ -150,7 +150,7 @@ const Footer = () => {
 
   const channelsLinks: FooterLink[] = [
     { label: "Facebook", href: "/channel/facebook" },
-    { label: "Instagram" },
+    { label: "Instagram", href: "/channel/instagram" },
     { label: "LinkedIn" },
     { label: "YouTube" },
     { label: "TikTok" },

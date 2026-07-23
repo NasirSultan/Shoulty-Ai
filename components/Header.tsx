@@ -100,7 +100,7 @@ const MEGA_MENUS: MegaMenu[] = [
                 title: "By channel",
                 items: [
                     { label: "X", href: "/channel/twitter-x", icon: FaXTwitter },
-                    { label: "Instagram", icon: FaInstagram },
+                    { label: "Instagram", href: "/channel/instagram", icon: FaInstagram },
                     { label: "Facebook", href: "/channel/facebook", icon: FaFacebook },
                     { label: "Bluesky", icon: FaBluesky },
                     { label: "LinkedIn", icon: FaLinkedin },
