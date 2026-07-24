@@ -102,10 +102,35 @@ const NAV_SECTIONS = [
 // ─────────────────────────────────────────────
 export default function Sidebar() {
   const [slim, setSlim] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
 
   return (
-    <aside style={{ ...S.sb, width: slim ? 64 : 228 }}>
+    <>
+      {/* Mobile backdrop */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 md:hidden"
+          onClick={() => setMobileOpen(false)}
+          style={{ top: 0, left: 0, right: 0, bottom: 0 }}
+        />
+      )}
+
+      {/* Mobile toggle button */}
+      <button
+        onClick={() => setMobileOpen(!mobileOpen)}
+        className="fixed top-4 left-4 z-40 md:hidden p-2 bg-white rounded-lg shadow-lg hover:bg-gray-50 transition"
+        title={mobileOpen ? "Close sidebar" : "Open sidebar"}
+      >
+        <i className={`fa-solid ${mobileOpen ? "fa-xmark" : "fa-bars"}`} style={{ fontSize: 20, color: "#0F1117" }} />
+      </button>
+
+      <aside style={{
+        ...S.sb,
+        width: slim ? 64 : 228,
+        position: "sticky",
+      }}
+      className="hidden md:flex md:flex-col">
       {/* ── Logo ── */}
       <div style={S.sbLogo}>
         <div style={S.sbMark}>S</div>
@@ -143,6 +168,7 @@ export default function Sidebar() {
                   key={item.label}
                   href={item.href}
                   style={{ textDecoration: "none" }}
+                  onClick={() => setMobileOpen(false)}
                 >
                   <div
                     title={slim ? item.label : undefined}
@@ -211,7 +237,137 @@ export default function Sidebar() {
           )}
         </div>
       </div>
-    </aside>
+      </aside>
+
+      {/* Mobile sidebar overlay */}
+      {mobileOpen && (
+        <aside style={{
+          ...S.sb,
+          width: slim ? 64 : 228,
+          position: "fixed",
+          top: 0,
+          left: 0,
+          height: "100vh",
+          zIndex: 39,
+          display: "flex",
+          flexDirection: "column",
+        }}>
+          {/* ── Logo ── */}
+          <div style={S.sbLogo}>
+            <div style={S.sbMark}>S</div>
+            {!slim && (
+              <span style={S.sbWordmark}>
+                Shoutly <span style={S.sbAccent}>AI</span>
+              </span>
+            )}
+            <button
+              onClick={() => setMobileOpen(false)}
+              style={{
+                marginLeft: "auto",
+                width: 32,
+                height: 32,
+                borderRadius: 8,
+                background: "#FF6B35",
+                border: "none",
+                color: "#fff",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 18,
+                transition: "all .2s",
+                flexShrink: 0,
+              }}
+              title="Close sidebar"
+            >
+              <i className="fa-solid fa-xmark" />
+            </button>
+          </div>
+
+          {/* ── Nav body ── */}
+          <div style={S.sbBody}>
+            {NAV_SECTIONS.map((section) => (
+              <div key={section.label}>
+                {!slim && <div style={S.sectionLbl}>{section.label}</div>}
+
+                {section.items.map((item) => {
+                  const isOn = pathname === item.href || pathname.startsWith(item.href + "/");
+
+                  return (
+                    <div key={item.label} onClick={() => setMobileOpen(false)}>
+                      <Link
+                        href={item.href}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <div
+                          title={slim ? item.label : undefined}
+                          style={{
+                            ...S.navItem,
+                            ...(isOn ? S.navItemOn : {}),
+                            justifyContent: slim ? "center" : "flex-start",
+                          }}
+                        >
+                        {isOn && <div style={S.activePip} />}
+
+                        <i
+                          className={item.icon}
+                          style={{
+                            width: 16,
+                            fontSize: 14,
+                            textAlign: "center",
+                            flexShrink: 0,
+                            color: isOn ? "#A5B4FC" : "#9B9DC0",
+                          }}
+                        />
+
+                        {!slim && (
+                          <span style={{ flex: 1, color: isOn ? "#A5B4FC" : "#9B9DC0" }}>
+                            {item.label}
+                          </span>
+                        )}
+
+                        {!slim && item.badge && (
+                          <span
+                            style={{
+                              ...S.badge,
+                              background: item.badgeGrad
+                                ? "linear-gradient(135deg,#5B5BD6,#7C3AED)"
+                                : "#5B5BD6",
+                            }}
+                          >
+                            {item.badge}
+                          </span>
+                        )}
+                      </div>
+                      </Link>
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+
+          {/* ── User footer ── */}
+          <div style={S.sbBottom}>
+            <div style={S.userRow}>
+              <div style={S.userAv}>JD</div>
+              {!slim && (
+                <>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={S.userName}>Jane Doe</div>
+                    <div style={S.userRole}>Premium · Brand A</div>
+                  </div>
+                  <i
+                    className="fa-solid fa-chevron-down"
+                    style={{ color: "#5A5C7A", fontSize: 10, flexShrink: 0 }}
+                  />
+                </>
+              )}
+            </div>
+          </div>
+        </aside>
+      )}
+    </>
   );
 }
 

@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C \"c:\\\\Users\\\\Nadir-Sultan\\\\Documents\\\\shouilty-ai\\\\Shoulty-Ai\" log --oneline api-integration...main -10)"
+    ]
+  }
+}

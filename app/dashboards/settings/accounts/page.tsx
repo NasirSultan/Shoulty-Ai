@@ -150,21 +150,21 @@ function PlatCard({ p, onConnect, onDisconnect, showToast }: {
 }) {
   const isConn = p.status === "connected";
   const isAttn = p.status === "attention";
-  const isActive = isConn || isAttn;
   const isSupported = SUPPORTED_IDS.has(p.id);
 
   return (
     <div
+      className="accounts-plat-card"
       style={{ background:"#fff", border:`1px solid ${isAttn?"rgba(245,158,11,.25)":isConn?"rgba(249,115,22,.2)":"#E2E4F0"}`, borderRadius:12, overflow:"hidden", display:"flex", flexDirection:"column", boxShadow:"0 1px 4px rgba(11,12,26,.04)", transition:"all .18s" }}
       onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow="0 6px 20px rgba(11,12,26,.08)"; (e.currentTarget as HTMLDivElement).style.transform="translateY(-2px)"; }}
       onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow="0 1px 4px rgba(11,12,26,.04)"; (e.currentTarget as HTMLDivElement).style.transform=""; }}
     >
       {/* Header */}
       <div style={{ padding:"16px 16px 10px", display:"flex", alignItems:"center", gap:10 }}>
-        <div style={{ width:42, height:42, borderRadius:10, background:p.grad, display:"flex", alignItems:"center", justifyContent:"center", fontSize:19, color:"#fff", flexShrink:0, boxShadow:"0 2px 8px rgba(11,12,26,.1)" }}>
+        <div className="accounts-plat-icon" style={{ width:42, height:42, borderRadius:10, background:p.grad, display:"flex", alignItems:"center", justifyContent:"center", fontSize:19, color:"#fff", flexShrink:0, boxShadow:"0 2px 8px rgba(11,12,26,.1)" }}>
           <i className={p.icon} />
         </div>
-        <span style={{ fontSize:14.5, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif" }}>{p.name}</span>
+        <span className="accounts-plat-name" style={{ fontSize:14.5, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif" }}>{p.name}</span>
       </div>
 
       {/* Status strip */}
@@ -175,16 +175,6 @@ function PlatCard({ p, onConnect, onDisconnect, showToast }: {
 
         </span>
       </div>
-
-      {/* Account info */}
-      {isActive && (
-        <div style={{ padding:"0 16px 10px" }}>
-          <div style={{ fontSize:12, color:"#8486AB" }}>Feature coming soon</div>
-          <div style={{ fontSize:12, marginTop:3 }}>
-            Publishing: <span style={{ fontWeight:700, color:"#F97316" }}>upcoming</span>
-          </div>
-        </div>
-      )}
 
       {/* Feature chips */}
       <div style={{ padding:"0 16px 14px", display:"flex", flexWrap:"wrap", gap:5 }}>
@@ -249,12 +239,12 @@ function AccountRow({ acc, showToast, isLast }: { acc: ConnectedAccount; showToa
   ].filter(Boolean).join(" · ");
 
   return (
-    <div style={{ display:"flex", alignItems:"center", gap:16, padding:"16px 24px", borderBottom:isLast ? "none" : "1px solid #F0F1F9" }}>
+    <div className="accounts-account-row" style={{ display:"flex", alignItems:"center", gap:16, padding:"16px 24px", borderBottom:isLast ? "none" : "1px solid #F0F1F9" }}>
       <div style={{ width:48, height:48, borderRadius:14, background:acc.platformGrad, display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, color:"#fff", flexShrink:0, boxShadow:"0 2px 8px rgba(11,12,26,.12)" }}>
         <i className={acc.platformIcon} />
       </div>
       <div style={{ flex:1, minWidth:0 }}>
-        <div style={{ fontSize:15, fontWeight:700, color:"#0B0C1A", fontFamily:"Sora,sans-serif", marginBottom:3 }}>{acc.handle}</div>
+        <div className="accounts-account-handle" style={{ fontSize:15, fontWeight:700, color:"#0B0C1A", fontFamily:"Sora,sans-serif", marginBottom:3 }}>{acc.handle}</div>
         <div style={{ fontSize:12.5, color:"#8486AB" }}>{meta}</div>
       </div>
       <div style={{ display:"flex", alignItems:"center", gap:6, padding:"5px 12px", borderRadius:20, background:needsRefresh?"#FFF7ED":"#ECFDF5", border:`1px solid ${needsRefresh?"#FDBA74":"rgba(16,185,129,.25)"}`, flexShrink:0 }}>
@@ -275,7 +265,7 @@ function AccountRow({ acc, showToast, isLast }: { acc: ConnectedAccount; showToa
           style={{ padding:"9px 20px", borderRadius:9, fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"Sora,sans-serif", background:"#fff", border:"1.5px solid #E2E4F0", color:"#3D3F60", whiteSpace:"nowrap", flexShrink:0, transition:"all .14s" }}
           onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor="#F97316"; (e.currentTarget as HTMLButtonElement).style.color="#F97316"; }}
           onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor="#E2E4F0"; (e.currentTarget as HTMLButtonElement).style.color="#3D3F60"; }}>
-          {/* Manage asd */}
+          Manage
         </button>
       )}
     </div>
@@ -567,16 +557,253 @@ export default function SocialAccountsPage() {
         @keyframes toastSlide { from{transform:translateX(120%)} to{transform:translateX(0)} }
         @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
         .skel-shimmer { background:linear-gradient(90deg,#EEEFF6 25%,#E4E6F1 37%,#EEEFF6 63%); background-size:400% 100%; animation:shimmer 1.4s ease infinite; }
+        @media (min-width: 768px) {
+          .accounts-header {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 50 !important;
+            background: #fff !important;
+            border-bottom: 1px solid #E4E5EF !important;
+          }
+          .accounts-wrapper {
+            margin-top: 56px !important;
+          }
+        }
+        @media (min-width: 768px) and (max-width: 1024px) {
+          .accounts-wrapper {
+            padding: 20px 20px 40px !important;
+          }
+          .accounts-title-section {
+            flex-wrap: wrap !important;
+            gap: 14px !important;
+          }
+          .accounts-title-section p {
+            max-width: 100% !important;
+          }
+          .accounts-health-row {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 16px !important;
+          }
+          .accounts-stats-row {
+            display: grid !important;
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 8px !important;
+            width: 100% !important;
+          }
+          .accounts-stat-item {
+            padding: 8px 6px !important;
+            margin: 0 !important;
+            border: 1px solid #ECEDF8 !important;
+            border-radius: 8px !important;
+            background: #FAFAFD !important;
+          }
+          .accounts-platforms-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 12px !important;
+          }
+          .accounts-header-section {
+            flex-wrap: wrap !important;
+            gap: 10px !important;
+          }
+          .accounts-account-row {
+            padding: 14px 18px !important;
+            gap: 12px !important;
+          }
+          .accounts-account-row button {
+            padding: 8px 14px !important;
+            font-size: 12.5px !important;
+          }
+          .accounts-bottom-grid {
+            gap: 12px !important;
+          }
+          .accounts-bottom-card {
+            padding: 16px 18px !important;
+          }
+        }
+        @media (max-width: 767px) {
+          .accounts-header {
+            display: none !important;
+          }
+          .accounts-wrapper {
+            padding: 8px 8px 32px !important;
+          }
+          .accounts-title-section {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 10px !important;
+            margin-bottom: 16px !important;
+          }
+          .accounts-title-section h1 {
+            font-size: 18px !important;
+            margin-bottom: 3px !important;
+          }
+          .accounts-title-section p {
+            font-size: 12px !important;
+            line-height: 1.4 !important;
+          }
+          .accounts-title-section > div:last-child {
+            width: 100% !important;
+            flex-direction: column !important;
+            gap: 6px !important;
+          }
+          .accounts-title-section button {
+            width: 100% !important;
+            justify-content: center !important;
+            padding: 7px 12px !important;
+            font-size: 12px !important;
+          }
+          .accounts-health-card {
+            border-radius: 10px !important;
+            margin-bottom: 16px !important;
+          }
+          .accounts-health-card > div:first-child {
+            padding: 12px 14px 10px !important;
+          }
+          .accounts-health-icon {
+            width: 28px !important;
+            height: 28px !important;
+            font-size: 12px !important;
+          }
+          .accounts-health-title {
+            font-size: 13px !important;
+            margin-bottom: 2px !important;
+          }
+          .accounts-health-desc {
+            font-size: 11px !important;
+            line-height: 1.3 !important;
+          }
+          .accounts-health-row {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 14px !important;
+          }
+          .accounts-stats-row {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 10px 8px !important;
+            width: 100% !important;
+            flex-shrink: 1 !important;
+          }
+          .accounts-stat-item {
+            flex: none !important;
+            align-items: flex-start !important;
+            padding: 8px 10px !important;
+            margin: 0 !important;
+            border: 1px solid #ECEDF8 !important;
+            border-radius: 8px !important;
+            background: #FAFAFD !important;
+          }
+          .accounts-stat-value {
+            font-size: 15px !important;
+          }
+          .accounts-stat-label {
+            font-size: 8.5px !important;
+            margin-top: 2px !important;
+          }
+          .accounts-platforms-header {
+            margin-bottom: 10px !important;
+          }
+          .accounts-platforms-header h2 {
+            font-size: 14px !important;
+          }
+          .accounts-platforms-header span {
+            font-size: 11px !important;
+          }
+          .accounts-platforms-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 8px !important;
+          }
+          .accounts-header-section {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 10px !important;
+            padding: 12px 12px 10px !important;
+          }
+          .accounts-header-section h2 {
+            font-size: 14px !important;
+            margin-bottom: 1px !important;
+          }
+          .accounts-header-section p {
+            font-size: 11px !important;
+            line-height: 1.3 !important;
+          }
+          .accounts-header-section > div:last-child {
+            width: 100% !important;
+            padding: 5px 10px !important;
+            font-size: 11px !important;
+          }
+          .accounts-container {
+            border-radius: 10px !important;
+            margin-bottom: 16px !important;
+          }
+          .accounts-plat-card {
+            border-radius: 10px !important;
+            padding: 10px !important;
+          }
+          .accounts-plat-icon {
+            width: 32px !important;
+            height: 32px !important;
+            font-size: 16px !important;
+          }
+          .accounts-plat-name {
+            font-size: 13px !important;
+          }
+          .accounts-account-row {
+            padding: 10px 12px !important;
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 8px !important;
+          }
+          .accounts-account-row > div:first-child {
+            width: 32px !important;
+            height: 32px !important;
+            font-size: 14px !important;
+          }
+          .accounts-account-row > div:nth-child(2) {
+            width: 100% !important;
+          }
+          .accounts-account-row > div:nth-child(3) {
+            width: 100% !important;
+            font-size: 11px !important;
+          }
+          .accounts-account-row button {
+            width: 100% !important;
+            padding: 7px 14px !important;
+            font-size: 12px !important;
+          }
+          .accounts-account-handle {
+            font-size: 12px !important;
+            margin-bottom: 2px !important;
+          }
+          .accounts-account-row > div:nth-child(2) > div:last-child {
+            font-size: 10px !important;
+          }
+          .accounts-bottom-grid {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+          }
+          .accounts-bottom-card {
+            border-radius: 10px !important;
+            padding: 14px 14px !important;
+          }
+          .accounts-bottom-card h3 {
+            font-size: 13px !important;
+            margin-bottom: 10px !important;
+          }
+        }
       `}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
       <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden" }}>
-        <AdminHeader pageTitle="Social Accounts" searchPlaceholder="Search accounts…" />
+        <AdminHeader className="accounts-header" pageTitle="Social Accounts" searchPlaceholder="Search accounts…" />
 
-        <div style={{ flex:1, overflowY:"auto", padding:"28px 28px 48px" }}>
+        <div className="accounts-wrapper" style={{ flex:1, overflowY:"auto", padding:"28px 28px 48px" }}>
 
           {/* ── Page title ── */}
-          <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:24, gap:20 }}>
+          <div className="accounts-title-section" style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:24, gap:20 }}>
             <div>
               <h1 style={{ fontSize:24, fontWeight:900, color:"#0B0C1A", fontFamily:"Sora,sans-serif", letterSpacing:"-.5px", marginBottom:5 }}>Social Media Accounts</h1>
               <p style={{ fontSize:13.5, color:"#8486AB", maxWidth:460, lineHeight:1.55 }}>Connect your social media accounts once and let AI publish content automatically across every platform.</p>
@@ -592,14 +819,14 @@ export default function SocialAccountsPage() {
           </div>
 
           {/* ── Health status card ── */}
-          <div style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:14, marginBottom:28, overflow:"hidden" }}>
+          <div className="accounts-health-card" style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:14, marginBottom:28, overflow:"hidden" }}>
             <div style={{ padding:"18px 22px 16px", borderBottom: attnCount > 0 ? "1px dashed #E2E4F0" : undefined }}>
-              <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:20 }}>
+              <div className="accounts-health-row" style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:20 }}>
                 <div style={{ display:"flex", alignItems:"flex-start", gap:12 }}>
                   {isLoading ? (
                     <Skel width={36} height={36} radius={10} />
                   ) : (
-                    <div style={{ width:36, height:36, borderRadius:10, background: attnCount > 0 ? "#FFFBEB" : "#ECFDF5", display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, color: attnCount > 0 ? "#F59E0B" : "#10B981", flexShrink:0, marginTop:2 }}>
+                    <div className="accounts-health-icon" style={{ width:36, height:36, borderRadius:10, background: attnCount > 0 ? "#FFFBEB" : "#ECFDF5", display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, color: attnCount > 0 ? "#F59E0B" : "#10B981", flexShrink:0, marginTop:2 }}>
                       <i className={attnCount > 0 ? "fa-solid fa-triangle-exclamation" : "fa-solid fa-shield-halved"} />
                     </div>
                   )}
@@ -610,29 +837,28 @@ export default function SocialAccountsPage() {
                     </div>
                   ) : (
                     <div>
-                      <div style={{ fontSize:15, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", marginBottom:3 }}>
+                      <div className="accounts-health-title" style={{ fontSize:15, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", marginBottom:3 }}>
                         {attnCount > 0 ? "Almost everything is healthy" : "Everything is healthy"}
                       </div>
-                      <div style={{ fontSize:12.5, color:"#8486AB", lineHeight:1.4 }}>
+                      <div className="accounts-health-desc" style={{ fontSize:12.5, color:"#8486AB", lineHeight:1.4 }}>
                         {attnCount > 0 ? `${attnCount} platform${attnCount!==1?"s":""} need${attnCount===1?"s":""} a quick reconnect — publishing continues everywhere else.` : "All connected platforms are publishing normally."}
                       </div>
                     </div>
                   )}
                 </div>
-                <div style={{ display:"flex", gap:0, flexShrink:0 }}>
+                <div className="accounts-stats-row" style={{ display:"flex", gap:0, flexShrink:0 }}>
                   {isLoading ? (
-                    [0,1,2,3,4].map((i, _, arr) => <StatSkeleton key={i} i={i} arr={arr} />)
+                    [0,1,2,3].map((i, _, arr) => <StatSkeleton key={i} i={i} arr={arr} />)
                   ) : (
                     [
                       { v:`${connCount}/${SUPPORTED_IDS.size}`, l:"PLATFORMS" },
                       { v:String(totalAccs), l:"ACCOUNTS" },
                       { v:String(healthyAccs), l:"HEALTHY" },
                       { v:String(attnCount), l:"NEEDS ATTENTION", warn:true },
-                      { v: totals ? totals.totalFollowers.toLocaleString() : "—", l:"TOTAL FOLLOWERS", green:true },
                     ].map((s, i, arr) => (
-                      <div key={s.l} style={{ display:"flex", flexDirection:"column", alignItems:"center", paddingRight:i<arr.length-1?20:0, marginRight:i<arr.length-1?20:0, borderRight:i<arr.length-1?"1px solid #ECEDF8":undefined }}>
-                        <div style={{ fontSize:20, fontWeight:900, fontFamily:"Sora,sans-serif", color:s.warn?"#F59E0B":s.green?"#059669":"#0B0C1A", letterSpacing:"-.5px" }}>{s.v}</div>
-                        <div style={{ fontSize:9.5, fontWeight:700, color:"#BFC1D9", letterSpacing:".5px", marginTop:2, textTransform:"uppercase" }}>{s.l}</div>
+                      <div key={s.l} className="accounts-stat-item" style={{ display:"flex", flexDirection:"column", alignItems:"center", paddingRight:i<arr.length-1?20:0, marginRight:i<arr.length-1?20:0, borderRight:i<arr.length-1?"1px solid #ECEDF8":undefined }}>
+                        <div className="accounts-stat-value" style={{ fontSize:20, fontWeight:900, fontFamily:"Sora,sans-serif", color:s.warn?"#F59E0B":"#0B0C1A", letterSpacing:"-.5px" }}>{s.v}</div>
+                        <div className="accounts-stat-label" style={{ fontSize:9.5, fontWeight:700, color:"#BFC1D9", letterSpacing:".5px", marginTop:2, textTransform:"uppercase" }}>{s.l}</div>
                       </div>
                     ))
                   )}
@@ -650,11 +876,11 @@ export default function SocialAccountsPage() {
 
           {/* ── Supported Platforms ── */}
           <div style={{ marginBottom:32 }}>
-            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:14 }}>
+            <div className="accounts-platforms-header" style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:14 }}>
               <h2 style={{ fontSize:16, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif" }}>Supported platforms</h2>
               <span style={{ fontSize:12, color:"#8486AB" }}>Connected platforms appear first</span>
             </div>
-            <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:14 }}>
+            <div className="accounts-platforms-grid" style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:14 }}>
               {isLoading
                 ? Array.from({ length: 8 }).map((_, i) => <PlatCardSkeleton key={i} />)
                 : sortedPlats.map(p => (
@@ -686,8 +912,8 @@ export default function SocialAccountsPage() {
               const needsAttn = accounts.filter(a => a.health === "Needs refresh").length;
               const connectedCount = accounts.filter(a => a.health === "Healthy").length;
               return (
-                <div key={ws} style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:16, overflow:"hidden", marginBottom:20, boxShadow:"0 1px 4px rgba(11,12,26,.04)" }}>
-                  <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", padding:"20px 24px 14px", borderBottom:"1px solid #F0F1F9" }}>
+                <div key={ws} className="accounts-container" style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:16, overflow:"hidden", marginBottom:20, boxShadow:"0 1px 4px rgba(11,12,26,.04)" }}>
+                  <div className="accounts-header-section" style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", padding:"20px 24px 14px", borderBottom:"1px solid #F0F1F9" }}>
                     <div>
                       <h2 style={{ fontSize:17, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", marginBottom:5 }}>Connected accounts</h2>
                       <p style={{ fontSize:13, color:"#8486AB" }}>
@@ -741,8 +967,8 @@ export default function SocialAccountsPage() {
           </div> */}
 
           {/* ── Security + Recent Activity ── */}
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
-            <div style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:14, padding:"22px 24px" }}>
+          <div className="accounts-bottom-grid" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
+            <div className="accounts-bottom-card" style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:14, padding:"22px 24px" }}>
               <h3 style={{ fontSize:15, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", marginBottom:14 }}>Security</h3>
               <div style={{ display:"flex", flexDirection:"column", gap:10, marginBottom:16 }}>
                 {[
@@ -758,7 +984,7 @@ export default function SocialAccountsPage() {
               </div>
             </div>
 
-            <div style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:14, padding:"22px 24px" }}>
+            <div className="accounts-bottom-card" style={{ background:"#fff", border:"1px solid #E2E4F0", borderRadius:14, padding:"22px 24px" }}>
               <h3 style={{ fontSize:15, fontWeight:800, color:"#0B0C1A", fontFamily:"Sora,sans-serif", marginBottom:14 }}>Recent activity</h3>
               <div style={{ display:"flex", flexDirection:"column" }}>
                 {RECENT_ACT.map((a, i) => (

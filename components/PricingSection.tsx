@@ -90,6 +90,308 @@ export default function PricingSection() {
           padding: 0 28px;
         }
 
+        /* MOBILE RESPONSIVE */
+        @media (max-width: 768px) {
+          .pricing-wrapper {
+            padding-bottom: 60px;
+          }
+
+          .wrap {
+            padding: 0 16px;
+          }
+
+          .hero {
+            padding: 60px 0 10px;
+          }
+
+          .hero h1 {
+            font-size: clamp(24px, 6vw, 36px);
+            margin: 14px 0 0;
+          }
+
+          .hero .sub {
+            font-size: clamp(13px, 3vw, 16px);
+            margin: 12px auto 0;
+          }
+
+          .platline {
+            margin: 20px auto 0;
+            font-size: 13px;
+          }
+
+          .platstrip {
+            gap: 8px;
+            margin-top: 12px;
+          }
+
+          .ps {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+          }
+
+          .ps svg {
+            width: 18px;
+            height: 18px;
+          }
+
+          .billing {
+            grid-template-columns: 1fr;
+            gap: 0;
+            margin-top: 32px;
+          }
+
+          .bill-left {
+            padding: 24px 18px;
+          }
+
+          .bill-right {
+            padding: 24px 18px;
+            border-left: none;
+            border-top: 1px solid var(--line);
+          }
+
+          .seg-wrap {
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-direction: column;
+            align-items: stretch;
+          }
+
+          .seg {
+            width: 100%;
+          }
+
+          .seg-btn {
+            padding: 8px 16px;
+            font-size: 12px;
+            flex: 1;
+            justify-content: center;
+          }
+
+          .cur-seg {
+            width: 100%;
+          }
+
+          .cur-seg button {
+            flex: 1;
+            height: 36px;
+            font-size: 13px;
+          }
+
+          .plan-flag {
+            font-size: 10px;
+            margin-bottom: 10px;
+            letter-spacing: .12em;
+          }
+
+          .big-price {
+            gap: 2px;
+          }
+
+          .bp-cur {
+            font-size: 24px;
+            margin-top: 6px;
+          }
+
+          .bp-amt {
+            font-size: 48px;
+            line-height: .95;
+          }
+
+          .bp-per {
+            font-size: 14px;
+            margin-bottom: 8px;
+          }
+
+          .bp-sub {
+            font-size: 12px;
+            margin-top: 8px;
+          }
+
+          .bp-usd {
+            font-size: 11px;
+            margin-top: 2px;
+          }
+
+          .save-ribbon {
+            gap: 6px;
+            margin-top: 12px;
+            font-size: 11px;
+            padding: 6px 10px;
+            border-radius: 8px;
+          }
+
+          .bill-cta {
+            gap: 8px;
+            margin-top: 18px;
+            font-size: 13px;
+            padding: 12px 18px;
+            border-radius: 10px;
+          }
+
+          .bill-cta svg {
+            width: 16px;
+            height: 16px;
+          }
+
+          .bill-pay {
+            font-size: 11px;
+            margin-top: 12px;
+          }
+
+          .br-head {
+            margin-bottom: 18px;
+          }
+
+          .br-head h3 {
+            font-size: 18px;
+            margin-top: 6px;
+          }
+
+          .br-feats {
+            gap: 12px;
+          }
+
+          .br-feats li {
+            gap: 10px;
+          }
+
+          .br-feats li b {
+            font-size: 13px;
+          }
+
+          .br-feats li span {
+            font-size: 11px;
+          }
+
+          .section {
+            margin: 60px 0 0;
+          }
+
+          .sec-head {
+            margin-bottom: 28px;
+          }
+
+          .sec-head h2 {
+            font-size: clamp(20px, 5vw, 32px);
+          }
+
+          .sec-head p {
+            font-size: 13px;
+            margin-top: 8px;
+          }
+
+          .plat-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+          }
+
+          .pl {
+            padding: 14px 12px;
+          }
+
+          .pl-head {
+            gap: 8px;
+            margin-bottom: 12px;
+          }
+
+          .pl-ico {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+          }
+
+          .pl-ico svg {
+            width: 16px;
+            height: 16px;
+          }
+
+          .pl-name {
+            font-size: 13px;
+          }
+
+          .caps {
+            gap: 4px;
+          }
+
+          .cap {
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 5px;
+          }
+
+          .legend {
+            gap: 12px;
+            margin-top: 20px;
+            font-size: 11px;
+          }
+
+          .ent {
+            margin: 50px 0 0;
+            padding: 24px 18px;
+            gap: 16px;
+            flex-direction: column;
+            text-align: center;
+          }
+
+          .ent h3 {
+            font-size: 18px;
+          }
+
+          .ent p {
+            font-size: 13px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .wrap {
+            padding: 0 12px;
+          }
+
+          .hero {
+            padding: 40px 0 8px;
+          }
+
+          .hero h1 {
+            font-size: clamp(20px, 7vw, 28px);
+            margin: 10px 0 0;
+            line-height: 1.1;
+          }
+
+          .platline {
+            margin: 16px auto 0;
+            font-size: 12px;
+          }
+
+          .billing {
+            margin-top: 24px;
+          }
+
+          .bill-left,
+          .bill-right {
+            padding: 18px 14px;
+          }
+
+          .bp-cur {
+            font-size: 20px;
+            margin-top: 4px;
+          }
+
+          .bp-amt {
+            font-size: 40px;
+          }
+
+          .plat-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+          }
+
+          .pl {
+            padding: 12px 10px;
+          }
+        }
+
         /* HERO */
         .hero {
           text-align: center;
@@ -545,6 +847,13 @@ export default function PricingSection() {
         /* PLATFORM GRID */
         .section {
           margin: 96px 0 0;
+          display: block;
+        }
+
+        @media (max-width: 1024px) {
+          .section {
+            display: none;
+          }
         }
 
         .sec-head {

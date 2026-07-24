@@ -150,7 +150,7 @@ const getRangeQueryString = (range: string): string => {
 
 const chartOptions = {
   responsive: true,
-  maintainAspectRatio: true,
+  maintainAspectRatio: false,
   plugins: {
     legend: { display: false },
     tooltip: { mode: 'index' as const, intersect: false },
@@ -502,14 +502,81 @@ const AnalyticsPage: React.FC = () => {
         .toast { min-width:260px; max-width:360px; display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:10px; background:#fff; border:1px solid var(--bdr); box-shadow:0 8px 26px rgba(11,12,26,.12); }
         .toast .t-x { cursor:pointer; color:var(--t4); font-weight:700; }
         .error-banner { display:flex; align-items:center; justify-content:space-between; gap:10px; background:#FEF2F2; border:1px solid #FCA5A5; color:#B91C1C; padding:10px 14px; border-radius:10px; margin-bottom:14px; font-size:13px; }
+        .an-chart-box { position:relative; width:100%; }
         @media (max-width:1200px) { .analytics-grid-4 { grid-template-columns:repeat(2,minmax(0,1fr)); } }
         @media (max-width:900px) { .analytics-grid { grid-template-columns:1fr; } }
         @media (max-width:640px) { .analytics-grid-4 { grid-template-columns:1fr; } #content { padding:14px; } }
+
+        @media (min-width:768px) {
+          .an-admin-header {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 50 !important;
+            background: #fff !important;
+            border-bottom: 1px solid var(--bdr) !important;
+          }
+          #content {
+            margin-top: 56px !important;
+          }
+        }
+        @media (max-width:767px) {
+          .an-admin-header {
+            display: none !important;
+          }
+          #content {
+            height: auto !important;
+            min-height: calc(100vh - 60px);
+            padding: 12px !important;
+          }
+          .page-title { font-size: 19px !important; }
+          .page-sub { font-size: 12px !important; }
+          .an-filter-row {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 8px !important;
+            margin-bottom: 14px !important;
+          }
+          .an-range-tabs {
+            width: 100% !important;
+            overflow-x: auto !important;
+          }
+          .an-range-tabs .rt {
+            flex: 1 1 0 !important;
+            white-space: nowrap !important;
+          }
+          .an-plat-row {
+            margin-left: 0 !important;
+            width: 100% !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            padding-bottom: 2px !important;
+          }
+          .an-plat-row .btn {
+            flex-shrink: 0 !important;
+          }
+          .analytics-grid-4 { gap: 8px !important; margin-bottom: 8px !important; }
+          .kpi { padding: 10px !important; }
+          .kpi-val { font-size: 19px !important; }
+          .kpi-label { font-size: 11px !important; }
+          .analytics-grid { gap: 8px !important; margin-bottom: 8px !important; }
+          .cc-hdr {
+            flex-wrap: wrap !important;
+            padding: 10px 12px !important;
+            gap: 8px !important;
+          }
+          .cc-body { padding: 10px 12px !important; }
+          .cc-title { font-size: 13px !important; }
+          .cc-sub { font-size: 11px !important; }
+          .an-chart-box { height: 160px !important; }
+        }
       `}</style>
 
       <div id="main" style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
         {/* Topbar */}
         <AdminHeader
+          className="an-admin-header"
           pageTitle="Analytics"
           searchPlaceholder="Search analytics…"
           actionButton={
@@ -549,8 +616,8 @@ const AnalyticsPage: React.FC = () => {
           )}
 
           {/* Range Tabs */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-            <div className="range-tabs">
+          <div className="an-filter-row" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+            <div className="range-tabs an-range-tabs">
               {['7d', '30d', '90d', 'ytd'].map((range) => (
                 <button
                   key={range}
@@ -561,7 +628,7 @@ const AnalyticsPage: React.FC = () => {
                 </button>
               ))}
             </div>
-            <div style={{ display: 'flex', gap: '6px', marginLeft: 'auto' }}>
+            <div className="an-plat-row" style={{ display: 'flex', gap: '6px', marginLeft: 'auto' }}>
               {['all', 'ig', 'li', 'tk', 'th', 'yt'].map((platform) => (
                 <button
                   key={platform}
@@ -633,7 +700,9 @@ const AnalyticsPage: React.FC = () => {
                 </div>
               </div>
               <div className="cc-body">
-                <Line data={engagementChartData} options={chartOptions} height={180} />
+                <div className="an-chart-box" style={{ height: 180 }}>
+                  <Line data={engagementChartData} options={chartOptions} />
+                </div>
               </div>
             </div>
             <div className="chart-card" style={{ animationDelay: '0.22s' }}>
@@ -646,7 +715,9 @@ const AnalyticsPage: React.FC = () => {
                 </div>
               </div>
               <div className="cc-body">
-                <Bar data={reachChartData} options={chartOptions} height={180} />
+                <div className="an-chart-box" style={{ height: 180 }}>
+                  <Bar data={reachChartData} options={chartOptions} />
+                </div>
               </div>
             </div>
           </div>
@@ -676,7 +747,9 @@ const AnalyticsPage: React.FC = () => {
                 </div>
               </div>
               <div className="cc-body">
-                <Bar data={followerGrowthChartData} options={stackedBarOptions} height={200} />
+                <div className="an-chart-box" style={{ height: 200 }}>
+                  <Bar data={followerGrowthChartData} options={stackedBarOptions} />
+                </div>
               </div>
             </div>
           </div>

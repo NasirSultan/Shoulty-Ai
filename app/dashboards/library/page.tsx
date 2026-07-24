@@ -827,12 +827,12 @@ const LibCardItem = React.memo(function LibCardItem({ card, viewMode, onOpen, on
   const isList = viewMode === "list";
 
   return (
-    <div onClick={onOpen} style={{ background:"#fff",border:"1px solid #E4E5EF",borderRadius:14,overflow:"hidden",cursor:"pointer",boxShadow:"0 1px 2px rgba(13,14,26,.05)",transition:"all .18s",display:isList?"flex":"block",position:"relative" }}
+    <div onClick={onOpen} style={{ background:"#fff",border:"1px solid #E4E5EF",borderRadius:14,overflow:"hidden",cursor:"pointer",boxShadow:"0 1px 2px rgba(13,14,26,.05)",transition:"all .18s",display:isList?"flex":"block",position:"relative",minWidth:0,maxWidth:"100%" }}
       onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow="0 4px 12px rgba(13,14,26,.08),0 0 0 1.5px #F97316"; (e.currentTarget as HTMLDivElement).style.borderColor="#F97316"; (e.currentTarget as HTMLDivElement).style.transform="translateY(-3px)"; }}
       onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow="0 1px 2px rgba(13,14,26,.05)"; (e.currentTarget as HTMLDivElement).style.borderColor="#E4E5EF"; (e.currentTarget as HTMLDivElement).style.transform="translateY(0)"; }}>
       {/* Thumbnail */}
-      <div style={{ position:"relative",overflow:"hidden",background:"#F0F1F8",width:isList?130:undefined,flexShrink:isList?0:undefined,aspectRatio:isList?undefined:"4/3" }}>
-        <img src={card.img} alt={card.cat} loading="lazy" style={{ width:"100%",display:"block",objectFit:"cover",height:isList?"100%":undefined }} />
+      <div style={{ position:"relative",overflow:"hidden",background:"#F0F1F8",width:isList?130:undefined,flexShrink:isList?0:undefined,aspectRatio:isList?undefined:"4/5" }}>
+        <img src={card.img} alt={card.cat} loading="lazy" style={{ width:"100%",display:"block",objectFit:"cover",height:"100%" }} />
         {/* Hover action bar — only for grid view */}
         {!isList && (
           <div className="card-hover-actions" style={{ position:"absolute",bottom:0,left:0,right:0,zIndex:4,padding:"8px 6px 6px",display:"flex",gap:4,justifyContent:"center",background:"linear-gradient(transparent,rgba(0,0,0,.7))" }}>
@@ -1178,6 +1178,116 @@ export default function LibraryPage() {
         @keyframes fadeIn { from{opacity:0} to{opacity:1} }
         .card-hover-actions { opacity: 0; transition: all .18s; }
         div:hover > .card-hover-actions { opacity: 1; transform: translateY(0) !important; }
+        .lib-grid { min-width: 0; }
+        .lib-grid > div { min-width: 0; }
+        .lib-dropdown-backdrop {
+          position: fixed !important;
+          inset: 0 !important;
+          background: rgba(13,14,26,.32) !important;
+          z-index: 9998 !important;
+        }
+        .lib-dropdown-panel {
+          position: fixed !important;
+          top: 50% !important;
+          left: 50% !important;
+          right: auto !important;
+          transform: translate(-50%,-50%) !important;
+          width: min(340px, calc(100vw - 32px)) !important;
+          min-width: 0 !important;
+          max-width: calc(100vw - 32px) !important;
+          max-height: min(360px, calc(100vh - 90px)) !important;
+        }
+        @media (min-width: 768px) {
+          .lib-admin-header {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 50 !important;
+            background: #fff !important;
+            border-bottom: 1px solid #E4E5EF !important;
+          }
+          .lib-hero {
+            margin-top: 56px !important;
+          }
+        }
+        @media (min-width: 768px) and (max-width: 1024px) {
+          .lib-connected-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+          }
+          .lib-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
+        @media (max-width: 767px) {
+          .lib-admin-header {
+            display: none !important;
+          }
+          .lib-hero {
+            padding: 24px 14px 20px !important;
+          }
+          .lib-hero-badge {
+            font-size: 10px !important;
+            padding: 3px 10px !important;
+            margin-bottom: 10px !important;
+          }
+          .lib-hero-title {
+            font-size: 24px !important;
+            margin-bottom: 6px !important;
+          }
+          .lib-hero-sub {
+            font-size: 12.5px !important;
+            margin-bottom: 18px !important;
+            line-height: 1.5 !important;
+          }
+          .lib-hero-sub br {
+            display: none;
+          }
+          .lib-search-bar {
+            padding: 7px 7px 7px 12px !important;
+            border-radius: 12px !important;
+          }
+          .lib-search-btn {
+            padding: 9px 14px !important;
+            font-size: 12.5px !important;
+          }
+          .lib-chips {
+            gap: 6px !important;
+            margin-top: 14px !important;
+          }
+          .lib-chip {
+            padding: 6px 11px !important;
+            font-size: 11.5px !important;
+          }
+
+          .lib-connected {
+            display: none !important;
+          }
+
+          .lib-filter-bar {
+            padding: 8px 12px !important;
+            gap: 6px !important;
+          }
+          .lib-filter-dropdown {
+            flex: 1 1 auto !important;
+          }
+          .lib-filter-dropdown button {
+            width: 100% !important;
+            justify-content: center !important;
+          }
+          .lib-filter-right {
+            margin-left: 0 !important;
+            flex: 1 1 100% !important;
+            justify-content: space-between !important;
+          }
+          .lib-body {
+            padding: 14px 12px !important;
+          }
+          .lib-grid {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+          }
+        }
       `}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
@@ -1185,26 +1295,27 @@ export default function LibraryPage() {
 
           {/* Topbar */}
           <AdminHeader
+            className="lib-admin-header"
             pageTitle="Content Library"
             userName={user?.name}
             userInitials={initials}
           />
 
           {/* Hero */}
-          <div style={{ flexShrink:0,padding:"44px 22px 28px",background:"linear-gradient(180deg,#FFF7ED 0%,#fff 65%)",borderBottom:"1px solid #E4E5EF",textAlign:"center" }}>
-            <div style={{ display:"inline-flex",alignItems:"center",gap:6,padding:"4px 14px",borderRadius:20,background:"#FFF7ED",border:"1.5px solid #FDBA74",color:"#F97316",fontSize:11.5,fontWeight:700,marginBottom:14,fontFamily:"Sora,sans-serif" }}>✦ Shoutly AI · 10,000+ Assets</div>
-            <div style={{ fontSize:38,fontWeight:800,color:"#0D0E1A",letterSpacing:"-.9px",marginBottom:10,fontFamily:"Sora,sans-serif",lineHeight:1.1 }}>Content Library</div>
-            <div style={{ fontSize:15,color:"#9496B5",marginBottom:26,maxWidth:520,margin:"0 auto 26px",lineHeight:1.65 }}>Search from thousands of AI-generated social media posts<br/>across 131 industries</div>
+          <div className="lib-hero" style={{ flexShrink:0,padding:"44px 22px 28px",background:"linear-gradient(180deg,#FFF7ED 0%,#fff 65%)",borderBottom:"1px solid #E4E5EF",textAlign:"center" }}>
+            <div className="lib-hero-badge" style={{ display:"inline-flex",alignItems:"center",gap:6,padding:"4px 14px",borderRadius:20,background:"#FFF7ED",border:"1.5px solid #FDBA74",color:"#F97316",fontSize:11.5,fontWeight:700,marginBottom:14,fontFamily:"Sora,sans-serif" }}>✦ Shoutly AI · 10,000+ Assets</div>
+            <div className="lib-hero-title" style={{ fontSize:38,fontWeight:800,color:"#0D0E1A",letterSpacing:"-.9px",marginBottom:10,fontFamily:"Sora,sans-serif",lineHeight:1.1 }}>Content Library</div>
+            <div className="lib-hero-sub" style={{ fontSize:15,color:"#9496B5",marginBottom:26,maxWidth:520,margin:"0 auto 26px",lineHeight:1.65 }}>Search from thousands of AI-generated social media posts<br/>across 131 industries</div>
             {/* Search bar */}
-            <div style={{ display:"flex",alignItems:"center",gap:8,padding:"9px 9px 9px 18px",borderRadius:16,background:"#fff",border:"1.5px solid #E4E5EF",maxWidth:660,margin:"0 auto",transition:"all .18s",boxShadow:"0 3px 14px rgba(13,14,26,.07)" }}>
+            <div className="lib-search-bar" style={{ display:"flex",alignItems:"center",gap:8,padding:"9px 9px 9px 18px",borderRadius:16,background:"#fff",border:"1.5px solid #E4E5EF",maxWidth:660,margin:"0 auto",transition:"all .18s",boxShadow:"0 3px 14px rgba(13,14,26,.07)" }}>
               <i className="fa-solid fa-magnifying-glass" style={{ color:"#9496B5",fontSize:15,flexShrink:0 }} />
               <input value={searchInput} onChange={e => setSearchInput(e.target.value)} onKeyDown={e => e.key==="Enter" && doSearch()} placeholder="Search 'real estate', 'fitness', 'food', 'restaurant', 'festival'…"
-                style={{ flex:1,background:"none",border:"none",outline:"none",fontSize:14.5,color:"#0D0E1A",fontWeight:500,fontFamily:"inherit" }} />
+                style={{ flex:1,background:"none",border:"none",outline:"none",fontSize:14.5,color:"#0D0E1A",fontWeight:500,fontFamily:"inherit",minWidth:0 }} />
               {searchInput && <i onClick={() => setSearchInput("")} className="fa-solid fa-xmark" style={{ color:"#9496B5",cursor:"pointer",flexShrink:0,fontSize:13 }} />}
-              <button onClick={doSearch} style={{ padding:"10px 24px",borderRadius:10,background:"linear-gradient(115deg,#F97316,#EA580C)",color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer",border:"none",whiteSpace:"nowrap",fontFamily:"Sora,sans-serif",flexShrink:0,boxShadow:"0 4px 14px rgba(249,115,22,.38)" }}>Search</button>
+              <button onClick={doSearch} className="lib-search-btn" style={{ padding:"10px 24px",borderRadius:10,background:"linear-gradient(115deg,#F97316,#EA580C)",color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer",border:"none",whiteSpace:"nowrap",fontFamily:"Sora,sans-serif",flexShrink:0,boxShadow:"0 4px 14px rgba(249,115,22,.38)" }}>Search</button>
             </div>
             {/* Quick chips */}
-            <div style={{ display:"flex",gap:8,flexWrap:"wrap",marginTop:20,justifyContent:"center" }}>
+            <div className="lib-chips" style={{ display:"flex",gap:8,flexWrap:"wrap",marginTop:20,justifyContent:"center" }}>
               {([
                 {label:"✨ New",k:"fitness"},
                 {label:"💼 Business",k:"real-estate"},
@@ -1215,7 +1326,7 @@ export default function LibraryPage() {
                 {label:"🤖 AI Generated",k:"technology"},
                 {label:"🕐 Recently Added",k:"fashion"},
               ] as {label:string;k:string}[]).map(chip => (
-                <button key={chip.k} onClick={() => selectIndustry(chip.k)}
+                <button key={chip.k} onClick={() => selectIndustry(chip.k)} className="lib-chip"
                   style={{ padding:"7px 15px",borderRadius:20,border:`1.5px solid ${industry===chip.k?"#F97316":"#E4E5EF"}`,background:industry===chip.k?"#FFF7ED":"#fff",color:industry===chip.k?"#F97316":"#4B4D6B",fontSize:13,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap",fontFamily:"Sora,sans-serif",transition:"all .15s",boxShadow:industry===chip.k?"0 2px 10px rgba(249,115,22,.22)":"none" }}>
                   {chip.label}
                 </button>
@@ -1224,13 +1335,13 @@ export default function LibraryPage() {
           </div>
 
           {/* Connected Accounts */}
-          <div style={{ flexShrink:0,padding:"14px 22px 16px",background:"#F9FAFB",borderBottom:"1px solid #E4E5EF" }}>
+          <div className="lib-connected" style={{ flexShrink:0,padding:"14px 22px 16px",background:"#F9FAFB",borderBottom:"1px solid #E4E5EF" }}>
             <div style={{ display:"flex",alignItems:"center",gap:7,marginBottom:12 }}>
               <i className="fa-solid fa-link" style={{ color:"#9496B5",fontSize:12 }} />
               <span style={{ fontSize:13,fontWeight:700,color:"#0D0E1A",fontFamily:"Sora,sans-serif" }}>Connected Accounts</span>
               <span style={{ fontSize:11.5,color:"#9496B5",fontWeight:500 }}>5 of 10 connected</span>
             </div>
-            <div style={{ display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:8 }}>
+            <div className="lib-connected-grid" style={{ display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:8 }}>
               {CONN_PLATS.map(p => (
                 <div key={p.id}
                   style={{ display:"flex",alignItems:"center",gap:8,padding:"9px 12px",borderRadius:10,border:`1.5px solid ${p.connected?"#10B981":"#E4E5EF"}`,background:p.connected?"rgba(16,185,129,.05)":"#fff",cursor:"pointer",transition:"all .15s" }}
@@ -1250,9 +1361,9 @@ export default function LibraryPage() {
           </div>
 
           {/* Filter Bar */}
-          <div style={{ flexShrink:0,display:"flex",alignItems:"center",gap:8,padding:"10px 22px",background:"#fff",borderBottom:"1px solid #E4E5EF",flexWrap:"wrap" }}>
+          <div className="lib-filter-bar" style={{ flexShrink:0,display:"flex",alignItems:"center",gap:8,padding:"10px 22px",background:"#fff",borderBottom:"1px solid #E4E5EF",flexWrap:"wrap" }}>
             {/* Industry dropdown */}
-            <div ref={indDropRef} style={{ flexShrink:0 }}>
+            <div ref={indDropRef} className="lib-filter-dropdown" style={{ flexShrink:0 }}>
               <button ref={indBtnRef}
                 onClick={() => {
                   const r = indBtnRef.current?.getBoundingClientRect();
@@ -1265,7 +1376,9 @@ export default function LibraryPage() {
                 <i className={`fa-solid fa-chevron-${indDrop?"up":"down"}`} style={{ fontSize:10 }} />
               </button>
               {indDrop && (
-                <div style={{ position:"fixed",top:indPos.top,left:indPos.left,zIndex:9999,background:"#fff",border:"1.5px solid #E4E5EF",borderRadius:12,boxShadow:"0 8px 28px rgba(13,14,26,.14)",minWidth:220,maxHeight:300,overflowY:"auto" }}>
+                <>
+                <div className="lib-dropdown-backdrop" onClick={() => setIndDrop(false)} />
+                <div className="lib-dropdown-panel" style={{ position:"fixed",top:indPos.top,left:indPos.left,zIndex:9999,background:"#fff",border:"1.5px solid #E4E5EF",borderRadius:12,boxShadow:"0 8px 28px rgba(13,14,26,.14)",minWidth:220,maxHeight:300,overflowY:"auto",WebkitOverflowScrolling:"touch",overscrollBehavior:"contain",touchAction:"pan-y" }}>
                   {apiIndustries.length === 0 && (
                     <div style={{ padding:"12px 14px",fontSize:13,color:"#9496B5",fontFamily:"Sora,sans-serif" }}>Loading…</div>
                   )}
@@ -1278,11 +1391,12 @@ export default function LibraryPage() {
                     </div>
                   ))}
                 </div>
+                </>
               )}
             </div>
             {/* Sub-industry dropdown — only when an industry is selected */}
             {selIndId && (
-              <div ref={subIndDropRef} style={{ flexShrink:0 }}>
+              <div ref={subIndDropRef} className="lib-filter-dropdown" style={{ flexShrink:0 }}>
                 <button ref={subIndBtnRef}
                   onClick={() => {
                     const r = subIndBtnRef.current?.getBoundingClientRect();
@@ -1294,7 +1408,9 @@ export default function LibraryPage() {
                   <i className={`fa-solid fa-chevron-${subIndDrop?"up":"down"}`} style={{ fontSize:10 }} />
                 </button>
                 {subIndDrop && (
-                  <div style={{ position:"fixed",top:subIndPos.top,left:subIndPos.left,zIndex:9999,background:"#fff",border:"1.5px solid #E4E5EF",borderRadius:12,boxShadow:"0 8px 28px rgba(13,14,26,.14)",minWidth:220,maxHeight:300,overflowY:"auto" }}>
+                  <>
+                  <div className="lib-dropdown-backdrop" onClick={() => setSubIndDrop(false)} />
+                  <div className="lib-dropdown-panel" style={{ position:"fixed",top:subIndPos.top,left:subIndPos.left,zIndex:9999,background:"#fff",border:"1.5px solid #E4E5EF",borderRadius:12,boxShadow:"0 8px 28px rgba(13,14,26,.14)",minWidth:220,maxHeight:300,overflowY:"auto",WebkitOverflowScrolling:"touch",overscrollBehavior:"contain",touchAction:"pan-y" }}>
                     {(apiIndustries.find(i => i.id === selIndId)?.subIndustries || []).length === 0 && (
                       <div style={{ padding:"12px 14px",fontSize:13,color:"#9496B5",fontFamily:"Sora,sans-serif" }}>No sub-industries</div>
                     )}
@@ -1307,11 +1423,12 @@ export default function LibraryPage() {
                       </div>
                     ))}
                   </div>
+                  </>
                 )}
               </div>
             )}
             {/* Sort + results + view — right side */}
-            <div style={{ marginLeft:"auto",display:"flex",alignItems:"center",gap:8,flexShrink:0 }}>
+            <div className="lib-filter-right" style={{ marginLeft:"auto",display:"flex",alignItems:"center",gap:8,flexShrink:0 }}>
               <span style={{ fontSize:12,color:"#9496B5",whiteSpace:"nowrap",fontFamily:"JetBrains Mono,monospace" }}>
                 <span style={{ color:"#F97316",fontWeight:700 }}>{posts.length}</span> results
               </span>
@@ -1338,7 +1455,7 @@ export default function LibraryPage() {
           </div>
 
           {/* Library Body */}
-          <div style={{ flex:1,overflowY:"auto",padding:"20px 22px" }}>
+          <div className="lib-body" style={{ flex:1,overflowY:"auto",padding:"20px 22px" }}>
             {/* Empty state — no sub-industry selected yet */}
             {!loading && posts.length === 0 && !activeSubIndId && (
               <div style={{ display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:380 }}>
@@ -1377,7 +1494,7 @@ export default function LibraryPage() {
             )}
             {/* Skeleton */}
             {loading && (
-              <div style={{ display:"grid",gridTemplateColumns:gridCols,gap:14 }}>
+              <div className="lib-grid" style={{ display:"grid",gridTemplateColumns:gridCols,gap:14 }}>
                 {Array.from({ length: 12 }).map((_, i) => (
                   <div key={i} style={{ background:"#fff",borderRadius:14,overflow:"hidden",border:"1px solid #E4E5EF" }}>
                     <div style={{ aspectRatio:"4/3",background:"linear-gradient(90deg,#F0F1F8 0%,#E4E5EF 50%,#F0F1F8 100%)",backgroundSize:"700px",animation:"shimmer 1.5s infinite" }} />
@@ -1390,11 +1507,11 @@ export default function LibraryPage() {
             )}
             {/* Grid */}
             {!loading && displayPosts.length > 0 && (
-              <div style={{ display:"grid",gridTemplateColumns:gridCols,gap:14 }}>
+              <div className="lib-grid" style={{ display:"grid",gridTemplateColumns:gridCols,gap:14 }}>
                 {displayPosts.map((card, i) => {
                   const isNew = i >= newStartIdx;
                   return (
-                    <div key={card.id} style={isNew ? { animation:"cardIn .35s ease both",animationDelay:`${Math.min((i - newStartIdx) * 0.04, 0.5)}s` } : undefined}>
+                    <div key={card.id} style={{ minWidth:0, ...(isNew ? { animation:"cardIn .35s ease both",animationDelay:`${Math.min((i - newStartIdx) * 0.04, 0.5)}s` } : undefined) }}>
                       <LibCardItem card={card} viewMode={viewMode} onOpen={() => setCompCard(card)} onCopy={() => copyText(card.cap)} />
                     </div>
                   );
@@ -1403,7 +1520,7 @@ export default function LibraryPage() {
             )}
             {/* Load more spinner (inline — existing images stay visible) */}
             {loadingMore && (
-              <div style={{ display:"grid",gridTemplateColumns:gridCols,gap:14,marginTop:14 }}>
+              <div className="lib-grid" style={{ display:"grid",gridTemplateColumns:gridCols,gap:14,marginTop:14 }}>
                 {Array.from({ length: 3 }).map((_, i) => (
                   <div key={i} style={{ background:"#fff",borderRadius:14,overflow:"hidden",border:"1px solid #E4E5EF" }}>
                     <div style={{ aspectRatio:"4/3",background:"linear-gradient(90deg,#F0F1F8 0%,#E4E5EF 50%,#F0F1F8 100%)",backgroundSize:"700px",animation:"shimmer 1.5s infinite" }} />
