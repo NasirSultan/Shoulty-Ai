@@ -30,7 +30,7 @@ function FooterNavLink({ link }: { link: FooterLink }) {
   if (!link.href) {
     return (
       <span
-        className="text-sm text-gray-400 dark:text-gray-600 cursor-not-allowed select-none"
+        className="text-[14px] font-semibold text-gray-500 cursor-not-allowed select-none"
         title="Coming soon"
       >
         {link.label}
@@ -43,7 +43,7 @@ function FooterNavLink({ link }: { link: FooterLink }) {
         href={link.href}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
+        className="text-[14px] font-semibold text-black hover:text-orange-600 transition-colors"
       >
         {link.label}
       </a>
@@ -52,7 +52,7 @@ function FooterNavLink({ link }: { link: FooterLink }) {
   return (
     <Link
       href={link.href}
-      className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
+      className="text-[14px] font-semibold text-black hover:text-orange-600 transition-colors"
     >
       {link.label}
     </Link>
@@ -62,7 +62,7 @@ function FooterNavLink({ link }: { link: FooterLink }) {
 function FooterColumn({ title, links }: { title: string; links: FooterLink[] }) {
   return (
     <div className="col-span-1">
-      <div className="text-xs font-bold uppercase tracking-widest text-orange-600 dark:text-orange-400 mb-5">
+      <div className="text-[13px] font-extrabold uppercase tracking-tight text-gray-800 mb-5">
         {title}
       </div>
       <ul className="space-y-2.5">
@@ -234,15 +234,18 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800">
+    <footer
+      className="bg-white border-t border-gray-200"
+      style={{ fontFamily: "'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
 
         {/* Top band — brand blurb + newsletter */}
-        <div className="border-b border-gray-200 dark:border-gray-800 pb-12 mb-12 grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+        <div className="border-b border-gray-200 pb-12 mb-12 grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
           <div>
             <Link href="/" className="inline-block mb-4 -ml-4">
               <Image
-                src="/images/logo2.png"
+                src="/images/logo.png"
                 alt="Shoutly AI logo"
                 width={160}
                 height={56}
@@ -250,11 +253,11 @@ const Footer = () => {
                 className="w-36 h-12 object-contain"
               />
             </Link>
-            <p className="text-sm text-gray-600 dark:text-gray-400 max-w-sm leading-relaxed mb-4">
+            <p className="text-[15px] text-gray-600 max-w-sm leading-[1.65] mb-4">
               One workspace to write, design, schedule, and measure social content across every channel your business lives on.
             </p>
             <span
-              className="inline-flex items-center gap-2 text-xs text-gray-400 dark:text-gray-600 cursor-not-allowed select-none"
+              className="inline-flex items-center gap-2 text-[12.5px] font-semibold text-green-800 cursor-not-allowed select-none"
               title="Coming soon"
             >
               <span className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0" />
@@ -262,9 +265,9 @@ const Footer = () => {
             </span>
           </div>
 
-          <div className="rounded-2xl p-6 bg-orange-50 dark:bg-gray-900 border border-orange-100 dark:border-gray-800">
-            <div className="text-base font-bold text-gray-900 dark:text-white mb-1.5">The weekly signal</div>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          <div className="rounded-2xl p-6 bg-orange-50 border border-orange-100">
+            <div className="text-[17px] font-extrabold text-gray-900 mb-1.5">The weekly signal</div>
+            <p className="text-[13.5px] text-gray-600 mb-4 leading-[1.55]">
               AI marketing tactics, product updates, and new feature releases. Sent Thursdays.
             </p>
             <div className="flex flex-col sm:flex-row gap-2">
@@ -275,24 +278,24 @@ const Footer = () => {
                 onChange={(e) => setNewsletterEmail(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') handleNewsletterSubscribe(); }}
                 disabled={newsletterState === 'loading'}
-                className="flex-1 text-sm px-3.5 py-2.5 rounded-lg border border-orange-200 dark:border-orange-900/50 bg-white dark:bg-gray-950 text-gray-900 dark:text-white placeholder-gray-400 outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 disabled:opacity-60"
+                className="flex-1 text-[14.5px] font-semibold px-3.5 py-2.5 rounded-lg border border-orange-200 bg-white text-gray-900 placeholder-gray-500 outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 disabled:opacity-60"
               />
               <button
                 type="button"
                 onClick={handleNewsletterSubscribe}
                 disabled={newsletterState === 'loading'}
-                className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white flex-shrink-0 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="px-5 py-2.5 rounded-lg text-[14.5px] font-extrabold text-white flex-shrink-0 disabled:opacity-60 disabled:cursor-not-allowed"
                 style={{ background: "linear-gradient(115deg,#F97316,#EA580C)" }}
               >
                 {newsletterState === 'loading' ? 'Subscribing…' : 'Subscribe'}
               </button>
             </div>
             {newsletterMessage ? (
-              <p className={`text-xs mt-3 ${newsletterState === 'error' ? 'text-red-500' : 'text-green-600 dark:text-green-500'}`}>
+              <p className={`text-xs mt-3 ${newsletterState === 'error' ? 'text-red-500' : 'text-green-600'}`}>
                 {newsletterMessage}
               </p>
             ) : (
-              <p className="text-xs text-gray-400 dark:text-gray-600 mt-3">No spam. Unsubscribe anytime.</p>
+              <p className="text-[12px] font-medium text-gray-500 mt-3">No spam. Unsubscribe anytime.</p>
             )}
           </div>
         </div>
@@ -319,7 +322,7 @@ const Footer = () => {
 
         {/* Row 2 — Company */}
         <div className="mb-12">
-          <div className="text-xs font-bold uppercase tracking-widest text-orange-600 dark:text-orange-400 mb-5">
+          <div className="text-[13px] font-extrabold uppercase tracking-tight text-gray-800 mb-5">
             Company
           </div>
           <ul className="flex flex-wrap gap-x-8 gap-y-2.5">
@@ -332,15 +335,15 @@ const Footer = () => {
         </div>
 
         {/* Trust & compliance badges */}
-        <div className="border-t border-gray-200 dark:border-gray-800 pt-8 mb-8">
-          <div className="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-500 mb-4">
+        <div className="border-t border-gray-200 pt-8 mb-8">
+          <div className="text-[13px] font-extrabold text-gray-800 mb-4">
             Trust &amp; compliance
           </div>
           <div className="flex flex-wrap gap-2">
             {trustBadges.map((badge) => (
               <span
                 key={badge.label}
-                className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-full text-gray-600 dark:text-gray-400"
+                className="inline-flex items-center gap-1.5 text-[12.5px] font-bold px-3 py-1.5 bg-white border border-gray-300 rounded-[10px] text-gray-600"
               >
                 <span className="text-orange-500">{badge.icon}</span>
                 {badge.label}
@@ -350,23 +353,23 @@ const Footer = () => {
         </div>
 
         {/* Legal hub */}
-        <div className="border-t border-gray-200 dark:border-gray-800 pt-8 mb-8">
+        <div className="border-t border-gray-200 pt-8 mb-8">
           <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-10">
             <div className="sm:w-48 flex-shrink-0">
-              <div className="text-xs font-bold uppercase tracking-widest text-orange-600 dark:text-orange-400 mb-2">
+              <div className="text-[13px] font-extrabold text-gray-800 mb-2">
                 Legal hub
               </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+              <p className="text-[13px] font-medium text-gray-600 leading-[1.55]">
                 Every policy governing how we handle your data, content, and account.
               </p>
             </div>
             <div className="flex flex-wrap gap-x-4 gap-y-2">
               {legalLinks.map((link, i) => (
                 <React.Fragment key={link.label}>
-                  {i > 0 && <span className="text-gray-300 dark:text-gray-700 hidden sm:inline">|</span>}
+                  {i > 0 && <span className="text-gray-400 hidden sm:inline">|</span>}
                   <Link
                     href={link.href}
-                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
+                    className="text-[13px] font-bold text-black hover:text-orange-600 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -377,23 +380,23 @@ const Footer = () => {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-gray-200 dark:border-gray-800 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <p className="text-xs text-gray-500 dark:text-gray-400 text-center sm:text-left">
-            © {currentYear} shoutlyai — <span className="font-semibold text-gray-900 dark:text-white">Qubixel Technologies Private Limited</span>. All rights reserved.
-            <span className="block sm:inline sm:ml-1">smart ai powering your social media for the next 365 days.</span>
+        <div className="border-t border-gray-200 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <p className="text-[13px] font-semibold text-gray-600 text-center sm:text-left">
+            © {currentYear} shoutlyai — <span className="font-semibold text-gray-900">Qubixel Technologies Private Limited</span>. All rights reserved.
+            <span className="block sm:inline sm:ml-1 text-[12px] font-medium text-gray-500">smart ai powering your social media for the next 365 days.</span>
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4">
             {/* Language / region — no i18n implemented yet, shown inactive */}
-            <span className="text-xs text-gray-400 dark:text-gray-600 cursor-not-allowed select-none" title="Coming soon">
+            <span className="text-[13px] font-bold text-gray-600 cursor-not-allowed select-none" title="Coming soon">
               English ▾
             </span>
-            <span className="text-xs text-gray-400 dark:text-gray-600 cursor-not-allowed select-none" title="Coming soon">
+            <span className="text-[13px] font-bold text-gray-600 cursor-not-allowed select-none" title="Coming soon">
               Global ▾
             </span>
             <a
               href="/sitemap.xml"
-              className="text-xs text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
+              className="text-[13px] font-bold text-gray-600 hover:text-orange-600 transition-colors"
             >
               Sitemap
             </a>
@@ -405,7 +408,7 @@ const Footer = () => {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
+                  className="text-gray-800 hover:text-orange-600 transition-colors"
                   aria-label={social.label}
                 >
                   {social.icon}
@@ -413,7 +416,7 @@ const Footer = () => {
               ))}
               {/* Theme toggle — no site-wide dark mode wired up yet, shown inactive */}
               <span
-                className="text-gray-300 dark:text-gray-700 cursor-not-allowed"
+                className="text-gray-600 cursor-not-allowed"
                 title="Coming soon"
                 aria-label="Toggle theme (coming soon)"
               >
@@ -428,3 +431,4 @@ const Footer = () => {
 };
 
 export default Footer;
+

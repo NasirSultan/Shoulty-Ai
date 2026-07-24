@@ -84,16 +84,16 @@ const MEGA_MENUS: MegaMenu[] = [
             {
                 title: "By industry",
                 items: [
-                    { label: "Local Businesses", icon: Store },
-                    { label: "Restaurants", href: "/social-media-marketing-for-restaurants.html", icon: Utensils },
-                    { label: "Retail", icon: ShoppingBag },
-                    { label: "Healthcare", icon: HeartPulse },
+                    { label: "Local Businesses", href: "/solutions/local-businesses", icon: Store },
+                    { label: "Restaurants", href: "/solutions/restaurants", icon: Utensils },
+                    { label: "Retail", href: "/solutions/retail", icon: ShoppingBag },
+                    { label: "Healthcare", href: "/solutions/healthcare", icon: HeartPulse },
                     { label: "Fitness", href: "/social-media-marketing-for-gyms.html", icon: Dumbbell },
                     { label: "Real Estate", href: "/for/real-estate", icon: Building2 },
-                    { label: "Agencies", icon: Users },
-                    { label: "Startups", href: "/tech-startups-social-media-automation.html", icon: Rocket },
-                    { label: "Professional Services", href: "/consultants.html", icon: Briefcase },
-                    { label: "Enterprise", icon: Landmark },
+                    { label: "Agencies", href: "/solutions/agencies", icon: Users },
+                    { label: "Startups", href: "/solutions/startups", icon: Rocket },
+                    { label: "Professional Services", href: "/solutions/professional-services", icon: Briefcase },
+                    { label: "Enterprise", href: "/solutions/enterprise", icon: Landmark },
                 ],
             },
             {
@@ -445,7 +445,7 @@ export default function Header() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 h-12 sm:h-14 flex items-center">
                     {/* Logo */}
                     <div className="relative flex-shrink-0 w-24 h-8 sm:w-36 sm:h-12">
-                        <a href="/">
+                        <Link href="/" aria-label="Go to homepage">
                             <Image
                                 src="/images/logo.png"
                                 alt="Shoutly AI logo"
@@ -455,7 +455,7 @@ export default function Header() {
                                 priority
                                 className="w-24 h-8 sm:w-36 sm:h-12 object-contain"
                             />
-                        </a>
+                        </Link>
                     </div>
 
                     {/* Desktop Links */}
