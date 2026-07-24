@@ -137,20 +137,20 @@ const Footer = () => {
 
   const solutionsLinks: FooterLink[] = [
     { label: "Local Businesses" },
-    { label: "Restaurants", href: "/for/restaurants" },
-    { label: "Fitness", href: "/for/fitness-studios" },
+    { label: "Restaurants", href: "/social-media-marketing-for-restaurants.html" },
+    { label: "Fitness", href: "/social-media-marketing-for-gyms.html" },
     { label: "Retail" },
     { label: "Healthcare" },
     { label: "Real Estate", href: "/for/real-estate" },
     { label: "Agencies" },
-    { label: "Startups" },
-    { label: "Professional Services" },
+    { label: "Startups", href: "/tech-startups-social-media-automation.html" },
+    { label: "Professional Services", href: "/consultants.html" },
     { label: "Enterprise" },
   ];
 
   const channelsLinks: FooterLink[] = [
     { label: "Facebook", href: "/channel/facebook" },
-    { label: "Instagram" },
+    { label: "Instagram", href: "/channel/instagram" },
     { label: "LinkedIn" },
     { label: "YouTube" },
     { label: "TikTok" },
