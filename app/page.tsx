@@ -859,20 +859,20 @@ const speeds = [120, 160, 110, 150, 130];
                     {/* Left Content */}
                     <div className="flex flex-col gap-4 sm:gap-6">
                         {/* Pill Badge */}
-                        <div className="mt-8 sm:mt-6 inline-flex items-center gap-1.5 w-fit px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-orange-500/10 border border-orange-500/30">
+                        <div className="mt-8 sm:mt-6 mx-auto md:mx-0 inline-flex items-center gap-1.5 w-fit px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-orange-500/10 border border-orange-500/30">
                             <span className="w-1 sm:w-1.5 h-1 sm:h-1.5 bg-orange-500 rounded-full animate-pulse"></span>
-                            <span className="text-[9px] sm:text-xs font-bold uppercase tracking-wider text-orange-400">AI Social Media Automation</span>
+                            <span className="text-[11px] sm:text-sm font-bold uppercase tracking-wider text-orange-400">AI Social Media Automation</span>
                         </div>
 
                         {/* Heading */}
-                        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black tracking-tight text-white leading-tight">
+                        <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-black tracking-tight text-white leading-tight text-center md:text-left">
                             <span className="bg-gradient-to-r from-orange-400 via-red-400 to-rose-400 bg-clip-text text-transparent">365 Days of Social Media.</span> <br className="hidden sm:block" />Zero Effort.
                         </h1>
 
                         {/* Platform Icons */}
                         <div className="pt-2 pb-1">
-                            <p className="text-[10px] sm:text-xs text-white/50 uppercase tracking-widest font-semibold mb-3 text-center">Post across 10 platforms</p>
-                            <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center">
+                            <p className="text-[10px] sm:text-xs text-white/50 uppercase tracking-widest font-semibold mb-3 text-center md:text-left">Post across 10 platforms</p>
+                            <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center md:justify-start">
                                 {[
                                     { icon: "fa-x-twitter",    bg: "#000000" },
                                     { icon: "fa-linkedin-in",  bg: "#0A66C2" },

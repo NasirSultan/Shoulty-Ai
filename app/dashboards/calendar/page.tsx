@@ -773,7 +773,7 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
   return (
     <div onClick={e => { if ((e.target as HTMLElement).id === "modal-backdrop") onClose(); }} id="modal-backdrop"
       style={{ position: "fixed", inset: 0, background: "rgba(11,12,26,.44)", backdropFilter: "blur(8px)", zIndex: 500, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
-      <div style={{ background: "#fff", border: "1px solid #E2E4F0", borderRadius: 18, width: 880, maxWidth: "100%", maxHeight: "90vh", overflow: "hidden", boxShadow: "0 32px 80px rgba(11,12,26,.2)", display: "flex", flexDirection: "column" }}>
+      <div className="cal-modal-card" style={{ background: "#fff", border: "1px solid #E2E4F0", borderRadius: 18, width: 880, maxWidth: "100%", maxHeight: "90vh", overflow: "hidden", boxShadow: "0 32px 80px rgba(11,12,26,.2)", display: "flex", flexDirection: "column" }}>
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "16px 20px", borderBottom: "1px solid #E2E4F0", flexShrink: 0 }}>
           <div style={{ width: 36, height: 36, borderRadius: 9, background: "#EEEEFF", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -788,9 +788,9 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
           </div>
         </div>
         {/* Body */}
-        <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+        <div className="cal-modal-body" style={{ display: "flex", flex: 1, overflow: "hidden" }}>
           {/* Left panel */}
-          <div style={{ width: 240, flexShrink: 0, background: "#F0F1F9", borderRight: "1px solid #E2E4F0", display: "flex", flexDirection: "column" }}>
+          <div className="cal-modal-left" style={{ width: 240, flexShrink: 0, background: "#F0F1F9", borderRight: "1px solid #E2E4F0", display: "flex", flexDirection: "column" }}>
             <div
               style={{ flex: 1, overflow: "hidden", position: "relative", minHeight: 160, cursor: "pointer" }}
               onClick={() => setShowImagePreviewPopup(true)}
@@ -829,7 +829,7 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
             </div>
           </div>
           {/* Form */}
-          <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
+          <div className="cal-modal-form" style={{ flex: 1, overflowY: "auto", padding: "16px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
             {/* Caption */}
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: "#8486AB", fontFamily: "Sora,sans-serif", marginBottom: 6 }}>Caption</div>
@@ -892,8 +892,8 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
           </div>
         </div>
         {/* Footer */}
-        <div style={{ padding: "12px 20px", borderTop: "1px solid #E2E4F0", display: "flex", gap: 8, alignItems: "center", background: "#F0F1F9", flexShrink: 0 }}>
-          <div style={{ display: "flex", gap: 6 }}>
+        <div className="cal-modal-footer" style={{ padding: "12px 20px", borderTop: "1px solid #E2E4F0", display: "flex", gap: 8, alignItems: "center", background: "#F0F1F9", flexShrink: 0 }}>
+          <div className="cal-modal-footer-utils" style={{ display: "flex", gap: 6 }}>
             {p && [
               { label:"Delete", icon:"fa-trash", danger:true, action:() => { onDelete(p.id); onClose(); } },
               { label:"Duplicate", icon:"fa-copy", danger:false, action:() => { onDuplicate(p.id); onClose(); } },
@@ -904,7 +904,7 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
               </div>
             ))}
           </div>
-          <div style={{ display: "flex", gap: 8, marginLeft: "auto" }}>
+          <div className="cal-modal-footer-primary" style={{ display: "flex", gap: 8, marginLeft: "auto" }}>
             <button onClick={onClose} style={{ padding: "9px 16px", borderRadius: 7, border: "1px solid #E2E4F0", background: "#fff", color: "#3D3F60", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Cancel</button>
             <button
               onClick={() => {
@@ -1260,6 +1260,24 @@ export default function CalendarPage() {
   const [planPostTime, setPlanPostTime] = useState("10:00");
   const [planLoading, setPlanLoading] = useState(false);
   const planTimeRef = useRef<HTMLInputElement>(null);
+  const connCarouselRef = useRef<HTMLDivElement>(null);
+  const scrollConnCarousel = (dir: 1 | -1) => {
+    connCarouselRef.current?.scrollBy({ left: dir * 240, behavior: "smooth" });
+  };
+  const weekRowRef = useRef<HTMLDivElement>(null);
+  const [weekActiveCol, setWeekActiveCol] = useState(0);
+  const scrollWeekRow = (dir: 1 | -1) => {
+    const el = weekRowRef.current;
+    if (!el) return;
+    const colWidth = el.firstElementChild?.getBoundingClientRect().width || el.clientWidth * 0.82;
+    el.scrollBy({ left: dir * colWidth, behavior: "smooth" });
+  };
+  const onWeekRowScroll = () => {
+    const el = weekRowRef.current;
+    if (!el || !el.firstElementChild) return;
+    const colWidth = (el.firstElementChild as HTMLElement).getBoundingClientRect().width;
+    setWeekActiveCol(Math.round(el.scrollLeft / colWidth));
+  };
   const { toast, show: showToast } = useToast();
 
   const filtered = posts.filter(p => {
@@ -1765,7 +1783,7 @@ export default function CalendarPage() {
       const isWE = d.getDay() === 0 || d.getDay() === 6;
       const dayPosts = filtered.filter(p => sameDay(p.date, d)).sort((a, b) => a.timeStr.localeCompare(b.timeStr));
       cols.push(
-        <div key={i} style={{ flex: 1, minWidth: 0 }}>
+        <div key={i} className="cal-week-col" style={{ flex: 1, minWidth: 0 }}>
           {/* Header */}
           <div style={{ padding: "10px 8px 8px", borderRight: "1px solid #ECEDF8", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, background: "#fff", position: "sticky", top: 0, zIndex: 10, borderBottom: "2px solid #E2E4F0" }}>
             <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".6px", color: "#8486AB" }}>{DAY_NAMES[d.getDay()]}</div>
@@ -1784,7 +1802,7 @@ export default function CalendarPage() {
         </div>
       );
     }
-    return <div style={{ display: "flex" }}>{cols}</div>;
+    return <div ref={weekRowRef} onScroll={onWeekRowScroll} className="cal-week-row" style={{ display: "flex" }}>{cols}</div>;
   };
 
   const renderMonthGrid = () => {
@@ -1800,7 +1818,7 @@ export default function CalendarPage() {
       const isWE = d.getDay() === 0 || d.getDay() === 6;
       const dayPosts = !isOther ? filtered.filter(p => sameDay(p.date, d)).sort((a, b) => a.timeStr.localeCompare(b.timeStr)) : [];
       cells.push(
-        <div key={d.toISOString()} style={{ borderRight: "1px solid #ECEDF8", borderBottom: "1px solid #ECEDF8", padding: 6, minHeight: 160, background: isOther ? "#F4F5FB" : isWE ? "rgba(235,236,248,.3)" : isToday ? "rgba(249,115,22,.03)" : "#fff", display: "flex", flexDirection: "column", gap: 5 }}>
+        <div key={d.toISOString()} className="cal-month-cell" style={{ borderRight: "1px solid #ECEDF8", borderBottom: "1px solid #ECEDF8", padding: 6, minHeight: 160, background: isOther ? "#F4F5FB" : isWE ? "rgba(235,236,248,.3)" : isToday ? "rgba(249,115,22,.03)" : "#fff", display: "flex", flexDirection: "column", gap: 5 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 2 }}>
             <div style={{ fontWeight: 700, color: isOther ? "#BFC1D9" : isToday ? "#fff" : "#3D3F60", width: 26, height: 26, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", background: isToday ? "#F97316" : undefined, boxShadow: isToday ? "0 4px 20px rgba(249,115,22,.32)" : undefined, flexShrink: 0, fontSize: isToday ? 11.5 : 12.5 }}>
               {d.getDate()}
@@ -1853,6 +1871,219 @@ export default function CalendarPage() {
         .tb-search:focus-within { width: 260px !important; border-color: #F97316 !important; background: #fff !important; box-shadow: 0 0 0 3px rgba(249,115,22,.1) !important; }
         .sb-item-hover:hover { background: #1E1F2E; color: #F1F2FF; }
         .skeleton { background: linear-gradient(90deg,#EEF0F8 25%,#E2E4F0 50%,#EEF0F8 75%); background-size: 200% 100%; animation: shimmer 1.2s ease-in-out infinite; border-radius: 10px; }
+
+        @media (min-width: 768px) {
+          .cal-admin-header {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 50 !important;
+            background: #fff !important;
+            border-bottom: 1px solid #E4E5EF !important;
+          }
+          .cal-toolbar {
+            margin-top: 56px !important;
+          }
+        }
+
+        .cal-connected-grid {
+          scrollbar-width: none !important;
+        }
+        .cal-connected-grid::-webkit-scrollbar {
+          display: none !important;
+        }
+        .cal-connected-item {
+          width: 220px !important;
+        }
+        .cal-week-arrow, .cal-week-dots {
+          display: none;
+        }
+        @media (max-width: 767px) {
+          .cal-connected-arrows {
+            display: none !important;
+          }
+          .cal-week-arrow {
+            display: flex !important;
+            position: absolute !important;
+            top: 135px !important;
+            transform: translateY(-50%) !important;
+            width: 34px !important;
+            height: 34px !important;
+            border-radius: 50% !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background: rgba(255,255,255,.96) !important;
+            border: 1px solid #E2E4F0 !important;
+            box-shadow: 0 6px 18px rgba(11,12,26,.18) !important;
+            color: #3D3F60 !important;
+            cursor: pointer !important;
+            z-index: 20 !important;
+            font-size: 12px !important;
+          }
+          .cal-week-arrow-left { left: 6px !important; }
+          .cal-week-arrow-right { right: 6px !important; }
+          .cal-week-dots {
+            display: flex !important;
+            position: absolute !important;
+            bottom: 10px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            gap: 5px !important;
+            z-index: 20 !important;
+            padding: 5px 9px !important;
+            border-radius: 20px !important;
+            background: rgba(255,255,255,.9) !important;
+            border: 1px solid #E2E4F0 !important;
+          }
+          .cal-week-dot {
+            width: 5px !important;
+            height: 5px !important;
+            border-radius: 50% !important;
+            background: #F97316 !important;
+            transition: opacity .15s !important;
+          }
+        }
+
+        @media (min-width: 768px) and (max-width: 1024px) {
+          .cal-week-col {
+            min-width: 150px !important;
+          }
+          .cal-week-row {
+            overflow-x: auto !important;
+          }
+        }
+
+        @media (max-width: 767px) {
+          .cal-admin-header {
+            display: none !important;
+          }
+          .cal-toolbar {
+            flex-wrap: wrap !important;
+            padding: 8px 10px !important;
+            gap: 8px !important;
+          }
+          .cal-view-tabs {
+            order: 1;
+            flex: 1 1 auto !important;
+          }
+          .cal-view-tabs > div {
+            flex: 1 !important;
+            padding: 6px 6px !important;
+            justify-content: center !important;
+          }
+          .cal-nav {
+            order: 3;
+            flex: 1 1 100% !important;
+            justify-content: center !important;
+          }
+          .cal-period-title {
+            min-width: 0 !important;
+            font-size: 12px !important;
+          }
+          .cal-spacer {
+            display: none !important;
+          }
+          .cal-time-picker {
+            order: 4;
+            flex: 1 1 auto !important;
+            justify-content: center !important;
+          }
+          .cal-create-btn {
+            order: 5;
+            flex: 1 1 auto !important;
+            justify-content: center !important;
+            padding: 8px 12px !important;
+            font-size: 12px !important;
+          }
+
+          .cal-connected {
+            padding: 10px 10px 12px !important;
+          }
+          .cal-connected-grid {
+            gap: 6px !important;
+          }
+          .cal-connected-item {
+            width: 78% !important;
+            scroll-snap-align: start !important;
+          }
+
+          .cal-stats-bar {
+            flex-wrap: wrap !important;
+            padding: 8px 10px !important;
+            gap: 6px !important;
+          }
+          .cal-stat-pill {
+            font-size: 11px !important;
+            padding: 4px 9px !important;
+          }
+          .cal-month-badge {
+            margin-left: 0 !important;
+            flex: 1 1 100% !important;
+            justify-content: center !important;
+          }
+
+          .cal-week-row {
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            scroll-snap-type: x mandatory !important;
+          }
+          .cal-week-col {
+            flex: 0 0 100% !important;
+            min-width: 100% !important;
+            scroll-snap-align: start !important;
+            scroll-snap-stop: always !important;
+          }
+
+          .cal-month-scroll {
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+          }
+          .cal-month-head,
+          .cal-month-grid {
+            min-width: 640px !important;
+          }
+          .cal-month-cell {
+            min-height: 100px !important;
+            padding: 4px !important;
+          }
+
+          .cal-modal-card {
+            max-height: 94vh !important;
+            border-radius: 14px !important;
+          }
+          .cal-modal-body {
+            flex-direction: column !important;
+            overflow-y: auto !important;
+          }
+          .cal-modal-left {
+            width: 100% !important;
+          }
+          .cal-modal-left > div:first-child {
+            min-height: 140px !important;
+          }
+          .cal-modal-form {
+            padding: 12px 14px !important;
+          }
+          .cal-modal-footer {
+            flex-wrap: wrap !important;
+            padding: 10px 14px !important;
+          }
+          .cal-modal-footer-utils {
+            flex: 1 1 100% !important;
+            order: 2;
+          }
+          .cal-modal-footer-primary {
+            flex: 1 1 100% !important;
+            margin-left: 0 !important;
+            order: 1;
+          }
+          .cal-modal-footer-primary button {
+            flex: 1 !important;
+            padding: 9px 8px !important;
+            font-size: 12px !important;
+          }
+        }
       `}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
@@ -1870,6 +2101,7 @@ export default function CalendarPage() {
 
           {/* Topbar */}
           <AdminHeader
+            className="cal-admin-header"
             pageTitle="Content Calendar"
             showBell={false}
             showHelp={false}
@@ -1881,9 +2113,9 @@ export default function CalendarPage() {
           />
 
           {/* Cal Toolbar */}
-          <div style={{ flexShrink: 0, background: "#fff", borderBottom: "1px solid #E2E4F0", padding: "10px 20px", display: "flex", alignItems: "center", gap: 12 }}>
+          <div className="cal-toolbar" style={{ flexShrink: 0, background: "#fff", borderBottom: "1px solid #E2E4F0", padding: "10px 20px", display: "flex", alignItems: "center", gap: 12 }}>
             {/* View tabs — segmented control */}
-            <div style={{ display: "flex", alignItems: "center", gap: 2, padding: 3, borderRadius: 9, background: "#F0F1F9", flexShrink: 0 }}>
+            <div className="cal-view-tabs" style={{ display: "flex", alignItems: "center", gap: 2, padding: 3, borderRadius: 9, background: "#F0F1F9", flexShrink: 0 }}>
               {([["7d","fa-calendar-week","Weekly"],["month","fa-calendar","Monthly"]] as const).map(([v, icon, label]) => {
                 const active = view === v;
                 return (
@@ -1898,24 +2130,25 @@ export default function CalendarPage() {
             </div>
 
             {/* Prev / Next / Today */}
-            <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-              <div onClick={() => setOffset(o => o - 1)} style={{ width: 28, height: 28, borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", color: "#3D3F60", cursor: "pointer", border: "1px solid #E2E4F0", background: "#fff", fontSize: 11 }}>
+            <div className="cal-nav" style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+              <div onClick={() => setOffset(o => o - 1)} style={{ width: 28, height: 28, borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", color: "#3D3F60", cursor: "pointer", border: "1px solid #E2E4F0", background: "#fff", fontSize: 11, flexShrink: 0 }}>
                 <i className="fa-solid fa-chevron-left" />
               </div>
-              <div style={{ fontSize: 13, fontWeight: 800, color: "#0B0C1A", fontFamily: "Sora,sans-serif", minWidth: 150, textAlign: "center", letterSpacing: "-.2px" }}>{periodTitle}</div>
+              <div className="cal-period-title" style={{ fontSize: 13, fontWeight: 800, color: "#0B0C1A", fontFamily: "Sora,sans-serif", minWidth: 150, textAlign: "center", letterSpacing: "-.2px" }}>{periodTitle}</div>
               <div
                 onClick={() => { if (canGoForward) setOffset(o => o + 1); }}
-                style={{ width: 28, height: 28, borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", color: canGoForward ? "#3D3F60" : "#C7C9DA", cursor: canGoForward ? "pointer" : "not-allowed", border: "1px solid #E2E4F0", background: canGoForward ? "#fff" : "#F4F5FB", fontSize: 11 }}
+                style={{ width: 28, height: 28, borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", color: canGoForward ? "#3D3F60" : "#C7C9DA", cursor: canGoForward ? "pointer" : "not-allowed", border: "1px solid #E2E4F0", background: canGoForward ? "#fff" : "#F4F5FB", fontSize: 11, flexShrink: 0 }}
               >
                 <i className="fa-solid fa-chevron-right" />
               </div>
-              <div onClick={() => setOffset(0)} style={{ padding: "5px 12px", borderRadius: 20, border: "1px solid #E2E4F0", background: offset === 0 ? "#FFF7ED" : "#fff", color: offset === 0 ? "#F97316" : "#3D3F60", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Sora,sans-serif" }}>Today</div>
+              <div onClick={() => setOffset(0)} style={{ padding: "5px 12px", borderRadius: 20, border: "1px solid #E2E4F0", background: offset === 0 ? "#FFF7ED" : "#fff", color: offset === 0 ? "#F97316" : "#3D3F60", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Sora,sans-serif", flexShrink: 0 }}>Today</div>
             </div>
 
-            <div style={{ flex: 1 }} />
+            <div className="cal-spacer" style={{ flex: 1 }} />
 
             {/* Post time + actions */}
             <div
+              className="cal-time-picker"
               onClick={() => { try { planTimeRef.current?.showPicker?.(); } catch { planTimeRef.current?.focus(); } }}
               style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 10px", borderRadius: 8, border: "1px solid #E2E4F0", background: "#fff", flexShrink: 0, cursor: "pointer" }}
             >
@@ -1928,13 +2161,13 @@ export default function CalendarPage() {
                 style={{ border: "none", background: "transparent", fontSize: 12.5, fontWeight: 600, color: "#0B0C1A", cursor: "pointer", outline: "none", fontFamily: "Sora,sans-serif" }}
               />
             </div>
-            <button onClick={createPlanDirect} disabled={planLoading} style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 18px", borderRadius: 8, background: "#10B981", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: planLoading ? "not-allowed" : "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(16,185,129,.32)", whiteSpace: "nowrap", flexShrink: 0, opacity: planLoading ? 0.7 : 1 }}>
+            <button className="cal-create-btn" onClick={createPlanDirect} disabled={planLoading} style={{ display: "flex", alignItems: "center", gap: 7, padding: "8px 18px", borderRadius: 8, background: "#10B981", color: "#fff", fontSize: 12.5, fontWeight: 700, cursor: planLoading ? "not-allowed" : "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 20px rgba(16,185,129,.32)", whiteSpace: "nowrap", flexShrink: 0, opacity: planLoading ? 0.7 : 1 }}>
               <i className="fa-solid fa-calendar-plus" style={{ fontSize: 12 }} /> {planLoading ? "Creating..." : "Create Plan"}
             </button>
           </div>
 
           {/* Connected Accounts */}
-          <div style={{ flexShrink: 0, padding: "14px 20px 16px", background: "#F9FAFB", borderBottom: "1px solid #E4E5EF" }}>
+          <div className="cal-connected" style={{ flexShrink: 0, padding: "14px 20px 16px", background: "#F9FAFB", borderBottom: "1px solid #E4E5EF" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 12 }}>
               <i className="fa-solid fa-link" style={{ color: "#9496B5", fontSize: 12 }} />
               <span style={{ fontSize: 13, fontWeight: 700, color: "#0D0E1A", fontFamily: "Sora,sans-serif" }}>Connected Accounts</span>
@@ -1943,20 +2176,29 @@ export default function CalendarPage() {
                   {CONN_PLATS.filter(p => p.backendKey && connectedPlats[p.backendKey]).length} of {CONN_PLATS.length} connected
                 </span>
               )}
+              <div className="cal-connected-arrows" style={{ display: "flex", alignItems: "center", gap: 6, marginLeft: "auto" }}>
+                <div onClick={() => scrollConnCarousel(-1)} style={{ width: 24, height: 24, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", color: "#3D3F60", cursor: "pointer", border: "1px solid #E2E4F0", background: "#fff", fontSize: 10 }}>
+                  <i className="fa-solid fa-chevron-left" />
+                </div>
+                <div onClick={() => scrollConnCarousel(1)} style={{ width: 24, height: 24, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", color: "#3D3F60", cursor: "pointer", border: "1px solid #E2E4F0", background: "#fff", fontSize: 10 }}>
+                  <i className="fa-solid fa-chevron-right" />
+                </div>
+              </div>
             </div>
             {connLoading ? (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 8 }}>
+              <div className="cal-connected-grid" style={{ display: "flex", gap: 8, overflowX: "auto" }}>
                 {Array.from({ length: 10 }).map((_, i) => (
-                  <div key={i} className="skeleton" style={{ height: 46 }} />
+                  <div key={i} className="skeleton cal-connected-item" style={{ height: 46 }} />
                 ))}
               </div>
             ) : (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 8 }}>
+              <div ref={connCarouselRef} className="cal-connected-grid" style={{ display: "flex", gap: 8, overflowX: "auto", scrollSnapType: "x proximity", scrollBehavior: "smooth" }}>
                 {CONN_PLATS.map(p => {
                   const connected = Boolean(p.backendKey && connectedPlats[p.backendKey]);
                   return (
                     <div key={p.id}
-                      style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 12px", borderRadius: 10, border: `1.5px solid ${connected ? "#10B981" : "#E4E5EF"}`, background: connected ? "rgba(16,185,129,.05)" : "#fff", cursor: "pointer", transition: "all .15s" }}
+                      className="cal-connected-item"
+                      style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 12px", borderRadius: 10, border: `1.5px solid ${connected ? "#10B981" : "#E4E5EF"}`, background: connected ? "rgba(16,185,129,.05)" : "#fff", cursor: "pointer", transition: "all .15s", flexShrink: 0, scrollSnapAlign: "start" }}
                       onMouseEnter={e => { if (!connected) (e.currentTarget as HTMLDivElement).style.borderColor = "#F97316"; }}
                       onMouseLeave={e => { if (!connected) (e.currentTarget as HTMLDivElement).style.borderColor = "#E4E5EF"; }}>
                       <div style={{ width: 28, height: 28, borderRadius: "50%", background: p.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, flexShrink: 0 }}>
@@ -1975,7 +2217,7 @@ export default function CalendarPage() {
           </div>
 
           {/* Stats Bar */}
-          <div style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: 8, padding: "8px 20px", background: "#F0F1F9", borderBottom: "1px solid #E2E4F0" }}>
+          <div className="cal-stats-bar" style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: 8, padding: "8px 20px", background: "#F0F1F9", borderBottom: "1px solid #E2E4F0" }}>
             {[
               { dot:"#F97316", val:statTotal, label:"Posts" },
               { dot:"#3B82F6", val:statSched, label:"Scheduled" },
@@ -1983,31 +2225,46 @@ export default function CalendarPage() {
               { dot:"#F59E0B", val:statDraft,  label:"Drafts" },
               { dot:"#EC4899", val:reachStr,   label:"Reach" },
             ].map(s => (
-              <div key={s.label} style={{ display: "flex", alignItems: "center", gap: 5, padding: "5px 11px", borderRadius: 20, border: "1px solid #E2E4F0", background: "#fff", fontSize: 12, fontWeight: 600, color: "#3D3F60", whiteSpace: "nowrap" }}>
+              <div key={s.label} className="cal-stat-pill" style={{ display: "flex", alignItems: "center", gap: 5, padding: "5px 11px", borderRadius: 20, border: "1px solid #E2E4F0", background: "#fff", fontSize: 12, fontWeight: 600, color: "#3D3F60", whiteSpace: "nowrap" }}>
                 <div style={{ width: 7, height: 7, borderRadius: "50%", background: s.dot, flexShrink: 0 }} />
                 <strong style={{ fontWeight: 800, color: "#0B0C1A", fontFamily: "JetBrains Mono,monospace" }}>{s.val}</strong>&nbsp;{s.label}
               </div>
             ))}
-            <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 11px", borderRadius: 20, border: "1px solid #E2E4F0", background: "#fff", fontSize: 12, fontWeight: 700, color: "#F97316", whiteSpace: "nowrap", marginLeft: "auto" }}>
+            <div className="cal-month-badge" style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 11px", borderRadius: 20, border: "1px solid #E2E4F0", background: "#fff", fontSize: 12, fontWeight: 700, color: "#F97316", whiteSpace: "nowrap", marginLeft: "auto" }}>
               <i className="fa-solid fa-calendar" style={{ fontSize: 10 }} />
               {MONTHS[getAnchor().getMonth()]} {getAnchor().getFullYear()}
             </div>
           </div>
 
           {/* Calendar Area */}
-          <div style={{ flex: 1, display: "flex", overflow: "hidden", position: "relative" }}>
-            <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
+          <div className="cal-area" style={{ flex: 1, display: "flex", overflow: "hidden", position: "relative" }}>
+            <div className="cal-scroll" style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
               {view === "7d" && render7d()}
               {view === "month" && (
-                <>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", position: "sticky", top: 0, zIndex: 10, background: "#fff", borderBottom: "2px solid #E2E4F0" }}>
+                <div className="cal-month-scroll">
+                  <div className="cal-month-head" style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", position: "sticky", top: 0, zIndex: 10, background: "#fff", borderBottom: "2px solid #E2E4F0" }}>
                     {DAY_NAMES.map((n, i) => <div key={n} style={{ padding: 8, textAlign: "center", fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: i===0||i===6?"#BFC1D9":"#8486AB", borderRight: "1px solid #ECEDF8" }}>{n}</div>)}
                   </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)" }}>{renderMonthGrid()}</div>
-                </>
+                  <div className="cal-month-grid" style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)" }}>{renderMonthGrid()}</div>
+                </div>
               )}
             </div>
 
+            {view === "7d" && (
+              <>
+                <div className="cal-week-arrow cal-week-arrow-left" onClick={() => scrollWeekRow(-1)}>
+                  <i className="fa-solid fa-chevron-left" />
+                </div>
+                <div className="cal-week-arrow cal-week-arrow-right" onClick={() => scrollWeekRow(1)}>
+                  <i className="fa-solid fa-chevron-right" />
+                </div>
+                <div className="cal-week-dots">
+                  {Array.from({ length: 7 }).map((_, i) => (
+                    <div key={i} className="cal-week-dot" style={{ opacity: i === weekActiveCol ? 1 : 0.35 }} />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
 

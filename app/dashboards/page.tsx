@@ -291,22 +291,78 @@ export default function DashboardPage() {
         .uitem:hover{background:#FFF7ED}
         @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
         .skeleton{background:linear-gradient(90deg,#F3F4F6 25%,#E5E7EB 50%,#F3F4F6 75%);background-size:200% 100%;animation:shimmer 1.2s ease-in-out infinite;border-radius:6px;}
+
+        @media (max-width: 767px) {
+          .db-body { font-size: 13px; }
+          .font-display { font-size: 1.2rem !important; }
+          h1 { font-size: 1.2rem !important; }
+          h2 { font-size: 1rem !important; }
+          p { font-size: 0.7rem !important; }
+        }
       `}</style>
 
       <div className="db-body" style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+        <style>{`
+          @media (max-width: 767px) {
+            .db-topbar {
+              display: none !important;
+            }
+            .db-content {
+              padding: 12px 8px 0 !important;
+              max-width: 100% !important;
+            }
+            .db-main-grid {
+              gap: 12px !important;
+            }
+            .db-two-col {
+              grid-template-columns: 1fr !important;
+              gap: 12px !important;
+            }
+            .db-four-col {
+              grid-template-columns: 1fr 1fr !important;
+              gap: 6px !important;
+              margin-bottom: 12px !important;
+            }
+            .db-five-col {
+              grid-template-columns: repeat(2, 1fr) !important;
+              gap: 6px !important;
+            }
+            .db-stat-card {
+              padding: 10px 12px !important;
+            }
+            .db-section {
+              padding: 12px 14px !important;
+              gap: 12px !important;
+            }
+            .db-platform-card {
+              padding: 10px !important;
+            }
+            .db-brand-health {
+              grid-template-columns: 1fr !important;
+              gap: 12px !important;
+              padding: 12px !important;
+            }
+            section {
+              padding: 16px 12px !important;
+            }
+            section h2 {
+              margin: 8px 0 12px !important;
+            }
+          }
+        `}</style>
 
         {/* TOPBAR */}
-        <div style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(255,255,255,.9)", backdropFilter: "blur(12px)", borderBottom: "1px solid #F3F4F6", padding: "0 28px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14 }}>
+        <div className="db-topbar" style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(255,255,255,.9)", backdropFilter: "blur(12px)", borderBottom: "1px solid #F3F4F6", padding: "0 28px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14 }}>
           <nav style={{ fontSize: ".75rem", color: "#9CA3AF" }}>
             Workspace&nbsp;<span>/</span>&nbsp;<b style={{ color: "#111827", fontWeight: 500 }}>Dashboard</b>
           </nav>
         </div>
 
         {/* CONTENT */}
-        <div style={{ padding: "28px 28px 0", maxWidth: 1360, margin: "0 auto", width: "100%" }}>
+        <div className="db-content" style={{ padding: "28px 28px 0", maxWidth: 1360, margin: "0 auto", width: "100%" }}>
 
           {/* ── MAIN ── */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          <div className="db-main-grid" style={{ display: "flex", flexDirection: "column", gap: 24 }}>
 
             {/* Greeting */}
             <div>
@@ -366,7 +422,7 @@ export default function DashboardPage() {
                 </span>
                 Your social media is running on autopilot
               </h2>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 11, marginBottom: 20 }}>
+              <div className="db-four-col" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 11, marginBottom: 20 }}>
                 {[
                   { k: "Posts generated",     v: counts.posts,     suffix: "" },
                   { k: "Posts scheduled",     v: counts.scheduled, suffix: "" },
@@ -391,7 +447,7 @@ export default function DashboardPage() {
             </section>
 
             {/* ACTIVITY + UPCOMING */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+            <div className="db-two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
               {/* Activity */}
               <section style={{ background: "#fff", border: "1px solid #E5E7EB", borderRadius: 16, boxShadow: "0 1px 2px rgba(0,0,0,.04)", overflow: "hidden" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", padding: "16px 18px 0" }}>
@@ -468,7 +524,7 @@ export default function DashboardPage() {
                 <h2 className="font-display" style={{ fontSize: "1rem", color: "#111827" }}>Connected platforms</h2>
                 <Link href="/dashboards/settings/accounts" style={{ color: "#F97316", fontWeight: 600, fontSize: ".8rem", textDecoration: "none" }}>Manage →</Link>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 11 }}>
+              <div className="db-five-col" style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 11 }}>
                 {dashLoading ? (
                   [0,1,2,3,4,5,6,7,8,9].map(i => <div key={i} className="skeleton" style={{ height: 88, borderRadius: 12 }} />)
                 ) : connectedPlats.map(p => {
@@ -519,7 +575,7 @@ export default function DashboardPage() {
                 <h2 className="font-display" style={{ fontSize: "1rem", color: "#111827" }}>Performance snapshot</h2>
                 <Link href="/dashboards/analytics" style={{ color: "#F97316", fontWeight: 600, fontSize: ".8rem", textDecoration: "none" }}>Analytics →</Link>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 11 }}>
+              <div className="db-four-col" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 11 }}>
                 {[
                   { k: "Total followers",  v: analytics ? analytics.totalFollowers.toLocaleString() : "—",   trend: "▲ 9.4%",       up: true },
                   { k: "Avg engagement",   v: analytics ? `${analytics.avgEngagementRate}%` : "—",           trend: "▲ 0.7 pts",    up: true },
@@ -542,7 +598,7 @@ export default function DashboardPage() {
               <div style={{ padding: "16px 22px 0" }}>
                 <h2 className="font-display" style={{ fontSize: "1rem", color: "#111827" }}>Brand health</h2>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "160px 1fr", gap: 24, alignItems: "center", padding: "20px 22px" }}>
+              <div className="db-brand-health" style={{ display: "grid", gridTemplateColumns: "160px 1fr", gap: 24, alignItems: "center", padding: "20px 22px" }}>
                 <div style={{ position: "relative", width: 150, height: 150, margin: "0 auto" }}>
                   <svg width="150" height="150" viewBox="0 0 150 150" style={{ transform: "rotate(-90deg)" }}>
                     <defs>

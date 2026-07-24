@@ -29,6 +29,8 @@ interface AdminHeaderProps {
   userName?: string;
   /** Real user's initials (shown in avatar) */
   userInitials?: string;
+  /** Optional CSS class name */
+  className?: string;
 }
 
 export default function AdminHeader({
@@ -45,9 +47,11 @@ export default function AdminHeader({
   userInitials,
   showBell = true,
   showHelp = true,
+  className,
 }: AdminHeaderProps) {
   return (
     <div
+      className={className}
       style={{
         height: 56,
         flexShrink: 0,

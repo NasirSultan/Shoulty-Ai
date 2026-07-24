@@ -303,10 +303,63 @@ export default function BrandOverlayPage() {
         .upload-box-hover:hover { border-color: rgba(249,115,22,.4); background: #EEEEFF; }
       `}</style>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+      <style>{`
+        @media (min-width: 768px) {
+          .admin-header {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 50 !important;
+            background: #fff !important;
+            border-bottom: 1px solid #E4E5EF !important;
+          }
+          .brand-page-wrapper {
+            margin-top: 56px !important;
+          }
+        }
+        @media (max-width: 767px) {
+          .admin-header {
+            display: none !important;
+          }
+          .brand-body {
+            flex-direction: column !important;
+          }
+          .brand-left-panel {
+            width: 100% !important;
+            border-right: none !important;
+            border-bottom: 1px solid #E4E5EF !important;
+            max-height: auto !important;
+            overflow-y: visible !important;
+            order: 2 !important;
+          }
+          .brand-preview-section {
+            min-width: 0 !important;
+            flex: 0 !important;
+            padding: 10px !important;
+            background: #F5F6FA !important;
+            overflow-y: visible !important;
+            overflow-x: hidden !important;
+            order: 1 !important;
+          }
+          .brand-right-panel {
+            display: none !important;
+          }
+          .brand-canvas {
+            width: 100% !important;
+            height: auto !important;
+            min-height: 240px !important;
+          }
+          .upload-box-hover:hover {
+            background: #F9FAFB !important;
+          }
+        }
+      `}</style>
 
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
+        <div className="brand-page-wrapper" style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
 
           {/* Topbar */}
+          <div className="admin-header">
           <AdminHeader
             pageTitle="Overlay Settings"
             searchPlaceholder="Search settings…"
@@ -316,12 +369,13 @@ export default function BrandOverlayPage() {
               </button>
             }
           />
+          </div>
 
           {/* Page body: 3 columns */}
-          <div style={{ flex: 1, overflow: "hidden", display: "flex" }}>
+          <div className="brand-body" style={{ flex: 1, overflow: "hidden", display: "flex" }}>
 
             {/* ── LEFT: Settings panel ── */}
-            <div style={{ width: 360, flexShrink: 0, overflowY: "auto", background: "#fff", borderRight: "1px solid #E4E5EF" }}>
+            <div className="brand-left-panel" style={{ width: 360, flexShrink: 0, overflowY: "auto", background: "#fff", borderRight: "1px solid #E4E5EF" }}>
 
               {/* Header */}
               <div style={{ padding: "18px 20px 14px", borderBottom: "1px solid #E4E5EF", position: "sticky", top: 0, background: "#fff", zIndex: 10 }}>
@@ -587,7 +641,7 @@ export default function BrandOverlayPage() {
             </div>
 
             {/* ── CENTER: Live Preview ── */}
-            <div style={{ flex: 1, overflowY: "auto", padding: 20, background: "#F5F6FA" }}>
+            <div className="brand-preview-section" style={{ flex: 1, overflowY: "auto", padding: 20, background: "#F5F6FA" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
                 <div>
                   <div style={{ fontSize: 15, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif", letterSpacing: "-.3px" }}>Live Preview</div>
@@ -656,7 +710,7 @@ export default function BrandOverlayPage() {
             </div>
 
             {/* ── RIGHT: Action column ── */}
-            <div style={{ width: 240, flexShrink: 0, overflowY: "auto", background: "#fff", borderLeft: "1px solid #E4E5EF" }}>
+            <div className="brand-right-panel" style={{ width: 240, flexShrink: 0, overflowY: "auto", background: "#fff", borderLeft: "1px solid #E4E5EF" }}>
               <div style={{ padding: "18px 16px 12px", borderBottom: "1px solid #E4E5EF", position: "sticky", top: 0, background: "#fff", zIndex: 10 }}>
                 <div style={{ fontSize: 14, fontWeight: 800, color: "#0D0E1A", fontFamily: "Sora,sans-serif" }}>Overlay Summary</div>
                 <div style={{ fontSize: 12, color: "#9496B5", marginTop: 2 }}>Current brand config</div>

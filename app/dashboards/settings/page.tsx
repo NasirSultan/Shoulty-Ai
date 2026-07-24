@@ -762,10 +762,35 @@ const SettingsPage: React.FC = () => {
         .toast .t-x { cursor:pointer; color:inherit; font-weight:900; opacity:.75; }
         @media (max-width: 1024px) { .settings-wrap { grid-template-columns:1fr; } .settings-nav { position:static; } .form-row { grid-template-columns:1fr; } }
         @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+        @media (min-width: 768px) {
+          .set-admin-header {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 50 !important;
+            background: #fff !important;
+            border-bottom: 1px solid var(--bdr) !important;
+          }
+          #content {
+            margin-top: 56px !important;
+          }
+        }
+        @media (max-width: 767px) {
+          .set-admin-header {
+            display: none !important;
+          }
+          #content {
+            height: auto !important;
+            min-height: calc(100vh - 60px);
+            padding: 12px !important;
+          }
+        }
       `}</style>
         <div id="main" style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
         {/* Topbar */}
         <AdminHeader
+          className="set-admin-header"
           pageTitle="Account Settings"
           searchPlaceholder="Search settings…"
           userName={user?.name}
