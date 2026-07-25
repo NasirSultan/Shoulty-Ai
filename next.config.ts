@@ -25,6 +25,101 @@ const nextConfig: NextConfig = {
         destination: 'https://shoutlyai.com/:path*',
         permanent: true,
       },
+      {
+        source: '/agencies.html',
+        destination: '/solutions/agencies',
+        permanent: true,
+      },
+      {
+        source: '/enterprise.html',
+        destination: '/solutions/enterprise',
+        permanent: true,
+      },
+      {
+        source: '/healthcare.html',
+        destination: '/solutions/healthcare',
+        permanent: true,
+      },
+      {
+        source: '/local-businesses.html',
+        destination: '/solutions/local-businesses',
+        permanent: true,
+      },
+      {
+        source: '/professional-services.html',
+        destination: '/solutions/professional-services',
+        permanent: true,
+      },
+      {
+        source: '/restaurants.html',
+        destination: '/solutions/restaurants',
+        permanent: true,
+      },
+      {
+        source: '/retail.html',
+        destination: '/solutions/retail',
+        permanent: true,
+      },
+      {
+        source: '/startups.html',
+        destination: '/solutions/startups',
+        permanent: true,
+      },
+      {
+        source: '/solutions/agencies.html',
+        destination: '/solutions/agencies',
+        permanent: true,
+      },
+      {
+        source: '/solutions/enterprise.html',
+        destination: '/solutions/enterprise',
+        permanent: true,
+      },
+      {
+        source: '/solutions/healthcare.html',
+        destination: '/solutions/healthcare',
+        permanent: true,
+      },
+      {
+        source: '/solutions/local-businesses.html',
+        destination: '/solutions/local-businesses',
+        permanent: true,
+      },
+      {
+        source: '/solutions/professional-services.html',
+        destination: '/solutions/professional-services',
+        permanent: true,
+      },
+      {
+        source: '/solutions/restaurants.html',
+        destination: '/solutions/restaurants',
+        permanent: true,
+      },
+      {
+        source: '/solutions/retail.html',
+        destination: '/solutions/retail',
+        permanent: true,
+      },
+      {
+        source: '/solutions/startups.html',
+        destination: '/solutions/startups',
+        permanent: true,
+      },
+      {
+        source: '/social-media-marketing-for-restaurants.html',
+        destination: '/solutions/restaurants',
+        permanent: true,
+      },
+      {
+        source: '/tech-startups-social-media-automation.html',
+        destination: '/solutions/startups',
+        permanent: true,
+      },
+      {
+        source: '/consultants.html',
+        destination: '/solutions/professional-services',
+        permanent: true,
+      },
     ];
   },
   async headers() {

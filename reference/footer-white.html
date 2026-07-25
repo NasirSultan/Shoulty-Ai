@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shoutly AI — Footer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   WHITE FOOTER — same token set as the Studio.
+
+   THE FIX: the old footer used #8A93A6 links, which measures
+   3.09:1 — below the 4.5:1 AA floor. That IS the visibility bug.
+   Links are now #454E5E (8.39:1). Headers #1F2733 (15.04:1).
+   Orange measures 3.1:1 on white, so it is used ONLY for fills,
+   icons and hover — never as a text colour.
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --paper:#FFFFFF;
+  --mist:#F4F6FA;
+  --sink:#EDF0F5;
+
+  --ink:#0B0E15;      /* 18.9:1  headings */
+  --link:#1F2733;     /* 15.0:1  column headers */
+  --body:#454E5E;     /*  8.4:1  ← LINKS. was 3.1:1. this is the fix */
+  --soft:#6B7688;     /*  4.6:1  captions only — still passes AA */
+
+  --line:#D8DEE7;
+  --line2:#E7EBF1;
+
+  --flame:#FF5B1F;
+  --ember:#FF8A3D;
+  --wash:#FFF1EA;
+  --edge:#FFC9A8;
+  --hot:linear-gradient(105deg,#FF3D00,#FF8A3D);
+
+  --ok:#0EA968;
+  --ui:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --lift:0 1px 2px rgba(11,14,21,.05),0 2px 6px rgba(11,14,21,.04);
+  --lift2:0 2px 6px rgba(11,14,21,.06),0 14px 34px -10px rgba(11,14,21,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--ui);background:var(--mist);color:var(--ink);
+  line-height:1.55;-webkit-font-smoothing:antialiased;
+  min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;
+}
+
+/* ═══ footer shell ═══ */
+.foot{
+  background:var(--paper);
+  border-top:1px solid var(--line);
+  position:relative;
+}
+/* brand bar — colour lives here, not in the text */
+.foot::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--hot);
+}
+.wrap{max-width:1340px;margin:0 auto;padding:0 clamp(18px,4vw,44px)}
+
+/* ═══ top: brand + newsletter ═══ */
+.top{
+  display:grid;grid-template-columns:minmax(0,1fr) 420px;
+  gap:clamp(28px,5vw,72px);
+  padding:clamp(44px,6vw,68px) 0 clamp(34px,4vw,44px);
+  align-items:start;
+}
+.mark{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.mark .lg{
+  width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;
+  background:var(--hot);color:#fff;box-shadow:0 4px 12px rgba(255,91,31,.32);
+}
+.mark b{font-size:20px;font-weight:800;letter-spacing:-.03em}
+.mark b i{font-style:normal;color:var(--flame)}
+.pitch{
+  margin-top:16px;max-width:42ch;
+  color:var(--body);          /* 8.4:1 */
+  font-size:15px;line-height:1.65;
+}
+/* status — real contrast, not a whisper */
+.live{
+  margin-top:18px;display:inline-flex;align-items:center;gap:8px;
+  background:#EDFBF4;border:1px solid #A7E8C9;
+  padding:7px 13px 7px 10px;border-radius:999px;
+  font-size:12.5px;font-weight:700;color:#0A7A4B;
+}
+.live .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);animation:beat 2s infinite}
+@keyframes beat{50%{opacity:.35}}
+.live a{color:#0A7A4B;text-decoration:underline;text-underline-offset:2px}
+
+/* newsletter — a real card, clearly a place to act */
+.sub{
+  background:var(--mist);border:1.5px solid var(--line);
+  border-radius:18px;padding:clamp(20px,2.6vw,26px);
+}
+.sub h2{font-size:17px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+.sub p{color:var(--body);font-size:13.5px;max-width:40ch;line-height:1.55}
+.row{display:flex;gap:9px;margin-top:16px;flex-wrap:wrap}
+.row input{
+  flex:1 1 200px;min-width:0;height:46px;padding:0 14px;
+  background:var(--paper);border:1.5px solid var(--line);border-radius:11px;
+  font:inherit;font-size:14.5px;font-weight:600;color:var(--ink);transition:.18s;
+}
+.row input::placeholder{color:var(--soft)}
+.row input:hover{border-color:var(--ink)}
+.row input:focus{outline:0;border-color:var(--flame);box-shadow:0 0 0 4px var(--wash)}
+.row button{
+  height:46px;padding:0 20px;border:0;border-radius:11px;cursor:pointer;
+  background:var(--hot);color:#fff;font:inherit;font-size:14.5px;font-weight:800;
+  box-shadow:0 5px 16px -4px rgba(255,91,31,.4);transition:.2s;white-space:nowrap;
+}
+.row button:hover{transform:translateY(-1px);box-shadow:0 10px 26px -6px rgba(255,91,31,.5)}
+.fine{margin-top:10px;font-size:12px;color:var(--soft);font-weight:500}
+
+/* ═══════════════════════════════════════════════════════════════
+   LINK GRID — the visibility fix lives here
+   ═══════════════════════════════════════════════════════════════ */
+.grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));
+  gap:clamp(26px,3vw,38px) clamp(18px,2.4vw,32px);
+  padding:clamp(36px,4.5vw,50px) 0;
+  border-top:1px solid var(--line2);
+}
+/* column header: dark, bold, with an accent rule under it */
+.col h3{
+  font-size:13px;font-weight:800;color:var(--link);   /* 15:1 */
+  letter-spacing:-.01em;margin-bottom:4px;
+}
+.col h3::after{
+  content:'';display:block;width:20px;height:2.5px;border-radius:2px;
+  background:var(--hot);margin-top:7px;margin-bottom:11px;
+}
+.col ul{list-style:none;display:flex;flex-direction:column;gap:0}
+.col a{
+  display:inline-block;
+  color:var(--body);                                   /* 8.4:1 — was 3.1:1 */
+  text-decoration:none;
+  font-size:14px;font-weight:600;                      /* 600, not 400 — mass reads */
+  padding:5px 0;
+  transition:color .16s,transform .16s;
+}
+.col a:hover{color:var(--flame);transform:translateX(3px)}
+/* "view all" — reads as an action, not a sibling link */
+.col a.more{
+  color:var(--flame);font-weight:800;
+  display:inline-flex;align-items:center;gap:4px;margin-top:3px;
+}
+.col a.more:hover{gap:7px;transform:none}
+
+/* ═══ trust — chips with real borders ═══ */
+.trust{
+  border-top:1px solid var(--line2);
+  padding:clamp(26px,3.4vw,34px) 0;
+}
+.trust h3{
+  font-size:13px;font-weight:800;color:var(--link);margin-bottom:14px;
+}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--paper);border:1.5px solid var(--line);
+  padding:8px 13px;border-radius:10px;
+  font-size:12.5px;font-weight:700;color:var(--body);
+  transition:.18s;
+}
+.chip:hover{border-color:var(--flame);color:var(--ink);transform:translateY(-1px);box-shadow:var(--lift)}
+.chip .ic{
+  width:18px;height:18px;border-radius:5px;flex:none;display:grid;place-items:center;
+  background:var(--wash);color:var(--flame);transition:.18s;
+}
+.chip:hover .ic{background:var(--flame);color:#fff}
+
+/* ═══ legal hub ═══ */
+.legal{
+  border-top:1px solid var(--line2);
+  padding:clamp(26px,3.4vw,34px) 0;
+  display:grid;grid-template-columns:minmax(0,230px) minmax(0,1fr);
+  gap:clamp(16px,3vw,40px);align-items:start;
+}
+.legal h3{font-size:13px;font-weight:800;color:var(--link)}
+.legal > div p{margin-top:7px;font-size:13px;color:var(--body);max-width:28ch;line-height:1.55}
+.legal ul{list-style:none;display:flex;flex-wrap:wrap;gap:7px}
+.legal a{
+  display:inline-block;padding:6px 12px;border-radius:8px;
+  background:var(--mist);border:1px solid var(--line2);
+  color:var(--body);text-decoration:none;
+  font-size:13px;font-weight:700;transition:.16s;
+}
+.legal a:hover{background:var(--wash);border-color:var(--edge);color:var(--flame)}
+
+/* ═══ bottom bar ═══ */
+.base{
+  border-top:1px solid var(--line2);
+  padding:22px 0 clamp(26px,3.5vw,36px);
+  display:flex;flex-wrap:wrap;gap:16px 22px;align-items:center;justify-content:space-between;
+}
+.copy{font-size:13px;color:var(--body);font-weight:600}
+.copy span{display:block;margin-top:3px;font-size:12.5px;color:var(--soft);font-weight:500}
+.copy em{font-style:normal;color:var(--flame)}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+select{
+  height:38px;padding:0 32px 0 12px;appearance:none;cursor:pointer;
+  background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23454E5E' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center;
+  border:1.5px solid var(--line);border-radius:10px;
+  font:inherit;font-size:13px;font-weight:700;color:var(--body);transition:.16s;
+}
+select:hover{border-color:var(--ink);color:var(--ink)}
+select:focus{outline:0;border-color:var(--flame);box-shadow:0 0 0 3px var(--wash)}
+.sitemap{
+  height:38px;padding:0 13px;display:inline-flex;align-items:center;
+  border:1.5px solid var(--line);border-radius:10px;
+  color:var(--body);text-decoration:none;font-size:13px;font-weight:700;transition:.16s;
+}
+.sitemap:hover{border-color:var(--flame);color:var(--flame)}
+.socials{display:flex;gap:7px}
+.socials a{
+  width:38px;height:38px;display:grid;place-items:center;
+  border:1.5px solid var(--line);border-radius:10px;
+  color:var(--body);transition:.18s;
+}
+.socials a:hover{transform:translateY(-2px);border-color:transparent;color:#fff}
+/* real platform colours on hover — instantly recognisable */
+.socials a.fb:hover{background:#1877F2}
+.socials a.ig:hover{background:linear-gradient(45deg,#F09433,#DC2743 50%,#BC1888)}
+.socials a.li:hover{background:#0A66C2}
+.socials a.x:hover{background:#000}
+
+@media(max-width:900px){
+  .top{grid-template-columns:1fr}
+  .legal{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .base{flex-direction:column;align-items:flex-start}
+  .grid{grid-template-columns:1fr 1fr}
+}
+:focus-visible{outline:2.5px solid var(--flame);outline-offset:2px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<footer class="foot" role="contentinfo">
+  <div class="wrap">
+
+    <!-- brand + newsletter -->
+    <section class="top">
+      <div>
+        <a class="mark" href="/" aria-label="Shoutly AI home">
+          <span class="lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9v6M10 5v14M14 8v8M18 10v4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+          </span>
+          <b>Shoutly<i>AI</i></b>
+        </a>
+        <p class="pitch">One workspace to write, design, schedule, and measure social content across every channel your business lives on.</p>
+        <p class="live"><span class="dot" aria-hidden="true"></span> All systems operational — <a href="/status">status</a></p>
+      </div>
+
+      <section class="sub" aria-labelledby="nl">
+        <h2 id="nl">Get the weekly signal</h2>
+        <p>AI marketing tactics, product updates, and new features. Sent Thursdays.</p>
+        <form class="row" action="/subscribe" method="post">
+          <label class="sr" for="email">Email address</label>
+          <input id="email" name="email" type="email" required placeholder="you@company.com" autocomplete="email">
+          <button type="submit">Subscribe</button>
+        </form>
+        <p class="fine">No spam. Unsubscribe anytime.</p>
+      </section>
+    </section>
+
+    <!-- links -->
+    <nav class="grid" aria-label="Footer">
+      <div class="col">
+        <h3>Product</h3>
+        <ul>
+          <li><a href="/ai-content-generator">AI Content Generator</a></li>
+          <li><a href="/ai-image-generator">AI Image Generator</a></li>
+          <li><a href="/ai-reel-generator">AI Reel Generator</a></li>
+          <li><a href="/ai-social-scheduler">Social Scheduler</a></li>
+          <li><a href="/content-calendar">Content Calendar</a></li>
+          <li><a href="/analytics">Analytics</a></li>
+          <li><a href="/brand-kit">Brand Kit</a></li>
+          <li><a href="/integrations">Integrations</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+        </ul>
+      </div>
+
+      <div class="col">
+        <h3>Solutions</h3>
+        <ul>
+          <li><a href="/solutions/local-businesses">Local Businesses</a></li>
+          <li><a href="/solutions/restaurants">Restaurants</a></li>
+          <li><a href="/solutions/fitness">Fitness</a></li>
+          <li><a href="/solutions/retail">Retail</a></li>
+          <li><a href="/solutions/healthcare">Healthcare</a></li>
+          <li><a href="/solutions/real-estate">Real Estate</a></li>
+          <li><a href="/solutions/agencies">Agencies</a></li>
+          <li><a href="/solutions/enterprise">Enterprise</a></li>
+        </ul>
+      </div>
+
+      <div class="col">
+        <h3>Channels</h3>
+        <ul>
+          <li><a href="/channels/instagram">Instagram</a></li>
+          <li><a href="/channels/facebook">Facebook</a></li>
+          <li><a href="/channels/linkedin">LinkedIn</a></li>
+          <li><a href="/channels/tiktok">TikTok</a></li>
+          <li><a href="/channels/youtube">YouTube</a></li>
+          <li><a href="/channels/x">X</a></li>
+          <li><a href="/channels/pinterest">Pinterest</a></li>
+          <li><a href="/channels/google-business-profile">Google Business</a></li>
+        </ul>
+      </div>
+
+      <div class="col">
+        <h3>Compare</h3>
+        <ul>
+          <li><a href="/compare/buffer-vs-shoutly-ai">Buffer vs Shoutly</a></li>
+          <li><a href="/compare/hootsuite-vs-shoutly-ai">Hootsuite vs Shoutly</a></li>
+          <li><a href="/compare/later-vs-shoutly-ai">Later vs Shoutly</a></li>
+          <li><a href="/compare/socialpilot-vs-shoutly-ai">SocialPilot vs Shoutly</a></li>
+          <li><a href="/compare/metricool-vs-shoutly-ai">Metricool vs Shoutly</a></li>
+          <li><a href="/compare/canva-vs-shoutly-ai">Canva vs Shoutly</a></li>
+          <li><a class="more" href="/compare">All comparisons
+            <svg width="11" height="9" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M1 5h9M6.5 1.5L10 5l-3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a></li>
+        </ul>
+      </div>
+
+      <div class="col">
+        <h3>Alternatives</h3>
+        <ul>
+          <li><a href="/alternatives/buffer">Buffer Alternative</a></li>
+          <li><a href="/alternatives/hootsuite">Hootsuite Alternative</a></li>
+          <li><a href="/alternatives/later">Later Alternative</a></li>
+          <li><a href="/alternatives/socialpilot">SocialPilot Alternative</a></li>
+          <li><a href="/alternatives/canva">Canva Alternative</a></li>
+          <li><a class="more" href="/alternatives">All alternatives
+            <svg width="11" height="9" viewBox="0 0 12 10" fill="none" aria-hidden="true"><path d="M1 5h9M6.5 1.5L10 5l-3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a></li>
+        </ul>
+      </div>
+
+      <div class="col">
+        <h3>Resources</h3>
+        <ul>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/help">Help Center</a></li>
+          <li><a href="/templates">Templates</a></li>
+          <li><a href="/image-library">Image Library</a></li>
+          <li><a href="/prompt-library">Prompt Library</a></li>
+          <li><a href="/affiliates">Affiliate Program</a></li>
+        </ul>
+      </div>
+
+      <div class="col">
+        <h3>Company</h3>
+        <ul>
+          <li><a href="/about">About Us</a></li>
+          <li><a href="/careers">Careers</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/brand">Brand Assets</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- trust -->
+    <section class="trust" aria-label="Trust and compliance">
+      <h3>Trust &amp; compliance</h3>
+      <div class="chips">
+        <span class="chip"><span class="ic"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M8 1.5l5 2v4c0 3-2.1 5.7-5 7-2.9-1.3-5-4-5-7v-4l5-2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>Enterprise Security</span>
+        <span class="chip"><span class="ic"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2" stroke="currentColor" stroke-width="1.6"/></svg></span>SSL Secured</span>
+        <span class="chip"><span class="ic"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.3" stroke="currentColor" stroke-width="1.6"/><path d="M5.3 8.2l1.9 1.9 3.6-3.9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>GDPR Ready</span>
+        <span class="chip"><span class="ic"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.3" stroke="currentColor" stroke-width="1.6"/><path d="M5.3 8.2l1.9 1.9 3.6-3.9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>CCPA Compliant</span>
+        <span class="chip"><span class="ic"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.3" stroke="currentColor" stroke-width="1.6"/><path d="M5.3 8.2l1.9 1.9 3.6-3.9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>DPDP Act Compliant</span>
+        <span class="chip"><span class="ic"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.3" stroke="currentColor" stroke-width="1.6"/><path d="M8 4.6V8l2.2 1.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>99.9% Uptime</span>
+        <span class="chip"><span class="ic"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M6 5L2.8 8 6 11M10 5l3.2 3-3.2 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>API Available</span>
+        <span class="chip"><span class="ic"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M4.5 12a2.9 2.9 0 01-.3-5.8A3.7 3.7 0 0111.4 6a2.9 2.9 0 01.4 5.9H4.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>AWS Hosted</span>
+        <span class="chip"><span class="ic"><svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 2l1.4 3.6L13 7l-3.6 1.4L8 12l-1.4-3.6L3 7l3.6-1.4L8 2z"/></svg></span>AI Powered</span>
+        <span class="chip"><span class="ic"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M3 10V8a5 5 0 0110 0v2M3 10h1.6v3H3.8A.8.8 0 013 12.2V10zm10 0h-1.6v3H13V10z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span>24/7 Support</span>
+      </div>
+    </section>
+
+    <!-- legal -->
+    <section class="legal" aria-labelledby="lh">
+      <div>
+        <h3 id="lh">Legal hub</h3>
+        <p>Every policy governing how we handle your data, content, and account.</p>
+      </div>
+      <nav aria-label="Legal">
+        <ul>
+          <li><a href="/legal/privacy">Privacy Policy</a></li>
+          <li><a href="/legal/terms">Terms of Service</a></li>
+          <li><a href="/legal/cookies">Cookie Policy</a></li>
+          <li><a href="/legal/gdpr">GDPR</a></li>
+          <li><a href="/legal/ccpa">CCPA</a></li>
+          <li><a href="/legal/dpdp">DPDP Act</a></li>
+          <li><a href="/legal/refunds">Refunds</a></li>
+          <li><a href="/legal/security">Security</a></li>
+          <li><a href="/legal/dmca">DMCA</a></li>
+          <li><a href="/legal/eula">EULA</a></li>
+        </ul>
+      </nav>
+    </section>
+
+    <!-- bottom -->
+    <section class="base" aria-label="Site information">
+      <p class="copy">
+        © 2026 Shoutly AI. All rights reserved.
+        <span>Built with <em>♥</em> for businesses worldwide.</span>
+      </p>
+      <div class="tools">
+        <select aria-label="Language">
+          <option>English</option><option>Español</option><option>हिन्दी</option><option>العربية</option>
+        </select>
+        <select aria-label="Region">
+          <option>Global</option><option>India</option><option>United States</option><option>UAE</option>
+        </select>
+        <a class="sitemap" href="/sitemap.xml">Sitemap</a>
+        <div class="socials">
+          <a class="fb" href="https://facebook.com/shoutlyai" aria-label="Facebook" rel="me noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 8.5V6.8c0-.8.2-1.2 1.4-1.2H17V2.6c-.3 0-1.2-.1-2.3-.1-2.4 0-4 1.4-4 4.1v1.9H8V12h2.7v9.4H14V12h2.6l.4-3.5H14z"/></svg>
+          </a>
+          <a class="ig" href="https://instagram.com/shoutlyai" aria-label="Instagram" rel="me noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a class="li" href="https://linkedin.com/company/shoutlyai" aria-label="LinkedIn" rel="me noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.9 21H3.6V9.1h3.3V21zM5.2 7.6A1.9 1.9 0 115.3 3.8a1.9 1.9 0 01-.1 3.8zM21 21h-3.3v-5.8c0-1.4 0-3.2-1.9-3.2s-2.2 1.5-2.2 3.1V21H10.3V9.1h3.1v1.6h.1a3.5 3.5 0 013.1-1.7c3.3 0 3.9 2.2 3.9 5V21z"/></svg>
+          </a>
+          <a class="x" href="https://x.com/shoutlyai" aria-label="X" rel="me noopener">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 3h3.2l-7 8 8.2 10h-6.4l-5-6.1L4.7 21H1.5l7.5-8.6L1.1 3h6.6l4.5 5.6L17.5 3z"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</footer>
+</body>
+</html>
