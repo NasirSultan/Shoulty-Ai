@@ -241,14 +241,13 @@ export default function ContactPage() {
                     <p className="text-gray-600 text-lg mt-6 max-w-3xl">
                         We're not just a tool. We're your AI growth partner — helping brands
                         scale content, automate creativity, and dominate social at
-                        lightspeed. From Bangalore to New York, we're building the
-                        infrastructure for AI-powered brand growth.
+                        lightspeed.
                     </p>
 
                     <div className="mt-6 flex items-center gap-3 bg-white border border-orange-100 px-4 py-2 rounded-full w-fit shadow-sm">
                         <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
                         <span className="text-sm">
-                            24/7 Global Operations — Bangalore · New York · Singapore · London
+                            24/7 Global Operations — Bangalore.
                         </span>
                     </div>
                 </section>
@@ -265,9 +264,9 @@ export default function ContactPage() {
                             </h3>
 
                             <p className="text-gray-500 mb-4">
-                                No: 371 Gokula Pride, 4th Floor, JP Nagar
-                                <br />
-                                8th phase, Bangalore - 560083
+                                JP Nagar, 8th Phase<br />
+                                Bengaluru, <br />
+                                Karnataka 560083 - India
                             </p>
 
                             <p className="text-orange-500 font-semibold text-sm mb-6">

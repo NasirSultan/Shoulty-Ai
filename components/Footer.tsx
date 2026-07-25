@@ -30,7 +30,7 @@ function FooterNavLink({ link }: { link: FooterLink }) {
   if (!link.href) {
     return (
       <span
-        className="text-[14px] font-semibold text-gray-500 cursor-not-allowed select-none"
+        className="text-[14px] font-semibold text-gray-400 cursor-not-allowed select-none"
         title="Coming soon"
       >
         {link.label}
@@ -43,7 +43,7 @@ function FooterNavLink({ link }: { link: FooterLink }) {
         href={link.href}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-[14px] font-semibold text-black hover:text-orange-600 transition-colors"
+        className="text-[14px] font-semibold text-white hover:text-orange-600 transition-colors"
       >
         {link.label}
       </a>
@@ -52,7 +52,7 @@ function FooterNavLink({ link }: { link: FooterLink }) {
   return (
     <Link
       href={link.href}
-      className="text-[14px] font-semibold text-black hover:text-orange-600 transition-colors"
+      className="text-[14px] font-semibold text-white hover:text-orange-600 transition-colors"
     >
       {link.label}
     </Link>
@@ -62,7 +62,7 @@ function FooterNavLink({ link }: { link: FooterLink }) {
 function FooterColumn({ title, links }: { title: string; links: FooterLink[] }) {
   return (
     <div className="col-span-1">
-      <div className="text-[13px] font-extrabold uppercase tracking-tight text-gray-800 mb-5">
+      <div className="text-[13px] font-extrabold uppercase tracking-tight text-white mb-5">
         {title}
       </div>
       <ul className="space-y-2.5">
@@ -136,16 +136,16 @@ const Footer = () => {
   ];
 
   const solutionsLinks: FooterLink[] = [
-    { label: "Local Businesses" },
+    { label: "Local Businesses", href: "/solutions/local-businesses" },
     { label: "Restaurants", href: "/social-media-marketing-for-restaurants.html" },
     { label: "Fitness", href: "/social-media-marketing-for-gyms.html" },
-    { label: "Retail" },
-    { label: "Healthcare" },
-    { label: "Real Estate", href: "/for/real-estate" },
-    { label: "Agencies" },
-    { label: "Startups", href: "/tech-startups-social-media-automation.html" },
-    { label: "Professional Services", href: "/consultants.html" },
-    { label: "Enterprise" },
+    { label: "Interior Design", href: "/interior.html" },
+    { label: "Footwear", href: "/digital-marketing-for-footwear-brands.html" },
+    { label: "Real Estate", href: "/marketing-for-builders-and-developers.html" },
+    { label: "Startups", href: "/Business-Consultant.html" },
+    { label: "Hotels", href: "/digital-marketing-for-hotels-and-resorts.html" },
+    { label: "Event Planners", href: "/digital-marketing-for-event-planners.html" },
+    { label: "Makeup Services", href: "/perfume.html" },
   ];
 
   const channelsLinks: FooterLink[] = [
@@ -235,7 +235,7 @@ const Footer = () => {
 
   return (
     <footer
-      className="bg-white border-t border-gray-200"
+      className="bg-gradient-to-b from-slate-950  to-slate-900 text-white"
       style={{ fontFamily: "'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
@@ -245,7 +245,7 @@ const Footer = () => {
           <div>
             <Link href="/" className="inline-block mb-4 -ml-4">
               <Image
-                src="/images/logo.png"
+                src="/images/logo2.png"
                 alt="Shoutly AI logo"
                 width={160}
                 height={56}
@@ -253,9 +253,37 @@ const Footer = () => {
                 className="w-36 h-12 object-contain"
               />
             </Link>
-            <p className="text-[15px] text-gray-600 max-w-sm leading-[1.65] mb-4">
-              One workspace to write, design, schedule, and measure social content across every channel your business lives on.
+            <p className="text-[15px] text-white max-w-sm leading-[1.65] mb-4">
+              Shoutly AI transforms one idea into 365 days of ready-to-publish social media content. Create, schedule, and grow your brand across every major platform.
             </p>
+
+            {/* Platform Icons */}
+                        <div className="pt-2 pb-1">
+                            <p className="text-xs text-white/50 uppercase tracking-widest font-semibold mb-3">Post across 10 platforms</p>
+                            <div className="flex flex-wrap gap-2">
+                                {[
+                                    { icon: "fa-x-twitter",    bg: "#000000" },
+                                    { icon: "fa-linkedin-in",  bg: "#0A66C2" },
+                                    { icon: "fa-instagram",    bg: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)" },
+                                    { icon: "fa-tiktok",       bg: "#010101" },
+                                    { icon: "fa-facebook-f",   bg: "#1877F2" },
+                                    { icon: "fa-threads",      bg: "#000000" },
+                                    { icon: "fa-bluesky",      bg: "#0085ff" },
+                                    { icon: "fa-youtube",      bg: "#FF0000" },
+                                    { icon: "fa-pinterest-p",  bg: "#E60023" },
+                                    { icon: "fa-snapchat",     bg: "#FFFC00", color: "#000" },
+                                ].map(({ icon, bg, color }, i) => (
+                                    <div key={i} style={{
+                                        width: 36, height: 36, borderRadius: 10,
+                                        background: bg, display: "flex", alignItems: "center", justifyContent: "center",
+                                        flexShrink: 0
+                                    }}>
+                                        <i className={`fa-brands ${icon}`} style={{ fontSize: 16, color: color || "#fff" }} />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
             <span
               className="inline-flex items-center gap-2 text-[12.5px] font-semibold text-green-800 cursor-not-allowed select-none"
               title="Coming soon"
@@ -322,7 +350,7 @@ const Footer = () => {
 
         {/* Row 2 — Company */}
         <div className="mb-12">
-          <div className="text-[13px] font-extrabold uppercase tracking-tight text-gray-800 mb-5">
+          <div className="text-[13px] font-extrabold uppercase tracking-tight text-white mb-5">
             Company
           </div>
           <ul className="flex flex-wrap gap-x-8 gap-y-2.5">
@@ -335,8 +363,8 @@ const Footer = () => {
         </div>
 
         {/* Trust & compliance badges */}
-        <div className="border-t border-gray-200 pt-8 mb-8">
-          <div className="text-[13px] font-extrabold text-gray-800 mb-4">
+        <div className="border-t border-white pt-8 mb-8">
+          <div className="text-[13px] font-extrabold text-white mb-4">
             Trust &amp; compliance
           </div>
           <div className="flex flex-wrap gap-2">
@@ -353,23 +381,23 @@ const Footer = () => {
         </div>
 
         {/* Legal hub */}
-        <div className="border-t border-gray-200 pt-8 mb-8">
+        <div className="border-t border-white pt-8 mb-8">
           <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-10">
             <div className="sm:w-48 flex-shrink-0">
-              <div className="text-[13px] font-extrabold text-gray-800 mb-2">
+              <div className="text-[13px] font-extrabold text-white mb-2">
                 Legal hub
               </div>
-              <p className="text-[13px] font-medium text-gray-600 leading-[1.55]">
+              <p className="text-[13px] font-medium text-white/80 leading-[1.55]">
                 Every policy governing how we handle your data, content, and account.
               </p>
             </div>
             <div className="flex flex-wrap gap-x-4 gap-y-2">
               {legalLinks.map((link, i) => (
                 <React.Fragment key={link.label}>
-                  {i > 0 && <span className="text-gray-400 hidden sm:inline">|</span>}
+                  {i > 0 && <span className="text-white hidden sm:inline">|</span>}
                   <Link
                     href={link.href}
-                    className="text-[13px] font-bold text-black hover:text-orange-600 transition-colors"
+                    className="text-[13px] font-bold text-white hover:text-orange-600 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -380,23 +408,23 @@ const Footer = () => {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-gray-200 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <p className="text-[13px] font-semibold text-gray-600 text-center sm:text-left">
-            © {currentYear} shoutlyai — <span className="font-semibold text-gray-900">Qubixel Technologies Private Limited</span>. All rights reserved.
-            <span className="block sm:inline sm:ml-1 text-[12px] font-medium text-gray-500">smart ai powering your social media for the next 365 days.</span>
+        <div className="border-t border-white pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <p className="text-[13px] font-semibold text-white text-center sm:text-left">
+            © {currentYear} shoutlyai — <span className="font-semibold text-white">Qubixel Technologies Private Limited</span>. All rights reserved.
+            <span className="block sm:inline sm:ml-1 text-[12px] font-medium text-white/80">smart ai powering your social media for the next 365 days.</span>
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4">
             {/* Language / region — no i18n implemented yet, shown inactive */}
-            <span className="text-[13px] font-bold text-gray-600 cursor-not-allowed select-none" title="Coming soon">
+            <span className="text-[13px] font-bold text-white cursor-not-allowed select-none" title="Coming soon">
               English ▾
             </span>
-            <span className="text-[13px] font-bold text-gray-600 cursor-not-allowed select-none" title="Coming soon">
+            <span className="text-[13px] font-bold text-white cursor-not-allowed select-none" title="Coming soon">
               Global ▾
             </span>
             <a
               href="/sitemap.xml"
-              className="text-[13px] font-bold text-gray-600 hover:text-orange-600 transition-colors"
+              className="text-[13px] font-bold text-white hover:text-orange-600 transition-colors"
             >
               Sitemap
             </a>
@@ -408,7 +436,7 @@ const Footer = () => {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-800 hover:text-orange-600 transition-colors"
+                  className="text-white hover:text-orange-600 transition-colors"
                   aria-label={social.label}
                 >
                   {social.icon}
@@ -416,7 +444,7 @@ const Footer = () => {
               ))}
               {/* Theme toggle — no site-wide dark mode wired up yet, shown inactive */}
               <span
-                className="text-gray-600 cursor-not-allowed"
+                className="text-white cursor-not-allowed"
                 title="Coming soon"
                 aria-label="Toggle theme (coming soon)"
               >
