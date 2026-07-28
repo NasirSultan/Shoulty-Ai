@@ -139,13 +139,13 @@ const Footer = () => {
     { label: "Local Businesses", href: "/solutions/local-businesses" },
     { label: "Restaurants", href: "/social-media-marketing-for-restaurants.html" },
     { label: "Fitness", href: "/social-media-marketing-for-gyms.html" },
-    { label: "Interior Design", href: "/interior.html" },
+    { label: "Interior Design", href: "/social-media-marketing-for-interior-designers.html" },
     { label: "Footwear", href: "/digital-marketing-for-footwear-brands.html" },
-    { label: "Real Estate", href: "/marketing-for-builders-and-developers.html" },
-    { label: "Startups", href: "/Business-Consultant.html" },
+    { label: "Real Estate", href: "/digital-marketing-for-real-estate-agents.html" },
+    { label: "Startups", href: "/marketing-for-business-consultants.html" },
     { label: "Hotels", href: "/digital-marketing-for-hotels-and-resorts.html" },
     { label: "Event Planners", href: "/digital-marketing-for-event-planners.html" },
-    { label: "Makeup Services", href: "/perfume.html" },
+    { label: "Makeup Services", href: "/social-media-marketing-for-makeup-artists.html" },
   ];
 
   const channelsLinks: FooterLink[] = [
@@ -235,8 +235,8 @@ const Footer = () => {
 
   return (
     <footer
-      className="bg-gradient-to-b from-slate-950  to-slate-900 text-white"
-      style={{ fontFamily: "'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" }}
+      className="bg-gradient-to-b from-slate-950  to-slate-900"
+      style={{ fontFamily: "'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif", background: "#020618" }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
 
@@ -448,7 +448,6 @@ const Footer = () => {
                 title="Coming soon"
                 aria-label="Toggle theme (coming soon)"
               >
-                <FaMoon size={15} />
               </span>
             </div>
           </div>
