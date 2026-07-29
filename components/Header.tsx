@@ -217,7 +217,7 @@ const MEGA_MENUS: MegaMenu[] = [
             eyebrow: "FREE FOREVER",
             title: "Three channels, no card",
             desc: "Generate, schedule, and publish on the free plan for as long as you like.",
-            cta: "Start free trial",
+            cta: "Start Free Trial",
             href: "/sign-up",
         },
     },
@@ -564,7 +564,7 @@ export default function Header() {
                                     className="px-5 py-2 text-white rounded-full text-sm font-medium shadow-sm hover:opacity-90 transition-opacity"
                                     style={{ background: GRAD }}
                                 >
-                                    Start free trial
+                                    Start Free Trial
                                 </Link>
                             </>
                         )}
@@ -715,7 +715,7 @@ export default function Header() {
                                     style={{ background: GRAD }}
                                     onClick={() => setMenuOpen(false)}
                                 >
-                                    Start free trial
+                                    Start Free Trial
                                 </Link>
                             </>
                         )}
