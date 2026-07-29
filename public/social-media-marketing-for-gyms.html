@@ -24,6 +24,7 @@
     <meta name="twitter:description"
     content="Automated social media growth for GYM with transformation stories, class highlights and retention campaigns." />
     <meta name="twitter:image" content="https://blog.shoutlyai.com/wp-content/uploads/2026/07/img-12.png" />
+    <script src="https://kit.fontawesome.com/ff762d7bfc.js" crossorigin="anonymous"></script>
     <style>
         body {
             --benefit-image: url("https://blog.shoutlyai.com/wp-content/uploads/2026/07/img-13.png");
@@ -1819,8 +1820,30 @@
         })();
     </script>
     <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // 1. Find all menu buttons in the header automatically
+    const menuButtons = document.querySelectorAll("header button");
+
+    menuButtons.forEach((button) => {
+      // Trigger when mouse enters a button
+      button.addEventListener("mouseenter", () => {
+        button.classList.add("bg-orange-50", "text-orange-600");
         
-    </script>
+        // Find and rotate the arrow icon inside the button if it exists
+        const arrow = button.querySelector("svg");
+        if (arrow) arrow.style.transform = "rotate(180deg)";
+      });
+
+      // Reset when mouse leaves
+      button.addEventListener("mouseleave", () => {
+        button.classList.remove("bg-orange-50", "text-orange-600");
+        
+        const arrow = button.querySelector("svg");
+        if (arrow) arrow.style.transform = "rotate(0deg)";
+      });
+    });
+  });
+</script>
 </body>
 
 </html>
