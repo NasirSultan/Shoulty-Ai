@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { API_BASE_URL } from '@/api/configApi';
 import Image from 'next/image';
 import Link from 'next/link';
+import Script from 'next/script';
 import { usePathname } from 'next/navigation';
 import {
   FaFacebook,
@@ -238,6 +239,8 @@ const Footer = () => {
       className="bg-gradient-to-b from-slate-950  to-slate-900"
       style={{ fontFamily: "'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif", background: "#020618" }}
     >
+      {/* Include FontAwesome Kit Script */}
+  <script src="https://kit.fontawesome.com/ff762d7bfc.js"></script>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
 
         {/* Top band — brand blurb + newsletter */}

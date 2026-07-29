@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI Image Generator &mdash; Branded Graphics for Every Post | Shoutly AI</title>
+<meta name="description" content="Shoutly AI's AI Image Generator creates branded social media graphics, posters, festival creatives, product visuals, and Reels covers for your business automatically. No designer needed.">
+<link rel="canonical" href="https://shoutlyai.com/features/ai-image-generator">
+<meta property="og:title" content="AI Image Generator &mdash; Shoutly AI">
+<meta property="og:description" content="AI designs branded social media graphics for your business automatically. Posters, carousels, festival creatives, product visuals &mdash; all in your brand colours and logo.">
+<meta property="og:url" content="https://shoutlyai.com/features/ai-image-generator">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shoutly AI">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@shoutlyai">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Shoutly AI Image Generator","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":"https://shoutlyai.com/features/ai-image-generator","description":"AI-powered image generator that creates branded social media graphics, posters, festival creatives, product visuals, and carousel slides for any business automatically.","featureList":["AI graphic design","Branded poster generator","Festival creative generator","Product image generator","Carousel slide designer","Reels cover generator","Brand kit integration","Multi-platform sizing","No design skills required","Instant generation"],"offers":{"@type":"Offer","price":"10000","priceCurrency":"INR"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"2847","bestRating":"5"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is Shoutly AI's image generator?","acceptedAnswer":{"@type":"Answer","text":"Shoutly AI's image generator uses AI to create branded social media graphics for your business automatically. It generates posters, promotional banners, festival creatives, product visuals, carousel slides, and Reels covers in your brand colours and logo style &mdash; with no design skills required."}},{"@type":"Question","name":"Do I need design skills to use it?","acceptedAnswer":{"@type":"Answer","text":"No. You set your brand kit once (logo, colours, fonts) and the AI generates all graphics automatically. There's nothing to design manually. Every image comes out looking professionally branded."}},{"@type":"Question","name":"What image sizes does it support?","acceptedAnswer":{"@type":"Answer","text":"Shoutly AI generates images in all required formats: 1:1 square for Instagram feed, 9:16 vertical for Reels and Stories, 16:9 landscape for YouTube and LinkedIn, 4:5 portrait for Instagram feed, and the Google Business Profile format."}},{"@type":"Question","name":"Does it include festival and occasion graphics?","acceptedAnswer":{"@type":"Answer","text":"Yes. Shoutly AI auto-generates branded festival graphics for Diwali, Holi, Eid, Navratri, Independence Day, and 30+ Indian occasions &mdash; all in your brand colours, with your logo, scheduled weeks in advance."}},{"@type":"Question","name":"Can it generate product images?","acceptedAnswer":{"@type":"Answer","text":"Yes. The AI generates product showcase graphics, pricing display posts, before/after visuals, and promotional product banners. You describe your product and the AI creates a branded visual ready to publish."}},{"@type":"Question","name":"How is this different from Canva?","acceptedAnswer":{"@type":"Answer","text":"Canva requires you to open it, find a template, edit text and colours, export, and upload to a scheduler. Shoutly AI generates the graphic and the caption together, already sized for the platform, already in your brand style, and schedules it automatically &mdash; without you opening any design tool."}}]}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:#0f0f0f;-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+:root{
+  --p:#6c3bf5;--p2:#8b5cf6;--p3:#a78bfa;
+  --pg:linear-gradient(135deg,#6c3bf5,#a855f7);
+  --dark:#08021a;--dark2:#110633;
+  --glow:rgba(108,59,245,.32);
+  --ink:#0f0f0f;--ink2:#262626;--ink3:#525252;--ink4:#a3a3a3;
+  --surface:#f7f7fb;--border:#e5e4f0;--border2:#ccc9ea;
+  --green:#16a34a;
+  --max:1200px;
+  --r:8px;--r2:12px;--r3:16px;--r4:22px;--r5:30px;
+}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:62px;display:flex;align-items:center;transition:box-shadow .2s}
+.nav.scrolled{box-shadow:0 1px 14px rgba(0,0,0,.07)}
+.nav-inner{display:flex;align-items:center;width:100%;max-width:var(--max);margin:0 auto;padding:0 28px;gap:8px}
+.nav-logo{display:flex;align-items:center;gap:9px;font-size:15.5px;font-weight:800;color:var(--ink);letter-spacing:-.3px}
+.nav-mark{width:32px;height:32px;border-radius:9px;background:var(--pg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-mark svg{width:16px;height:16px;fill:#fff}
+.feat-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#ede9fe,#f5f3ff);border:1px solid #ddd6fe;color:var(--p);border-radius:100px;padding:3px 10px;font-size:11.5px;font-weight:700;margin-left:6px}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:18px}
+.nav-links a{font-size:13.5px;color:var(--ink3);padding:5px 12px;border-radius:var(--r);font-weight:500;transition:all .14s}
+.nav-links a:hover{color:var(--ink);background:var(--surface)}
+.nav-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:600;border-radius:var(--r2);padding:9px 20px;transition:all .15s;cursor:pointer;border:1.5px solid transparent;white-space:nowrap;letter-spacing:-.01em}
+.btn-ghost{color:var(--ink2);border-color:var(--border2)}
+.btn-ghost:hover{background:var(--surface);color:var(--ink)}
+.btn-primary{background:var(--pg);color:#fff;border:none;box-shadow:0 2px 10px var(--glow)}
+.btn-primary:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 6px 22px var(--glow)}
+.btn-lg{padding:13px 28px;font-size:15.5px;font-weight:700;border-radius:var(--r3)}
+.btn-xl{padding:15px 34px;font-size:16px;font-weight:700;border-radius:var(--r3)}
+.btn-white{background:#fff;color:var(--p);border:none;font-weight:700}
+.btn-white:hover{background:#f0ecff;transform:translateY(-1px)}
+.btn-wh-ghost{background:transparent;color:rgba(255,255,255,.8);border:1.5px solid rgba(255,255,255,.3)}
+.btn-wh-ghost:hover{border-color:rgba(255,255,255,.65);color:#fff}
+.btn-sm{padding:7px 16px;font-size:13px}
+
+/* BREADCRUMB */
+.bc{background:var(--surface);border-bottom:1px solid var(--border);padding:11px 0}
+.bc-inner{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink4)}
+.bc-inner a{color:var(--ink4);transition:color .14s}
+.bc-inner a:hover{color:var(--p)}
+
+/* HERO */
+.hero{background:var(--dark);padding:80px 0 76px;position:relative;overflow:hidden}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none}
+.hero-orb-1{width:700px;height:700px;background:radial-gradient(circle,rgba(108,59,245,.5),transparent 68%);top:-250px;left:-180px}
+.hero-orb-2{width:450px;height:450px;background:radial-gradient(circle,rgba(168,85,247,.3),transparent 65%);bottom:-120px;right:-80px}
+.hero-inner{display:grid;grid-template-columns:1.1fr 1fr;gap:64px;align-items:center;position:relative;z-index:1}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(108,59,245,.18);border:1px solid rgba(108,59,245,.4);border-radius:100px;padding:5px 14px 5px 9px;font-size:12.5px;font-weight:600;color:#c4b5fd;margin-bottom:22px}
+.ey-dot{width:7px;height:7px;border-radius:50%;background:#a855f7;animation:pulse 2.2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+.hero-h1{font-family:'Inter Tight',sans-serif;font-size:clamp(38px,5vw,62px);font-weight:900;letter-spacing:-2.8px;line-height:.96;color:#fff;margin-bottom:22px}
+.hero-h1 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(15px,1.6vw,18px);color:rgba(255,255,255,.6);line-height:1.72;max-width:480px;margin-bottom:34px}
+.hero-ctas{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:30px}
+.hero-proof{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.hp{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.45)}
+.hp svg{width:13px;height:13px;stroke:rgba(108,59,245,.9);stroke-width:2.5;fill:none;flex-shrink:0}
+
+/* CANVAS WINDOW — the hero animation */
+.canvas-window{background:#0c0820;border:1px solid rgba(255,255,255,.1);border-radius:var(--r5);overflow:hidden;box-shadow:0 32px 70px rgba(0,0,0,.5),0 0 0 1px rgba(108,59,245,.12),inset 0 1px 0 rgba(255,255,255,.06)}
+.cw-bar{background:#150e2e;border-bottom:1px solid rgba(255,255,255,.07);padding:11px 16px;display:flex;align-items:center;gap:10px}
+.cw-dots{display:flex;gap:6px}
+.cw-dot{width:10px;height:10px;border-radius:50%}
+.cw-dot.r{background:#ff5f57}.cw-dot.y{background:#febc2e}.cw-dot.g{background:#28c840}
+.cw-title{font-size:11px;color:rgba(255,255,255,.3);margin-left:8px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.cw-body{padding:18px}
+/* prompt row */
+.cw-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.28);margin-bottom:8px}
+.cw-prompt{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:var(--r2);padding:11px 14px;font-size:13px;color:rgba(255,255,255,.7);line-height:1.55;margin-bottom:14px;min-height:46px}
+/* style chips */
+.cw-style-row{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.cw-style{font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.45);cursor:pointer;transition:all .18s}
+.cw-style.active{background:rgba(108,59,245,.25);border-color:rgba(108,59,245,.5);color:#c4b5fd}
+/* canvas preview */
+.cw-canvas-wrap{position:relative;margin-bottom:12px}
+.cw-canvas{width:100%;aspect-ratio:1;border-radius:var(--r3);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;transition:background .4s}
+/* graphic layers */
+.cw-graphic{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center}
+.cw-g-brand{position:absolute;top:14px;left:14px;display:flex;align-items:center;gap:7px}
+.cw-g-logo{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff}
+.cw-g-bname{font-size:11px;font-weight:700;color:rgba(255,255,255,.9)}
+.cw-g-icon{font-size:44px;margin-bottom:10px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.3))}
+.cw-g-headline{font-size:18px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:8px;text-shadow:0 2px 8px rgba(0,0,0,.4)}
+.cw-g-sub{font-size:11.5px;color:rgba(255,255,255,.8);line-height:1.5;margin-bottom:12px}
+.cw-g-cta{background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.4);border-radius:100px;padding:6px 16px;font-size:11px;font-weight:700;color:#fff;backdrop-filter:blur(4px)}
+.cw-g-badge{position:absolute;top:14px;right:14px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:3px 9px;font-size:10px;font-weight:700;color:#fff;backdrop-filter:blur(4px)}
+/* generating overlay */
+.cw-generating{position:absolute;inset:0;background:rgba(12,8,32,.85);display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;border-radius:var(--r3);backdrop-filter:blur(4px)}
+.cw-generating.show{display:flex}
+.cw-gen-ring{width:44px;height:44px;border-radius:50%;border:3px solid rgba(108,59,245,.2);border-top-color:var(--p2);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.cw-gen-text{font-size:12px;color:rgba(255,255,255,.5);font-weight:600}
+/* size chips */
+.cw-sizes{display:flex;gap:6px;margin-bottom:12px}
+.cw-size{font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:100px;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.4);cursor:pointer;transition:all .18s}
+.cw-size.active{background:rgba(108,59,245,.2);border-color:rgba(108,59,245,.45);color:#a78bfa}
+/* meta row */
+.cw-meta{display:flex;align-items:center;justify-content:space-between}
+.cw-ai-lbl{font-size:10.5px;color:rgba(255,255,255,.35);display:flex;align-items:center;gap:5px;font-weight:600}
+.cw-dl{font-size:11px;font-weight:700;color:var(--p3);cursor:pointer}
+/* biz chips */
+.cw-footer{background:#150e2e;border-top:1px solid rgba(255,255,255,.06);padding:10px 16px;display:flex;align-items:center;gap:8px}
+.cw-biz-lbl{font-size:11px;color:rgba(255,255,255,.3);font-weight:600;white-space:nowrap}
+.cw-chips{display:flex;gap:6px;flex-wrap:wrap}
+.cw-chip{font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;cursor:pointer;transition:all .18s;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.45)}
+.cw-chip.active{background:rgba(108,59,245,.25);border-color:rgba(108,59,245,.5);color:#c4b5fd}
+
+/* STAT STRIP */
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);background:var(--border);gap:1px;border:1px solid var(--border);border-radius:var(--r4);overflow:hidden}
+.ss-cell{background:#fff;padding:26px 20px;text-align:center}
+.ss-n{font-family:'Inter Tight',sans-serif;font-size:clamp(26px,2.8vw,38px);font-weight:900;background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-2px;line-height:1;margin-bottom:5px}
+.ss-l{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.ss-s{font-size:12px;color:var(--ink4)}
+
+/* SECTION HELPERS */
+.section{padding:88px 0}
+.section-alt{background:var(--surface)}
+.sec-ey{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--p);margin-bottom:10px;display:block}
+.sec-h2{font-family:'Inter Tight',sans-serif;font-size:clamp(26px,3.3vw,42px);font-weight:900;letter-spacing:-1.5px;color:var(--ink);line-height:1.05;margin-bottom:12px}
+.sec-p{font-size:17px;color:var(--ink2);line-height:1.72;max-width:600px}
+.center{text-align:center}
+.center .sec-p{margin:0 auto}
+
+/* PAIN */
+.pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pain-card{background:#fff;border:1px solid var(--border);border-radius:var(--r3);padding:22px;display:flex;gap:14px;transition:border-color .18s}
+.pain-card:hover{border-color:var(--border2)}
+.pain-ico{width:42px;height:42px;border-radius:11px;background:#fef2f2;border:1px solid #fecaca;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.pain-title{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.pain-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+
+/* HOW IT WORKS */
+.hiw-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+.hiw-steps{display:flex;flex-direction:column;gap:0}
+.hiw-step{display:flex;gap:18px;position:relative;padding-bottom:28px}
+.hiw-step:last-child{padding-bottom:0}
+.hiw-step::before{content:'';position:absolute;left:19px;top:44px;bottom:0;width:2px;background:var(--border)}
+.hiw-step:last-child::before{display:none}
+.hiw-num{width:40px;height:40px;border-radius:50%;background:var(--pg);color:#fff;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 12px var(--glow);position:relative;z-index:1;font-family:'Inter Tight',sans-serif}
+.hiw-body{padding-top:8px}
+.hiw-title{font-size:15.5px;font-weight:700;color:var(--ink);margin-bottom:5px;letter-spacing:-.2px}
+.hiw-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+.hiw-time{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--p);background:#ede9fe;border-radius:100px;padding:2px 8px;margin-top:6px}
+
+/* IMAGE TYPES GRID */
+.imgtype-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.imgtype-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);overflow:hidden;transition:all .2s}
+.imgtype-card:hover{border-color:var(--border2);box-shadow:0 6px 24px rgba(108,59,245,.08);transform:translateY(-2px)}
+.itc-preview{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:40px;position:relative;overflow:hidden}
+.itc-preview-inner{position:relative;z-index:1;text-align:center}
+.itc-preview-inner .itc-icon{font-size:36px;display:block;margin-bottom:6px;filter:drop-shadow(0 3px 8px rgba(0,0,0,.25))}
+.itc-preview-inner .itc-title-on{font-size:13px;font-weight:800;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.4)}
+.itc-preview-inner .itc-sub-on{font-size:10px;color:rgba(255,255,255,.8)}
+.itc-preview-inner .itc-cta-on{display:inline-block;margin-top:6px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);border-radius:100px;padding:3px 10px;font-size:10px;font-weight:700;color:#fff}
+.itc-body{padding:16px}
+.itc-name{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.itc-desc{font-size:13px;color:var(--ink3);line-height:1.6;margin-bottom:8px}
+.itc-plats{display:flex;gap:5px;flex-wrap:wrap}
+.itc-plat{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:100px;background:var(--surface);border:1px solid var(--border);color:var(--ink3)}
+
+/* BRAND KIT CALLOUT */
+.bk-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:0}
+.bk-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:28px;transition:all .18s}
+.bk-card:hover{border-color:#c4b5fd;box-shadow:0 4px 18px rgba(108,59,245,.06)}
+.bk-ico{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#ede9fe,#faf5ff);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:13px}
+.bk-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:7px}
+.bk-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+
+/* VS CANVA */
+.vs-wrap{border:1px solid var(--border);border-radius:var(--r4);overflow:hidden}
+.vs-table{width:100%;border-collapse:collapse}
+.vs-table th{padding:15px 20px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border)}
+.th-feat{background:var(--surface);text-align:left;width:38%;color:var(--ink3)}
+.th-canva{background:#fff3e0;text-align:center;color:#c2410c}
+.th-shoutly{background:var(--pg);text-align:center;color:#fff}
+.vs-table td{padding:13px 20px;border-bottom:1px solid var(--border);font-size:14px;vertical-align:middle}
+.vs-table tr:last-child td{border-bottom:none}
+.vs-table tr:hover td{background:#faf8ff}
+.vs-feat{font-weight:600;color:var(--ink)}
+.vs-feat .vs-sub{font-size:12px;color:var(--ink4);font-weight:400;display:block;margin-top:1px}
+.td-c{text-align:center;color:#c2410c;font-weight:600}
+.td-s{background:linear-gradient(135deg,#faf8ff,#f5f0ff);text-align:center;color:var(--green);font-weight:700}
+.yes{color:var(--green);font-size:18px}
+.no{color:#dc2626;font-size:18px}
+.meh{color:#d97706;font-size:13px;font-weight:600}
+
+/* SIZES SECTION */
+.sizes-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.size-card{background:#fff;border:1px solid var(--border);border-radius:var(--r3);padding:20px 12px;text-align:center;transition:all .18s}
+.size-card:hover{border-color:#c4b5fd;background:#faf8ff}
+.size-box{margin:0 auto 12px;border-radius:var(--r);background:var(--pg);opacity:.15;transition:opacity .18s}
+.size-card:hover .size-box{opacity:.28}
+.size-ratio{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.3px;margin-bottom:3px;font-family:'Inter Tight',sans-serif}
+.size-name{font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:4px}
+.size-plats{font-size:11px;color:var(--ink4)}
+
+/* TESTIMONIALS */
+.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.test-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:28px;display:flex;flex-direction:column;transition:all .18s}
+.test-card:hover{border-color:var(--border2);box-shadow:0 6px 24px rgba(108,59,245,.07);transform:translateY(-2px)}
+.test-stars{color:#f59e0b;font-size:13px;letter-spacing:2px;margin-bottom:13px}
+.test-quote{font-size:14px;color:var(--ink2);line-height:1.76;font-style:italic;flex:1;margin-bottom:18px}
+.test-author{display:flex;align-items:center;gap:11px}
+.ta-av{width:40px;height:40px;border-radius:50%;background:var(--pg);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+.ta-name{font-size:13.5px;font-weight:700;color:var(--ink);display:block}
+.ta-biz{font-size:12px;color:var(--ink4)}
+
+/* FAQ */
+.faq-list{border:1px solid var(--border);border-radius:var(--r4);overflow:hidden;max-width:740px;margin:40px auto 0}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-item:last-child{border-bottom:none}
+.faq-q{width:100%;padding:18px 22px;background:#fff;border:none;display:flex;align-items:center;justify-content:space-between;text-align:left;cursor:pointer;font-size:15px;font-weight:600;color:var(--ink);gap:14px;transition:background .14s;font-family:inherit}
+.faq-q:hover{background:var(--surface)}
+.faq-arr{width:24px;height:24px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--ink4);flex-shrink:0;transition:all .22s}
+.faq-item.open .faq-arr{background:var(--pg);border-color:transparent;color:#fff;transform:rotate(45deg)}
+.faq-a{display:none;padding:0 22px 18px;font-size:14.5px;color:var(--ink2);line-height:1.75;background:#fff}
+.faq-item.open .faq-a{display:block}
+
+/* LINKS */
+.links-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.link-card{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:var(--r2);padding:12px 14px;font-size:13.5px;font-weight:500;color:var(--ink2);transition:all .15s}
+.link-card:hover{border-color:#c4b5fd;background:#faf8ff;color:var(--p)}
+.link-arr{margin-left:auto;font-size:12px;color:var(--ink4)}
+.link-card:hover .link-arr{color:var(--p)}
+
+/* CTA */
+.cta-section{background:var(--dark);padding:96px 0;text-align:center;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 65% at 50% 110%,rgba(108,59,245,.3) 0%,transparent 70%);pointer-events:none}
+.cta-section h2{font-family:'Inter Tight',sans-serif;font-size:clamp(30px,5vw,54px);font-weight:900;letter-spacing:-2.5px;line-height:1.03;color:#fff;margin-bottom:16px;position:relative;z-index:1}
+.cta-section h2 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-section p{font-size:17.5px;color:rgba(255,255,255,.6);line-height:1.7;max-width:520px;margin:0 auto 38px;position:relative;z-index:1}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:22px;position:relative;z-index:1}
+.cta-trust{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,.4);position:relative;z-index:1}
+.ct{display:flex;align-items:center;gap:5px}
+.ct svg{width:13px;height:13px;stroke:rgba(108,59,245,.9);stroke-width:2.5;fill:none}
+
+/* FOOTER */
+.footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.07);padding:32px 0}
+.ft-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ft-logo{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:800;color:rgba(255,255,255,.6)}
+.ft-links{display:flex;gap:18px;flex-wrap:wrap}
+.ft-links a{font-size:13px;color:rgba(255,255,255,.3);transition:color .14s}
+.ft-links a:hover{color:rgba(255,255,255,.65)}
+.ft-copy{font-size:12px;color:rgba(255,255,255,.2);margin-top:14px}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .hero-inner{grid-template-columns:1fr;gap:44px}
+  .canvas-window{max-width:540px;margin:0 auto}
+  .hiw-grid{grid-template-columns:1fr;gap:44px}
+  .imgtype-grid{grid-template-columns:1fr 1fr}
+  .sizes-grid{grid-template-columns:1fr 1fr 1fr}
+  .test-grid{grid-template-columns:1fr 1fr}
+  .links-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:720px){
+  .nav-links,.nav-right .btn-ghost{display:none}
+  .pain-grid{grid-template-columns:1fr}
+  .bk-grid{grid-template-columns:1fr}
+  .imgtype-grid,.test-grid{grid-template-columns:1fr}
+  .sizes-grid{grid-template-columns:1fr 1fr}
+  .stat-strip{grid-template-columns:1fr 1fr}
+  .section{padding:60px 0}
+  .wrap{padding:0 18px}
+}
+@media(prefers-reduced-motion:reduce){.ey-dot{animation:none}.cw-gen-ring{animation:none}}
+
+[data-r]{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}
+[data-r].vis{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="https://shoutlyai.com" class="nav-logo">
+      <div class="nav-mark"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>
+      Shoutly AI
+    </a>
+    <span class="feat-badge">&#127912; Features</span>
+    <nav class="nav-links">
+      <a href="#how-it-works">How it works</a>
+      <a href="#image-types">Image types</a>
+      <a href="#vs-canva">vs Canva</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-right">
+      <a href="https://shoutlyai.com/sign-in" class="btn btn-ghost btn-sm">Log in</a>
+      <a href="https://shoutlyai.com/sign-up" class="btn btn-primary btn-sm">Start free trial</a>
+    </div>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="bc"><div class="wrap bc-inner">
+  <a href="https://shoutlyai.com">Home</a><span style="font-size:11px;color:var(--ink4)">&#8250;</span>
+  <a href="https://shoutlyai.com/features">Features</a><span style="font-size:11px;color:var(--ink4)">&#8250;</span>
+  <span style="color:var(--ink);font-weight:600">AI Image Generator</span>
+</div></div>
+
+<main>
+
+<!-- HERO -->
+<section class="hero" aria-labelledby="hero-h1">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="wrap">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-eyebrow"><span class="ey-dot"></span>AI Image Generator &mdash; Feature</div>
+        <h1 class="hero-h1" id="hero-h1">Branded graphics.<br>Designed by AI.<br><span class="grad">Instantly.</span></h1>
+        <p class="hero-sub">Shoutly AI designs professional social media graphics for your business &mdash; posters, festival creatives, product visuals, carousels &mdash; all in your brand colours and logo. No Canva. No designer. No waiting.</p>
+        <div class="hero-ctas">
+          <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-lg">Generate my first images free <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+          <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-lg">See a live demo</a>
+        </div>
+        <div class="hero-proof">
+          <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>No design skills needed</span>
+          <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>All sizes auto-generated</span>
+          <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Your logo &amp; colours, always</span>
+        </div>
+      </div>
+
+      <!-- AI CANVAS WINDOW -->
+      <div>
+        <div class="canvas-window" role="region" aria-label="AI image generator preview">
+          <div class="cw-bar">
+            <div class="cw-dots"><div class="cw-dot r"></div><div class="cw-dot y"></div><div class="cw-dot g"></div></div>
+            <span class="cw-title">Shoutly AI &mdash; Image Generator</span>
+          </div>
+          <div class="cw-body">
+            <div class="cw-lbl">Graphic style</div>
+            <div class="cw-style-row" id="cw-styles">
+              <span class="cw-style active" onclick="setStyle('promotional')">&#128226; Promotional</span>
+              <span class="cw-style" onclick="setStyle('festival')">&#127881; Festival</span>
+              <span class="cw-style" onclick="setStyle('educational')">&#127891; Educational</span>
+              <span class="cw-style" onclick="setStyle('product')">&#128722; Product</span>
+            </div>
+            <div class="cw-lbl">Generated graphic</div>
+            <div class="cw-canvas-wrap">
+              <div class="cw-canvas" id="cw-canvas">
+                <div class="cw-graphic" id="cw-graphic"></div>
+                <div class="cw-generating" id="cw-gen">
+                  <div class="cw-gen-ring"></div>
+                  <div class="cw-gen-text">Generating branded graphic&hellip;</div>
+                </div>
+              </div>
+            </div>
+            <div class="cw-lbl">Output size</div>
+            <div class="cw-sizes">
+              <span class="cw-size active">1:1 Feed</span>
+              <span class="cw-size">9:16 Reel</span>
+              <span class="cw-size">16:9 Landscape</span>
+              <span class="cw-size">4:5 Portrait</span>
+            </div>
+            <div class="cw-meta">
+              <span class="cw-ai-lbl">&#10022; AI-generated &mdash; branded with your logo &amp; colours</span>
+              <span class="cw-dl">&#8681; Download</span>
+            </div>
+          </div>
+          <div class="cw-footer">
+            <span class="cw-biz-lbl">Business:</span>
+            <div class="cw-chips">
+              <span class="cw-chip active" onclick="switchBiz('restaurant')">&#127829; Restaurant</span>
+              <span class="cw-chip" onclick="switchBiz('salon')">&#9986; Salon</span>
+              <span class="cw-chip" onclick="switchBiz('gym')">&#127947; Gym</span>
+              <span class="cw-chip" onclick="switchBiz('clinic')">&#129658; Clinic</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STAT STRIP -->
+<section style="padding:52px 0 0" data-r>
+  <div class="wrap">
+    <div class="stat-strip">
+      <div class="ss-cell"><div class="ss-n">10+</div><div class="ss-l">Graphic types</div><div class="ss-s">Posters, carousels, Reels covers &amp; more</div></div>
+      <div class="ss-cell"><div class="ss-n">5</div><div class="ss-l">Auto-sized formats</div><div class="ss-s">Right size for every platform, instantly</div></div>
+      <div class="ss-cell"><div class="ss-n">0</div><div class="ss-l">Design tools needed</div><div class="ss-s">No Canva, no Photoshop, no designer</div></div>
+      <div class="ss-cell"><div class="ss-n">&lt;10s</div><div class="ss-l">Generation time</div><div class="ss-s">From prompt to publish-ready graphic</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN POINTS -->
+<section class="section" aria-labelledby="pain-h2" data-r>
+  <div class="wrap">
+    <div style="margin-bottom:48px">
+      <span class="sec-ey">The design problem</span>
+      <h2 class="sec-h2" id="pain-h2">Great content dies without great visuals. But most businesses can&rsquo;t afford a designer.</h2>
+      <p class="sec-p">Instagram, Facebook, and LinkedIn are visual-first platforms. A strong caption with a weak graphic gets ignored. The businesses winning on social have consistent, branded visuals &mdash; and most of them now use AI to get there.</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-ico">&#8987;</div>
+        <div>
+          <div class="pain-title">Canva takes 30&ndash;45 minutes per graphic</div>
+          <div class="pain-desc">Open Canva, find a template, change the text, swap the colours, fix the fonts, add your logo, resize for each platform, export, upload to your scheduler. That&rsquo;s 45 minutes for one image. Multiply by 5 posts a week.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#128100;</div>
+        <div>
+          <div class="pain-title">Hiring a designer isn&rsquo;t practical for daily content</div>
+          <div class="pain-desc">Agencies charge &#8377;500&ndash;2,000 per graphic. A month of daily social media images could cost &#8377;15,000&ndash;60,000 in design fees alone &mdash; before a single word of copy is written or a post is scheduled.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#127756;</div>
+        <div>
+          <div class="pain-title">Visuals look inconsistent across platforms</div>
+          <div class="pain-desc">When you&rsquo;re rushing or using free stock images, your Instagram looks different from your Facebook, which looks different from your Google Business Profile. Inconsistent branding erodes trust faster than no branding at all.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#127881;</div>
+        <div>
+          <div class="pain-title">Festival graphics are always last-minute</div>
+          <div class="pain-desc">Diwali is in 2 days and you still haven&rsquo;t made a graphic. You grab a generic template, slap your logo on it, and publish something that looks nothing like your brand. The businesses with planned festival creatives outperform you by 3&times; on those days.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#128247;</div>
+        <div>
+          <div class="pain-title">Wrong image sizes break platform layouts</div>
+          <div class="pain-desc">A 1:1 square image cropped for a 9:16 Reels thumbnail looks broken. A landscape banner uploaded as an Instagram feed post gets cut off. Every platform has different size requirements &mdash; and manually resizing for each one wastes another 10 minutes per post.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#128444;&#65039;</div>
+        <div>
+          <div class="pain-title">Stock images feel generic and unbranded</div>
+          <div class="pain-desc">Pexels and Unsplash images look the same on every business&rsquo;s page. Your audience can tell immediately when a visual has nothing to do with your actual business. AI-generated branded graphics change this &mdash; every visual is specific to you.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section section-alt" id="how-it-works" aria-labelledby="hiw-h2" data-r>
+  <div class="wrap">
+    <div class="hiw-grid">
+      <div>
+        <span class="sec-ey">How it works</span>
+        <h2 class="sec-h2" id="hiw-h2">From brand brief to publish-ready graphic in under 10 seconds</h2>
+        <p class="sec-p" style="margin-bottom:40px">You set your brand kit once. After that, every image the AI generates is automatically on-brand &mdash; right colours, right logo, right feel.</p>
+        <div class="hiw-steps">
+          <div class="hiw-step">
+            <div class="hiw-num">1</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Set your brand kit once</div>
+              <div class="hiw-desc">Upload your logo, set your primary and secondary brand colours, choose your font style (modern, classic, bold, minimal). This takes 2 minutes and never needs to be done again.</div>
+              <span class="hiw-time">&#8987; 2 minutes, once</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">2</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Describe the graphic you need</div>
+              <div class="hiw-desc">Tell the AI what you want: &ldquo;Diwali offer poster for our restaurant,&rdquo; or &ldquo;carousel slide for 5 fitness tips,&rdquo; or &ldquo;product launch banner for our new skincare range.&rdquo; Plain English, no design jargon.</div>
+              <span class="hiw-time">&#8987; 10 seconds</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">3</div>
+            <div class="hiw-body">
+              <div class="hiw-title">AI generates the branded graphic</div>
+              <div class="hiw-desc">The AI applies your brand colours, logo, and font to a layout optimised for the graphic type. Festival poster, product banner, carousel slide, or Reels cover &mdash; each type has its own design logic built in.</div>
+              <span class="hiw-time">&#8987; Under 10 seconds</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">4</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Auto-sized for every platform</div>
+              <div class="hiw-desc">The same graphic is automatically resized into all required formats: 1:1 for Instagram feed, 9:16 for Reels and Stories, 16:9 for YouTube and LinkedIn, 4:5 for Instagram portrait posts, and GBP format.</div>
+              <span class="hiw-time">&#8987; Instant, all formats</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">5</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Pairs with the AI caption automatically</div>
+              <div class="hiw-desc">Every image comes paired with an AI-written caption, hashtags, and a scheduled publishing time &mdash; so the graphic and the copy are always aligned. One step generates both.</div>
+              <span class="hiw-time">&#8987; Caption included</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- brand kit explainer panel -->
+      <div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r5);padding:32px;margin-bottom:16px">
+          <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--p);margin-bottom:18px">&#127859; Your Brand Kit &mdash; set once, applied everywhere</div>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;gap:12px;align-items:center">
+              <div style="font-size:11px;font-weight:700;color:var(--ink4);width:72px;flex-shrink:0">LOGO</div>
+              <div style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:10px 14px;font-size:13px;color:var(--ink3)">your-logo.png &mdash; auto-placed on every graphic</div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center">
+              <div style="font-size:11px;font-weight:700;color:var(--ink4);width:72px;flex-shrink:0">COLOURS</div>
+              <div style="display:flex;gap:8px">
+                <div style="width:36px;height:36px;border-radius:var(--r);background:#6c3bf5;border:1px solid var(--border)"></div>
+                <div style="width:36px;height:36px;border-radius:var(--r);background:#a855f7;border:1px solid var(--border)"></div>
+                <div style="width:36px;height:36px;border-radius:var(--r);background:#f0ecff;border:1px solid var(--border)"></div>
+                <div style="width:36px;height:36px;border-radius:var(--r);background:#0f0f0f;border:1px solid var(--border)"></div>
+                <div style="width:36px;height:36px;border-radius:var(--r);background:#fff;border:1px solid var(--border)"></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center">
+              <div style="font-size:11px;font-weight:700;color:var(--ink4);width:72px;flex-shrink:0">FONTS</div>
+              <div style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:10px 14px;font-size:13px;color:var(--ink3)">Inter Tight (headlines) &middot; Inter (body)</div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center">
+              <div style="font-size:11px;font-weight:700;color:var(--ink4);width:72px;flex-shrink:0">TONE</div>
+              <div style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:10px 14px;font-size:13px;color:var(--ink3)">Modern &middot; Bold &middot; Warm</div>
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--pg);border-radius:var(--r4);padding:22px 24px;color:#fff">
+          <div style="font-size:13.5px;font-weight:700;margin-bottom:8px">&#10022; Result: every graphic is on-brand</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.72);line-height:1.65">Your logo, your colours, your fonts &mdash; on every post, carousel slide, festival creative, and product visual. Your audience recognises your brand instantly, across every platform.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IMAGE TYPES -->
+<section class="section" id="image-types" aria-labelledby="it-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:52px">
+      <span class="sec-ey">Every type of visual your business needs</span>
+      <h2 class="sec-h2" id="it-h2">10+ graphic types &mdash; all generated automatically</h2>
+      <p class="sec-p">From daily promotional posts to once-a-year festival campaigns, the AI generates the right type of graphic for every occasion &mdash; already branded, already the right size.</p>
+    </div>
+    <div class="imgtype-grid">
+
+      <div class="imgtype-card">
+        <div class="itc-preview" style="background:linear-gradient(135deg,#6c3bf5,#a855f7)">
+          <div class="itc-preview-inner">
+            <span class="itc-icon">&#128226;</span>
+            <div class="itc-title-on">Special Offer &mdash; 20% Off</div>
+            <div class="itc-sub-on">Valid this weekend only</div>
+            <span class="itc-cta-on">Book Now &rarr;</span>
+          </div>
+        </div>
+        <div class="itc-body">
+          <div class="itc-name">Promotional Posters</div>
+          <div class="itc-desc">Sale announcements, limited-time offers, discount banners, and seasonal deals. Bold, eye-catching layouts designed to stop the scroll and drive action.</div>
+          <div class="itc-plats"><span class="itc-plat">Instagram</span><span class="itc-plat">Facebook</span><span class="itc-plat">WhatsApp Status</span></div>
+        </div>
+      </div>
+
+      <div class="imgtype-card">
+        <div class="itc-preview" style="background:linear-gradient(135deg,#f58529,#dd2a7b)">
+          <div class="itc-preview-inner">
+            <span class="itc-icon">&#127806;</span>
+            <div class="itc-title-on">Happy Diwali &#10024;</div>
+            <div class="itc-sub-on">From all of us at Glow Salon</div>
+            <span class="itc-cta-on">Book Festive Look &rarr;</span>
+          </div>
+        </div>
+        <div class="itc-body">
+          <div class="itc-name">Festival Creatives</div>
+          <div class="itc-desc">Branded Diwali, Holi, Eid, Navratri, Independence Day, and 30+ occasion graphics &mdash; auto-planned weeks in advance, in your brand colours.</div>
+          <div class="itc-plats"><span class="itc-plat">Instagram</span><span class="itc-plat">Facebook</span><span class="itc-plat">GBP</span></div>
+        </div>
+      </div>
+
+      <div class="imgtype-card">
+        <div class="itc-preview" style="background:linear-gradient(135deg,#0f172a,#1e293b)">
+          <div class="itc-preview-inner">
+            <span class="itc-icon">&#127891;</span>
+            <div class="itc-title-on">5 Tips to Grow Your Instagram</div>
+            <div class="itc-sub-on">Swipe to learn &#8594;</div>
+            <span class="itc-cta-on">Save This Post</span>
+          </div>
+        </div>
+        <div class="itc-body">
+          <div class="itc-name">Carousel Slides</div>
+          <div class="itc-desc">Full carousel design &mdash; cover slide, all content slides (up to 20), and a CTA closing slide. Each slide is individually designed for visual flow and swipe-through.</div>
+          <div class="itc-plats"><span class="itc-plat">Instagram</span><span class="itc-plat">LinkedIn</span></div>
+        </div>
+      </div>
+
+      <div class="imgtype-card">
+        <div class="itc-preview" style="background:linear-gradient(135deg,#166534,#15803d)">
+          <div class="itc-preview-inner">
+            <span class="itc-icon">&#127869;&#65039;</span>
+            <div class="itc-title-on">Butter Chicken Biryani</div>
+            <div class="itc-sub-on">&#8377;349 &middot; Limited daily</div>
+            <span class="itc-cta-on">Order Now</span>
+          </div>
+        </div>
+        <div class="itc-body">
+          <div class="itc-name">Product Showcase</div>
+          <div class="itc-desc">Product images with price, description, and CTA. Works for dishes, services, inventory items, real estate listings, and any other product type.</div>
+          <div class="itc-plats"><span class="itc-plat">Instagram</span><span class="itc-plat">Facebook</span><span class="itc-plat">Google Biz</span></div>
+        </div>
+      </div>
+
+      <div class="imgtype-card">
+        <div class="itc-preview" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">
+          <div class="itc-preview-inner">
+            <span class="itc-icon">&#127909;</span>
+            <div class="itc-title-on">3 Habits That Changed Everything</div>
+            <div class="itc-sub-on">Watch this Reel &#9654;</div>
+          </div>
+        </div>
+        <div class="itc-body">
+          <div class="itc-name">Reels Covers</div>
+          <div class="itc-desc">9:16 vertical Reels cover images with your branding, the Reel&rsquo;s hook text, and a visual that encourages the tap. Your Reels feed looks cohesive and professional.</div>
+          <div class="itc-plats"><span class="itc-plat">Instagram Reels</span><span class="itc-plat">YouTube Shorts</span></div>
+        </div>
+      </div>
+
+      <div class="imgtype-card">
+        <div class="itc-preview" style="background:linear-gradient(135deg,#0077b5,#005fa3)">
+          <div class="itc-preview-inner">
+            <span class="itc-icon">&#11088;</span>
+            <div class="itc-title-on">&ldquo;Best salon in Powai, hands down.&rdquo;</div>
+            <div class="itc-sub-on">&#9733;&#9733;&#9733;&#9733;&#9733; &mdash; Priya K., Google Review</div>
+          </div>
+        </div>
+        <div class="itc-body">
+          <div class="itc-name">Testimonial Graphics</div>
+          <div class="itc-desc">Customer reviews formatted as branded quote cards. Pull from your Google, Zomato, or Practo reviews and publish them as polished branded visuals.</div>
+          <div class="itc-plats"><span class="itc-plat">Instagram</span><span class="itc-plat">Facebook</span><span class="itc-plat">LinkedIn</span></div>
+        </div>
+      </div>
+
+      <div class="imgtype-card">
+        <div class="itc-preview" style="background:linear-gradient(135deg,#b45309,#d97706)">
+          <div class="itc-preview-inner">
+            <span class="itc-icon">&#128197;</span>
+            <div class="itc-title-on">New Batch Starting Aug 1</div>
+            <div class="itc-sub-on">Morning &amp; Evening slots available</div>
+            <span class="itc-cta-on">Register Now</span>
+          </div>
+        </div>
+        <div class="itc-body">
+          <div class="itc-name">Event &amp; Launch Banners</div>
+          <div class="itc-desc">New product launches, batch openings, grand openings, webinars, and events. Attention-grabbing banners with date, time, and CTA built in.</div>
+          <div class="itc-plats"><span class="itc-plat">All platforms</span></div>
+        </div>
+      </div>
+
+      <div class="imgtype-card">
+        <div class="itc-preview" style="background:linear-gradient(135deg,#be123c,#9f1239)">
+          <div class="itc-preview-inner">
+            <span class="itc-icon">&#10067;</span>
+            <div class="itc-title-on">Did You Know?</div>
+            <div class="itc-sub-on">Brushing twice a day reduces cavities by 65%</div>
+            <span class="itc-cta-on">Learn More</span>
+          </div>
+        </div>
+        <div class="itc-body">
+          <div class="itc-name">Did-You-Know &amp; Tips</div>
+          <div class="itc-desc">Fact cards, tip graphics, myth-busting visuals, and educational infographics. High save rates and shares because they deliver value in a single swipe.</div>
+          <div class="itc-plats"><span class="itc-plat">Instagram</span><span class="itc-plat">LinkedIn</span><span class="itc-plat">Facebook</span></div>
+        </div>
+      </div>
+
+      <div class="imgtype-card">
+        <div class="itc-preview" style="background:linear-gradient(135deg,#0d9488,#0f766e)">
+          <div class="itc-preview-inner">
+            <span class="itc-icon">&#128247;</span>
+            <div class="itc-title-on">Behind the Scenes &#127909;</div>
+            <div class="itc-sub-on">A day in our kitchen</div>
+          </div>
+        </div>
+        <div class="itc-body">
+          <div class="itc-name">Behind-the-Scenes</div>
+          <div class="itc-desc">Process shots, team photos, workspace reveals, and storytelling visuals that humanise your brand and drive comments from your loyal audience.</div>
+          <div class="itc-plats"><span class="itc-plat">Instagram Stories</span><span class="itc-plat">Facebook</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- IMAGE SIZES -->
+<section class="section section-alt" aria-labelledby="sizes-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">Every platform, every size</span>
+      <h2 class="sec-h2" id="sizes-h2">One graphic. Auto-resized for every platform. Instantly.</h2>
+      <p class="sec-p">Every graphic Shoutly AI generates is automatically exported in all 5 required formats. No manual resizing, no cropping, no broken layouts.</p>
+    </div>
+    <div class="sizes-grid">
+      <div class="size-card">
+        <div class="size-box" style="width:80px;height:80px"></div>
+        <div class="size-ratio">1:1</div>
+        <div class="size-name">Square Feed</div>
+        <div class="size-plats">Instagram Feed &middot; Facebook</div>
+      </div>
+      <div class="size-card">
+        <div class="size-box" style="width:50px;height:88px"></div>
+        <div class="size-ratio">9:16</div>
+        <div class="size-name">Vertical / Reels</div>
+        <div class="size-plats">Reels &middot; Stories &middot; TikTok &middot; Shorts</div>
+      </div>
+      <div class="size-card">
+        <div class="size-box" style="width:88px;height:55px"></div>
+        <div class="size-ratio">16:9</div>
+        <div class="size-name">Landscape</div>
+        <div class="size-plats">YouTube &middot; LinkedIn &middot; X (Twitter)</div>
+      </div>
+      <div class="size-card">
+        <div class="size-box" style="width:64px;height:80px"></div>
+        <div class="size-ratio">4:5</div>
+        <div class="size-name">Portrait Feed</div>
+        <div class="size-plats">Instagram portrait posts</div>
+      </div>
+      <div class="size-card">
+        <div class="size-box" style="width:80px;height:60px"></div>
+        <div class="size-ratio">4:3</div>
+        <div class="size-name">Google Business</div>
+        <div class="size-plats">Google Business Profile posts</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRAND KIT FEATURE -->
+<section class="section" aria-labelledby="bk-h2" data-r>
+  <div class="wrap">
+    <div style="margin-bottom:48px">
+      <span class="sec-ey">Brand consistency</span>
+      <h2 class="sec-h2" id="bk-h2">Every graphic looks like it came from your team &mdash; not a random template</h2>
+      <p class="sec-p">The Brand Kit is what makes Shoutly AI different from generic AI image tools. Your logo, colours, and style are applied to every single graphic automatically. Set it once. It works forever.</p>
+    </div>
+    <div class="bk-grid">
+      <div class="bk-card">
+        <div class="bk-ico">&#127859;</div>
+        <div class="bk-title">Logo auto-placement</div>
+        <div class="bk-desc">Your logo is automatically placed in the correct position for each graphic type &mdash; top-left for posters, bottom-centre for carousels, corner watermark for Reels covers. Never forget to add it again.</div>
+      </div>
+      <div class="bk-card">
+        <div class="bk-ico">&#127912;</div>
+        <div class="bk-title">Brand colour system</div>
+        <div class="bk-desc">Set your primary, secondary, and background colours once. Every gradient, background, button, and text colour across all generated graphics uses your palette &mdash; never a generic purple or blue from a template.</div>
+      </div>
+      <div class="bk-card">
+        <div class="bk-ico">&#128571;</div>
+        <div class="bk-title">Typography control</div>
+        <div class="bk-desc">Choose your headline and body font style (bold/modern, classic/serif, minimal/clean) and all generated graphics apply your typography consistently. Your feed looks cohesive, not like 10 different designers worked on it.</div>
+      </div>
+      <div class="bk-card">
+        <div class="bk-ico">&#128101;</div>
+        <div class="bk-title">Multi-brand support</div>
+        <div class="bk-desc">Running multiple businesses or an agency with multiple clients? Each brand gets its own Brand Kit. Switch between them in one click &mdash; all graphics for Client A use their branding, Client B gets theirs. Zero mixing.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VS CANVA -->
+<section class="section section-alt" id="vs-canva" aria-labelledby="vs-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">Why not just use Canva?</span>
+      <h2 class="sec-h2" id="vs-h2">Shoutly AI vs Canva &mdash; the honest comparison</h2>
+      <p class="sec-p">Canva is a great design tool. Shoutly AI is not a design tool &mdash; it&rsquo;s a content automation system. The difference matters when you need 365 days of graphics, not one beautiful poster.</p>
+    </div>
+    <div class="vs-wrap">
+      <table class="vs-table">
+        <thead>
+          <tr>
+            <th class="th-feat">Capability</th>
+            <th class="th-canva">&#128396; Canva</th>
+            <th class="th-shoutly">&#10022; Shoutly AI</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="vs-feat">Graphic creation<span class="vs-sub">Starting from blank</span></span></td><td class="td-c">Manual &mdash; 30&ndash;45 min per graphic</td><td class="td-s"><span class="yes">&#10003;</span> Under 10 seconds</td></tr>
+          <tr><td><span class="vs-feat">Brand kit application<span class="vs-sub">Logo, colours, fonts</span></span></td><td class="td-c"><span class="meh">Partial</span> &mdash; you still apply it each time</td><td class="td-s"><span class="yes">&#10003;</span> Auto-applied to every graphic</td></tr>
+          <tr><td><span class="vs-feat">Caption writing<span class="vs-sub">Post copy alongside the image</span></span></td><td class="td-c"><span class="no">&#10007;</span> Not included</td><td class="td-s"><span class="yes">&#10003;</span> AI writes caption + hashtags together</td></tr>
+          <tr><td><span class="vs-feat">Festival calendar<span class="vs-sub">30+ Indian occasions</span></span></td><td class="td-c"><span class="no">&#10007;</span> You find and edit templates manually</td><td class="td-s"><span class="yes">&#10003;</span> Auto-planned &amp; generated weeks ahead</td></tr>
+          <tr><td><span class="vs-feat">Multi-platform resizing<span class="vs-sub">All 5 formats</span></span></td><td class="td-c"><span class="meh">Paid feature</span> &mdash; Canva Pro only</td><td class="td-s"><span class="yes">&#10003;</span> Auto-generated for all platforms</td></tr>
+          <tr><td><span class="vs-feat">Auto-scheduling<span class="vs-sub">Direct to platforms</span></span></td><td class="td-c"><span class="no">&#10007;</span> Requires a separate scheduler</td><td class="td-s"><span class="yes">&#10003;</span> Built in &mdash; publishes automatically</td></tr>
+          <tr><td><span class="vs-feat">365-day content calendar<span class="vs-sub">Planned in advance</span></span></td><td class="td-c"><span class="no">&#10007;</span> Not a calendar tool</td><td class="td-s"><span class="yes">&#10003;</span> Full year generated from one prompt</td></tr>
+          <tr><td><span class="vs-feat">AI content generation<span class="vs-sub">Posts, captions, Reels</span></span></td><td class="td-c"><span class="meh">Basic</span> &mdash; Magic Write only</td><td class="td-s"><span class="yes">&#10003;</span> Full AI content engine included</td></tr>
+          <tr><td><span class="vs-feat">Time per month<span class="vs-sub">For daily social media</span></span></td><td class="td-c" style="color:#dc2626;font-weight:800">15&ndash;30 hours</td><td class="td-s" style="color:var(--green);font-weight:800">~10 minutes</td></tr>
+          <tr><td><span class="vs-feat">Price<span class="vs-sub">Monthly</span></span></td><td class="td-c">Canva Pro &#8377;3,999/mo<br><span style="font-size:12px;color:var(--ink4)">+ separate scheduler &#8377;2,000&ndash;8,000/mo</span></td><td class="td-s">&#8377;10,000/mo &mdash; everything included</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section" aria-labelledby="test-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">What businesses say</span>
+      <h2 class="sec-h2" id="test-h2">Businesses that stopped opening Canva every day</h2>
+    </div>
+    <div class="test-grid">
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;I used to spend Sunday afternoons in Canva making graphics for the week. Now the AI makes them and they honestly look better than what I was making manually. My Instagram feed has never looked this consistent.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av">NP</div>
+          <div><span class="ta-name">Neha Patil</span><span class="ta-biz">Glow Salon &middot; Mumbai</span></div>
+        </div>
+      </article>
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;The festival graphics are what sold me. Our Diwali posts last year were scrambled last-minute Canva jobs. This year, Shoutly AI generated and scheduled all our festival content 3 weeks in advance. Engagement was 4x higher.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av" style="background:linear-gradient(135deg,#f58529,#dd2a7b)">RK</div>
+          <div><span class="ta-name">Ravi Kumar</span><span class="ta-biz">Spice Garden Restaurant &middot; Bengaluru</span></div>
+        </div>
+      </article>
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;Managing 12 clients meant 12 different Canva accounts, 12 different brand kits, constant switching. With Shoutly AI I just switch the client in one dashboard and every graphic comes out in the right brand. It&rsquo;s a completely different life.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">AM</div>
+          <div><span class="ta-name">Anjali Mehta</span><span class="ta-biz">Social Media Agency &middot; Delhi</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section section-alt" id="faq" aria-labelledby="faq-h2" data-r>
+  <div class="wrap center">
+    <span class="sec-ey">Common questions</span>
+    <h2 class="sec-h2" id="faq-h2">Everything you need to know about the AI Image Generator</h2>
+    <div class="faq-list">
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">What is Shoutly AI&rsquo;s image generator?<span class="faq-arr">+</span></button><div class="faq-a"><p>Shoutly AI&rsquo;s image generator uses AI to create branded social media graphics for your business automatically. You set your brand kit once (logo, colours, fonts), describe the type of graphic you need, and the AI generates a publish-ready visual in under 10 seconds &mdash; in your brand style, sized for your platform.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Do I need any design skills?<span class="faq-arr">+</span></button><div class="faq-a"><p>No. You don&rsquo;t need to know anything about design, typography, colour theory, or layout. You describe what you want in plain English (&ldquo;Diwali offer poster for a restaurant&rdquo;) and the AI designs it. Your Brand Kit ensures everything looks professional without you making a single design decision.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">What image sizes does it generate?<span class="faq-arr">+</span></button><div class="faq-a"><p>Shoutly AI automatically generates all required formats: 1:1 square for Instagram and Facebook feed posts, 9:16 vertical for Instagram Reels, Stories, TikTok, and YouTube Shorts, 16:9 landscape for YouTube and LinkedIn, 4:5 portrait for Instagram portrait posts, and the Google Business Profile format. All generated from one design request.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Does it include festival and occasion graphics?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. All 30+ major Indian festivals are built in: Diwali, Holi, Eid, Navratri, Independence Day, Republic Day, Ganesh Chaturthi, Pongal, Christmas, Valentine&rsquo;s Day, and more. Festival graphics are auto-generated in your brand colours with your logo, and scheduled weeks in advance so you&rsquo;re never scrambling at the last minute.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">How is this different from Canva?<span class="faq-arr">+</span></button><div class="faq-a"><p>Canva is a manual design tool &mdash; you open it, pick a template, edit everything yourself, and export. Shoutly AI generates the graphic and the caption together, already in your brand style, already sized for the platform, and schedules it automatically. For daily social media content, Shoutly AI reduces the time per graphic from 30&ndash;45 minutes to under 10 seconds.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Can I edit the generated images?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Every generated graphic is editable. You can swap the headline text, adjust the layout style, change the background, regenerate with different options, or request a variation. The AI gives you a strong starting point &mdash; your edits make it perfect. Most users publish without editing because the output quality is high.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Does it work for product images?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. The AI generates product showcase graphics with your product name, price, description, and CTA &mdash; branded with your logo and colours. Works for restaurant dishes, salon services, retail products, real estate listings, healthcare services, and any other product or service you want to promote visually.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Is the image generator included in the plan?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. The AI Image Generator is fully included in the &#8377;10,000/month plan &mdash; no extra cost, no add-ons. The plan also includes the AI Content Generator, AI Reel Generator, Social Scheduler, 365-Day Calendar, Brand Kit, Analytics, and all 10 social platforms.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LINKS -->
+<section class="section" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:36px">
+      <span class="sec-ey">More features</span>
+      <h2 class="sec-h2" style="font-size:clamp(22px,2.8vw,34px)">The AI Image Generator works with every other Shoutly AI feature</h2>
+    </div>
+    <div class="links-grid">
+      <a href="https://shoutlyai.com/features/ai-content-generator" class="link-card"><span style="font-size:18px">&#10022;</span> AI Content Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/ai-reel-generator" class="link-card"><span style="font-size:18px">&#127909;</span> AI Reel Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/social-scheduler" class="link-card"><span style="font-size:18px">&#128197;</span> Social Scheduler <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/brand-kit" class="link-card"><span style="font-size:18px">&#127859;</span> Brand Kit <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/content-calendar" class="link-card"><span style="font-size:18px">&#128200;</span> 365-Day Calendar <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/analytics" class="link-card"><span style="font-size:18px">&#128202;</span> Analytics <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/channel/instagram" class="link-card"><span style="font-size:18px">&#128247;</span> Instagram Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/channel/facebook" class="link-card"><span style="font-size:18px">&#128153;</span> Facebook Generator <span class="link-arr">&#8594;</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" aria-labelledby="cta-h2">
+  <div class="wrap">
+    <h2 id="cta-h2">Stop spending hours in Canva.<br><span class="grad">Let AI design it for you.</span></h2>
+    <p>Branded posters, festival creatives, carousel slides, product visuals, and Reels covers &mdash; generated in seconds, auto-scheduled, published automatically. Free 14-day trial.</p>
+    <div class="cta-btns">
+      <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-xl">Generate my first graphics free <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+      <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-xl">Book a live demo</a>
+    </div>
+    <div class="cta-trust">
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>No design skills needed</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>No credit card required</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>14-day free trial</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>&#8377;10,000/month &mdash; all features</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>4.9&#9733; &mdash; 41,000+ businesses</span>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="ft-inner">
+      <a href="https://shoutlyai.com" class="ft-logo">
+        <div class="nav-mark" style="width:26px;height:26px;border-radius:7px"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" fill="#fff"/></svg></div>
+        Shoutly AI
+      </a>
+      <nav class="ft-links">
+        <a href="https://shoutlyai.com">Home</a>
+        <a href="https://shoutlyai.com/pricing">Pricing</a>
+        <a href="https://shoutlyai.com/demo">Book Demo</a>
+        <a href="https://shoutlyai.com/case-studies">Case Studies</a>
+        <a href="https://shoutlyai.com/help-center">Help</a>
+        <a href="https://shoutlyai.com/contact-us">Contact</a>
+        <a href="https://shoutlyai.com/policy">Privacy</a>
+        <a href="https://shoutlyai.com/terms">Terms</a>
+      </nav>
+    </div>
+    <p class="ft-copy">&copy; 2026 Shoutly AI &mdash; Qubixel Technologies Private Limited. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+/* ── Canvas window data ──────────────────────────────────────────────────── */
+var bizGraphics = {
+  restaurant: {
+    promotional: { bg:"linear-gradient(135deg,#7c2d12,#c2410c)", icon:"&#127829;", headline:"Today&rsquo;s Special &mdash; Butter Biryani", sub:"&#8377;299 only &middot; Limited plates daily", cta:"Walk in before 1pm", badge:"Promotional", logo:"SR", logoC:"#c2410c" },
+    festival:    { bg:"linear-gradient(135deg,#78350f,#b45309)", icon:"&#127806;", headline:"Happy Diwali from Spice Garden &#10024;", sub:"20% off all thalis &middot; Nov 1&ndash;3", cta:"Reserve your table", badge:"Festival", logo:"SR", logoC:"#b45309" },
+    educational: { bg:"linear-gradient(135deg,#1e3a5f,#1d4ed8)", icon:"&#128218;", headline:"Why is our dal so different?", sub:"3 generations &middot; 1 secret ingredient &#128572;", cta:"Come taste it", badge:"Educational", logo:"SR", logoC:"#1d4ed8" },
+    product:     { bg:"linear-gradient(135deg,#3f1f00,#92400e)", icon:"&#127869;&#65039;", headline:"Lucknowi Biryani", sub:"Slow-cooked 4 hours &middot; &#8377;349", cta:"Order Now &#8594;", badge:"Product", logo:"SR", logoC:"#92400e" }
+  },
+  salon: {
+    promotional: { bg:"linear-gradient(135deg,#4a044e,#86198f)", icon:"&#9986;", headline:"Festive Glow Package &#10024;", sub:"Hair + Head Massage &middot; &#8377;999 only", cta:"Book this week", badge:"Promotional", logo:"GS", logoC:"#86198f" },
+    festival:    { bg:"linear-gradient(135deg,#831843,#be185d)", icon:"&#127800;", headline:"This Diwali, let your hair shine", sub:"Book before Oct 30 &middot; Limited slots left", cta:"Call to Book", badge:"Festival", logo:"GS", logoC:"#be185d" },
+    educational: { bg:"linear-gradient(135deg,#0f172a,#334155)", icon:"&#128571;", headline:"3 things your stylist wishes you knew", sub:"Before every appointment &#128488;", cta:"Save this post", badge:"Educational", logo:"GS", logoC:"#334155" },
+    product:     { bg:"linear-gradient(135deg,#4c1d95,#7c3aed)", icon:"&#128138;", headline:"Keratin Treatment", sub:"Smooth &middot; Frizz-free &middot; 3 months lasting", cta:"Book Now &#8594;", badge:"Product", logo:"GS", logoC:"#7c3aed" }
+  },
+  gym: {
+    promotional: { bg:"linear-gradient(135deg,#14532d,#16a34a)", icon:"&#127919;", headline:"January Transformation Batch", sub:"3 months &middot; Certified trainer &middot; First session FREE", cta:"Limited seats", badge:"Promotional", logo:"FZ", logoC:"#16a34a" },
+    festival:    { bg:"linear-gradient(135deg,#1e1b4b,#4338ca)", icon:"&#128293;", headline:"Happy New Year &mdash; New You", sub:"Start 2027 strong &middot; Join FitZone Gym", cta:"Enrol Today", badge:"Festival", logo:"FZ", logoC:"#4338ca" },
+    educational: { bg:"linear-gradient(135deg,#1c1917,#44403c)", icon:"&#128170;", headline:"3 habits that changed 200+ lives", sub:"Without giving up chai &#9749; Save this", cta:"Follow for daily tips", badge:"Educational", logo:"FZ", logoC:"#44403c" },
+    product:     { bg:"linear-gradient(135deg,#422006,#c2410c)", icon:"&#127947;", headline:"Personal Training Package", sub:"12 sessions &middot; &#8377;8,999 &middot; Any timeslot", cta:"Book a Trial &#8594;", badge:"Product", logo:"FZ", logoC:"#c2410c" }
+  },
+  clinic: {
+    promotional: { bg:"linear-gradient(135deg,#0c4a6e,#0369a1)", icon:"&#129658;", headline:"Monsoon Health Check &mdash; &#8377;499", sub:"Full preventive package &middot; Walk-in welcome", cta:"Book this month", badge:"Promotional", logo:"LC", logoC:"#0369a1" },
+    festival:    { bg:"linear-gradient(135deg,#14532d,#15803d)", icon:"&#127279;", headline:"Healthy Diwali wishes from LifeCare", sub:"Stay safe &middot; Eat mindfully &middot; Stay hydrated", cta:"Book a check-up", badge:"Festival", logo:"LC", logoC:"#15803d" },
+    educational: { bg:"linear-gradient(135deg,#1e3a5f,#1e40af)", icon:"&#127774;", headline:"5 signs of Vitamin D deficiency", sub:"Most Indians miss #3 entirely", cta:"Save &amp; share with family", badge:"Educational", logo:"LC", logoC:"#1e40af" },
+    product:     { bg:"linear-gradient(135deg,#3b0764,#7e22ce)", icon:"&#128202;", headline:"Full Body Health Package", sub:"15 tests &middot; Doctor consult &middot; &#8377;1,499", cta:"Book Now &#8594;", badge:"Product", logo:"LC", logoC:"#7e22ce" }
+  }
+};
+
+var currentBiz = 'restaurant';
+var currentStyle = 'promotional';
+
+function buildGraphic(data) {
+  var canvas = document.getElementById('cw-canvas');
+  var graphic = document.getElementById('cw-graphic');
+  canvas.style.background = data.bg;
+  graphic.innerHTML =
+    '<div class="cw-g-brand"><div class="cw-g-logo" style="background:' + data.logoC + '">' + data.logo + '</div><span class="cw-g-bname">Your Business</span></div>'
+    + '<div class="cw-g-badge">' + data.badge + '</div>'
+    + '<div class="cw-g-icon">' + data.icon + '</div>'
+    + '<div class="cw-g-headline">' + data.headline + '</div>'
+    + '<div class="cw-g-sub">' + data.sub + '</div>'
+    + '<div class="cw-g-cta">' + data.cta + '</div>';
+}
+
+function regenerate() {
+  var gen = document.getElementById('cw-gen');
+  var graphic = document.getElementById('cw-graphic');
+  gen.classList.add('show');
+  graphic.style.opacity = '0';
+  setTimeout(function() {
+    gen.classList.remove('show');
+    graphic.style.opacity = '1';
+    buildGraphic(bizGraphics[currentBiz][currentStyle]);
+  }, 900);
+}
+
+function setStyle(style) {
+  currentStyle = style;
+  document.querySelectorAll('.cw-style').forEach(function(el) {
+    el.classList.toggle('active', el.getAttribute('onclick').includes("'" + style + "'"));
+  });
+  regenerate();
+}
+
+function switchBiz(biz) {
+  if (biz === currentBiz) return;
+  currentBiz = biz;
+  document.querySelectorAll('.cw-chip').forEach(function(el) {
+    el.classList.toggle('active', el.getAttribute('onclick').includes("'" + biz + "'"));
+  });
+  regenerate();
+}
+
+/* init */
+window.addEventListener('load', function() {
+  buildGraphic(bizGraphics['restaurant']['promotional']);
+});
+
+/* ── FAQ ─────────────────────────────────────────────────────────────────── */
+function toggleFaq(btn) {
+  var item = btn.closest('.faq-item');
+  var open = item.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(open));
+}
+
+/* ── Scroll reveal ───────────────────────────────────────────────────────── */
+if ('IntersectionObserver' in window) {
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+  }, { threshold: .07, rootMargin: '0px 0px -28px 0px' });
+  document.querySelectorAll('[data-r]').forEach(function(el) { obs.observe(el); });
+} else {
+  document.querySelectorAll('[data-r]').forEach(function(el) { el.classList.add('vis'); });
+}
+
+/* ── Nav shadow ──────────────────────────────────────────────────────────── */
+var nav = document.getElementById('nav');
+window.addEventListener('scroll', function() {
+  nav.classList.toggle('scrolled', window.scrollY > 8);
+}, { passive: true });
+</script>
+</body>
+</html>

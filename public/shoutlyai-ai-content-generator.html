@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI Content Generator &mdash; Generate 365 Days of Posts in 2 Minutes | Shoutly AI</title>
+<meta name="description" content="Shoutly AI's AI Content Generator writes branded posts, captions, Reels scripts, carousels, and hashtags for your business automatically. One prompt. 365 days of content.">
+<link rel="canonical" href="https://shoutlyai.com/features/ai-content-generator">
+<meta property="og:title" content="AI Content Generator &mdash; Shoutly AI">
+<meta property="og:description" content="One prompt. AI writes a full year of branded posts, captions, Reels, carousels and hashtags for your business automatically.">
+<meta property="og:url" content="https://shoutlyai.com/features/ai-content-generator">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shoutly AI">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@shoutlyai">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Shoutly AI Content Generator","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":"https://shoutlyai.com/features/ai-content-generator","description":"AI-powered content generator that writes 365 days of branded social media posts, captions, Reels scripts, carousels, and hashtags from one business prompt.","featureList":["AI post generator","AI caption writer","Reels script generator","Carousel content creator","AI hashtag generator","365-day content calendar","Indian festival content","Brand voice AI","Multi-platform content","Auto-scheduling"],"offers":{"@type":"Offer","price":"10000","priceCurrency":"INR"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"2847","bestRating":"5"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is Shoutly AI's content generator?","acceptedAnswer":{"@type":"Answer","text":"Shoutly AI's content generator uses AI to write branded social media posts, captions, Reels scripts, carousels, and hashtags for your specific business. You describe your business once and it generates 365 days of content automatically."}},{"@type":"Question","name":"What types of content can the AI generator create?","acceptedAnswer":{"@type":"Answer","text":"The AI generator creates Instagram posts, Facebook posts, LinkedIn posts, Reels scripts with hooks and overlays, carousel content, Stories copy, Google Business Profile posts, captions, hashtags, festival posts, and promotional content."}},{"@type":"Question","name":"Does it work for any business type?","acceptedAnswer":{"@type":"Answer","text":"Yes. Shoutly AI covers 155+ business categories including restaurants, salons, gyms, clinics, real estate, retail, education, professional services, and more. The AI understands your specific industry and generates relevant content."}},{"@type":"Question","name":"How long does it take to generate content?","acceptedAnswer":{"@type":"Answer","text":"Under 2 minutes. You describe your business once — industry, name, tone, audience — and the AI generates a full year of posts, captions, and Reels scripts instantly."}},{"@type":"Question","name":"Does the AI write in my brand voice?","acceptedAnswer":{"@type":"Answer","text":"Yes. You set your brand voice once — formal or casual, energetic or calm, local or aspirational — and the AI generates all content consistently in that tone. Every post sounds like you, not a generic template."}},{"@type":"Question","name":"Can it generate content in Hindi or regional Indian languages?","acceptedAnswer":{"@type":"Answer","text":"Yes. Shoutly AI can generate content in Hindi, Tamil, Telugu, Kannada, Malayalam, Bengali, and other regional languages alongside English — ideal for businesses targeting Indian regional audiences."}}]}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:#0f0f0f;-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+/* TOKENS */
+:root{
+  --p:#6c3bf5;--p2:#8b5cf6;--p3:#a78bfa;
+  --pg:linear-gradient(135deg,#6c3bf5,#a855f7);
+  --dark:#08021a;--dark2:#110633;
+  --glow:rgba(108,59,245,.32);
+  --ink:#0f0f0f;--ink2:#262626;--ink3:#525252;--ink4:#a3a3a3;
+  --surface:#f7f7fb;--border:#e5e4f0;--border2:#ccc9ea;
+  --green:#16a34a;--green-l:#f0fdf4;
+  --max:1200px;
+  --r:8px;--r2:12px;--r3:16px;--r4:22px;--r5:30px;
+}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:62px;display:flex;align-items:center;transition:box-shadow .2s}
+.nav.scrolled{box-shadow:0 1px 14px rgba(0,0,0,.07)}
+.nav-inner{display:flex;align-items:center;width:100%;max-width:var(--max);margin:0 auto;padding:0 28px;gap:8px}
+.nav-logo{display:flex;align-items:center;gap:9px;font-size:15.5px;font-weight:800;color:var(--ink);letter-spacing:-.3px}
+.nav-mark{width:32px;height:32px;border-radius:9px;background:var(--pg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-mark svg{width:16px;height:16px;fill:#fff}
+.feat-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#ede9fe,#f5f3ff);border:1px solid #ddd6fe;color:var(--p);border-radius:100px;padding:3px 10px;font-size:11.5px;font-weight:700;margin-left:6px}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:18px}
+.nav-links a{font-size:13.5px;color:var(--ink3);padding:5px 12px;border-radius:var(--r);font-weight:500;transition:all .14s}
+.nav-links a:hover{color:var(--ink);background:var(--surface)}
+.nav-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:600;border-radius:var(--r2);padding:9px 20px;transition:all .15s;cursor:pointer;border:1.5px solid transparent;white-space:nowrap;letter-spacing:-.01em}
+.btn-ghost{color:var(--ink2);border-color:var(--border2)}
+.btn-ghost:hover{background:var(--surface);color:var(--ink)}
+.btn-primary{background:var(--pg);color:#fff;border:none;box-shadow:0 2px 10px var(--glow)}
+.btn-primary:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 6px 22px var(--glow)}
+.btn-lg{padding:13px 28px;font-size:15.5px;font-weight:700;border-radius:var(--r3)}
+.btn-xl{padding:15px 34px;font-size:16px;font-weight:700;border-radius:var(--r3)}
+.btn-white{background:#fff;color:var(--p);border:none;font-weight:700}
+.btn-white:hover{background:#f0ecff;transform:translateY(-1px)}
+.btn-wh-ghost{background:transparent;color:rgba(255,255,255,.8);border:1.5px solid rgba(255,255,255,.3)}
+.btn-wh-ghost:hover{border-color:rgba(255,255,255,.65);color:#fff}
+.btn-sm{padding:7px 16px;font-size:13px}
+
+/* BREADCRUMB */
+.bc{background:var(--surface);border-bottom:1px solid var(--border);padding:11px 0}
+.bc-inner{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink4)}
+.bc-inner a{color:var(--ink4);transition:color .14s}
+.bc-inner a:hover{color:var(--p)}
+.bc-sep{font-size:11px;color:var(--ink4)}
+
+/* HERO */
+.hero{background:var(--dark);padding:80px 0 76px;position:relative;overflow:hidden}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none}
+.hero-orb-1{width:700px;height:700px;background:radial-gradient(circle,rgba(108,59,245,.5),transparent 68%);top:-250px;left:-180px}
+.hero-orb-2{width:450px;height:450px;background:radial-gradient(circle,rgba(168,85,247,.3),transparent 65%);bottom:-120px;right:-80px}
+.hero-inner{display:grid;grid-template-columns:1.15fr 1fr;gap:64px;align-items:center;position:relative;z-index:1}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(108,59,245,.18);border:1px solid rgba(108,59,245,.4);border-radius:100px;padding:5px 14px 5px 9px;font-size:12.5px;font-weight:600;color:#c4b5fd;margin-bottom:22px}
+.eyebrow-dot{width:7px;height:7px;border-radius:50%;background:#a855f7;animation:pulse 2.2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+.hero-h1{font-family:'Inter Tight',sans-serif;font-size:clamp(38px,5vw,62px);font-weight:900;letter-spacing:-2.8px;line-height:.96;color:#fff;margin-bottom:22px}
+.hero-h1 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(15px,1.6vw,18px);color:rgba(255,255,255,.6);line-height:1.72;max-width:480px;margin-bottom:34px}
+.hero-ctas{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:30px}
+.hero-proof{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.hp-item{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.45)}
+.hp-item svg{width:13px;height:13px;stroke:rgba(108,59,245,.9);stroke-width:2.5;fill:none;flex-shrink:0}
+
+/* AI WRITING WINDOW */
+.ai-window{background:#0c0820;border:1px solid rgba(255,255,255,.1);border-radius:var(--r5);overflow:hidden;box-shadow:0 32px 70px rgba(0,0,0,.5),0 0 0 1px rgba(108,59,245,.12),inset 0 1px 0 rgba(255,255,255,.06)}
+.aw-bar{background:#150e2e;border-bottom:1px solid rgba(255,255,255,.07);padding:11px 16px;display:flex;align-items:center;gap:10px}
+.aw-dots{display:flex;gap:6px}
+.aw-dot{width:10px;height:10px;border-radius:50%}
+.aw-dot.r{background:#ff5f57}.aw-dot.y{background:#febc2e}.aw-dot.g{background:#28c840}
+.aw-title{font-size:11.5px;color:rgba(255,255,255,.3);margin-left:8px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.aw-body{padding:20px 20px 6px}
+/* prompt input mock */
+.aw-prompt-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.28);margin-bottom:8px}
+.aw-prompt-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:var(--r2);padding:12px 14px;font-size:13px;color:rgba(255,255,255,.7);line-height:1.6;margin-bottom:16px;position:relative}
+.aw-prompt-box::after{content:'';position:absolute;right:14px;top:50%;transform:translateY(-50%);width:2px;height:14px;background:var(--p3);border-radius:1px;animation:blink-cur .9s step-end infinite}
+@keyframes blink-cur{0%,100%{opacity:1}50%{opacity:0}}
+.aw-typing-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.28);margin-bottom:10px}
+/* output posts */
+.aw-posts{display:flex;flex-direction:column;gap:10px;padding-bottom:14px}
+.aw-post{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:var(--r3);padding:14px;opacity:0;transform:translateY(8px);transition:opacity .4s ease,transform .4s ease}
+.aw-post.show{opacity:1;transform:none}
+.aw-post-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.aw-plat{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;color:rgba(255,255,255,.7)}
+.aw-pico{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.aw-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px}
+.badge-live{background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.2)}
+.badge-sched{background:rgba(108,59,245,.12);color:#a78bfa;border:1px solid rgba(108,59,245,.25)}
+.badge-reel{background:rgba(236,72,153,.12);color:#f472b6;border:1px solid rgba(236,72,153,.2)}
+.aw-cap{font-size:12px;color:rgba(255,255,255,.62);line-height:1.65;margin-bottom:7px}
+.aw-tags{display:flex;gap:5px;flex-wrap:wrap}
+.aw-tag{font-size:11px;color:#8b5cf6;font-weight:500}
+/* generating indicator */
+.aw-gen{display:none;align-items:center;gap:10px;padding:14px;background:rgba(108,59,245,.06);border:1px solid rgba(108,59,245,.15);border-radius:var(--r2);margin-bottom:10px}
+.aw-gen.show{display:flex}
+.gen-dots{display:flex;gap:4px}
+.gen-dot{width:7px;height:7px;border-radius:50%;background:#8b5cf6;animation:gdot 1.2s ease-in-out infinite}
+.gen-dot:nth-child(2){animation-delay:.2s}
+.gen-dot:nth-child(3){animation-delay:.4s}
+@keyframes gdot{0%,80%,100%{transform:scale(.7);opacity:.35}40%{transform:scale(1.2);opacity:1}}
+.gen-text{font-size:12px;color:rgba(255,255,255,.45)}
+.gen-text strong{color:#a78bfa}
+/* biz switcher */
+.aw-footer{background:#150e2e;border-top:1px solid rgba(255,255,255,.06);padding:10px 16px;display:flex;align-items:center;gap:8px}
+.aw-biz-lbl{font-size:11px;color:rgba(255,255,255,.3);font-weight:600}
+.aw-biz-chips{display:flex;gap:6px}
+.aw-chip{font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;cursor:pointer;transition:all .18s;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.45)}
+.aw-chip.active{background:rgba(108,59,245,.25);border-color:rgba(108,59,245,.5);color:#c4b5fd}
+
+/* STAT STRIP */
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);background:var(--border);gap:1px;border:1px solid var(--border);border-radius:var(--r4);overflow:hidden}
+.ss-cell{background:#fff;padding:26px 20px;text-align:center}
+.ss-n{font-family:'Inter Tight',sans-serif;font-size:clamp(28px,3vw,38px);font-weight:900;background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-2px;line-height:1;margin-bottom:5px}
+.ss-l{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.ss-s{font-size:12px;color:var(--ink4)}
+
+/* SECTION HELPERS */
+.section{padding:88px 0}
+.section-alt{background:var(--surface)}
+.sec-ey{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--p);margin-bottom:10px;display:block}
+.sec-h2{font-family:'Inter Tight',sans-serif;font-size:clamp(26px,3.3vw,42px);font-weight:900;letter-spacing:-1.5px;color:var(--ink);line-height:1.05;margin-bottom:12px}
+.sec-p{font-size:17px;color:var(--ink2);line-height:1.72;max-width:600px}
+.center{text-align:center}
+.center .sec-p{margin:0 auto}
+
+/* PAIN CARDS */
+.pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pain-card{background:#fff;border:1px solid var(--border);border-radius:var(--r3);padding:22px;display:flex;gap:14px;transition:all .18s}
+.pain-card:hover{border-color:var(--border2);box-shadow:0 3px 14px rgba(0,0,0,.05)}
+.pain-ico{width:42px;height:42px;border-radius:11px;background:#fef2f2;border:1px solid #fecaca;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.pain-title{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.pain-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+
+/* HOW IT WORKS */
+.hiw-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.hiw-steps{display:flex;flex-direction:column;gap:0}
+.hiw-step{display:flex;gap:18px;position:relative;padding-bottom:28px}
+.hiw-step:last-child{padding-bottom:0}
+.hiw-step::before{content:'';position:absolute;left:19px;top:44px;bottom:0;width:2px;background:var(--border)}
+.hiw-step:last-child::before{display:none}
+.hiw-num{width:40px;height:40px;border-radius:50%;background:var(--pg);color:#fff;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 12px var(--glow);font-family:'Inter Tight',sans-serif;position:relative;z-index:1}
+.hiw-body{padding-top:8px}
+.hiw-title{font-size:15.5px;font-weight:700;color:var(--ink);margin-bottom:5px;letter-spacing:-.2px}
+.hiw-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+.hiw-time{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--p);background:#ede9fe;border-radius:100px;padding:2px 8px;margin-top:6px}
+
+/* OUTPUT EXAMPLES */
+.output-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.output-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);overflow:hidden;transition:all .2s}
+.output-card:hover{border-color:var(--border2);box-shadow:0 6px 24px rgba(108,59,245,.08);transform:translateY(-2px)}
+.oc-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.oc-plat{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink)}
+.oc-pico{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.oc-type{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:100px;text-transform:uppercase;letter-spacing:.05em}
+.oc-body{padding:16px}
+.oc-biz{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--p);margin-bottom:8px}
+.oc-img{width:100%;height:80px;border-radius:var(--r2);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:10px}
+.oc-cap{font-size:13px;color:var(--ink2);line-height:1.68;margin-bottom:8px}
+.oc-tags{display:flex;gap:5px;flex-wrap:wrap}
+.oc-tag{font-size:11px;color:var(--p);font-weight:500}
+.oc-footer{padding:10px 16px;border-top:1px solid var(--border);background:var(--surface);font-size:12px;color:var(--ink4);display:flex;align-items:center;justify-content:space-between}
+.oc-ai-lbl{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--p)}
+
+/* CONTENT TYPES */
+.ct-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.ct-card{background:#fff;border:1px solid var(--border);border-radius:var(--r3);padding:20px 16px;text-align:center;transition:all .18s}
+.ct-card:hover{border-color:#c4b5fd;background:#faf8ff}
+.ct-icon{font-size:28px;margin-bottom:10px;display:block}
+.ct-name{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.ct-desc{font-size:12.5px;color:var(--ink3);line-height:1.55}
+
+/* FORMATS TABLE */
+.fmt-table{width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:var(--r4);overflow:hidden}
+.fmt-table th{background:var(--pg);color:#fff;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:13px 18px;text-align:left}
+.fmt-table td{padding:13px 18px;border-bottom:1px solid var(--border);font-size:14px;color:var(--ink2);vertical-align:top}
+.fmt-table tr:last-child td{border-bottom:none}
+.fmt-table tr:hover td{background:#faf8ff}
+.fmt-name{font-weight:700;color:var(--ink);margin-bottom:3px}
+.fmt-plats{font-size:12px;color:var(--ink4)}
+.check{color:var(--green);font-size:17px}
+
+/* WHO IT'S FOR */
+.who-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.who-card{background:#fff;border:1px solid var(--border);border-radius:var(--r3);padding:18px 14px;text-align:center;transition:all .18s}
+.who-card:hover{border-color:#c4b5fd;background:#faf8ff;transform:translateY(-2px)}
+.who-ico{font-size:26px;margin-bottom:8px;display:block}
+.who-name{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.who-desc{font-size:12px;color:var(--ink3);line-height:1.5}
+
+/* TESTIMONIALS */
+.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.test-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:28px;display:flex;flex-direction:column;transition:all .18s}
+.test-card:hover{border-color:var(--border2);box-shadow:0 6px 24px rgba(108,59,245,.07);transform:translateY(-2px)}
+.test-stars{color:#f59e0b;font-size:13px;letter-spacing:2px;margin-bottom:13px}
+.test-quote{font-size:14px;color:var(--ink2);line-height:1.76;font-style:italic;flex:1;margin-bottom:18px}
+.test-author{display:flex;align-items:center;gap:11px}
+.ta-av{width:40px;height:40px;border-radius:50%;background:var(--pg);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+.ta-name{font-size:13.5px;font-weight:700;color:var(--ink);display:block}
+.ta-biz{font-size:12px;color:var(--ink4)}
+
+/* FAQ */
+.faq-list{border:1px solid var(--border);border-radius:var(--r4);overflow:hidden;max-width:740px;margin:40px auto 0}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-item:last-child{border-bottom:none}
+.faq-q{width:100%;padding:18px 22px;background:#fff;border:none;display:flex;align-items:center;justify-content:space-between;text-align:left;cursor:pointer;font-size:15px;font-weight:600;color:var(--ink);gap:14px;transition:background .14s;font-family:inherit}
+.faq-q:hover{background:var(--surface)}
+.faq-arr{width:24px;height:24px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--ink4);flex-shrink:0;transition:all .22s}
+.faq-item.open .faq-arr{background:var(--pg);border-color:transparent;color:#fff;transform:rotate(45deg)}
+.faq-a{display:none;padding:0 22px 18px;font-size:14.5px;color:var(--ink2);line-height:1.75;background:#fff}
+.faq-item.open .faq-a{display:block}
+
+/* LINKS BAR */
+.links-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.link-card{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:var(--r2);padding:12px 14px;font-size:13.5px;font-weight:500;color:var(--ink2);transition:all .15s}
+.link-card:hover{border-color:#c4b5fd;background:#faf8ff;color:var(--p)}
+.link-arr{margin-left:auto;font-size:12px;color:var(--ink4)}
+.link-card:hover .link-arr{color:var(--p)}
+
+/* CTA SECTION */
+.cta-section{background:var(--dark);padding:96px 0;text-align:center;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 65% at 50% 110%,rgba(108,59,245,.3) 0%,transparent 70%);pointer-events:none}
+.cta-section h2{font-family:'Inter Tight',sans-serif;font-size:clamp(30px,5vw,54px);font-weight:900;letter-spacing:-2.5px;line-height:1.03;color:#fff;margin-bottom:16px;position:relative;z-index:1}
+.cta-section h2 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-section p{font-size:17.5px;color:rgba(255,255,255,.6);line-height:1.7;max-width:520px;margin:0 auto 38px;position:relative;z-index:1}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:22px;position:relative;z-index:1}
+.cta-trust{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,.4);position:relative;z-index:1}
+.ct{display:flex;align-items:center;gap:5px}
+.ct svg{width:13px;height:13px;stroke:rgba(108,59,245,.9);stroke-width:2.5;fill:none}
+
+/* FOOTER */
+.footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.07);padding:32px 0}
+.ft-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ft-logo{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:800;color:rgba(255,255,255,.6)}
+.ft-links{display:flex;gap:18px;flex-wrap:wrap}
+.ft-links a{font-size:13px;color:rgba(255,255,255,.3);transition:color .14s}
+.ft-links a:hover{color:rgba(255,255,255,.65)}
+.ft-copy{font-size:12px;color:rgba(255,255,255,.2);margin-top:14px}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .hero-inner{grid-template-columns:1fr;gap:44px}
+  .ai-window{max-width:560px;margin:0 auto}
+  .hiw-grid{grid-template-columns:1fr}
+  .output-grid{grid-template-columns:1fr 1fr}
+  .who-grid{grid-template-columns:1fr 1fr}
+  .test-grid{grid-template-columns:1fr 1fr}
+  .links-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:720px){
+  .nav-links,.nav-right .btn-ghost{display:none}
+  .pain-grid{grid-template-columns:1fr}
+  .output-grid,.test-grid{grid-template-columns:1fr}
+  .ct-grid{grid-template-columns:1fr 1fr}
+  .stat-strip{grid-template-columns:1fr 1fr}
+  .section{padding:60px 0}
+  .wrap{padding:0 18px}
+}
+@media(prefers-reduced-motion:reduce){.eyebrow-dot,.gen-dot,.aw-post{animation:none;opacity:1;transform:none}}
+
+/* REVEAL */
+[data-r]{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}
+[data-r].vis{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="https://shoutlyai.com" class="nav-logo">
+      <div class="nav-mark"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>
+      Shoutly AI
+    </a>
+    <span class="feat-badge">&#10022; Features</span>
+    <nav class="nav-links">
+      <a href="#how-it-works">How it works</a>
+      <a href="#output">What it generates</a>
+      <a href="#who">Who it&rsquo;s for</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-right">
+      <a href="https://shoutlyai.com/sign-in" class="btn btn-ghost btn-sm">Log in</a>
+      <a href="https://shoutlyai.com/sign-up" class="btn btn-primary btn-sm">Start free trial</a>
+    </div>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="bc"><div class="wrap bc-inner">
+  <a href="https://shoutlyai.com">Home</a>
+  <span class="bc-sep">&#8250;</span>
+  <a href="https://shoutlyai.com/features">Features</a>
+  <span class="bc-sep">&#8250;</span>
+  <span style="color:var(--ink);font-weight:600">AI Content Generator</span>
+</div></div>
+
+<main>
+
+<!-- HERO -->
+<section class="hero" aria-labelledby="hero-h1">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="wrap">
+    <div class="hero-inner">
+
+      <!-- LEFT -->
+      <div>
+        <div class="hero-eyebrow"><span class="eyebrow-dot"></span>AI Content Generator &mdash; Feature</div>
+        <h1 class="hero-h1" id="hero-h1">Your posts.<br>Written by AI.<br><span class="grad">Every single day.</span></h1>
+        <p class="hero-sub">Describe your business once. Shoutly AI writes every post, caption, Reel script, carousel, and hashtag you&rsquo;ll ever need &mdash; for every platform &mdash; for an entire year.</p>
+        <div class="hero-ctas">
+          <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-lg">Generate my first posts free <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+          <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-lg">See a live demo</a>
+        </div>
+        <div class="hero-proof">
+          <span class="hp-item"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>No writing experience needed</span>
+          <span class="hp-item"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>155+ business types supported</span>
+          <span class="hp-item"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Ready in under 2 minutes</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: AI writing animation window -->
+      <div>
+        <div class="ai-window" role="region" aria-label="AI content generator preview">
+          <div class="aw-bar">
+            <div class="aw-dots"><div class="aw-dot r"></div><div class="aw-dot y"></div><div class="aw-dot g"></div></div>
+            <span class="aw-title">Shoutly AI &mdash; Content Generator</span>
+          </div>
+          <div class="aw-body">
+            <div class="aw-prompt-lbl">Your business brief</div>
+            <div class="aw-prompt-box" id="aw-prompt">Type your business here&hellip;</div>
+            <div class="aw-typing-lbl">AI-generated posts &mdash; ready to publish</div>
+            <div class="aw-gen" id="aw-gen">
+              <div class="gen-dots"><div class="gen-dot"></div><div class="gen-dot"></div><div class="gen-dot"></div></div>
+              <div class="gen-text">AI writing posts for <strong id="gen-biz">your business</strong>&hellip;</div>
+            </div>
+            <div class="aw-posts" id="aw-posts"></div>
+          </div>
+          <div class="aw-footer">
+            <span class="aw-biz-lbl">Try:</span>
+            <div class="aw-biz-chips">
+              <span class="aw-chip active" onclick="switchBiz('restaurant')">&#127829; Restaurant</span>
+              <span class="aw-chip" onclick="switchBiz('salon')">&#9986; Salon</span>
+              <span class="aw-chip" onclick="switchBiz('gym')">&#127947; Gym</span>
+              <span class="aw-chip" onclick="switchBiz('realestate')">&#127968; Real Estate</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- STAT STRIP -->
+<section style="padding:52px 0 0" data-r>
+  <div class="wrap">
+    <div class="stat-strip">
+      <div class="ss-cell"><div class="ss-n">365</div><div class="ss-l">Days of content</div><div class="ss-s">Generated from one business brief</div></div>
+      <div class="ss-cell"><div class="ss-n">2 min</div><div class="ss-l">Average setup time</div><div class="ss-s">From blank page to full calendar</div></div>
+      <div class="ss-cell"><div class="ss-n">155+</div><div class="ss-l">Business categories</div><div class="ss-s">AI trained on your industry</div></div>
+      <div class="ss-cell"><div class="ss-n">10</div><div class="ss-l">Platforms supported</div><div class="ss-s">One brief, all channels covered</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN POINTS -->
+<section class="section" aria-labelledby="pain-h2" data-r>
+  <div class="wrap">
+    <div style="margin-bottom:48px">
+      <span class="sec-ey">The real problem</span>
+      <h2 class="sec-h2" id="pain-h2">Content creation is the bottleneck &mdash; not posting</h2>
+      <p class="sec-p">Most businesses don&rsquo;t struggle to press &lsquo;publish.&rsquo; They struggle to know what to write, when to write it, and how to keep going week after week without burning out.</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-ico">&#128197;</div>
+        <div>
+          <div class="pain-title">The blank page problem, every Monday</div>
+          <div class="pain-desc">Most business owners sit down to post and spend 30&ndash;45 minutes just deciding what to write about. Multiply that by 5 posts a week and you&rsquo;ve lost a full workday before you&rsquo;ve even opened your design tool.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#9878;&#65039;</div>
+        <div>
+          <div class="pain-title">Content that sounds generic &mdash; not like your brand</div>
+          <div class="pain-desc">When you&rsquo;re rushing, you reach for safe, boring captions that could belong to any business. Your followers stop engaging because nothing stands out. Posting becomes maintenance, not marketing.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#128165;</div>
+        <div>
+          <div class="pain-title">Ideas run out after 2&ndash;3 weeks</div>
+          <div class="pain-desc">Every business starts social media with energy. By week 3, you&rsquo;ve posted about your products, your team, and one behind-the-scenes. Now what? Running dry on ideas is the most common reason businesses go quiet.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#127773;</div>
+        <div>
+          <div class="pain-title">Festivals and occasions always caught off guard</div>
+          <div class="pain-desc">Diwali is tomorrow and you still don&rsquo;t have a post. Valentine&rsquo;s Day passed while you were busy. The businesses winning on social are posting for every occasion &mdash; planned weeks in advance, not scrambled at 11pm.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#128101;</div>
+        <div>
+          <div class="pain-title">Different platforms need different content</div>
+          <div class="pain-desc">A LinkedIn post sounds nothing like an Instagram caption, which sounds nothing like a Reels script. Writing separately for 10 platforms is a full-time job. Most businesses just copy-paste and wonder why nothing performs.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#128336;</div>
+        <div>
+          <div class="pain-title">Inconsistent posting kills algorithmic reach</div>
+          <div class="pain-desc">Instagram, LinkedIn, and Facebook all reward consistent publishing. When you post 5 times one week and once the next, the algorithm stops distributing your content to non-followers. Momentum is almost impossible to rebuild.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section section-alt" id="how-it-works" aria-labelledby="hiw-h2" data-r>
+  <div class="wrap">
+    <div class="hiw-grid">
+      <div>
+        <span class="sec-ey">How it works</span>
+        <h2 class="sec-h2" id="hiw-h2">From business brief to a full year of content in 4 steps</h2>
+        <p class="sec-p" style="margin-bottom:40px">No writing experience. No marketing degree. No content team. Just describe your business and let the AI do the rest.</p>
+        <div class="hiw-steps">
+          <div class="hiw-step">
+            <div class="hiw-num">1</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Describe your business once</div>
+              <div class="hiw-desc">Enter your industry, business name, what you do, who your customers are, and what tone you want &mdash; formal, casual, playful, professional. This takes about 90 seconds.</div>
+              <span class="hiw-time">&#8987; 90 seconds</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">2</div>
+            <div class="hiw-body">
+              <div class="hiw-title">AI generates your full content calendar</div>
+              <div class="hiw-desc">Shoutly AI writes 365 days of posts, captions, Reels scripts, carousel content, Stories copy, and hashtags &mdash; calibrated for each platform and your specific audience.</div>
+              <span class="hiw-time">&#8987; Under 2 minutes</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">3</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Review, edit, or regenerate anything</div>
+              <div class="hiw-desc">Every post is editable. Don&rsquo;t like a caption? Click regenerate and get 3 new options in seconds. Want to add a specific offer or event? Type it in and the AI rewrites around it.</div>
+              <span class="hiw-time">&#8987; Optional, takes minutes</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">4</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Schedule once &mdash; posts publish automatically</div>
+              <div class="hiw-desc">Approve your calendar and Shoutly AI schedules every post at the optimal time for your audience &mdash; then publishes automatically across all your connected platforms. Social media runs without you.</div>
+              <span class="hiw-time">&#8987; Done for the year</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r5);padding:36px">
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--p);margin-bottom:20px">&#10022; What the AI understands about your business</div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#ede9fe,#faf5ff);border:1px solid #ddd6fe;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">&#127981;</div>
+            <div><div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px">Your industry context</div><div style="font-size:13px;color:var(--ink3);line-height:1.6">Knows that a restaurant needs to post dish reveals, offers, and festival content &mdash; not productivity tips.</div></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#ede9fe,#faf5ff);border:1px solid #ddd6fe;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">&#127775;</div>
+            <div><div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px">Your brand voice</div><div style="font-size:13px;color:var(--ink3);line-height:1.6">Set once &mdash; formal, casual, local, aspirational &mdash; and every post matches that tone consistently.</div></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#ede9fe,#faf5ff);border:1px solid #ddd6fe;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">&#127881;</div>
+            <div><div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px">Indian festival calendar</div><div style="font-size:13px;color:var(--ink3);line-height:1.6">Diwali, Holi, Eid, Navratri, Independence Day &mdash; all 30+ occasions auto-planned and customised for your business.</div></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#ede9fe,#faf5ff);border:1px solid #ddd6fe;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">&#128247;</div>
+            <div><div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px">Platform-specific formats</div><div style="font-size:13px;color:var(--ink3);line-height:1.6">LinkedIn posts sound professional. Instagram captions have hooks. Reels have 3-second openers. Each platform gets the right format automatically.</div></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#ede9fe,#faf5ff);border:1px solid #ddd6fe;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">&#128205;</div>
+            <div><div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px">Local and regional context</div><div style="font-size:13px;color:var(--ink3);line-height:1.6">Knows you&rsquo;re in Bengaluru, Pune, Delhi, or Mumbai and tailors references, timing, and language accordingly.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXAMPLE OUTPUTS -->
+<section class="section" id="output" aria-labelledby="out-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:52px">
+      <span class="sec-ey">Real AI-generated examples</span>
+      <h2 class="sec-h2" id="out-h2">This is what the AI actually writes for your business</h2>
+      <p class="sec-p">Not generic templates. Not filler content. Real, specific, publish-ready posts for your exact industry &mdash; generated from your business brief.</p>
+    </div>
+    <div class="output-grid">
+      <!-- Card 1: Restaurant Instagram -->
+      <div class="output-card">
+        <div class="oc-head">
+          <div class="oc-plat"><div class="oc-pico" style="background:linear-gradient(135deg,#f58529,#dd2a7b)">&#128247;</div>Instagram</div>
+          <span class="oc-type" style="background:#fdf2f8;color:#dd2a7b;border:1px solid #f0c4de">Feed Post</span>
+        </div>
+        <div class="oc-body">
+          <div class="oc-biz">&#127829; Restaurant &mdash; Bengaluru</div>
+          <div class="oc-img" style="background:linear-gradient(135deg,#f58529,#dd2a7b)">&#127829;</div>
+          <div class="oc-cap">Tuesday just got tastier. &#127859;<br><br>Our slow-cooked Lucknowi Biryani takes 4 hours to make &mdash; and less than 4 minutes to finish. Limited plates. First come, first served.<br><br>&#128205; Koramangala | Walk-ins welcome | Reserve via DM</div>
+          <div class="oc-tags">
+            <span class="oc-tag">#BengaluruFood</span>
+            <span class="oc-tag">#Biryani</span>
+            <span class="oc-tag">#RestaurantLife</span>
+            <span class="oc-tag">#FoodLovers</span>
+            <span class="oc-tag">+26 more</span>
+          </div>
+        </div>
+        <div class="oc-footer">
+          <span class="oc-ai-lbl">&#10022; AI-generated in 4 seconds</span>
+          <span>Scheduled: Tue 9:00am</span>
+        </div>
+      </div>
+      <!-- Card 2: Gym Reels Script -->
+      <div class="output-card">
+        <div class="oc-head">
+          <div class="oc-plat"><div class="oc-pico" style="background:linear-gradient(135deg,#dd2a7b,#8134af)">&#127909;</div>Instagram Reels</div>
+          <span class="oc-type" style="background:#fdf4ff;color:#a21caf;border:1px solid #f5d0fe">Reels Script</span>
+        </div>
+        <div class="oc-body">
+          <div class="oc-biz">&#127947; Gym / Fitness &mdash; Pune</div>
+          <div class="oc-img" style="background:linear-gradient(135deg,#8134af,#515bd4)">&#127947;</div>
+          <div class="oc-cap"><strong style="color:var(--ink)">&#127909; Hook (0&ndash;3 sec, on screen):</strong><br>&ldquo;3 habits that helped 200+ clients lose their first 5kg &mdash; without giving up chai&rdquo;<br><br><strong style="color:var(--ink)">&#127916; Body (voiceover + cuts every 4 sec):</strong><br>Most people think it&rsquo;s about eating less. [CUT] It&rsquo;s not the food &mdash; it&rsquo;s the timing. [CUT] Here are the 3 habits nobody talks about&hellip;<br><br><strong style="color:var(--ink)">&#128172; CTA:</strong> Save this for your journey. Follow for daily fitness tips.</div>
+          <div class="oc-tags">
+            <span class="oc-tag">#FitnessTips</span>
+            <span class="oc-tag">#GymLife</span>
+            <span class="oc-tag">#WeightLoss</span>
+            <span class="oc-tag">+27 more</span>
+          </div>
+        </div>
+        <div class="oc-footer">
+          <span class="oc-ai-lbl">&#10022; Full script in 6 seconds</span>
+          <span>Scheduled: Thu 6:30pm</span>
+        </div>
+      </div>
+      <!-- Card 3: CA LinkedIn -->
+      <div class="output-card">
+        <div class="oc-head">
+          <div class="oc-plat"><div class="oc-pico" style="background:#0077b5">&#128188;</div>LinkedIn</div>
+          <span class="oc-type" style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe">Article Post</span>
+        </div>
+        <div class="oc-body">
+          <div class="oc-biz">&#128202; Chartered Accountant &mdash; Mumbai</div>
+          <div class="oc-img" style="background:linear-gradient(135deg,#eff6ff,#dbeafe)">&#128202;</div>
+          <div class="oc-cap">Most startup founders I meet are leaving &#8377;3&ndash;8 lakhs on the table every year in tax savings they don&rsquo;t know exist.<br><br>Here are 5 Section 80 deductions most CAs don&rsquo;t proactively tell their clients about &mdash; and how each one compounds over 3 years.<br><br>If you found one deduction you weren&rsquo;t claiming, drop a &#128202; below.</div>
+          <div class="oc-tags">
+            <span class="oc-tag">#TaxPlanning</span>
+            <span class="oc-tag">#StartupIndia</span>
+            <span class="oc-tag">#FinanceIndia</span>
+            <span class="oc-tag">+18 more</span>
+          </div>
+        </div>
+        <div class="oc-footer">
+          <span class="oc-ai-lbl">&#10022; AI-generated in 5 seconds</span>
+          <span>Scheduled: Wed 8:00am</span>
+        </div>
+      </div>
+      <!-- Card 4: Salon Diwali -->
+      <div class="output-card">
+        <div class="oc-head">
+          <div class="oc-plat"><div class="oc-pico" style="background:#1877f2">&#128153;</div>Facebook</div>
+          <span class="oc-type" style="background:#fff7e6;color:#d97706;border:1px solid #fde68a">Festival Post</span>
+        </div>
+        <div class="oc-body">
+          <div class="oc-biz">&#9986; Salon &mdash; Mumbai</div>
+          <div class="oc-img" style="background:linear-gradient(135deg,#fef3c7,#fde68a)">&#127806;</div>
+          <div class="oc-cap">This Diwali, let your hair do the talking. &#10024;&#127806;<br><br>Book our Diwali Glow Package before Oct 30 and get a complimentary head massage worth &#8377;500. Limited slots &mdash; 6 left this week.<br><br>Call or DM to book. Wishing you and your family a beautiful Diwali. &#128293;</div>
+          <div class="oc-tags">
+            <span class="oc-tag">#DiwaliSpecial</span>
+            <span class="oc-tag">#SalonMumbai</span>
+            <span class="oc-tag">#DiwaliOffer</span>
+            <span class="oc-tag">+19 more</span>
+          </div>
+        </div>
+        <div class="oc-footer">
+          <span class="oc-ai-lbl">&#10022; Auto-planned 2 weeks early</span>
+          <span>Diwali campaign</span>
+        </div>
+      </div>
+      <!-- Card 5: Real Estate Google Business -->
+      <div class="output-card">
+        <div class="oc-head">
+          <div class="oc-plat"><div class="oc-pico" style="background:linear-gradient(135deg,#4285f4,#34a853)">&#128205;</div>Google Business</div>
+          <span class="oc-type" style="background:#f0fdf4;color:#166534;border:1px solid #bbf7d0">GBP Post</span>
+        </div>
+        <div class="oc-body">
+          <div class="oc-biz">&#127968; Real Estate &mdash; Bengaluru</div>
+          <div class="oc-img" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7)">&#127968;</div>
+          <div class="oc-cap">&#127968; New 2BHK listings in Whitefield &mdash; &#8377;78L onwards.<br><br>3 things most buyers miss before finalising a flat in Whitefield: proximity to Outer Ring Road, RERA registration status, and maintenance charges that &lsquo;surprise&rsquo; you after possession.<br><br>Call for a free site visit this weekend.</div>
+          <div class="oc-tags">
+            <span class="oc-tag">#BengaluruProperty</span>
+            <span class="oc-tag">#Whitefield</span>
+            <span class="oc-tag">#2BHK</span>
+          </div>
+        </div>
+        <div class="oc-footer">
+          <span class="oc-ai-lbl">&#10022; Boosts local search ranking</span>
+          <span>Auto-published</span>
+        </div>
+      </div>
+      <!-- Card 6: Bakery Carousel -->
+      <div class="output-card">
+        <div class="oc-head">
+          <div class="oc-plat"><div class="oc-pico" style="background:linear-gradient(135deg,#f58529,#dd2a7b)">&#128247;</div>Instagram Carousel</div>
+          <span class="oc-type" style="background:#fdf2f8;color:#dd2a7b;border:1px solid #f0c4de">Carousel</span>
+        </div>
+        <div class="oc-body">
+          <div class="oc-biz">&#127874; Bakery &mdash; Delhi</div>
+          <div class="oc-img" style="background:linear-gradient(135deg,#fef3c7,#fff7e6)">&#127874;</div>
+          <div class="oc-cap"><strong style="color:var(--ink)">Slide 1 (cover):</strong> &ldquo;5 cakes we baked at 5am that were gone by 8 &#129327;&rdquo;<br><br><strong style="color:var(--ink)">Slides 2&ndash;6:</strong> Each cake with name, what makes it special, price, how to order.<br><br><strong style="color:var(--ink)">Slide 7 (CTA):</strong> &ldquo;Pre-order before we sell out again &rarr; DM or call&rdquo;<br><br>10.15% avg engagement rate for carousels in 2026.</div>
+          <div class="oc-tags">
+            <span class="oc-tag">#BakeryDelhi</span>
+            <span class="oc-tag">#FreshBaked</span>
+            <span class="oc-tag">#CakeLovers</span>
+            <span class="oc-tag">+22 more</span>
+          </div>
+        </div>
+        <div class="oc-footer">
+          <span class="oc-ai-lbl">&#10022; All 7 slides written by AI</span>
+          <span>Scheduled: Fri 9:00am</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTENT TYPES -->
+<section class="section section-alt" aria-labelledby="ct-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">Everything it can write</span>
+      <h2 class="sec-h2" id="ct-h2">Every type of content &mdash; for every platform &mdash; in one place</h2>
+    </div>
+    <div class="ct-grid">
+      <div class="ct-card">
+        <span class="ct-icon">&#128247;</span>
+        <div class="ct-name">Feed Posts</div>
+        <div class="ct-desc">Branded captions, opening hooks, CTAs, and 30 hashtags for Instagram and Facebook feed posts.</div>
+      </div>
+      <div class="ct-card">
+        <span class="ct-icon">&#127909;</span>
+        <div class="ct-name">Reels Scripts</div>
+        <div class="ct-desc">Complete Reels scripts: 3-second hook, body with jump-cut markers, on-screen text, and closing CTA.</div>
+      </div>
+      <div class="ct-card">
+        <span class="ct-icon">&#128202;</span>
+        <div class="ct-name">Carousel Content</div>
+        <div class="ct-desc">Cover slide + all content slides + CTA slide, written for swipe-through and maximum saves.</div>
+      </div>
+      <div class="ct-card">
+        <span class="ct-icon">&#9711;</span>
+        <div class="ct-name">Stories Copy</div>
+        <div class="ct-desc">Daily Stories sequences with text overlays, poll questions, countdown copy, and link-in-bio CTAs.</div>
+      </div>
+      <div class="ct-card">
+        <span class="ct-icon">&#128188;</span>
+        <div class="ct-name">LinkedIn Posts</div>
+        <div class="ct-desc">Professional posts, thought-leadership content, carousel articles, and company updates for LinkedIn.</div>
+      </div>
+      <div class="ct-card">
+        <span class="ct-icon">&#128205;</span>
+        <div class="ct-name">Google Business Posts</div>
+        <div class="ct-desc">Weekly posts that improve your local search ranking and visibility on Google Maps.</div>
+      </div>
+      <div class="ct-card">
+        <span class="ct-icon">&#127881;</span>
+        <div class="ct-name">Festival Posts</div>
+        <div class="ct-desc">Diwali, Holi, Eid, Independence Day, and 30+ Indian occasions &mdash; all planned and customised for your business.</div>
+      </div>
+      <div class="ct-card">
+        <span class="ct-icon">&#128226;</span>
+        <div class="ct-name">Promotional Content</div>
+        <div class="ct-desc">Product launches, seasonal offers, flash sales, and new service announcements &mdash; written to convert.</div>
+      </div>
+      <div class="ct-card">
+        <span class="ct-icon">&#127891;</span>
+        <div class="ct-name">Educational Posts</div>
+        <div class="ct-desc">Tips, how-tos, myth-busting, and value posts that build authority and get saved by your audience.</div>
+      </div>
+      <div class="ct-card">
+        <span class="ct-icon">&#11088;</span>
+        <div class="ct-name">Testimonials</div>
+        <div class="ct-desc">Customer review showcase posts formatted for Instagram, Facebook, and Google Business Profile.</div>
+      </div>
+      <div class="ct-card">
+        <span class="ct-icon">#</span>
+        <div class="ct-name">Hashtag Sets</div>
+        <div class="ct-desc">30 researched hashtags per post: niche-specific, mid-range, and broad reach tags for each platform.</div>
+      </div>
+      <div class="ct-card">
+        <span class="ct-icon">&#127760;</span>
+        <div class="ct-name">Regional Language Posts</div>
+        <div class="ct-desc">Hindi, Tamil, Telugu, Kannada, Bengali and more &mdash; for businesses targeting regional Indian audiences.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IT'S FOR -->
+<section class="section" id="who" aria-labelledby="who-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">Who it&rsquo;s built for</span>
+      <h2 class="sec-h2" id="who-h2">Works for 155+ business types across India</h2>
+      <p class="sec-p">The AI is trained on industry-specific content patterns &mdash; so a dental clinic gets oral health tip posts, not generic wellness content.</p>
+    </div>
+    <div class="who-grid">
+      <div class="who-card"><span class="who-ico">&#127829;</span><div class="who-name">Restaurants &amp; F&amp;B</div><div class="who-desc">Dish reveals, specials, Reels, festival offers and table booking CTAs</div></div>
+      <div class="who-card"><span class="who-ico">&#9986;</span><div class="who-name">Salons &amp; Beauty</div><div class="who-desc">Transformation Reels, festive packages, before/after carousels and offer posts</div></div>
+      <div class="who-card"><span class="who-ico">&#127947;</span><div class="who-name">Gyms &amp; Fitness</div><div class="who-desc">Workout Reels, transformation stories, class promos and motivational daily posts</div></div>
+      <div class="who-card"><span class="who-ico">&#129658;</span><div class="who-name">Clinics &amp; Healthcare</div><div class="who-desc">Patient education, health tip Reels, seasonal campaigns and appointment CTAs</div></div>
+      <div class="who-card"><span class="who-ico">&#127968;</span><div class="who-name">Real Estate</div><div class="who-desc">Property tour Reels, market updates, neighbourhood spotlights and lead gen posts</div></div>
+      <div class="who-card"><span class="who-ico">&#128084;</span><div class="who-name">Retail &amp; Fashion</div><div class="who-desc">New collection reveals, styling Reels, sale announcements and product carousels</div></div>
+      <div class="who-card"><span class="who-ico">&#128188;</span><div class="who-name">Professional Services</div><div class="who-desc">CA, lawyers, consultants &mdash; tip posts, myth-busting, LinkedIn thought leadership</div></div>
+      <div class="who-card"><span class="who-ico">&#127979;</span><div class="who-name">Education &amp; Coaching</div><div class="who-desc">Study tip Reels, result posts, batch launches and student success story content</div></div>
+      <div class="who-card"><span class="who-ico">&#127874;</span><div class="who-name">Bakeries &amp; Sweets</div><div class="who-desc">Product reveals, baking Reels, festival mithai posts and pre-order CTAs</div></div>
+      <div class="who-card"><span class="who-ico">&#128230;</span><div class="who-name">Agencies</div><div class="who-desc">Manage 5&ndash;30+ clients from one dashboard with separate brand kits per client</div></div>
+      <div class="who-card"><span class="who-ico">&#128640;</span><div class="who-name">Startups &amp; D2C</div><div class="who-desc">Product launches, founder story Reels, community building and investor update posts</div></div>
+      <div class="who-card"><span class="who-ico">&#128722;</span><div class="who-name">E-commerce Brands</div><div class="who-desc">Product carousels, unboxing Reels, review showcases and sale countdown campaigns</div></div>
+    </div>
+    <div style="text-align:center;margin-top:28px"><a href="https://shoutlyai.com/local-businesses" style="font-size:14px;font-weight:600;color:var(--p);display:inline-flex;align-items:center;gap:6px">View all 155+ business categories <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section section-alt" aria-labelledby="test-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">What businesses say</span>
+      <h2 class="sec-h2" id="test-h2">41,000+ businesses have stopped writing posts manually</h2>
+    </div>
+    <div class="test-grid">
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;I used to spend every Sunday stressed about what to post for the week. Now I set it up once a month, review it in 10 minutes, and my social media is done. The AI actually sounds like me &mdash; not like a bot.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av">RK</div>
+          <div><span class="ta-name">Ravi Kumar</span><span class="ta-biz">Spice Garden Restaurant &middot; Bengaluru</span></div>
+        </div>
+      </article>
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;As an agency managing 12 clients, the content generator is the reason I can actually sleep. Each client gets content that sounds like their business, not a copy of each other. The brand voice feature is genuinely impressive.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">AM</div>
+          <div><span class="ta-name">Anjali Mehta</span><span class="ta-biz">Social Media Agency &middot; Delhi</span></div>
+        </div>
+      </article>
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;The Reels script generator saved us. I&rsquo;d spend 90 minutes writing one script &mdash; now it&rsquo;s 30 seconds and the hooks are genuinely better than what I was writing manually. Our Reels went from 800 views to 45,000 average.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">PS</div>
+          <div><span class="ta-name">Priya Sharma</span><span class="ta-biz">Certified Fitness Coach &middot; Mumbai</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq" aria-labelledby="faq-h2" data-r>
+  <div class="wrap center">
+    <span class="sec-ey">Common questions</span>
+    <h2 class="sec-h2" id="faq-h2">Everything you need to know about the AI Content Generator</h2>
+    <div class="faq-list">
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">What is Shoutly AI&rsquo;s content generator?<span class="faq-arr">+</span></button><div class="faq-a"><p>Shoutly AI&rsquo;s content generator uses AI to write branded social media posts, captions, Reels scripts, carousels, and hashtags for your specific business. You describe your business once &mdash; industry, name, tone, audience &mdash; and it generates 365 days of content automatically. No writing experience needed.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">What types of content can the AI generate?<span class="faq-arr">+</span></button><div class="faq-a"><p>The AI generates Instagram feed posts, Instagram Reels scripts (with hooks, jump-cut markers, and on-screen text), carousel slides, Stories copy, Facebook posts, LinkedIn posts, Google Business Profile posts, captions, hashtag sets, festival posts, promotional content, educational posts, and testimonial showcases &mdash; for all 10 supported platforms.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Does it work for my specific business type?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Shoutly AI covers 155+ business categories. It understands the difference between a restaurant that needs dish reveals and a chartered accountant that needs tax tip posts. The AI generates content relevant to your specific industry &mdash; not generic one-size-fits-all posts.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Will the content sound like my brand &mdash; or like a bot?<span class="faq-arr">+</span></button><div class="faq-a"><p>It sounds like your brand. You set your brand voice once &mdash; formal or casual, energetic or calm, local or aspirational. The AI generates all content consistently in that tone. Every post sounds like someone from your team wrote it, not a generic AI tool. You can regenerate any post in seconds if something doesn&rsquo;t feel right.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">How long does it take to generate content?<span class="faq-arr">+</span></button><div class="faq-a"><p>Under 2 minutes. You spend about 90 seconds describing your business, then the AI generates your full content calendar &mdash; 365 days of posts, captions, Reels scripts, and hashtags &mdash; instantly. You review, approve, and it&rsquo;s done. Most users spend 10 minutes per month managing their social media after setup.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Can it generate content in Hindi or regional Indian languages?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Shoutly AI can generate content in Hindi, Tamil, Telugu, Kannada, Malayalam, Bengali, Marathi, and other regional languages alongside English &mdash; ideal for businesses targeting regional Indian audiences or bilingual customer bases.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Does it include Indian festival content automatically?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. All 30+ major Indian festivals are built into your content calendar: Diwali, Holi, Eid, Navratri, Independence Day, Republic Day, Ganesh Chaturthi, Pongal, Christmas, and more. Festival posts are customised for your business type and auto-scheduled 1&ndash;2 weeks before each occasion &mdash; so you&rsquo;re never scrambling at the last minute.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Can I edit what the AI generates?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Every post, caption, and Reels script is fully editable. You can tweak text, swap out ideas, add specific promotions or events, or click regenerate for 3 new AI options in seconds. The AI is a starting point &mdash; your edits make it perfect.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- RELATED FEATURES / LINKS -->
+<section class="section section-alt" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:36px">
+      <span class="sec-ey">More features</span>
+      <h2 class="sec-h2" style="font-size:clamp(22px,2.8vw,34px)">The AI Content Generator works with every other Shoutly AI feature</h2>
+    </div>
+    <div class="links-grid">
+      <a href="https://shoutlyai.com/features/ai-image-generator" class="link-card"><span style="font-size:18px">&#127912;</span> AI Image Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/ai-reel-generator" class="link-card"><span style="font-size:18px">&#127909;</span> AI Reel Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/social-scheduler" class="link-card"><span style="font-size:18px">&#128197;</span> Social Scheduler <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/content-calendar" class="link-card"><span style="font-size:18px">&#128200;</span> 365-Day Calendar <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/brand-kit" class="link-card"><span style="font-size:18px">&#127859;</span> Brand Kit <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/analytics" class="link-card"><span style="font-size:18px">&#128202;</span> Analytics <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/channel/instagram" class="link-card"><span style="font-size:18px">&#128247;</span> Instagram Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/channel/linkedin" class="link-card"><span style="font-size:18px">&#128188;</span> LinkedIn Generator <span class="link-arr">&#8594;</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" aria-labelledby="cta-h2">
+  <div class="wrap">
+    <h2 id="cta-h2">Stop writing posts manually.<br><span class="grad">Let AI do it for you.</span></h2>
+    <p>One prompt. 365 days of branded posts, Reels scripts, carousels, and hashtags &mdash; for every platform &mdash; auto-scheduled and published. Free 14-day trial.</p>
+    <div class="cta-btns">
+      <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-xl">Start generating for free <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+      <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-xl">Book a live demo</a>
+    </div>
+    <div class="cta-trust">
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>No credit card required</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>14-day free trial</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>&#8377;10,000/month &mdash; all 10 platforms</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>41,000+ businesses</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>4.9&#9733; rated</span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="ft-inner">
+      <a href="https://shoutlyai.com" class="ft-logo">
+        <div class="nav-mark" style="width:26px;height:26px;border-radius:7px"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" fill="#fff"/></svg></div>
+        Shoutly AI
+      </a>
+      <nav class="ft-links">
+        <a href="https://shoutlyai.com">Home</a>
+        <a href="https://shoutlyai.com/pricing">Pricing</a>
+        <a href="https://shoutlyai.com/demo">Book a Demo</a>
+        <a href="https://shoutlyai.com/case-studies">Case Studies</a>
+        <a href="https://shoutlyai.com/help-center">Help</a>
+        <a href="https://shoutlyai.com/about-us">About</a>
+        <a href="https://shoutlyai.com/contact-us">Contact</a>
+        <a href="https://shoutlyai.com/policy">Privacy</a>
+        <a href="https://shoutlyai.com/terms">Terms</a>
+      </nav>
+    </div>
+    <p class="ft-copy">&copy; 2026 Shoutly AI &mdash; Qubixel Technologies Private Limited. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+/* ── AI Window Animation ─────────────────────────────────────────────────── */
+var bizData = {
+  restaurant: {
+    prompt: "South Indian restaurant in Koramangala, Bengaluru. Family dining, festive specials, takeaway. Warm and welcoming tone.",
+    label: "Spice Garden Restaurant",
+    posts: [
+      { plat:"Instagram", ico:"&#128247;", bg:"linear-gradient(135deg,#f58529,#dd2a7b)", icon:"&#127829;", badge:"Feed Post", badgeCls:"badge-live",
+        cap:"Tuesday just got tastier. &#127859; Our slow-cooked Lucknowi Biryani &mdash; limited plates daily. Walk in before 1pm or it&rsquo;s gone.", tags:["#BengaluruFood","#Biryani","#RestaurantLife"] },
+      { plat:"Google Business", ico:"&#128205;", bg:"linear-gradient(135deg,#4285f4,#34a853)", icon:"&#11088;", badge:"GBP Post", badgeCls:"badge-sched",
+        cap:"Diwali Special: 20% off all thali combos Nov 1&ndash;3. Book your table now &mdash; seating is limited.", tags:["#DiwaliSpecial","#DiwaliOffer"] },
+      { plat:"Instagram Reels", ico:"&#127909;", bg:"linear-gradient(135deg,#dd2a7b,#8134af)", icon:"&#127916;", badge:"Reels Script", badgeCls:"badge-reel",
+        cap:"Hook: &lsquo;Our chef has made the same recipe for 30 years &mdash; and still won&rsquo;t share it&rsquo; &mdash; Full script with cut markers", tags:["#ChefLife","#RestaurantReels"] }
+    ]
+  },
+  salon: {
+    prompt: "Unisex hair salon in Powai, Mumbai. Premium services, festive packages. Friendly and aspirational tone.",
+    label: "Glow Salon",
+    posts: [
+      { plat:"Instagram", ico:"&#128247;", bg:"linear-gradient(135deg,#f58529,#dd2a7b)", icon:"&#9986;", badge:"Before/After", badgeCls:"badge-live",
+        cap:"Before &#8594; After. Kavya came in wanting a change. She left with her confidence. &#10024; Book your transformation &mdash; DM us.", tags:["#SalonMumbai","#HairGoals","#SalonTransformation"] },
+      { plat:"Instagram Reels", ico:"&#127909;", bg:"linear-gradient(135deg,#dd2a7b,#8134af)", icon:"&#127916;", badge:"Reels Script", badgeCls:"badge-reel",
+        cap:"Hook: &lsquo;3 things your stylist wishes you&rsquo;d do BEFORE your appointment&rsquo; &mdash; Full Reels script ready", tags:["#HairTips","#SalonReels"] },
+      { plat:"Facebook", ico:"&#128153;", bg:"linear-gradient(135deg,#1877f2,#166fe5)", icon:"&#127800;", badge:"Festival Offer", badgeCls:"badge-sched",
+        cap:"Navratri Special: Hair treatment + head massage &#8377;999 (regular &#8377;1,800). Valid this week only. Call to book.", tags:["#NavratriOffer","#SalonOffer"] }
+    ]
+  },
+  gym: {
+    prompt: "Gym and fitness centre in Kothrud, Pune. Transformation focus. Motivational, energetic brand voice.",
+    label: "FitZone Gym",
+    posts: [
+      { plat:"Instagram Reels", ico:"&#127909;", bg:"linear-gradient(135deg,#dd2a7b,#8134af)", icon:"&#127916;", badge:"Reels Script", badgeCls:"badge-reel",
+        cap:"Hook: &lsquo;3 habits that helped 200+ clients lose their first 5kg &mdash; without giving up chai&rsquo; &mdash; Full script with jump-cut markers", tags:["#FitnessIndia","#GymLife","#WeightLoss"] },
+      { plat:"Instagram", ico:"&#128247;", bg:"linear-gradient(135deg,#f58529,#dd2a7b)", icon:"&#128170;", badge:"Educational", badgeCls:"badge-live",
+        cap:"The gym isn&rsquo;t the hard part. Showing up when you don&rsquo;t feel like it is. &#128170; Tag someone who needs to hear this today.", tags:["#FitnessMotivation","#GymPune"] },
+      { plat:"Google Business", ico:"&#128205;", bg:"linear-gradient(135deg,#4285f4,#34a853)", icon:"&#127919;", badge:"GBP Post", badgeCls:"badge-sched",
+        cap:"August batch starting: 3-month transformation programme with certified trainer. First session FREE. Limited seats.", tags:["#GymPune","#FitnessGoals"] }
+    ]
+  },
+  realestate: {
+    prompt: "Real estate agent in Whitefield, Bengaluru. 2BHK and 3BHK properties. Professional, trust-building tone.",
+    label: "Whitefield Realty",
+    posts: [
+      { plat:"Instagram", ico:"&#128247;", bg:"linear-gradient(135deg,#f58529,#dd2a7b)", icon:"&#127968;", badge:"Tips Post", badgeCls:"badge-live",
+        cap:"3 things every first-time buyer in Whitefield gets wrong &mdash; and how to avoid them. &#127968; Save this before your next site visit.", tags:["#BengaluruProperty","#RealEstateTips","#Whitefield"] },
+      { plat:"LinkedIn", ico:"&#128188;", bg:"linear-gradient(135deg,#0077b5,#005fa3)", icon:"&#128200;", badge:"Market Update", badgeCls:"badge-sched",
+        cap:"Q3 2026 Bengaluru property: Whitefield +11%, Sarjapur +14%, HSR holding. What this means for buyers vs investors right now.", tags:["#RealEstateIndia","#BengaluruProperty"] },
+      { plat:"Instagram Reels", ico:"&#127909;", bg:"linear-gradient(135deg,#dd2a7b,#8134af)", icon:"&#127916;", badge:"Reels Script", badgeCls:"badge-reel",
+        cap:"Hook: &lsquo;I visited 12 flats in Whitefield &mdash; here&rsquo;s the only one I&rsquo;d actually buy, and why&rsquo; &mdash; Property tour script ready", tags:["#PropertyTour","#BengaluruHomes"] }
+    ]
+  }
+};
+
+var currentBiz = 'restaurant';
+var animTimer = null;
+
+function switchBiz(biz) {
+  if (biz === currentBiz) return;
+  currentBiz = biz;
+  document.querySelectorAll('.aw-chip').forEach(function(c) {
+    c.classList.toggle('active', c.getAttribute('onclick').includes("'" + biz + "'"));
+  });
+  runAnimation(biz);
+}
+
+function runAnimation(biz) {
+  if (animTimer) clearTimeout(animTimer);
+  var data = bizData[biz];
+  var promptEl = document.getElementById('aw-prompt');
+  var genEl = document.getElementById('aw-gen');
+  var postsEl = document.getElementById('aw-posts');
+  var genBizEl = document.getElementById('gen-biz');
+
+  // clear
+  postsEl.innerHTML = '';
+  genEl.classList.remove('show');
+
+  // type prompt
+  var fullPrompt = data.prompt;
+  var typed = '';
+  promptEl.textContent = '';
+  var ti = 0;
+  function typeNext() {
+    if (ti < fullPrompt.length) {
+      typed += fullPrompt[ti++];
+      promptEl.textContent = typed;
+      animTimer = setTimeout(typeNext, ti < 10 ? 30 : 18);
+    } else {
+      // show generating
+      genBizEl.textContent = data.label;
+      genEl.classList.add('show');
+      animTimer = setTimeout(function() {
+        genEl.classList.remove('show');
+        showPosts(data.posts, postsEl);
+      }, 1400);
+    }
+  }
+  typeNext();
+}
+
+function showPosts(posts, container) {
+  posts.forEach(function(p, i) {
+    animTimer = setTimeout(function() {
+      var el = document.createElement('div');
+      el.className = 'aw-post';
+      el.innerHTML =
+        '<div class="aw-post-head">'
+        + '<div class="aw-plat"><div class="aw-pico" style="background:' + p.bg + '">' + p.ico + '</div>' + p.plat + '</div>'
+        + '<span class="aw-badge ' + p.badgeCls + '">' + p.badge + '</span>'
+        + '</div>'
+        + '<div style="font-size:28px;text-align:center;padding:8px 0 10px">' + p.icon + '</div>'
+        + '<div class="aw-cap">' + p.cap + '</div>'
+        + '<div class="aw-tags">' + p.tags.map(function(t){ return '<span class="aw-tag">' + t + '</span>'; }).join('') + '</div>';
+      container.appendChild(el);
+      requestAnimationFrame(function() { requestAnimationFrame(function() { el.classList.add('show'); }); });
+    }, i * 300);
+  });
+}
+
+/* start with restaurant on load */
+window.addEventListener('load', function() { runAnimation('restaurant'); });
+
+/* ── FAQ ─────────────────────────────────────────────────────────────────── */
+function toggleFaq(btn) {
+  var item = btn.closest('.faq-item');
+  var open = item.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(open));
+}
+
+/* ── Scroll reveal ───────────────────────────────────────────────────────── */
+if ('IntersectionObserver' in window) {
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+  }, { threshold: .07, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('[data-r]').forEach(function(el) { obs.observe(el); });
+} else {
+  document.querySelectorAll('[data-r]').forEach(function(el) { el.classList.add('vis'); });
+}
+
+/* ── Nav scroll shadow ───────────────────────────────────────────────────── */
+var nav = document.getElementById('nav');
+window.addEventListener('scroll', function() {
+  nav.classList.toggle('scrolled', window.scrollY > 8);
+}, { passive: true });
+</script>
+</body>
+</html>

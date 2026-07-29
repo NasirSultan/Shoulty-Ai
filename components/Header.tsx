@@ -126,8 +126,8 @@ const MEGA_MENUS: MegaMenu[] = [
             {
                 title: "AI creation",
                 items: [
-                    { label: "AI Content Generator", href: "/#generator", icon: Sparkles, desc: "Turn one prompt into a week of posts.", badge: "POPULAR" },
-                    { label: "AI Image Generator", href: "/#generator", icon: ImageIcon, desc: "On-brand visuals in your colors and fonts." },
+                    { label: "AI Content Generator", href: "/shoutlyai-ai-content-generator.html", icon: Sparkles, desc: "Turn one prompt into a week of posts.", badge: "POPULAR" },
+                    { label: "AI Image Generator", href: "/shoutlyai-ai-image-generator.html", icon: ImageIcon, desc: "On-brand visuals in your colors and fonts." },
                     { label: "AI Reel Generator", href: "/#generator", icon: Clapperboard, desc: "Short-form video from a script or a URL.", badge: "NEW" },
                     { label: "AI Caption Generator", icon: MessageSquare, desc: "Captions tuned per platform, not copy-pasted." },
                     { label: "AI Hashtag Generator", icon: Hash, desc: "Tags ranked by reach, not by volume." },
@@ -209,7 +209,7 @@ const MEGA_MENUS: MegaMenu[] = [
                     { label: "Compare Plans", href: "/pricing", icon: Columns3, desc: "Every limit and feature, line by line." },
                     { label: "Enterprise", icon: Landmark, desc: "SSO, SLAs, and a named contact." },
                     { label: "FAQs", href: "/pricing", icon: HelpCircle, desc: "Billing, seats, limits, and cancellation." },
-                    { label: "Book a Demo", icon: CalendarCheck, desc: "30 minutes with a product specialist." },
+                    { label: "Book a Demo", href: "/shoutlyai-demo.html", icon: CalendarCheck, desc: "30 minutes with a product specialist." },
                 ],
             },
         ],
