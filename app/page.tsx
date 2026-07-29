@@ -949,6 +949,16 @@ const speeds = [120, 160, 110, 150, 130];
                             color: #F97316;
                             box-shadow: 0 8px 24px rgba(249,115,22,.35);
                           }
+                          .btn-book-demo {
+                            background: transparent;
+                            border: 2px solid rgba(255,255,255,.25);
+                            color: #fff;
+                            transition: background .25s, border-color .25s, box-shadow .25s;
+                          }
+                          .btn-book-demo:hover {
+                            background: rgba(255,255,255,.08);
+                            border-color: rgba(255,255,255,.5);
+                          }
                         `}</style>
                         <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2 sm:pt-4">
                             <button onClick={() => window.location.href = '/sign-in'} className="btn-start-now inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-sm sm:text-base">
@@ -956,6 +966,9 @@ const speeds = [120, 160, 110, 150, 130];
                                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="sm:w-4 sm:h-4">
                                     <path d="M2.5 7h9M8 3.5 11.5 7 8 10.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                                 </svg>
+                            </button>
+                            <button onClick={() => window.location.href = '/shoutlyai-demo.html'} className="btn-book-demo inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-sm sm:text-base">
+                                Book a Demo
                             </button>
                         </div>
                     </div>
