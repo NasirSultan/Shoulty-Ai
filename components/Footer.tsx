@@ -246,14 +246,14 @@ const Footer = () => {
         {/* Top band — brand blurb + newsletter */}
         <div className="border-b border-gray-200 pb-12 mb-12 grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
           <div>
-            <Link href="/" className="inline-block mb-4 -ml-4">
+            <Link href="/" className="inline-block relative w-40 sm:w-48 h-10 sm:h-12 overflow-hidden mb-1">
               <Image
-                src="/images/logo2.png"
+                src="/images/logo-master-white.png"
                 alt="Shoutly AI logo"
-                width={160}
-                height={56}
-                sizes="144px"
-                className="w-36 h-12 object-contain"
+                fill
+                priority
+                /* Keeps the logo sized at scale-80 and pinned flush to the left */
+                className="object-cover object-left scale-80 origin-left transform-gpu"
               />
             </Link>
             <p className="text-[15px] text-white max-w-sm leading-[1.65] mb-4">
