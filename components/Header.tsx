@@ -444,16 +444,16 @@ export default function Header() {
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 h-12 sm:h-14 flex items-center">
                     {/* Logo */}
-                    <div className="relative flex-shrink-0 w-24 h-8 sm:w-36 sm:h-12">
+                    <div className="relative flex-shrink-0 w-40 h-13 sm:w-56 sm:h-18 overflow-visible">
                         <Link href="/" aria-label="Go to homepage">
                             <Image
-                                src="/images/logo.png"
-                                alt="Shoutly AI logo"
-                                width={160}
-                                height={56}
-                                sizes="(max-width: 640px) 96px, 144px"
-                                priority
-                                className="w-24 h-8 sm:w-36 sm:h-12 object-contain"
+                            src="/images/logo-master.png"
+                            alt="Shoutly AI logo"
+                            fill
+                            sizes="(max-width: 640px) 160px, 224px"
+                            priority
+                            /* scale-175 zooms significantly into the actual graphic, ignoring the whitespace */
+                            className="object-contain scale-175 transform-gpu"
                             />
                         </Link>
                     </div>
