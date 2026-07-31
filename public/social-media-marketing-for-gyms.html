@@ -24,7 +24,6 @@
     <meta name="twitter:description"
     content="Automated social media growth for GYM with transformation stories, class highlights and retention campaigns." />
     <meta name="twitter:image" content="https://blog.shoutlyai.com/wp-content/uploads/2026/07/img-12.png" />
-    <script src="https://kit.fontawesome.com/ff762d7bfc.js" crossorigin="anonymous"></script>
     <style>
         body {
             --benefit-image: url("https://blog.shoutlyai.com/wp-content/uploads/2026/07/img-13.png");
@@ -1201,35 +1200,13 @@
         }
     </script>
 </head>
-<style>
-    /* small helpers Tailwind's CDN build doesn't include by default */
-  .grad-btn { background: linear-gradient(115deg,#F97316,#EA580C); }
-  .mega-panel {
-    opacity: 0;
-    transform: translate(-50%, 4px);
-    pointer-events: none;
-    transition: opacity .15s ease, transform .15s ease;
-  }
-  .mega-panel.open {
-    opacity: 1;
-    transform: translate(-50%, 0);
-    pointer-events: auto;
-  }
-  .nav-btn.active,
-  .nav-btn.is-open { background-color: #FFF7ED; color: #EA580C; }
-  .row-disabled { color: #D1D5DB; cursor: not-allowed; }
-  .row-icon-disabled { background: #F9FAFB; color: #D1D5DB; }
-  .row-icon-enabled { background: #FFF7ED; color: #EA580C; }
-</style>
+
 <body>
     <header>
         <div class="container navbar"><a href="https://shoutlyai.com/" class="logo">Shoutly<span>AI</span></a>
             <nav class="nav-links" id="navLinks" aria-label="Main navigation"><a href="#preview">Preview</a><a
-                href="https://shoutlyai.com/">Home</a>
-                <a href="https://shoutlyai.com/about-us">About</a>
-                <a href="#services">Services</a>
-                <a href="#faq">FAQ</a>
-                <a href="https://shoutlyai.com/contact-us">Contact</a>
+                href="https://shoutlyai.com/">Home</a><a href="https://shoutlyai.com/about-us">About</a><a
+                href="#services">Services</a><a href="#faq">FAQ</a><a href="https://shoutlyai.com/contact-us">Contact</a>
             </nav><a href="#preview" class="btn btn-primary">Get More Members</a><button class="menu-toggle"
             id="menuToggle">☰</button>
         </div>
@@ -1818,31 +1795,6 @@
             }
             loadNext();
         })();
-    </script>
-    <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    // 1. Find all menu buttons in the header automatically
-    const menuButtons = document.querySelectorAll("header button");
-
-    menuButtons.forEach((button) => {
-      // Trigger when mouse enters a button
-      button.addEventListener("mouseenter", () => {
-        button.classList.add("bg-orange-50", "text-orange-600");
-        
-        // Find and rotate the arrow icon inside the button if it exists
-        const arrow = button.querySelector("svg");
-        if (arrow) arrow.style.transform = "rotate(180deg)";
-      });
-
-      // Reset when mouse leaves
-      button.addEventListener("mouseleave", () => {
-        button.classList.remove("bg-orange-50", "text-orange-600");
-        
-        const arrow = button.querySelector("svg");
-        if (arrow) arrow.style.transform = "rotate(0deg)";
-      });
-    });
-  });
     </script>
 </body>
 

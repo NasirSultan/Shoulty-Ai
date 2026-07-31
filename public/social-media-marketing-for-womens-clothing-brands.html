@@ -271,7 +271,7 @@
     }
 
     .hero-image-wrap:before {
-      content: "☕ Posted Automatically";
+      content: "👗 Posted Automatically";
       position: absolute;
       left: -18px;
       bottom: 42px;
@@ -524,7 +524,13 @@
       border: 1px solid rgba(180, 83, 9, .1);
       border-radius: 18px;
       overflow: hidden;
-      box-shadow: 0 10px 26px rgba(59, 36, 23, .06)
+      box-shadow: 0 10px 26px rgba(59, 36, 23, .06);
+      transition: all 0.3s ease;
+    }
+
+    .faq-item.active {
+      border-color: var(--secondary);
+      box-shadow: 0 10px 30px rgba(180, 83, 9, .12);
     }
 
     .faq-question {
@@ -535,21 +541,52 @@
       text-align: left;
       display: flex;
       justify-content: space-between;
+      align-items: center;
       gap: 18px;
       cursor: pointer;
       font-weight: 950;
       color: var(--dark);
-      font-size: 1rem
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+      color: var(--secondary);
+    }
+
+    .faq-icon {
+      font-size: 1.5rem;
+      color: var(--secondary);
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .faq-item.active .faq-icon {
+      transform: rotate(45deg);
     }
 
     .faq-answer {
       display: none;
       padding: 0 20px 20px;
-      color: var(--muted)
+      color: var(--muted);
+      line-height: 1.8;
     }
 
     .faq-item.active .faq-answer {
-      display: block
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .final-cta {
@@ -1321,8 +1358,8 @@
                       <div class="post-overlay">
                         <h4>Women's Clothing<br>Social Post Preview</h4>
                         <div class="tags">
-                          <span>#WomensClothing</span><span>#FashionBoutique</span><span>#LocalStore</span></div><span
-                          class="post-cta">Get Directions →</span>
+                          <span>#WomensClothing</span><span>#FashionBoutique</span><span>#LocalStore</span>
+                        </div><span class="post-cta">Get Directions →</span>
                       </div>
                     </div>
                     <div class="fb-engage"><span>👍❤️ 248</span><span>34 comments · 12 shares</span></div>
@@ -1665,39 +1702,58 @@
       </div>
     </section>
 
+    <!-- FAQ SECTION - FIXED -->
     <section class="section" id="faq">
       <div class="container"><span class="section-badge">FAQs</span>
         <h2 class="section-title">Frequently asked questions about women's clothing social media automation</h2>
         <p class="section-text">Clear answers on how automated posting drives store footfall, local visibility, and
           apparel sales.</p>
         <div class="faq-grid">
-          <div class="faq-item active"><button class="faq-question">How can ShoutlyAI help my clothing boutique get more
-              customers? <span>+</span></button>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How can ShoutlyAI help my clothing boutique get more customers?
+              <span class="faq-icon">+</span>
+            </button>
             <div class="faq-answer">ShoutlyAI automates posting for new collection arrivals, ethnic &amp; western wear
               showcases, festive discounts, styling reels, and boutique location to drive footfall and sales.</div>
           </div>
-          <div class="faq-item"><button class="faq-question">What content can a women's clothing store post using
-              automation? <span>+</span></button>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              What content can a women's clothing store post using automation?
+              <span class="faq-icon">+</span>
+            </button>
             <div class="faq-answer">New dress arrivals, OOTD styling reels, festive wear highlights, seasonal discount
               announcements, fabric close-ups, custom fitting posts, and customer reviews.</div>
           </div>
-          <div class="faq-item"><button class="faq-question">Can ShoutlyAI promote festive collections and sale
-              discounts? <span>+</span></button>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              Can ShoutlyAI promote festive collections and sale discounts?
+              <span class="faq-icon">+</span>
+            </button>
             <div class="faq-answer">Yes. ShoutlyAI supports automated workflows for seasonal launches, weekend boutique
               sales, festive ethnic offers, and clearance promotions.</div>
           </div>
-          <div class="faq-item"><button class="faq-question">Does automated posting increase boutique footfall &amp;
-              sales? <span>+</span></button>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              Does automated posting increase boutique footfall &amp; sales?
+              <span class="faq-icon">+</span>
+            </button>
             <div class="faq-answer">Consistent, stylish and local-targeted posts keep your clothing store top-of-mind,
               improving shopper recall, boutique walk-ins, and outfit orders.</div>
           </div>
-          <div class="faq-item"><button class="faq-question">Will posts target local shoppers near my boutique?
-              <span>+</span></button>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              Will posts target local shoppers near my boutique?
+              <span class="faq-icon">+</span>
+            </button>
             <div class="faq-answer">Content highlights your boutique location, store hours, and trending outfits so
               nearby fashion lovers discover and visit your store.</div>
           </div>
-          <div class="faq-item"><button class="faq-question">Do all enquiry buttons redirect to ShoutlyAI?
-              <span>+</span></button>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              Do all enquiry buttons redirect to ShoutlyAI?
+              <span class="faq-icon">+</span>
+            </button>
             <div class="faq-answer">Yes. All main enquiry buttons and CTA links on this landing page redirect to
               https://www.shoutlyai.com.</div>
           </div>
@@ -1737,20 +1793,69 @@
     <div class="container copyright">© 2026 ShoutlyAI. All rights reserved. Social Media Automation for Women's Clothing
       &amp; Fashion Boutiques.</div>
   </footer>
+
   <script>
-    const menuToggle = document.getElementById("menuToggle"); const navLinks = document.getElementById("navLinks"); menuToggle.addEventListener("click", () => navLinks.classList.toggle("active")); document.querySelectorAll(".faq-question").forEach(button => { button.addEventListener("click", () => button.parentElement.classList.toggle("active")); });
-    /* Lead capture form */
+    // Menu toggle
+    const menuToggle = document.getElementById("menuToggle");
+    const navLinks = document.getElementById("navLinks");
+    if (menuToggle && navLinks) {
+      menuToggle.addEventListener("click", () => navLinks.classList.toggle("active"));
+    }
+
+    // FAQ Toggle function - FIXED
+    function toggleFaq(button) {
+      const item = button.closest('.faq-item');
+      if (!item) return;
+      item.classList.toggle('active');
+    }
+
+    // Initialize - open first FAQ by default
+    document.addEventListener('DOMContentLoaded', function () {
+      const firstFaq = document.querySelector('.faq-item');
+      if (firstFaq) {
+        firstFaq.classList.add('active');
+      }
+    });
+
+    // Lead capture form
     (function () {
-      var form = document.getElementById("leadCaptureForm"); if (!form) return; form.addEventListener("submit", function (e) {
-        e.preventDefault(); var name = document.getElementById("lcName").value.trim(); var phone = document.getElementById("lcPhone").value.trim(); var email = document.getElementById("lcEmail").value.trim(); var company = document.getElementById("lcCompany").value.trim(); if (!name || !phone || !email || !company) { alert("Please fill in your name, phone, email and women s clothing name."); return; } if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { alert("Please enter a valid email address."); return; } var lead = { name: name, phone: phone, email: email, women s clothing: company, city: document.getElementById("lcCity").value.trim(), type: document.getElementById("lcType").value, message: document.getElementById("lcMsg").value.trim(), page: location.href, time: new Date().toISOString() };
-        /* TODO: replace this with your real endpoint (Formspree / Google Sheet / CRM webhook). Example:
-        fetch("https://your-endpoint.example/leads",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(lead)});
-        */
-        console.log("New women s clothing lead captured:", lead); document.getElementById("leadForm").style.display = "none"; var s = document.getElementById("leadSuccess"); s.classList.add("show"); s.scrollIntoView({ behavior: "smooth", block: "center" });
+      var form = document.getElementById("leadCaptureForm");
+      if (!form) return;
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var name = document.getElementById("lcName").value.trim();
+        var phone = document.getElementById("lcPhone").value.trim();
+        var email = document.getElementById("lcEmail").value.trim();
+        var company = document.getElementById("lcCompany").value.trim();
+        if (!name || !phone || !email || !company) {
+          alert("Please fill in your name, phone, email and boutique name.");
+          return;
+        }
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+          alert("Please enter a valid email address.");
+          return;
+        }
+        var lead = {
+          name: name,
+          phone: phone,
+          email: email,
+          boutique: company,
+          city: document.getElementById("lcCity").value.trim(),
+          type: document.getElementById("lcType").value,
+          message: document.getElementById("lcMsg").value.trim(),
+          page: location.href,
+          time: new Date().toISOString()
+        };
+        console.log("New women's clothing boutique lead captured:", lead);
+        document.getElementById("leadForm").style.display = "none";
+        var s = document.getElementById("leadSuccess");
+        s.classList.add("show");
+        s.scrollIntoView({ behavior: "smooth", block: "center" });
       });
     })();
   </script>
-  <script>(function () {
+  <script>
+    (function () {
       if (window.__industrySharedLayoutLoader) return;
       window.__industrySharedLayoutLoader = true;
       var candidates = [
@@ -1760,6 +1865,7 @@
         '../../industry-shared-layout.js'
       ];
       var i = 0;
+
       function loadNext() {
         if (i >= candidates.length) return;
         var s = document.createElement('script');
@@ -1769,9 +1875,8 @@
         (document.body || document.documentElement).appendChild(s);
       }
       loadNext();
-    })();</script>
-
-
+    })();
+  </script>
 </body>
 
 </html>

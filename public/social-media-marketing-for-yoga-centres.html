@@ -526,7 +526,13 @@
       border: 1px solid rgba(180, 83, 9, .1);
       border-radius: 18px;
       overflow: hidden;
-      box-shadow: 0 10px 26px rgba(59, 36, 23, .06)
+      box-shadow: 0 10px 26px rgba(59, 36, 23, .06);
+      transition: all 0.3s ease;
+    }
+
+    .faq-item.active {
+      border-color: var(--secondary);
+      box-shadow: 0 10px 30px rgba(180, 83, 9, .12);
     }
 
     .faq-question {
@@ -537,21 +543,51 @@
       text-align: left;
       display: flex;
       justify-content: space-between;
+      align-items: center;
       gap: 18px;
       cursor: pointer;
       font-weight: 950;
       color: var(--dark);
-      font-size: 1rem
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+      color: var(--secondary);
+    }
+
+    .faq-icon {
+      font-size: 1.5rem;
+      color: var(--secondary);
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .faq-item.active .faq-icon {
+      transform: rotate(45deg);
     }
 
     .faq-answer {
       display: none;
       padding: 0 20px 20px;
-      color: var(--muted)
+      color: var(--muted);
+      line-height: 1.8;
     }
 
     .faq-item.active .faq-answer {
-      display: block
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .final-cta {
@@ -1672,33 +1708,51 @@
         <p class="section-text">Clear answers on how automated posting drives footfall, local visibility and repeat
           customers.</p>
         <div class="faq-grid">
-          <div class="faq-item active"><button class="faq-question">How can ShoutlyAI help my yoga centre get more
-              customers? <span>+</span></button>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How can ShoutlyAI help my yoga centre get more customers? 
+              <span class="faq-icon">+</span>
+            </button>
             <div class="faq-answer">ShoutlyAI automates posting of your schedule, workshops, wellness tips, ambience and
               offers to keep your yoga centre visible to nearby customers and drive footfall.</div>
           </div>
-          <div class="faq-item"><button class="faq-question">What content can a yoga centre post using automation?
-              <span>+</span></button>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              What content can a yoga centre post using automation? 
+              <span class="faq-icon">+</span>
+            </button>
             <div class="faq-answer">Studio shots, new classes, workshops, wellness tips, ambience photos,
               behind-the-counter reels, events, offers and customer reviews.</div>
           </div>
-          <div class="faq-item"><button class="faq-question">Can ShoutlyAI promote daily offers and happy hours?
-              <span>+</span></button>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              Can ShoutlyAI promote daily offers and happy hours? 
+              <span class="faq-icon">+</span>
+            </button>
             <div class="faq-answer">Yes. ShoutlyAI supports automated workflows for daily specials, weekend offers,
               happy hours, combo deals and limited-time promotions.</div>
           </div>
-          <div class="faq-item"><button class="faq-question">Does automated posting actually increase footfall?
-              <span>+</span></button>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              Does automated posting actually increase footfall? 
+              <span class="faq-icon">+</span>
+            </button>
             <div class="faq-answer">Consistent, appetising and local-focused posts keep your yoga centre top-of-mind,
               improving recall, walk-ins and repeat visits.</div>
           </div>
-          <div class="faq-item"><button class="faq-question">Will posts target local customers near my yoga centre?
-              <span>+</span></button>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              Will posts target local customers near my yoga centre? 
+              <span class="faq-icon">+</span>
+            </button>
             <div class="faq-answer">Content highlights your location, ambience and offers so nearby customers discover
               and remember your yoga centre.</div>
           </div>
-          <div class="faq-item"><button class="faq-question">Do all enquiry buttons redirect to ShoutlyAI?
-              <span>+</span></button>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              Do all enquiry buttons redirect to ShoutlyAI? 
+              <span class="faq-icon">+</span>
+            </button>
             <div class="faq-answer">Yes. All main enquiry buttons and CTA links on this landing page redirect to
               https://www.shoutlyai.com.</div>
           </div>
@@ -1738,15 +1792,64 @@
       wellness studios.</div>
   </footer>
   <script>
-    const menuToggle = document.getElementById("menuToggle"); const navLinks = document.getElementById("navLinks"); menuToggle.addEventListener("click", () => navLinks.classList.toggle("active")); document.querySelectorAll(".faq-question").forEach(button => { button.addEventListener("click", () => button.parentElement.classList.toggle("active")); });
-    /* Lead capture form */
+    // Menu toggle
+    const menuToggle = document.getElementById("menuToggle");
+    const navLinks = document.getElementById("navLinks");
+    menuToggle.addEventListener("click", () => navLinks.classList.toggle("active"));
+
+    // FAQ Toggle function
+    function toggleFaq(button) {
+      const item = button.parentElement;
+      const isActive = item.classList.contains("active");
+      
+      // Close all other FAQ items
+      document.querySelectorAll(".faq-item").forEach(el => {
+        el.classList.remove("active");
+      });
+      
+      // Toggle the clicked one
+      if (!isActive) {
+        item.classList.add("active");
+      }
+    }
+
+    // Open first FAQ item by default
+    document.querySelector(".faq-item")?.classList.add("active");
+
+    // Lead capture form
     (function () {
-      var form = document.getElementById("leadCaptureForm"); if (!form) return; form.addEventListener("submit", function (e) {
-        e.preventDefault(); var name = document.getElementById("lcName").value.trim(); var phone = document.getElementById("lcPhone").value.trim(); var email = document.getElementById("lcEmail").value.trim(); var company = document.getElementById("lcCompany").value.trim(); if (!name || !phone || !email || !company) { alert("Please fill in your name, phone, email and yoga centre name."); return; } if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { alert("Please enter a valid email address."); return; } var lead = { name: name, phone: phone, email: email, yoga centre: company, city: document.getElementById("lcCity").value.trim(), type: document.getElementById("lcType").value, message: document.getElementById("lcMsg").value.trim(), page: location.href, time: new Date().toISOString() };
-        /* TODO: replace this with your real endpoint (Formspree / Google Sheet / CRM webhook). Example:
-        fetch("https://your-endpoint.example/leads",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(lead)});
-        */
-        console.log("New yoga centre lead captured:", lead); document.getElementById("leadForm").style.display = "none"; var s = document.getElementById("leadSuccess"); s.classList.add("show"); s.scrollIntoView({ behavior: "smooth", block: "center" });
+      var form = document.getElementById("leadCaptureForm");
+      if (!form) return;
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var name = document.getElementById("lcName").value.trim();
+        var phone = document.getElementById("lcPhone").value.trim();
+        var email = document.getElementById("lcEmail").value.trim();
+        var company = document.getElementById("lcCompany").value.trim();
+        if (!name || !phone || !email || !company) {
+          alert("Please fill in your name, phone, email and yoga centre name.");
+          return;
+        }
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+          alert("Please enter a valid email address.");
+          return;
+        }
+        var lead = {
+          name: name,
+          phone: phone,
+          email: email,
+          "yoga centre": company,
+          city: document.getElementById("lcCity").value.trim(),
+          type: document.getElementById("lcType").value,
+          message: document.getElementById("lcMsg").value.trim(),
+          page: location.href,
+          time: new Date().toISOString()
+        };
+        console.log("New yoga centre lead captured:", lead);
+        document.getElementById("leadForm").style.display = "none";
+        var s = document.getElementById("leadSuccess");
+        s.classList.add("show");
+        s.scrollIntoView({ behavior: "smooth", block: "center" });
       });
     })();
   </script>

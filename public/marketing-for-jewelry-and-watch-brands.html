@@ -1738,20 +1738,52 @@
     <div class="container copyright">© 2026 ShoutlyAI. All rights reserved. Social Media Automation for Watch & Jewelry
       and watch & jewelry businesses.</div>
   </footer>
-  <script>
-    const menuToggle = document.getElementById("menuToggle"); const navLinks = document.getElementById("navLinks"); menuToggle.addEventListener("click", () => navLinks.classList.toggle("active")); document.querySelectorAll(".faq-question").forEach(button => { button.addEventListener("click", () => button.parentElement.classList.toggle("active")); });
+   <script>
+    const menuToggle = document.getElementById("menuToggle");
+    const navLinks = document.getElementById("navLinks");
+    menuToggle.addEventListener("click", () => navLinks.classList.toggle("active"));
+    document.querySelectorAll(".faq-question").forEach(button => {
+      button.addEventListener("click", () => button.parentElement.classList.toggle("active"));
+    });
     /* Lead capture form */
     (function () {
-      var form = document.getElementById("leadCaptureForm"); if (!form) return; form.addEventListener("submit", function (e) {
-        e.preventDefault(); var name = document.getElementById("lcName").value.trim(); var phone = document.getElementById("lcPhone").value.trim(); var email = document.getElementById("lcEmail").value.trim(); var company = document.getElementById("lcCompany").value.trim(); if (!name || !phone || !email || !company) { alert("Please fill in your name, phone, email and watch & jewelry name."); return; } if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { alert("Please enter a valid email address."); return; } var lead = { name: name, phone: phone, email: email, watch & jewelry: company, city: document.getElementById("lcCity").value.trim(), type: document.getElementById("lcType").value, message: document.getElementById("lcMsg").value.trim(), page: location.href, time: new Date().toISOString() };
-        /* TODO: replace this with your real endpoint (Formspree / Google Sheet / CRM webhook). Example:
-        fetch("https://your-endpoint.example/leads",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(lead)});
-        */
-        console.log("New watch & jewelry lead captured:", lead); document.getElementById("leadForm").style.display = "none"; var s = document.getElementById("leadSuccess"); s.classList.add("show"); s.scrollIntoView({ behavior: "smooth", block: "center" });
+      var form = document.getElementById("leadCaptureForm");
+      if (!form) return;
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var name = document.getElementById("lcName").value.trim();
+        var phone = document.getElementById("lcPhone").value.trim();
+        var email = document.getElementById("lcEmail").value.trim();
+        var company = document.getElementById("lcCompany").value.trim();
+        if (!name || !phone || !email || !company) {
+          alert("Please fill in your name, phone, email and gym name.");
+          return;
+        }
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+          alert("Please enter a valid email address.");
+          return;
+        }
+        var lead = {
+          name: name,
+          phone: phone,
+          email: email,
+          gym: company,
+          city: document.getElementById("lcCity").value.trim(),
+          type: document.getElementById("lcType").value,
+          message: document.getElementById("lcMsg").value.trim(),
+          page: location.href,
+          time: new Date().toISOString()
+        };
+        console.log("New gym lead captured:", lead);
+        document.getElementById("leadForm").style.display = "none";
+        var s = document.getElementById("leadSuccess");
+        s.classList.add("show");
+        s.scrollIntoView({ behavior: "smooth", block: "center" });
       });
     })();
   </script>
-  <script>(function () {
+  <script>
+    (function () {
       if (window.__industrySharedLayoutLoader) return;
       window.__industrySharedLayoutLoader = true;
       var candidates = [
@@ -1761,6 +1793,7 @@
         '../../industry-shared-layout.js'
       ];
       var i = 0;
+
       function loadNext() {
         if (i >= candidates.length) return;
         var s = document.createElement('script');
@@ -1770,7 +1803,8 @@
         (document.body || document.documentElement).appendChild(s);
       }
       loadNext();
-    })();</script>
+    })();
+  </script>
 
 
 </body>
