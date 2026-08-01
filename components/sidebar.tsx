@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 // Font Awesome requirement: Import CSS in your layout file (see instructions below)
 
 // ─────────────────────────────────────────────
@@ -133,12 +134,16 @@ export default function Sidebar() {
       className="hidden md:flex md:flex-col">
       {/* ── Logo ── */}
       <div style={S.sbLogo}>
-        <div style={S.sbMark}>S</div>
-        {!slim && (
-          <span style={S.sbWordmark}>
-            Shoutly <span style={S.sbAccent}>AI</span>
-          </span>
-        )}
+        <div style={{ position: "relative", width: slim ? 32 : 120, height: 32, flexShrink: 0 }}>
+          <Image
+            src="/images/logo-master.png"
+            alt="Shoutly AI"
+            fill
+            sizes="120px"
+            priority
+            className="object-contain object-left"
+          />
+        </div>
         {/* Collapse toggle lives inside the logo bar */}
         <button
           onClick={() => setSlim((v) => !v)}
@@ -254,12 +259,15 @@ export default function Sidebar() {
         }}>
           {/* ── Logo ── */}
           <div style={S.sbLogo}>
-            <div style={S.sbMark}>S</div>
-            {!slim && (
-              <span style={S.sbWordmark}>
-                Shoutly <span style={S.sbAccent}>AI</span>
-              </span>
-            )}
+            <div style={{ position: "relative", width: slim ? 32 : 120, height: 32, flexShrink: 0 }}>
+              <Image
+                src="/images/logo-master.png"
+                alt="Shoutly AI"
+                fill
+                sizes="120px"
+                className="object-contain object-left"
+              />
+            </div>
             <button
               onClick={() => setMobileOpen(false)}
               style={{

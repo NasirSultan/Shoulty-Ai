@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { API_ENDPOINTS } from "@/api/configApi";
@@ -172,28 +173,20 @@ export default function Sidebar({ slim = false }: SidebarProps) {
         <Link href="/dashboards" style={{ textDecoration: "none" }}>
           <div style={{
             display: "flex", alignItems: "center", gap: 10,
-            padding: slim ? "14px 0 16px" : "14px 16px 18px",
-            justifyContent: slim ? "center" : "flex-start",
+            padding: slim ? "6px 0 8px" : "6px 6px 8px",
+            justifyContent: "center",
             borderBottom: "1px solid #F3F4F6",
           }}>
-            <span style={{
-              width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-              background: GRAD,
-              display: "grid", placeItems: "center",
-              boxShadow: "0 4px 10px -2px rgba(249,115,22,.45)",
-            }}>
-              <svg viewBox="0 0 24 24" fill="none" style={{ width: 16, height: 16 }}>
-                <path d="M4 13h5l2 5 4-12 2 5h3" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </span>
-            {!slim && (
-              <span style={{ fontWeight: 700, fontSize: "1rem", color: "#111827", letterSpacing: "-.01em" }}>
-                Shoutly
-                <span style={{ background: GRAD, WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
-                  AI
-                </span>
-              </span>
-            )}
+            <div style={{ position: "relative", width: slim ? 56 : 216, height: 64, flexShrink: 0 }}>
+              <Image
+                src="/images/logo-master.png"
+                alt="Shoutly AI"
+                fill
+                sizes="216px"
+                priority
+                className="object-contain"
+              />
+            </div>
           </div>
         </Link>
 
@@ -407,28 +400,21 @@ export default function Sidebar({ slim = false }: SidebarProps) {
           {/* Logo with close button */}
           <div style={{
             display: "flex", alignItems: "center", gap: 10,
-            padding: "14px 16px 18px",
+            padding: "6px 6px 8px",
             justifyContent: "space-between",
             borderBottom: "1px solid #F3F4F6",
           }}>
-            <Link href="/dashboards" onClick={() => closeMobile()} style={{ textDecoration: "none" }}>
-              <span style={{
-                width: 30, height: 30, borderRadius: 8, flexShrink: 0,
-                background: GRAD,
-                display: "grid", placeItems: "center",
-                boxShadow: "0 4px 10px -2px rgba(249,115,22,.45)",
-              }}>
-                <svg viewBox="0 0 24 24" fill="none" style={{ width: 16, height: 16 }}>
-                  <path d="M4 13h5l2 5 4-12 2 5h3" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
+            <Link href="/dashboards" onClick={() => closeMobile()} style={{ textDecoration: "none", flex: 1, display: "flex", justifyContent: "center" }}>
+              <div style={{ position: "relative", width: 216, height: 64 }}>
+                <Image
+                  src="/images/logo-master.png"
+                  alt="Shoutly AI"
+                  fill
+                  sizes="216px"
+                  className="object-contain"
+                />
+              </div>
             </Link>
-            <span style={{ fontWeight: 700, fontSize: "1rem", color: "#111827", letterSpacing: "-.01em", flex: 1, marginLeft: 10 }}>
-              Shoutly
-              <span style={{ background: GRAD, WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
-                AI
-              </span>
-            </span>
             <button
               onClick={() => closeMobile()}
               style={{

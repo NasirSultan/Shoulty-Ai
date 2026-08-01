@@ -1,0 +1,78 @@
+/* ── SHARED SITE HEADER (mega-menu nav) ─────────────────────────────
+   Include on any static page with the demo-style header:
+   <link rel="stylesheet" href="/css/site-nav.css">
+   <script src="/js/site-nav.js" defer></script>
+   Markup contract:
+   header.site-header
+     > div.site-header-inner > nav.sh-links > div.sh-item[data-menu] > a.sh-link
+     > div.sh-mega-wrap > div.sh-panel[data-menu] > div.mp-inner > (div.mp-cols > div.mp-col > (div.mp-col-title, div.mp-col-items > a.mp-row)), div.mp-featured
+     > div.sh-mobile
+────────────────────────────────────────────────────────────────── */
+.site-header{position:sticky;top:0;z-index:200;height:56px;display:flex;flex-direction:column;background:#fff;border-bottom:1px solid #eee}
+.site-header-inner{display:flex;align-items:center;width:100%;max-width:1280px;margin:0 auto;padding:0 24px;gap:8px;height:56px;flex-shrink:0}
+.sh-logo{display:flex;align-items:center;flex-shrink:0}
+.sh-logo img{width:110px;height:36px;object-fit:contain}
+.sh-links{display:none;align-items:center;gap:2px;margin-left:32px;font-size:14px;font-weight:500}
+.sh-item{position:relative}
+.sh-link{display:flex;align-items:center;gap:5px;color:#000;padding:8px 12px;border-radius:8px;transition:background .14s,color .14s}
+.sh-link:hover{background:#fff7ed;color:#F97316}
+.sh-link svg{width:13px;height:13px;flex-shrink:0;transition:transform .15s}
+.sh-item.open .sh-link{background:#fff7ed;color:#F97316}
+.sh-item.open .sh-link svg{transform:rotate(180deg)}
+.sh-right{margin-left:auto;display:none;align-items:center;gap:18px}
+.sh-search{color:#c9c9c9;cursor:not-allowed}
+.sh-login{font-size:14px;color:#000}
+.sh-login:hover{color:#F97316}
+.sh-start{padding:9px 20px;border-radius:999px;color:#fff;font-size:14px;font-weight:500;background:linear-gradient(115deg,#F97316,#EA580C);box-shadow:0 2px 8px rgba(249,115,22,.28);transition:opacity .15s}
+.sh-start:hover{opacity:.9}
+.sh-burger{margin-left:auto;display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;background:none;border:none;cursor:pointer;color:#000}
+.sh-burger:hover{background:#f5f5f5}
+
+/* Mega-menu panel */
+.sh-mega-wrap{position:static}
+.sh-panel{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);width:92%;max-width:1180px;background:#fff;border:1px solid #eee;border-top:none;box-shadow:0 22px 45px rgba(17,24,39,.14);border-radius:0 0 20px 20px;z-index:210}
+.sh-panel.open{display:block}
+.mp-inner{padding:28px 32px;display:flex;gap:40px}
+.mp-cols{flex:1;display:grid;gap:32px}
+.mp-col-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#9ca3af;margin-bottom:12px}
+.mp-col-items{display:flex;flex-direction:column;gap:2px}
+.mp-col-items.mp-col-grid{display:grid;grid-template-columns:1fr 1fr;column-gap:32px;row-gap:2px;max-width:420px}
+.mp-row{display:flex;align-items:flex-start;gap:10px;padding:6px 10px;margin:0 -10px;border-radius:8px;text-decoration:none;cursor:pointer}
+.mp-row:not(.mp-row-off):hover{background:rgba(249,115,22,.07)}
+.mp-row-off{cursor:not-allowed}
+.mp-ico{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#fff7ed;color:#F97316;margin-top:1px}
+.mp-ico svg{width:14px;height:14px}
+.mp-ico-off{background:#f9fafb;color:#d1d5db}
+.mp-text{min-width:0}
+.mp-label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#111827}
+.mp-row-off .mp-label{color:#9ca3af}
+.mp-badge{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:2px 6px;border-radius:4px;background:#ffedd5;color:#F97316}
+.mp-desc{display:block;font-size:11px;margin-top:2px;line-height:1.4;color:#6b7280}
+.mp-row-off .mp-desc{color:#d1d5db}
+.mp-featured{width:288px;flex-shrink:0;border-radius:16px;padding:20px;background:#fff7ed;border:1px solid #ffedd5}
+.mp-featured-eyebrow{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#F97316;margin-bottom:8px}
+.mp-featured-title{font-size:16px;font-weight:800;color:#111827;margin-bottom:8px;line-height:1.3}
+.mp-featured-desc{font-size:12px;color:#4b5563;line-height:1.6;margin-bottom:16px}
+.mp-cta{display:inline-flex;align-items:center;gap:5px;font-size:14px;font-weight:700;color:#F97316;text-decoration:none}
+.mp-cta:hover{color:#EA580C}
+.mp-cta-off{color:#d1d5db;cursor:not-allowed}
+
+/* Mobile menu (flat list, no mega-menu below the desktop breakpoint) */
+.sh-mobile{display:none;position:fixed;left:0;right:0;top:56px;background:#fff;border-top:1px solid #eee;padding:16px 24px 20px;box-shadow:0 12px 28px rgba(0,0,0,.08);z-index:199;max-height:calc(100vh - 56px);overflow-y:auto}
+.sh-mobile.open{display:block}
+.sh-mobile a{display:block;padding:10px 0;font-size:15px;font-weight:600;color:#000;border-bottom:1px solid #f2f2f2}
+.sh-mobile .sh-mobile-cta{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.sh-mobile .sh-start{text-align:center}
+.sh-mobile .sh-login{text-align:center;padding:9px 20px;border-radius:999px;border:1.5px solid #e5e5e5}
+
+@media(min-width:930px){
+  .sh-links{display:flex}
+  .sh-right{display:flex}
+  .sh-burger{display:none}
+}
+@media(max-width:1279px){
+  .mp-featured{width:240px}
+}
+@media(max-width:929px){
+  .sh-panel{display:none !important}
+}
