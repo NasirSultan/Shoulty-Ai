@@ -80,10 +80,88 @@
     });
   }
 
+  /* Auth-aware header state — mirrors components/Header.tsx: a logged-in user
+     (shoutly_token + shoutly_user in localStorage) sees an avatar/profile
+     dropdown instead of Log in / Start Free Trial. */
+  function initAuth(){
+    var guest=document.getElementById('sh-auth-guest');
+    var profile=document.getElementById('sh-profile');
+    var mobileGuest=document.getElementById('sh-mobile-auth-guest');
+    var mobileProfile=document.getElementById('sh-mobile-profile');
+    if(!guest&&!profile&&!mobileGuest&&!mobileProfile) return;
+
+    function applyUser(el,nameEl,emailEl,avatarEl,user){
+      if(nameEl) nameEl.textContent=user.name||'';
+      if(emailEl) emailEl.textContent=user.email||'';
+      if(avatarEl) avatarEl.textContent=(user.name||'U').charAt(0).toUpperCase();
+      if(el && el.querySelector('.sh-profile-info')) el.querySelector('.sh-profile-info').style.display=user.name?'':'none';
+    }
+
+    function refresh(){
+      var token=localStorage.getItem('shoutly_token');
+      var user=null;
+      if(token){
+        var stored=localStorage.getItem('shoutly_user');
+        if(stored){
+          try{ user=JSON.parse(stored); }catch(e){ user={}; }
+        }else{
+          user={};
+        }
+      }
+
+      if(user){
+        if(guest) guest.style.display='none';
+        if(profile) profile.style.display='';
+        if(mobileGuest) mobileGuest.style.display='none';
+        if(mobileProfile) mobileProfile.style.display='';
+        applyUser(profile,document.getElementById('sh-profile-name'),document.getElementById('sh-profile-email'),document.getElementById('sh-avatar'),user);
+        applyUser(mobileProfile,document.getElementById('sh-mobile-profile-name'),document.getElementById('sh-mobile-profile-email'),null,user);
+      }else{
+        if(guest) guest.style.display='';
+        if(profile) profile.style.display='none';
+        if(mobileGuest) mobileGuest.style.display='';
+        if(mobileProfile) mobileProfile.style.display='none';
+      }
+    }
+
+    function signOut(){
+      localStorage.removeItem('shoutly_token');
+      localStorage.removeItem('shoutly_user');
+      window.dispatchEvent(new Event('auth-changed'));
+      window.location.href='/';
+    }
+
+    var profileBtn=document.getElementById('sh-profile-btn');
+    var profileMenu=document.getElementById('sh-profile-menu');
+    if(profileBtn&&profileMenu){
+      profileBtn.addEventListener('click',function(e){
+        e.stopPropagation();
+        var open=profileMenu.classList.toggle('open');
+        profileBtn.setAttribute('aria-expanded',String(open));
+      });
+      document.addEventListener('click',function(e){
+        if(!profileMenu.contains(e.target)&&e.target!==profileBtn){
+          profileMenu.classList.remove('open');
+          profileBtn.setAttribute('aria-expanded','false');
+        }
+      });
+    }
+
+    var signOutBtn=document.getElementById('sh-signout');
+    if(signOutBtn) signOutBtn.addEventListener('click',signOut);
+    var mobileSignOutBtn=document.getElementById('sh-mobile-signout');
+    if(mobileSignOutBtn) mobileSignOutBtn.addEventListener('click',signOut);
+
+    window.addEventListener('storage',refresh);
+    window.addEventListener('auth-changed',refresh);
+    refresh();
+  }
+
   if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',function(){ initDropdowns(); initBurger(); });
+    document.addEventListener('DOMContentLoaded',function(){ initDropdowns(); initBurger(); initAuth(); });
   }else{
     initDropdowns();
     initBurger();
+    initAuth();
   }
 })();
