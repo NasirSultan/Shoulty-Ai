@@ -159,35 +159,73 @@ footer{background:var(--dark);color:rgba(255,255,255,.78);padding:60px 0 28px}.f
 <section class="section final-cta" id="start"><div class="container"><span class="section-badge">Ready for More Store Shoppers?</span><h2 class="section-title">Make your kids clothing store the top choice for local parents</h2><p class="section-text">Stop struggling with daily posting. Build a consistent, sales-focused social media presence with ShoutlyAI.</p><a href="#preview" class="btn btn-primary">Get My Free Kids Clothing Post Sample</a></div></section>
 </main>
 <footer><div class="container footer-grid"><div><h3>ShoutlyAI</h3><p>ShoutlyAI is a social media automated content posting platform helping kids clothing stores, babywear boutiques, children's fashion brands, and local retailers stay consistent online and attract more shoppers.</p></div><div><h4>Quick Links</h4><div class="footer-links"><a href="https://shoutlyai.com/">Home</a><a href="https://shoutlyai.com/about-us">About</a><a href="#services">Services</a><a href="#faq">FAQ</a><a href="https://shoutlyai.com/contact-us">Contact</a></div></div><div><h4>Grow Your Store Sales</h4><p>Launch a consistent social media system that brings local parents to your kids clothing store.</p><br><a href="#preview" class="btn btn-primary">Get Started</a></div></div><div class="container copyright">© 2026 ShoutlyAI. All rights reserved. Social Media Automation for Kids Clothing Stores &amp; Retailers.</div></footer>
-<script>
-const menuToggle=document.getElementById("menuToggle");const navLinks=document.getElementById("navLinks");menuToggle.addEventListener("click",()=>navLinks.classList.toggle("active"));document.querySelectorAll(".faq-question").forEach(button=>{button.addEventListener("click",()=>button.parentElement.classList.toggle("active"));});
-/* Lead capture form */
-(function(){var form=document.getElementById("leadCaptureForm");if(!form)return;form.addEventListener("submit",function(e){e.preventDefault();var name=document.getElementById("lcName").value.trim();var phone=document.getElementById("lcPhone").value.trim();var email=document.getElementById("lcEmail").value.trim();var company=document.getElementById("lcCompany").value.trim();if(!name||!phone||!email||!company){alert("Please fill in your name, phone, email and kids clothing name.");return;}if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){alert("Please enter a valid email address.");return;}var lead={name:name,phone:phone,email:email,kids clothing:company,city:document.getElementById("lcCity").value.trim(),type:document.getElementById("lcType").value,message:document.getElementById("lcMsg").value.trim(),page:location.href,time:new Date().toISOString()};
-/* TODO: replace this with your real endpoint (Formspree / Google Sheet / CRM webhook). Example:
-fetch("https://your-endpoint.example/leads",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(lead)});
-*/
-console.log("New kids clothing lead captured:",lead);document.getElementById("leadForm").style.display="none";var s=document.getElementById("leadSuccess");s.classList.add("show");s.scrollIntoView({behavior:"smooth",block:"center"});});})();
-</script>
-  <script>(function(){
-  if (window.__industrySharedLayoutLoader) return;
-  window.__industrySharedLayoutLoader = true;
-  var candidates = [
-    '/industry-shared-layout.js',
-    'industry-shared-layout.js',
-    '../industry-shared-layout.js',
-    '../../industry-shared-layout.js'
-  ];
-  var i = 0;
-  function loadNext(){
-    if (i >= candidates.length) return;
-    var s = document.createElement('script');
-    s.src = candidates[i++];
-    s.onload = function(){};
-    s.onerror = loadNext;
-    (document.body || document.documentElement).appendChild(s);
-  }
-  loadNext();
-})();</script>
+ <script>
+        const menuToggle = document.getElementById("menuToggle");
+        const navLinks = document.getElementById("navLinks");
+        menuToggle.addEventListener("click", () => navLinks.classList.toggle("active"));
+        document.querySelectorAll(".faq-question").forEach(button => {
+            button.addEventListener("click", () => button.parentElement.classList.toggle("active"));
+        });
+        /* Lead capture form */
+        (function() {
+            var form = document.getElementById("leadCaptureForm");
+            if (!form) return;
+            form.addEventListener("submit", function(e) {
+                e.preventDefault();
+                var name = document.getElementById("lcName").value.trim();
+                var phone = document.getElementById("lcPhone").value.trim();
+                var email = document.getElementById("lcEmail").value.trim();
+                var company = document.getElementById("lcCompany").value.trim();
+                if (!name || !phone || !email || !company) {
+                    alert("Please fill in your name, phone, email and gym name.");
+                    return;
+                }
+                if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+                    alert("Please enter a valid email address.");
+                    return;
+                }
+                var lead = {
+                    name: name,
+                    phone: phone,
+                    email: email,
+                    gym: company,
+                    city: document.getElementById("lcCity").value.trim(),
+                    type: document.getElementById("lcType").value,
+                    message: document.getElementById("lcMsg").value.trim(),
+                    page: location.href,
+                    time: new Date().toISOString()
+                };
+                console.log("New gym lead captured:", lead);
+                document.getElementById("leadForm").style.display = "none";
+                var s = document.getElementById("leadSuccess");
+                s.classList.add("show");
+                s.scrollIntoView({ behavior: "smooth", block: "center" });
+            });
+        })();
+    </script>
+    <script>
+        (function() {
+            if (window.__industrySharedLayoutLoader) return;
+            window.__industrySharedLayoutLoader = true;
+            var candidates = [
+                '/industry-shared-layout.js',
+                'industry-shared-layout.js',
+                '../industry-shared-layout.js',
+                '../../industry-shared-layout.js'
+            ];
+            var i = 0;
+
+            function loadNext() {
+                if (i >= candidates.length) return;
+                var s = document.createElement('script');
+                s.src = candidates[i++];
+                s.onload = function() {};
+                s.onerror = loadNext;
+                (document.body || document.documentElement).appendChild(s);
+            }
+            loadNext();
+        })();
+    </script>
 
 
 </body></html>
