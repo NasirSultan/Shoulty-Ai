@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import {
-    ChevronDown, Menu, X, Search,
+    ChevronDown, Menu, X,
     LayoutGrid, Sparkles, Volume2,
     Store, Utensils, ShoppingBag, HeartPulse, Dumbbell, Building2, Users, Rocket, Briefcase, Landmark,
     Image as ImageIcon, Clapperboard, MessageSquare, Hash, Clock, Calendar, Share2, ListChecks,
@@ -489,14 +489,6 @@ export default function Header() {
 
                     {/* Right side (Desktop only) */}
                     <div className="hidden min-[930px]:flex text-black items-center gap-4 ml-auto">
-                        <button
-                            className="text-gray-300 cursor-not-allowed p-1.5"
-                            title="Search — coming soon"
-                            aria-label="Search (coming soon)"
-                        >
-                            <Search className="w-[18px] h-[18px]" />
-                        </button>
-
                         {user ? (
                             <div className="relative" ref={profileRef}>
                                 <button
