@@ -26,4 +26,5 @@ export const API_ENDPOINTS = {
     passwordUpdate: `${API_BASE_URL}/api/users/password`,
     dashboard: `${API_BASE_URL}/api/dashboard`,
     notes: `${API_BASE_URL}/api/notes`,
+    festivalsRandom: `${API_BASE_URL}/api/festivals/random`,
 };

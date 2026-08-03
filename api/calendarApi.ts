@@ -36,7 +36,7 @@ export interface CalendarPost {
   contentId: string;
   reelId: string;
   imageId: string;
-  type: "IMAGE" | "REEL";
+  type: "IMAGE" | "REEL" | "FESTIVAL";
   postTime: string; // ISO format
   status: "SCHEDULED" | "PUBLISHED" | "DRAFT";
 }
@@ -79,7 +79,7 @@ export interface Post {
     hashtags: string[];
   };
   media: {
-    type: "IMAGE" | "REEL";
+    type: "IMAGE" | "REEL" | "FESTIVAL";
     id: string;
     file: string;
   };
