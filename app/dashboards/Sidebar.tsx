@@ -182,9 +182,9 @@ export default function Sidebar({ slim = false }: SidebarProps) {
                 src="/images/logo-master.png"
                 alt="Shoutly AI"
                 fill
-                sizes="216px"
+                sizes="300px"
                 priority
-                className="object-contain"
+                className="object-contain scale-[2]"
               />
             </div>
           </div>
@@ -411,7 +411,7 @@ export default function Sidebar({ slim = false }: SidebarProps) {
                   alt="Shoutly AI"
                   fill
                   sizes="216px"
-                  className="object-contain"
+                  className="object-contain scale-[1.65]"
                 />
               </div>
             </Link>

@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI Caption Generator &mdash; Write Better Captions in Seconds | Shoutly AI</title>
+<meta name="description" content="Shoutly AI's Caption Generator writes platform-optimised captions for Instagram, Facebook, LinkedIn, and more. Brand voice, hooks, CTAs, and hashtags included. No writing skills needed.">
+<link rel="canonical" href="https://shoutlyai.com/features/ai-caption-generator">
+<meta property="og:title" content="AI Caption Generator &mdash; Shoutly AI">
+<meta property="og:description" content="AI writes captions for every post, platform, and occasion. Brand voice, scroll-stopping hooks, CTAs, and 30 hashtags &mdash; in seconds.">
+<meta property="og:url" content="https://shoutlyai.com/features/ai-caption-generator">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shoutly AI">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@shoutlyai">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Shoutly AI Caption Generator","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":"https://shoutlyai.com/features/ai-caption-generator","description":"AI-powered caption generator that writes platform-optimised social media captions, hooks, CTAs, and hashtags for any business in seconds.","featureList":["AI caption writer","Instagram caption generator","Facebook caption generator","LinkedIn caption generator","Hook line generator","CTA writer","Hashtag generator","Brand voice AI","Festival captions","Multi-platform captions"],"offers":{"@type":"Offer","price":"10000","priceCurrency":"INR"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"2847","bestRating":"5"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is Shoutly AI's caption generator?","acceptedAnswer":{"@type":"Answer","text":"Shoutly AI's caption generator uses AI to write platform-optimised social media captions for your business. Every caption includes a scroll-stopping hook, engaging body copy, a clear CTA, and up to 30 relevant hashtags — in your brand voice, for every platform."}},{"@type":"Question","name":"Does it write captions in my brand voice?","acceptedAnswer":{"@type":"Answer","text":"Yes. You set your brand voice once — formal, casual, energetic, local, aspirational — and every caption is generated consistently in that tone. Your Instagram captions won't sound like a corporate LinkedIn post."}},{"@type":"Question","name":"Does it include hashtags?","acceptedAnswer":{"@type":"Answer","text":"Yes. Every caption comes with up to 30 researched hashtags — a smart mix of niche-specific, mid-range, and broad tags that maximise reach without triggering spam filters."}},{"@type":"Question","name":"Can it write captions for different platforms?","acceptedAnswer":{"@type":"Answer","text":"Yes. The AI writes differently for each platform. Instagram captions have hooks and hashtags. LinkedIn posts are professional and story-driven. Facebook posts are conversational. Google Business posts are local and keyword-rich. Each platform gets the format that works best."}},{"@type":"Question","name":"Does it write festival and occasion captions?","acceptedAnswer":{"@type":"Answer","text":"Yes. Shoutly AI auto-generates captions for Diwali, Holi, Eid, Navratri, Independence Day, and 30+ Indian festivals — customised for your business type and brand voice, scheduled weeks in advance."}},{"@type":"Question","name":"Can it write captions in Hindi or regional languages?","acceptedAnswer":{"@type":"Answer","text":"Yes. Shoutly AI writes captions in Hindi, Tamil, Telugu, Kannada, Malayalam, Bengali, Marathi, and other regional Indian languages — ideal for businesses targeting regional audiences or bilingual customers."}}]}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:#0f0f0f;-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+:root{
+  --p:#f97316;--p2:#fb923c;--p3:#fdba74;
+  --pg:linear-gradient(135deg,#f97316,#ea580c);
+  --dark:#08021a;
+  --glow:rgba(249,115,22,.26);
+  --ink:#0f0f0f;--ink2:#262626;--ink3:#525252;--ink4:#a3a3a3;
+  --surface:#f7f7fb;--border:#fde7cf;--border2:#fed7aa;
+  --green:#16a34a;
+  --max:1200px;
+  --r:8px;--r2:12px;--r3:16px;--r4:22px;--r5:30px;
+}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:62px;display:flex;align-items:center;transition:box-shadow .2s}
+.nav.scrolled{box-shadow:0 1px 14px rgba(0,0,0,.07)}
+.nav-inner{display:flex;align-items:center;width:100%;max-width:var(--max);margin:0 auto;padding:0 28px;gap:8px}
+.nav-logo{display:flex;align-items:center;gap:9px;font-size:15.5px;font-weight:800;color:var(--ink);letter-spacing:-.3px}
+.nav-mark{width:32px;height:32px;border-radius:9px;background:var(--pg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-mark svg{width:16px;height:16px;fill:#fff}
+.feat-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#fff7ed,#ffedd5);border:1px solid #fed7aa;color:var(--p);border-radius:100px;padding:3px 10px;font-size:11.5px;font-weight:700;margin-left:6px}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:18px}
+.nav-links a{font-size:13.5px;color:var(--ink3);padding:5px 12px;border-radius:var(--r);font-weight:500;transition:all .14s}
+.nav-links a:hover{color:var(--ink);background:var(--surface)}
+.nav-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:600;border-radius:var(--r2);padding:9px 20px;transition:all .15s;cursor:pointer;border:1.5px solid transparent;white-space:nowrap;letter-spacing:-.01em}
+.btn-ghost{color:var(--ink2);border-color:var(--border2)}
+.btn-ghost:hover{background:var(--surface);color:var(--ink)}
+.btn-primary{background:var(--pg);color:#fff;border:none;box-shadow:0 2px 10px var(--glow)}
+.btn-primary:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 6px 22px var(--glow)}
+.btn-lg{padding:13px 28px;font-size:15.5px;font-weight:700;border-radius:var(--r3)}
+.btn-xl{padding:15px 34px;font-size:16px;font-weight:700;border-radius:var(--r3)}
+.btn-white{background:#fff;color:var(--p);border:none;font-weight:700}
+.btn-white:hover{background:#fff7ed;transform:translateY(-1px)}
+.btn-wh-ghost{background:transparent;color:rgba(255,255,255,.8);border:1.5px solid rgba(255,255,255,.3)}
+.btn-wh-ghost:hover{border-color:rgba(255,255,255,.65);color:#fff}
+.btn-sm{padding:7px 16px;font-size:13px}
+
+/* BREADCRUMB */
+.bc{background:var(--surface);border-bottom:1px solid var(--border);padding:11px 0}
+.bc-inner{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink4)}
+.bc-inner a{color:var(--ink4);transition:color .14s}
+.bc-inner a:hover{color:var(--p)}
+
+/* HERO */
+.hero{background:var(--dark);padding:80px 0 76px;position:relative;overflow:hidden}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none}
+.hero-orb-1{width:700px;height:700px;background:radial-gradient(circle,rgba(249,115,22,.42),transparent 68%);top:-250px;left:-180px}
+.hero-orb-2{width:450px;height:450px;background:radial-gradient(circle,rgba(251,146,60,.24),transparent 65%);bottom:-120px;right:-80px}
+.hero-inner{display:grid;grid-template-columns:1.1fr 1fr;gap:64px;align-items:center;position:relative;z-index:1}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(249,115,22,.16);border:1px solid rgba(249,115,22,.34);border-radius:100px;padding:5px 14px 5px 9px;font-size:12.5px;font-weight:600;color:#fed7aa;margin-bottom:22px}
+.ey-dot{width:7px;height:7px;border-radius:50%;background:#ea580c;animation:pulse 2.2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+.hero-h1{font-family:'Inter Tight',sans-serif;font-size:clamp(38px,5vw,62px);font-weight:900;letter-spacing:-2.8px;line-height:.96;color:#fff;margin-bottom:22px}
+.hero-h1 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(15px,1.6vw,18px);color:rgba(255,255,255,.6);line-height:1.72;max-width:480px;margin-bottom:34px}
+.hero-ctas{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:30px}
+.hero-proof{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.hp{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.45)}
+.hp svg{width:13px;height:13px;stroke:rgba(249,115,22,.85);stroke-width:2.5;fill:none;flex-shrink:0}
+
+/* CAPTION LIVE WINDOW */
+.cap-window{background:#0c0820;border:1px solid rgba(255,255,255,.1);border-radius:var(--r5);overflow:hidden;box-shadow:0 32px 70px rgba(0,0,0,.5),0 0 0 1px rgba(249,115,22,.12),inset 0 1px 0 rgba(255,255,255,.06)}
+.cw-bar{background:#150e2e;border-bottom:1px solid rgba(255,255,255,.07);padding:11px 16px;display:flex;align-items:center;gap:10px}
+.cw-dots{display:flex;gap:6px}
+.cw-dot{width:10px;height:10px;border-radius:50%}
+.cw-dot.r{background:#ff5f57}.cw-dot.y{background:#febc2e}.cw-dot.g{background:#28c840}
+.cw-title{font-size:11px;color:rgba(255,255,255,.3);margin-left:8px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.cw-body{padding:18px 20px}
+/* platform selector */
+.cw-plat-row{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.cw-plat{font-size:11px;font-weight:700;padding:5px 11px;border-radius:100px;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.45);cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:5px}
+.cw-plat.active{background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.42);color:#fed7aa}
+/* topic input mock */
+.cw-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.28);margin-bottom:7px}
+.cw-topic{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:var(--r2);padding:10px 13px;font-size:13px;color:rgba(255,255,255,.7);margin-bottom:12px;line-height:1.5;min-height:38px}
+/* generated caption output */
+.cw-out-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.28);margin-bottom:9px}
+.cw-caption-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:var(--r3);padding:14px;margin-bottom:10px;min-height:100px;transition:opacity .3s}
+.cw-caption-box.fading{opacity:.3}
+.cap-hook{color:#f472b6;font-size:12.5px;font-weight:700;display:block;margin-bottom:5px}
+.cap-lbl-sm{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.25);margin-bottom:3px}
+.cap-body-text{font-size:12px;color:rgba(255,255,255,.7);line-height:1.65;margin-bottom:8px}
+.cap-cta-text{font-size:12px;color:#fdba74;font-weight:600;margin-bottom:8px}
+.cap-tags{display:flex;gap:5px;flex-wrap:wrap}
+.cap-tag{font-size:11px;color:#fb923c;font-weight:500}
+/* generating state */
+.cw-gen{display:none;align-items:center;gap:10px;padding:14px;background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.14);border-radius:var(--r2);margin-bottom:10px}
+.cw-gen.show{display:flex}
+.gdots{display:flex;gap:4px}
+.gdot{width:7px;height:7px;border-radius:50%;background:#fb923c;animation:gdot 1.2s ease-in-out infinite}
+.gdot:nth-child(2){animation-delay:.2s}.gdot:nth-child(3){animation-delay:.4s}
+@keyframes gdot{0%,80%,100%{transform:scale(.7);opacity:.35}40%{transform:scale(1.2);opacity:1}}
+.gtext{font-size:12px;color:rgba(255,255,255,.45)}
+.gtext strong{color:#fdba74}
+/* footer chips */
+.cw-footer{background:#150e2e;border-top:1px solid rgba(255,255,255,.06);padding:10px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cw-biz-lbl{font-size:11px;color:rgba(255,255,255,.3);font-weight:600;white-space:nowrap}
+.cw-chips{display:flex;gap:6px;flex-wrap:wrap}
+.cw-chip{font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;cursor:pointer;transition:all .18s;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.45)}
+.cw-chip.active{background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.42);color:#fed7aa}
+
+/* STAT STRIP */
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);background:var(--border);gap:1px;border:1px solid var(--border);border-radius:var(--r4);overflow:hidden}
+.ss-cell{background:#fff;padding:26px 20px;text-align:center}
+.ss-n{font-family:'Inter Tight',sans-serif;font-size:clamp(26px,2.8vw,38px);font-weight:900;background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-2px;line-height:1;margin-bottom:5px}
+.ss-l{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.ss-s{font-size:12px;color:var(--ink4)}
+
+/* SECTION */
+.section{padding:88px 0}
+.section-alt{background:var(--surface)}
+.sec-ey{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--p);margin-bottom:10px;display:block}
+.sec-h2{font-family:'Inter Tight',sans-serif;font-size:clamp(26px,3.3vw,42px);font-weight:900;letter-spacing:-1.5px;color:var(--ink);line-height:1.05;margin-bottom:12px}
+.sec-p{font-size:17px;color:var(--ink2);line-height:1.72;max-width:600px}
+.center{text-align:center}
+.center .sec-p{margin:0 auto}
+
+/* PAIN */
+.pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pain-card{background:#fff;border:1px solid var(--border);border-radius:var(--r3);padding:22px;display:flex;gap:14px;transition:border-color .18s}
+.pain-card:hover{border-color:var(--border2)}
+.pain-ico{width:42px;height:42px;border-radius:11px;background:#fef2f2;border:1px solid #fecaca;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.pain-title{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.pain-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+
+/* ANATOMY SECTION */
+.anatomy-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+.anatomy-steps{display:flex;flex-direction:column;gap:16px}
+.anatomy-part{background:#fff;border:1px solid var(--border);border-radius:var(--r3);padding:20px 22px;display:flex;gap:16px;transition:all .18s;cursor:default}
+.anatomy-part:hover{border-color:#fed7aa;box-shadow:0 3px 14px rgba(249,115,22,.08)}
+.ap-num{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;font-family:'Inter Tight',sans-serif}
+.ap-title{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.ap-desc{font-size:13px;color:var(--ink3);line-height:1.6}
+.ap-example{font-size:12px;color:var(--p);font-style:italic;margin-top:6px;line-height:1.55}
+/* live caption preview */
+.live-caption-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);overflow:hidden}
+.lc-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.lc-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0}
+.lc-name{font-size:13.5px;font-weight:700;color:var(--ink)}
+.lc-plat{font-size:12px;color:var(--ink4)}
+.lc-img{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:40px}
+.lc-body{padding:14px 18px}
+.lc-part-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;margin-bottom:3px;display:block}
+.lc-hook-text{font-size:13.5px;color:var(--ink);font-weight:700;margin-bottom:8px;line-height:1.5}
+.lc-body-text{font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:8px}
+.lc-cta-text{font-size:13px;color:var(--p);font-weight:600;margin-bottom:10px}
+.lc-tags-wrap{display:flex;gap:5px;flex-wrap:wrap}
+.lc-tag{font-size:12px;color:#f97316;font-weight:500}
+.lc-footer{border-top:1px solid var(--border);padding:10px 18px;display:flex;align-items:center;justify-content:space-between}
+.lc-ai-lbl{font-size:11px;font-weight:600;color:var(--p);display:flex;align-items:center;gap:5px}
+.lc-time{font-size:11.5px;color:var(--ink4)}
+
+/* PLATFORM SECTION */
+.plat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.plat-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:26px;transition:all .2s}
+.plat-card:hover{border-color:var(--border2);box-shadow:0 5px 20px rgba(249,115,22,.08);transform:translateY(-2px)}
+.pc-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.pc-ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.pc-name{font-size:16px;font-weight:800;color:var(--ink);letter-spacing:-.3px}
+.pc-handle{font-size:12.5px;color:var(--ink4)}
+.pc-rules{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.pc-rule{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:var(--ink2)}
+.pc-rule-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.pc-example{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:12px 14px;font-size:12.5px;color:var(--ink3);line-height:1.65;font-style:italic}
+.pc-example strong{color:var(--ink);font-style:normal}
+
+/* EXAMPLE OUTPUTS */
+.output-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.output-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);overflow:hidden;transition:all .2s}
+.output-card:hover{border-color:var(--border2);box-shadow:0 6px 24px rgba(249,115,22,.08);transform:translateY(-2px)}
+.oc-head{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.oc-plat{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink)}
+.oc-pico{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.oc-type{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:100px}
+.oc-body{padding:16px}
+.oc-biz{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--p);margin-bottom:10px}
+.oc-hook{font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.45;margin-bottom:7px;border-left:3px solid var(--p);padding-left:10px}
+.oc-body-t{font-size:12.5px;color:var(--ink2);line-height:1.68;margin-bottom:7px}
+.oc-cta-t{font-size:12.5px;color:var(--p);font-weight:600;margin-bottom:8px}
+.oc-tags{display:flex;gap:5px;flex-wrap:wrap}
+.oc-tag{font-size:11px;color:var(--p);font-weight:500}
+.oc-footer{padding:10px 16px;border-top:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:space-between}
+.oc-ai-lbl{font-size:11px;font-weight:600;color:var(--p);display:flex;align-items:center;gap:4px}
+
+/* FEATURES GRID */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.feat-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:26px;transition:all .18s}
+.feat-card:hover{border-color:#fed7aa;box-shadow:0 4px 18px rgba(249,115,22,.08)}
+.fc-ico{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#fff7ed,#faf5ff);display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:13px}
+.fc-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:7px}
+.fc-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+
+/* TESTIMONIALS */
+.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.test-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:28px;display:flex;flex-direction:column;transition:all .18s}
+.test-card:hover{border-color:var(--border2);box-shadow:0 6px 24px rgba(249,115,22,.08);transform:translateY(-2px)}
+.test-stars{color:#f59e0b;font-size:13px;letter-spacing:2px;margin-bottom:13px}
+.test-quote{font-size:14px;color:var(--ink2);line-height:1.76;font-style:italic;flex:1;margin-bottom:18px}
+.test-author{display:flex;align-items:center;gap:11px}
+.ta-av{width:40px;height:40px;border-radius:50%;background:var(--pg);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+.ta-name{font-size:13.5px;font-weight:700;color:var(--ink);display:block}
+.ta-biz{font-size:12px;color:var(--ink4)}
+
+/* FAQ */
+.faq-list{border:1px solid var(--border);border-radius:var(--r4);overflow:hidden;max-width:740px;margin:40px auto 0}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-item:last-child{border-bottom:none}
+.faq-q{width:100%;padding:18px 22px;background:#fff;border:none;display:flex;align-items:center;justify-content:space-between;text-align:left;cursor:pointer;font-size:15px;font-weight:600;color:var(--ink);gap:14px;transition:background .14s;font-family:inherit}
+.faq-q:hover{background:var(--surface)}
+.faq-arr{width:24px;height:24px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--ink4);flex-shrink:0;transition:all .22s}
+.faq-item.open .faq-arr{background:var(--pg);border-color:transparent;color:#fff;transform:rotate(45deg)}
+.faq-a{display:none;padding:0 22px 18px;font-size:14.5px;color:var(--ink2);line-height:1.75;background:#fff}
+.faq-item.open .faq-a{display:block}
+
+/* LINKS */
+.links-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.link-card{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:var(--r2);padding:12px 14px;font-size:13.5px;font-weight:500;color:var(--ink2);transition:all .15s}
+.link-card:hover{border-color:#fed7aa;background:#fff7ed;color:var(--p)}
+.link-arr{margin-left:auto;font-size:12px;color:var(--ink4)}
+.link-card:hover .link-arr{color:var(--p)}
+
+/* CTA */
+.cta-section{background:var(--dark);padding:96px 0;text-align:center;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 65% at 50% 110%,rgba(249,115,22,.24) 0%,transparent 70%);pointer-events:none}
+.cta-section h2{font-family:'Inter Tight',sans-serif;font-size:clamp(30px,5vw,54px);font-weight:900;letter-spacing:-2.5px;line-height:1.03;color:#fff;margin-bottom:16px;position:relative;z-index:1}
+.cta-section h2 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-section p{font-size:17.5px;color:rgba(255,255,255,.6);line-height:1.7;max-width:520px;margin:0 auto 38px;position:relative;z-index:1}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:22px;position:relative;z-index:1}
+.cta-trust{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,.4);position:relative;z-index:1}
+.ct{display:flex;align-items:center;gap:5px}
+.ct svg{width:13px;height:13px;stroke:rgba(249,115,22,.85);stroke-width:2.5;fill:none}
+
+/* FOOTER */
+.footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.07);padding:32px 0}
+.ft-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ft-logo{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:800;color:rgba(255,255,255,.6)}
+.ft-links{display:flex;gap:18px;flex-wrap:wrap}
+.ft-links a{font-size:13px;color:rgba(255,255,255,.3);transition:color .14s}
+.ft-links a:hover{color:rgba(255,255,255,.65)}
+.ft-copy{font-size:12px;color:rgba(255,255,255,.2);margin-top:14px}
+
+@media(max-width:1024px){
+  .hero-inner{grid-template-columns:1fr;gap:44px}
+  .cap-window{max-width:540px;margin:0 auto}
+  .anatomy-grid,.plat-grid{grid-template-columns:1fr}
+  .output-grid,.feat-grid{grid-template-columns:1fr 1fr}
+  .test-grid{grid-template-columns:1fr 1fr}
+  .links-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:720px){
+  .nav-links,.nav-right .btn-ghost{display:none}
+  .pain-grid,.output-grid,.feat-grid,.test-grid{grid-template-columns:1fr}
+  .stat-strip{grid-template-columns:1fr 1fr}
+  .section{padding:60px 0}
+  .wrap{padding:0 18px}
+}
+@media(prefers-reduced-motion:reduce){.ey-dot,.gdot{animation:none}}
+[data-r]{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}
+[data-r].vis{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<main>
+
+<!-- HERO -->
+<section class="hero" aria-labelledby="hero-h1">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="wrap">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-eyebrow"><span class="ey-dot"></span>AI Caption Generator &mdash; Feature</div>
+        <h1 class="hero-h1" id="hero-h1">Captions that stop<br>the scroll.<br><span class="grad">Written by AI.</span></h1>
+        <p class="hero-sub">Shoutly AI writes platform-optimised captions for every post &mdash; scroll-stopping hooks, engaging body copy, a clear CTA, and 30 hashtags &mdash; all in your brand voice, in seconds.</p>
+        <div class="hero-ctas">
+          <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-lg">Generate my first caption free <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+          <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-lg">See a live demo</a>
+        </div>
+        <div class="hero-proof">
+          <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Hook &middot; Body &middot; CTA &middot; 30 hashtags</span>
+          <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Your brand voice, every time</span>
+          <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Every platform, right format</span>
+        </div>
+      </div>
+
+      <!-- LIVE CAPTION WINDOW -->
+      <div>
+        <div class="cap-window" role="region" aria-label="AI caption generator preview">
+          <div class="cw-bar">
+            <div class="cw-dots"><div class="cw-dot r"></div><div class="cw-dot y"></div><div class="cw-dot g"></div></div>
+            <span class="cw-title">Shoutly AI &mdash; Caption Generator</span>
+          </div>
+          <div class="cw-body">
+            <div class="cw-lbl">Platform</div>
+            <div class="cw-plat-row" id="plat-row">
+              <span class="cw-plat active" onclick="setPlat('instagram')">&#128247; Instagram</span>
+              <span class="cw-plat" onclick="setPlat('facebook')">&#128153; Facebook</span>
+              <span class="cw-plat" onclick="setPlat('linkedin')">&#128188; LinkedIn</span>
+              <span class="cw-plat" onclick="setPlat('google')">&#128205; Google Biz</span>
+            </div>
+            <div class="cw-lbl">Post topic</div>
+            <div class="cw-topic" id="cw-topic">Loading&hellip;</div>
+            <div class="cw-out-lbl">AI-generated caption</div>
+            <div class="cw-gen" id="cw-gen">
+              <div class="gdots"><div class="gdot"></div><div class="gdot"></div><div class="gdot"></div></div>
+              <div class="gtext">Writing caption for <strong id="gen-lbl">your business</strong>&hellip;</div>
+            </div>
+            <div class="cw-caption-box" id="cw-cap-box">
+              <div class="cap-lbl-sm">Hook</div>
+              <span class="cap-hook" id="cap-hook"></span>
+              <div class="cap-lbl-sm">Caption</div>
+              <div class="cap-body-text" id="cap-body"></div>
+              <div class="cap-lbl-sm">CTA</div>
+              <div class="cap-cta-text" id="cap-cta"></div>
+              <div class="cap-tags" id="cap-tags"></div>
+            </div>
+          </div>
+          <div class="cw-footer">
+            <span class="cw-biz-lbl">Business:</span>
+            <div class="cw-chips">
+              <span class="cw-chip active" onclick="switchBiz('restaurant')">&#127829; Restaurant</span>
+              <span class="cw-chip" onclick="switchBiz('salon')">&#9986; Salon</span>
+              <span class="cw-chip" onclick="switchBiz('gym')">&#127947; Gym</span>
+              <span class="cw-chip" onclick="switchBiz('ca')">&#128202; CA Firm</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STAT STRIP -->
+<section style="padding:52px 0 0" data-r>
+  <div class="wrap">
+    <div class="stat-strip">
+      <div class="ss-cell"><div class="ss-n">30</div><div class="ss-l">Hashtags per post</div><div class="ss-s">Niche, mid-range &amp; broad mix</div></div>
+      <div class="ss-cell"><div class="ss-n">10</div><div class="ss-l">Platforms supported</div><div class="ss-s">Right format for each one</div></div>
+      <div class="ss-cell"><div class="ss-n">&lt;5s</div><div class="ss-l">Generation time</div><div class="ss-s">From topic to publish-ready caption</div></div>
+      <div class="ss-cell"><div class="ss-n">8+</div><div class="ss-l">Indian languages</div><div class="ss-s">Hindi, Tamil, Telugu &amp; more</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN -->
+<section class="section" aria-labelledby="pain-h2" data-r>
+  <div class="wrap">
+    <div style="margin-bottom:48px">
+      <span class="sec-ey">The caption problem</span>
+      <h2 class="sec-h2" id="pain-h2">A weak caption wastes a great image. Most businesses write the same 3 lines on every post.</h2>
+      <p class="sec-p">The caption is what converts a viewer into a follower, a follower into a customer. Most businesses either skip it, repeat themselves, or copy generic templates that sound like nobody.</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-ico">&#128165;</div>
+        <div>
+          <div class="pain-title">The blank caption box &mdash; every single post</div>
+          <div class="pain-desc">You have a great photo. You open the caption box. You type &ldquo;Check out our new dish!&rdquo; and cringe. Then you add 5 random hashtags. That caption gets 12 likes and zero saves. Meanwhile, the business next door is driving 400 profile visits from a single post.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#128257;</div>
+        <div>
+          <div class="pain-title">Copy-pasting the same caption with minor edits</div>
+          <div class="pain-desc">After a few weeks, every caption starts sounding identical. Same structure, same phrases, same CTAs. Your audience notices and engagement drops. The algorithm notices too and quietly stops distributing your posts to non-followers.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#127760;</div>
+        <div>
+          <div class="pain-title">Captions that don&rsquo;t match the platform</div>
+          <div class="pain-desc">An Instagram caption that works has a hook in the first line, emojis, and 30 hashtags. A LinkedIn post needs no hashtags, a story-driven opening, and professional language. A Google Business post needs local keywords. Copy-pasting across platforms hurts performance on all of them.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#8987;</div>
+        <div>
+          <div class="pain-title">Writing 30 hashtags takes 20 minutes per post</div>
+          <div class="pain-desc">Good hashtag research means finding niche-specific tags under 100K posts, mid-range tags between 100K&ndash;1M, and broad tags above 1M &mdash; then mixing them correctly. Most businesses skip this and use the same 10 tags on every post, which Instagram now flags as low-effort.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#127759;</div>
+        <div>
+          <div class="pain-title">Instagram&rsquo;s AI now indexes captions for keywords</div>
+          <div class="pain-desc">Since 2025, Instagram uses AI to read caption text and categorise content for distribution. Generic captions get categorised incorrectly and reach the wrong audience. Keyword-rich, topic-specific captions get distributed to people who are actively interested in your niche.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#128100;</div>
+        <div>
+          <div class="pain-title">Your captions don&rsquo;t sound like your brand</div>
+          <div class="pain-desc">One day your caption is formal and corporate. The next it&rsquo;s overly casual. When you&rsquo;re writing in a rush, voice consistency disappears. Inconsistent brand voice erodes trust &mdash; visitors can feel when a brand doesn&rsquo;t know what it wants to sound like.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ANATOMY OF A GREAT CAPTION -->
+<section class="section section-alt" id="anatomy" aria-labelledby="anat-h2" data-r>
+  <div class="wrap">
+    <div class="anatomy-grid">
+      <div>
+        <span class="sec-ey">What makes a caption perform</span>
+        <h2 class="sec-h2" id="anat-h2">Every great caption has 4 parts. Shoutly AI writes all of them.</h2>
+        <p class="sec-p" style="margin-bottom:36px">Most captions fail because they start with the wrong thing, end with no direction, and have nothing in between worth saving. Here&rsquo;s how the AI builds every caption.</p>
+        <div class="anatomy-steps">
+          <div class="anatomy-part">
+            <div class="ap-num" style="background:linear-gradient(135deg,#ec4899,#fb923c)">1</div>
+            <div>
+              <div class="ap-title">The Hook &mdash; first 125 characters</div>
+              <div class="ap-desc">Instagram truncates captions after 125 characters. If the first line doesn&rsquo;t earn the &ldquo;more&rdquo; tap, nobody reads the rest. The AI writes a hook that creates curiosity, emotion, or urgency in the first sentence.</div>
+              <div class="ap-example">&ldquo;I lost 8kg eating the SAME food I always ate &mdash; here&rsquo;s what actually changed&rdquo;</div>
+            </div>
+          </div>
+          <div class="anatomy-part">
+            <div class="ap-num" style="background:linear-gradient(135deg,#f97316,#ea580c)">2</div>
+            <div>
+              <div class="ap-title">The Body &mdash; value delivery</div>
+              <div class="ap-desc">The body delivers on the hook&rsquo;s promise. Tips, story, insight, or offer details written conversationally &mdash; not like a brochure. The AI writes body copy in your brand voice so it sounds like your team, not a robot.</div>
+              <div class="ap-example">&ldquo;Most people think weight loss is about eating less. It&rsquo;s not. Here are the 3 non-diet changes that actually moved the needle&hellip;&rdquo;</div>
+            </div>
+          </div>
+          <div class="anatomy-part">
+            <div class="ap-num" style="background:linear-gradient(135deg,#0ea5e9,#f97316)">3</div>
+            <div>
+              <div class="ap-title">The CTA &mdash; tell them exactly what to do</div>
+              <div class="ap-desc">Save this. DM us. Book now. Drop a &#128293; in the comments. Every caption needs one clear action. The AI picks the right CTA for the post type &mdash; educational posts get &ldquo;save this,&rdquo; offers get &ldquo;DM to book,&rdquo; Reels get &ldquo;follow for more.&rdquo;</div>
+              <div class="ap-example">&ldquo;Save this post for your next workout. Follow for daily fitness tips that actually work.&rdquo;</div>
+            </div>
+          </div>
+          <div class="anatomy-part">
+            <div class="ap-num" style="background:linear-gradient(135deg,#10b981,#0ea5e9)">4</div>
+            <div>
+              <div class="ap-title">30 Hashtags &mdash; researched for your niche</div>
+              <div class="ap-desc">The AI generates a smart mix: 10 niche-specific tags (under 100K posts for exact audience targeting), 10 mid-range tags (100K&ndash;1M), and 10 broad tags (1M+). This mix maximises Explore page placement without triggering spam filters.</div>
+              <div class="ap-example">#FitnessTips #BengaluruFitness #GymLife #WeightLoss #FitnessIndia #IndianFitness &hellip;+24 more</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- live annotated caption preview -->
+      <div>
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--p);margin-bottom:14px">&#10022; Live example &mdash; Fitness Coach &middot; Mumbai</div>
+        <div class="live-caption-card">
+          <div class="lc-header">
+            <div class="lc-av" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">FC</div>
+            <div>
+              <div class="lc-name">FitLife Coach</div>
+              <div class="lc-plat">Instagram &middot; 12,400 followers</div>
+            </div>
+          </div>
+          <div class="lc-img" style="background:linear-gradient(135deg,#fff7ed,#ffedd5)">&#127939;&#65039;</div>
+          <div class="lc-body">
+            <span class="lc-part-label" style="color:#ec4899">&#9650; Hook (first 125 chars &mdash; earns the tap)</span>
+            <div class="lc-hook-text">3 habits that helped 200+ clients lose their first 5kg &mdash; without giving up chai &#9749;</div>
+            <span class="lc-part-label" style="color:var(--p)">&#9650; Body (delivers the promise)</span>
+            <div class="lc-body-text">Most people think it&rsquo;s about eating less. It&rsquo;s not.<br><br>When I tracked what actually changed for my clients who got results &mdash; it was never the food. It was the timing, the stress, and the sleep.<br><br>Here are the 3 non-diet habits that moved the needle every time &#128071;</div>
+            <span class="lc-part-label" style="color:#0ea5e9">&#9650; CTA (one clear action)</span>
+            <div class="lc-cta-text">Save this for your journey. Drop a &#128170; if you needed this today.</div>
+            <span class="lc-part-label" style="color:var(--green)">&#9650; 30 hashtags (niche + mid + broad)</span>
+            <div class="lc-tags-wrap">
+              <span class="lc-tag">#FitnessTips</span>
+              <span class="lc-tag">#WeightLoss</span>
+              <span class="lc-tag">#MumbaiFitness</span>
+              <span class="lc-tag">#FitnessCoach</span>
+              <span class="lc-tag">#HealthyLiving</span>
+              <span class="lc-tag">#FitnessIndia</span>
+              <span class="lc-tag" style="color:var(--ink4)">+24 more</span>
+            </div>
+          </div>
+          <div class="lc-footer">
+            <span class="lc-ai-lbl">&#10022; AI-generated in 4 seconds</span>
+            <span class="lc-time">Scheduled: Thu 6:30pm</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BY PLATFORM -->
+<section class="section" id="platforms" aria-labelledby="plat-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:52px">
+      <span class="sec-ey">Platform-specific writing</span>
+      <h2 class="sec-h2" id="plat-h2">Every platform has different rules. The AI knows all of them.</h2>
+      <p class="sec-p">A caption that works on Instagram actively hurts you on LinkedIn. The AI writes differently for each platform &mdash; right length, right tone, right structure.</p>
+    </div>
+    <div class="plat-grid">
+      <!-- Instagram -->
+      <div class="plat-card">
+        <div class="pc-head">
+          <div class="pc-ico" style="background:linear-gradient(135deg,#f58529,#dd2a7b)">&#128247;</div>
+          <div><div class="pc-name">Instagram</div><div class="pc-handle">Feed, Reels, Stories, Carousels</div></div>
+        </div>
+        <div class="pc-rules">
+          <div class="pc-rule"><div class="pc-rule-dot" style="background:#dd2a7b"></div>Hook in first line &mdash; earns the &ldquo;more&rdquo; tap before truncation</div>
+          <div class="pc-rule"><div class="pc-rule-dot" style="background:#dd2a7b"></div>SEO keywords embedded naturally (Instagram now indexes captions)</div>
+          <div class="pc-rule"><div class="pc-rule-dot" style="background:#dd2a7b"></div>Emojis used strategically, not decoratively</div>
+          <div class="pc-rule"><div class="pc-rule-dot" style="background:#dd2a7b"></div>30 hashtags in correct niche/mid/broad ratio</div>
+          <div class="pc-rule"><div class="pc-rule-dot" style="background:#dd2a7b"></div>CTA matched to post type (save / DM / follow / comment)</div>
+        </div>
+        <div class="pc-example"><strong>Example hook:</strong> &ldquo;Our chef has made the same recipe for 30 years &mdash; and still won&rsquo;t share it &#128572;&rdquo;</div>
+      </div>
+      <!-- Facebook -->
+      <div class="plat-card">
+        <div class="pc-head">
+          <div class="pc-ico" style="background:#1877f2">&#128153;</div>
+          <div><div class="pc-name">Facebook</div><div class="pc-handle">Feed posts, Events, Groups</div></div>
+        </div>
+        <div class="pc-rules">
+          <div class="pc-rule"><div class="pc-rule-dot" style="background:#1877f2"></div>Conversational, warm tone &mdash; Facebook audiences reward authenticity</div>
+          <div class="pc-rule"><div class="pc-rule-dot" style="background:#1877f2"></div>Longer-form storytelling works better than short punchy text</div>
+          <div class="pc-rule"><div class="pc-rule-dot" style="background:#1877f2"></div>Questions and polls drive comment engagement</div>
+          <div class="pc-rule"><div class="pc-rule-dot" style="background:#1877f2"></div>Local references and community tone outperform brand-speak</div>
+          <div class="pc-rule"><div class="pc-rule-dot" style="background:#1877f2"></div>Offers and events include phone/link CTA for direct action</div>
+        </div>
+        <div class="pc-example"><strong>Example opening:</strong> &ldquo;It&rsquo;s Tuesday and we&rsquo;re already out of the Biryani. Here&rsquo;s what happened&hellip;&rdquo;</div>
+      </div>
+      <!-- LinkedIn -->
+      <div class="plat-card">
+        <div class="pc-head">
+          <div class="pc-ico" style="background:#0077b5">&#128188;</div>
+          <div><div class="pc-name">LinkedIn</div><div class="pc-handle">Feed posts, Articles, Company Page</div></div>
+        </div>
+        <div class="pc-rules">
+          <div class="pc-rule"><div class="pc-rule-dot" style="background:#0077b5"></div>Story-driven opener &mdash; personal insight or contrarian take</div>
+          <div class="pc-rule"><div class="pc-rule-dot" style="background:#0077b5"></div>Professional but not corporate &mdash; real voice wins on LinkedIn in 2026</div>
+          <div class="pc-rule"><div class="pc-rule-dot" style="background:#0077b5"></div>Short single-line paragraphs for mobile readability</div>
+          <div class="pc-rule"><div class="pc-rule-dot" style="background:#0077b5"></div>3&ndash;5 hashtags maximum (not 30)</div>
+          <div class="pc-rule"><div class="pc-rule-dot" style="background:#0077b5"></div>CTA drives comments or connection requests, not sales</div>
+        </div>
+        <div class="pc-example"><strong>Example opener:</strong> &ldquo;Most startup founders I meet are leaving &#8377;3&ndash;8 lakhs on the table every year in tax savings they don&rsquo;t know exist.&rdquo;</div>
+      </div>
+      <!-- Google Business -->
+      <div class="plat-card">
+        <div class="pc-head">
+          <div class="pc-ico" style="background:linear-gradient(135deg,#4285f4,#34a853)">&#128205;</div>
+          <div><div class="pc-name">Google Business Profile</div><div class="pc-handle">GBP posts, Offers, Events</div></div>
+        </div>
+        <div class="pc-rules">
+          <div class="pc-rule"><div class="pc-rule-dot" style="background:#34a853"></div>Local SEO keywords embedded &mdash; improves Google Maps ranking</div>
+          <div class="pc-rule"><div class="pc-rule-dot" style="background:#34a853"></div>City/area references signal relevance to local searches</div>
+          <div class="pc-rule"><div class="pc-rule-dot" style="background:#34a853"></div>Short and direct &mdash; GBP users are in decision mode</div>
+          <div class="pc-rule"><div class="pc-rule-dot" style="background:#34a853"></div>Service names match how customers search on Google</div>
+          <div class="pc-rule"><div class="pc-rule-dot" style="background:#34a853"></div>CTA drives calls, directions, or website clicks</div>
+        </div>
+        <div class="pc-example"><strong>Example:</strong> &ldquo;Dental clinic in Koramangala now open Saturdays 10am&ndash;2pm. No long waits &mdash; appointment-based. Book via Google or call us directly.&rdquo;</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REAL EXAMPLE OUTPUTS -->
+<section class="section section-alt" id="examples" aria-labelledby="ex-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:52px">
+      <span class="sec-ey">Real AI-generated captions</span>
+      <h2 class="sec-h2" id="ex-h2">This is what the AI actually writes for real businesses</h2>
+      <p class="sec-p">Not templates. Not fill-in-the-blank. Complete, specific, publish-ready captions for real industries &mdash; generated from your business brief.</p>
+    </div>
+    <div class="output-grid">
+
+      <div class="output-card">
+        <div class="oc-head">
+          <div class="oc-plat"><div class="oc-pico" style="background:linear-gradient(135deg,#f58529,#dd2a7b)">&#128247;</div>Instagram Feed</div>
+          <span class="oc-type" style="background:#fdf2f8;color:#dd2a7b;border:1px solid #f0c4de">Restaurant</span>
+        </div>
+        <div class="oc-body">
+          <div class="oc-biz">&#127829; Spice Garden &middot; Bengaluru</div>
+          <div class="oc-hook">Tuesday just got tastier. Our slow-cooked Lucknowi Biryani takes 4 hours to make &mdash; and less than 4 minutes to finish &#127859;</div>
+          <div class="oc-body-t">Limited plates daily. We start at 11am. First come, first served. The people who walk in before 1pm know what we&rsquo;re talking about.</div>
+          <div class="oc-cta-t">&#128205; Koramangala &middot; Walk-ins welcome &middot; Reserve your table via DM</div>
+          <div class="oc-tags">
+            <span class="oc-tag">#BengaluruFood</span><span class="oc-tag">#Biryani</span><span class="oc-tag">#RestaurantLife</span><span class="oc-tag">#FoodLovers</span><span class="oc-tag" style="color:var(--ink4)">+26 more</span>
+          </div>
+        </div>
+        <div class="oc-footer">
+          <span class="oc-ai-lbl">&#10022; Generated in 4 sec</span><span style="font-size:11px;color:var(--ink4)">Tue 9:00am</span>
+        </div>
+      </div>
+
+      <div class="output-card">
+        <div class="oc-head">
+          <div class="oc-plat"><div class="oc-pico" style="background:#0077b5">&#128188;</div>LinkedIn</div>
+          <span class="oc-type" style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe">CA Firm</span>
+        </div>
+        <div class="oc-body">
+          <div class="oc-biz">&#128202; Mehta &amp; Associates &middot; Mumbai</div>
+          <div class="oc-hook">Most startup founders I meet are leaving &#8377;3&ndash;8 lakhs on the table every year in tax deductions they don&rsquo;t know exist.</div>
+          <div class="oc-body-t">Here are 5 Section 80 deductions that most CAs don&rsquo;t proactively tell their clients about &mdash; and how each compounds over 3 years of consistent claiming.</div>
+          <div class="oc-cta-t">If you found one deduction you weren&rsquo;t claiming, drop a &#128202; below. I read every comment.</div>
+          <div class="oc-tags">
+            <span class="oc-tag">#TaxPlanning</span><span class="oc-tag">#StartupIndia</span><span class="oc-tag">#FinanceIndia</span><span class="oc-tag" style="color:var(--ink4)">+2 more</span>
+          </div>
+        </div>
+        <div class="oc-footer">
+          <span class="oc-ai-lbl">&#10022; Generated in 5 sec</span><span style="font-size:11px;color:var(--ink4)">Wed 8:00am</span>
+        </div>
+      </div>
+
+      <div class="output-card">
+        <div class="oc-head">
+          <div class="oc-plat"><div class="oc-pico" style="background:linear-gradient(135deg,#f58529,#dd2a7b)">&#128247;</div>Instagram</div>
+          <span class="oc-type" style="background:#f3f0ff;color:#7c3aed;border:1px solid #fed7aa">Festival Post</span>
+        </div>
+        <div class="oc-body">
+          <div class="oc-biz">&#9986; Glow Salon &middot; Mumbai &middot; Diwali</div>
+          <div class="oc-hook">This Diwali, let your hair do the talking. &#10024;&#127806;</div>
+          <div class="oc-body-t">Book our Diwali Glow Package before Oct 30 and get a complimentary head massage worth &#8377;500. Only 6 slots left this week &mdash; we fill up fast during the festive season.</div>
+          <div class="oc-cta-t">Call or DM to book. Wishing you and your family a beautiful, bright Diwali from all of us at Glow. &#128293;</div>
+          <div class="oc-tags">
+            <span class="oc-tag">#DiwaliSpecial</span><span class="oc-tag">#SalonMumbai</span><span class="oc-tag">#DiwaliOffer</span><span class="oc-tag" style="color:var(--ink4)">+27 more</span>
+          </div>
+        </div>
+        <div class="oc-footer">
+          <span class="oc-ai-lbl">&#10022; Auto-planned 2 wks early</span><span style="font-size:11px;color:var(--ink4)">Festival campaign</span>
+        </div>
+      </div>
+
+      <div class="output-card">
+        <div class="oc-head">
+          <div class="oc-plat"><div class="oc-pico" style="background:#1877f2">&#128153;</div>Facebook</div>
+          <span class="oc-type" style="background:#fff3e0;color:#c2410c;border:1px solid #fed7aa">Clinic</span>
+        </div>
+        <div class="oc-body">
+          <div class="oc-biz">&#129658; LifeCare Clinic &middot; Hyderabad</div>
+          <div class="oc-hook">Monsoon health check: Dengue, typhoid, and leptospirosis cases rise every year in Hyderabad between July and September.</div>
+          <div class="oc-body-t">Our full preventive check-up package this month is just &#8377;499 &mdash; 12 tests, doctor consultation, and report within 4 hours. Walk-in or book online.</div>
+          <div class="oc-cta-t">Call us or drop a &#128172; below and we&rsquo;ll send you the package details. Your health is worth one afternoon.</div>
+          <div class="oc-tags">
+            <span class="oc-tag">#MonsoonHealth</span><span class="oc-tag">#HealthHyderabad</span><span class="oc-tag">#PreventiveCare</span><span class="oc-tag" style="color:var(--ink4)">+24 more</span>
+          </div>
+        </div>
+        <div class="oc-footer">
+          <span class="oc-ai-lbl">&#10022; Generated in 4 sec</span><span style="font-size:11px;color:var(--ink4)">Mon 10:00am</span>
+        </div>
+      </div>
+
+      <div class="output-card">
+        <div class="oc-head">
+          <div class="oc-plat"><div class="oc-pico" style="background:linear-gradient(135deg,#4285f4,#34a853)">&#128205;</div>Google Business</div>
+          <span class="oc-type" style="background:#f0fdf4;color:#166534;border:1px solid #bbf7d0">Real Estate</span>
+        </div>
+        <div class="oc-body">
+          <div class="oc-biz">&#127968; Whitefield Realty &middot; Bengaluru</div>
+          <div class="oc-hook">New 2BHK listings in Whitefield, Bengaluru &mdash; &#8377;78L onwards.</div>
+          <div class="oc-body-t">3 things most buyers miss before finalising a flat in Whitefield: proximity to the Outer Ring Road, RERA registration status, and maintenance charges that surprise you after possession. We walk you through all three before you sign anything.</div>
+          <div class="oc-cta-t">Call for a free site visit this weekend. Saturday and Sunday slots available.</div>
+          <div class="oc-tags">
+            <span class="oc-tag">#BengaluruProperty</span><span class="oc-tag">#Whitefield</span><span class="oc-tag">#2BHK</span>
+          </div>
+        </div>
+        <div class="oc-footer">
+          <span class="oc-ai-lbl">&#10022; Boosts local search ranking</span><span style="font-size:11px;color:var(--ink4)">Auto-published</span>
+        </div>
+      </div>
+
+      <div class="output-card">
+        <div class="oc-head">
+          <div class="oc-plat"><div class="oc-pico" style="background:linear-gradient(135deg,#dd2a7b,#8134af)">&#127909;</div>Instagram Reels</div>
+          <span class="oc-type" style="background:#fdf4ff;color:#a21caf;border:1px solid #f5d0fe">Fitness</span>
+        </div>
+        <div class="oc-body">
+          <div class="oc-biz">&#127947; FitZone Gym &middot; Pune &middot; Reels caption</div>
+          <div class="oc-hook">This 4-minute warmup burns more than 20 minutes of cardio &mdash; here&rsquo;s the science behind it &#129503;</div>
+          <div class="oc-body-t">Most people waste 20 minutes on the treadmill before every workout. This 4-minute activation routine raises your heart rate, primes your muscles, and puts you in fat-burning mode before you touch a weight.</div>
+          <div class="oc-cta-t">Save this Reel. Try it before your next session and drop &#128293;&#128293; if your warmup changed.</div>
+          <div class="oc-tags">
+            <span class="oc-tag">#GymLife</span><span class="oc-tag">#WorkoutTips</span><span class="oc-tag">#FitnessReels</span><span class="oc-tag" style="color:var(--ink4)">+27 more</span>
+          </div>
+        </div>
+        <div class="oc-footer">
+          <span class="oc-ai-lbl">&#10022; Generated in 5 sec</span><span style="font-size:11px;color:var(--ink4)">Thu 6:30pm</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" aria-labelledby="feat-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">What&rsquo;s included</span>
+      <h2 class="sec-h2" id="feat-h2">Everything built into the AI Caption Generator</h2>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="fc-ico">&#127775;</div>
+        <div class="fc-title">Brand voice consistency</div>
+        <div class="fc-desc">Set your tone once &mdash; formal, casual, energetic, local, aspirational. Every caption is generated in that voice. Your Instagram won&rsquo;t sound like your LinkedIn and your Diwali post won&rsquo;t sound like a corporate memo.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#127988;</div>
+        <div class="fc-title">Indian festival captions</div>
+        <div class="fc-desc">Diwali, Holi, Eid, Navratri, Independence Day, and 30+ Indian occasions &mdash; all auto-planned with captions customised for your business type, written weeks in advance so you&rsquo;re never scrambling.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#127760;</div>
+        <div class="fc-title">Regional language captions</div>
+        <div class="fc-desc">Write captions in Hindi, Tamil, Telugu, Kannada, Malayalam, Bengali, Marathi, and more &mdash; for businesses targeting regional Indian audiences or bilingual customers. One brief, any language.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#128270;</div>
+        <div class="fc-title">Instagram SEO keyword embedding</div>
+        <div class="fc-desc">Since 2025, Instagram uses AI to index captions for keyword relevance. Every caption Shoutly AI writes includes the right industry and niche keywords naturally embedded &mdash; so your content reaches people searching for what you offer.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">#</div>
+        <div class="fc-title">Smart hashtag research &mdash; 30 per post</div>
+        <div class="fc-desc">Not the same 10 tags on every post. The AI generates a fresh mix of 30 hashtags per caption: niche-specific for exact targeting, mid-range for reach, and broad for Explore page placement. Instagram&rsquo;s algorithm rewards this variety.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#128257;</div>
+        <div class="fc-title">Regenerate in one click</div>
+        <div class="fc-desc">Don&rsquo;t like a caption? Click regenerate and get 3 new options in seconds. Every regeneration keeps your brand voice and platform rules. You can also add a specific offer, event, or product and the AI rewrites the caption around it.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section section-alt" aria-labelledby="test-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">What businesses say</span>
+      <h2 class="sec-h2" id="test-h2">Businesses that stopped writing captions manually</h2>
+    </div>
+    <div class="test-grid">
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;The caption quality genuinely shocked me. I expected generic stuff and got captions that sounded exactly like how I&rsquo;d write for my restaurant &mdash; but better. The hooks especially. I&rsquo;d never have written &lsquo;our chef has made the same recipe for 30 years and still won&rsquo;t share it&rsquo; on my own. That Reel got 74,000 views.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av">RK</div>
+          <div><span class="ta-name">Ravi Kumar</span><span class="ta-biz">Spice Garden Restaurant &middot; Bengaluru</span></div>
+        </div>
+      </article>
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;Writing captions for 12 different clients in 12 different voices was the hardest part of running an agency. Shoutly AI does it flawlessly. Each client&rsquo;s captions sound completely different from the others. I don&rsquo;t know how, but it always nails the tone.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av" style="background:linear-gradient(135deg,#ec4899,#fb923c)">AM</div>
+          <div><span class="ta-name">Anjali Mehta</span><span class="ta-biz">Social Media Agency &middot; Delhi</span></div>
+        </div>
+      </article>
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;The hashtag generator alone is worth the subscription. I used to spend 20 minutes per post researching hashtags on a separate tool. Now I get 30 researched, mixed-range hashtags with every caption automatically. My reach went up 3x in the first month.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">PS</div>
+          <div><span class="ta-name">Priya Sharma</span><span class="ta-biz">Fitness Coach &middot; Mumbai</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq" aria-labelledby="faq-h2" data-r>
+  <div class="wrap center">
+    <span class="sec-ey">Common questions</span>
+    <h2 class="sec-h2" id="faq-h2">Everything you need to know about the AI Caption Generator</h2>
+    <div class="faq-list">
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">What is Shoutly AI&rsquo;s caption generator?<span class="faq-arr">+</span></button><div class="faq-a"><p>Shoutly AI&rsquo;s caption generator uses AI to write platform-optimised social media captions for your business. Every caption includes a scroll-stopping hook line, engaging body copy, a clear CTA, and up to 30 researched hashtags &mdash; all in your brand voice, formatted correctly for each platform.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Will it sound like my brand &mdash; or like a generic AI?<span class="faq-arr">+</span></button><div class="faq-a"><p>It sounds like your brand. You set your brand voice once &mdash; formal or casual, energetic or calm, local or aspirational &mdash; and every caption is generated in that tone consistently. The AI also understands your industry, so a dental clinic&rsquo;s captions sound nothing like a gym&rsquo;s captions, even at the same brand voice setting.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Does it write differently for each platform?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Instagram captions have a hook in the first line, emojis, and 30 hashtags. LinkedIn posts have short paragraphs, a story-driven opening, and 3&ndash;5 hashtags. Facebook posts are conversational and community-focused. Google Business posts are local keyword-rich and conversion-focused. Each platform gets the format that performs best on it.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Does it include hashtags?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Every Instagram and Facebook caption comes with up to 30 researched hashtags &mdash; a smart mix of niche-specific tags (under 100K posts), mid-range tags (100K&ndash;1M), and broad reach tags (1M+). This combination maximises Explore page placement without triggering spam filters. LinkedIn and Google Business posts get the appropriate number of tags for those platforms.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Does it write festival and occasion captions?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. All 30+ major Indian festivals are built in: Diwali, Holi, Eid, Navratri, Independence Day, Republic Day, Ganesh Chaturthi, Pongal, Christmas, and more. Festival captions are auto-generated in your brand voice and scheduled weeks before each occasion &mdash; so you never have to write a rushed Diwali caption at 11pm again.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Can it write in Hindi or regional Indian languages?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Shoutly AI writes captions in Hindi, Tamil, Telugu, Kannada, Malayalam, Bengali, Marathi, Gujarati, and other regional languages &mdash; ideal for businesses targeting regional Indian audiences, bilingual customer bases, or markets where regional content dramatically outperforms English.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Can I edit the captions it generates?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Every caption is fully editable. You can tweak words, change the CTA, add a specific offer or event, or click regenerate for completely new options in seconds. Most users publish captions with minor or no edits because the output quality is high &mdash; but you always have full control.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Is the caption generator included in the plan?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. The AI Caption Generator is fully included in the &#8377;10,000/month Shoutly AI plan &mdash; no add-ons, no extra cost. The plan also includes the AI Image Generator, AI Reel Generator, Social Scheduler, 365-Day Calendar, Brand Kit, Analytics Dashboard, and publishing to all 10 social platforms.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LINKS -->
+<section class="section section-alt" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:36px">
+      <span class="sec-ey">More features</span>
+      <h2 class="sec-h2" style="font-size:clamp(22px,2.8vw,34px)">The Caption Generator works with every other Shoutly AI feature</h2>
+    </div>
+    <div class="links-grid">
+      <a href="https://shoutlyai.com/features/ai-content-generator" class="link-card"><span style="font-size:18px">&#10022;</span> AI Content Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/ai-image-generator" class="link-card"><span style="font-size:18px">&#127912;</span> AI Image Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/ai-reel-generator" class="link-card"><span style="font-size:18px">&#127909;</span> AI Reel Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/social-scheduler" class="link-card"><span style="font-size:18px">&#128197;</span> Social Scheduler <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/brand-kit" class="link-card"><span style="font-size:18px">&#127859;</span> Brand Kit <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/content-calendar" class="link-card"><span style="font-size:18px">&#128200;</span> 365-Day Calendar <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/channel/instagram" class="link-card"><span style="font-size:18px">&#128247;</span> Instagram Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/channel/linkedin" class="link-card"><span style="font-size:18px">&#128188;</span> LinkedIn Generator <span class="link-arr">&#8594;</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" aria-labelledby="cta-h2">
+  <div class="wrap">
+    <h2 id="cta-h2">Stop staring at a blank caption box.<br><span class="grad">Let AI write it in 5 seconds.</span></h2>
+    <p>Hooks, body copy, CTAs, and 30 hashtags &mdash; for every post, every platform, every day. Your brand voice. Free 14-day trial.</p>
+    <div class="cta-btns">
+      <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-xl">Generate my first caption free <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+      <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-xl">Book a live demo</a>
+    </div>
+    <div class="cta-trust">
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>No writing skills needed</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>No credit card required</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>14-day free trial</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>&#8377;10,000/month &mdash; all features</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>4.9&#9733; &mdash; 41,000+ businesses</span>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="ft-inner">
+      <a href="https://shoutlyai.com" class="ft-logo">
+        <div class="nav-mark" style="width:26px;height:26px;border-radius:7px"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" fill="#fff"/></svg></div>
+        Shoutly AI
+      </a>
+      <nav class="ft-links">
+        <a href="https://shoutlyai.com">Home</a>
+        <a href="https://shoutlyai.com/pricing">Pricing</a>
+        <a href="https://shoutlyai.com/demo">Book Demo</a>
+        <a href="https://shoutlyai.com/case-studies">Case Studies</a>
+        <a href="https://shoutlyai.com/help-center">Help</a>
+        <a href="https://shoutlyai.com/contact-us">Contact</a>
+        <a href="https://shoutlyai.com/policy">Privacy</a>
+        <a href="https://shoutlyai.com/terms">Terms</a>
+      </nav>
+    </div>
+    <p class="ft-copy">&copy; 2026 Shoutly AI &mdash; Qubixel Technologies Private Limited. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+/* ── Caption window data ─────────────────────────────────────────────────── */
+var captionData = {
+  restaurant: {
+    instagram: { topic:"Diwali special offer &mdash; 20% off all thalis at Spice Garden, Bengaluru", hook:"This Diwali, celebrate at Spice Garden &#10024;&#127806;", body:"20% off all thali combos from Nov 1&ndash;3. Dine with family. Our kitchen will be running from 11am &mdash; book early, we fill up fast during the festive season.", cta:"Reserve your table via DM or call us directly. Wishing you a bright and beautiful Diwali. &#128293;", tags:["#DiwaliSpecial","#BengaluruFood","#DiwaliOffer","#RestaurantLife","+26 more"] },
+    facebook: { topic:"New dish launch &mdash; Lucknowi Biryani, limited plates daily", hook:"Something new is cooking at Spice Garden &mdash; and it won&rsquo;t last the day.", body:"Our Lucknowi Biryani is slow-cooked for 4 hours every morning. We start at 11am. Most days it&rsquo;s gone before 2pm. We&rsquo;re not sorry &mdash; we&rsquo;d rather run out than compromise.", cta:"Walk in before 1pm. Or call ahead and we&rsquo;ll keep a plate. &#128205; Koramangala", tags:["#BengaluruFood","#NewDish","#RestaurantBengaluru","+24 more"] },
+    linkedin: { topic:"How a restaurant uses social media to fill tables", hook:"We added 340 new customers in 3 months without spending a rupee on paid ads.", body:"The only thing that changed: we started posting on Instagram every single day. Not promotional content &mdash; behind-the-scenes, chef stories, dish reveals. The algorithm rewarded consistency.", cta:"If you run a local business and haven&rsquo;t figured out organic social yet, what&rsquo;s stopping you? Drop a comment.", tags:["#RestaurantMarketing","#LocalBusiness","#SocialMediaIndia"] },
+    google: { topic:"Weekend specials at Spice Garden restaurant, Koramangala", hook:"Weekend thali at Spice Garden, Koramangala &mdash; &#8377;299 per person.", body:"South Indian thali with unlimited rice, sambar, rasam, two curries, papad, and dessert. Available Saturday and Sunday 12pm&ndash;3pm only. Walk-ins welcome, no reservation needed.", cta:"Find us on Google Maps. Call 98765 43210 for large group bookings.", tags:["#KoramangalaRestaurant","#BengaluruFood","#SouthIndianFood"] }
+  },
+  salon: {
+    instagram: { topic:"Before and after hair transformation at Glow Salon, Mumbai", hook:"Before &#8594; After. Kavya wanted a change. She came in quiet. She left with confidence. &#10024;", body:"This is what happens when you trust your stylist and describe what you actually want, not what you think is &lsquo;safe.&rsquo; Kavya&rsquo;s new colour is Ash Brown Balayage and she&rsquo;s been DMing us all week to say thank you.", cta:"Book your transformation &mdash; DM us or call directly. Limited weekend slots left.", tags:["#SalonMumbai","#HairTransformation","#Balayage","+27 more"] },
+    facebook: { topic:"New Navratri offer &mdash; hair treatment package at Glow Salon", hook:"Navratri is here and we&rsquo;ve got a special just for you.", body:"Hair treatment + head massage for &#8377;999 this week only (regular &#8377;1,800). Whether you&rsquo;re dressing up for garba or just want to feel your best during the festive season &mdash; we&rsquo;ve got you covered.", cta:"Call us on 98765 43210 or drop a comment with &lsquo;NAVRATRI&rsquo; and we&rsquo;ll send you the booking link.", tags:["#NavratriOffer","#SalonOffer","#MumbaiSalon","+22 more"] },
+    linkedin: { topic:"Growing a salon business with social media in 2026", hook:"We went from 1,200 to 11,400 Instagram followers in 5 months. Here&rsquo;s what we changed.", body:"We stopped posting &lsquo;before and after&rsquo; photos with no context. We started telling the story behind each transformation. The client&rsquo;s name. Why they came in. What they were nervous about. How they felt leaving.", cta:"If you run a service business, the story sells better than the result. What story are you telling? Reply below.", tags:["#SalonBusiness","#LocalBusiness","#MumbaiEntrepreneurs"] },
+    google: { topic:"Weekend appointments available at Glow Salon, Powai Mumbai", hook:"Glow Salon &mdash; Powai, Mumbai &mdash; walk-ins welcome this weekend.", body:"Offering hair cuts, colour treatments, keratin, head massages, and nail services. Experienced stylists, hygienic tools, and no waiting if you book ahead. Kids&rsquo; cuts also available.", cta:"Call 98765 43210 or find us on Google Maps. Parking available.", tags:["#PowaiSalon","#MumbaiSalon","#HairSalonMumbai"] }
+  },
+  gym: {
+    instagram: { topic:"3 fitness habits for weight loss without dieting, FitZone Gym Pune", hook:"3 habits that helped 200+ members lose their first 5kg &mdash; without giving up chai &#9749;", body:"Most people think it&rsquo;s about eating less. It&rsquo;s not. When I tracked what actually moved the needle for my clients, it was always these three things: sleep timing, stress management, and protein at breakfast. Never the workout frequency.", cta:"Save this for your journey. Drop a &#128170; if you needed this reminder today.", tags:["#FitnessTips","#GymLife","#WeightLoss","+27 more"] },
+    facebook: { topic:"New January batch starting at FitZone Gym, Kothrud Pune", hook:"New year, new batch &mdash; and we&rsquo;re starting with something different this time.", body:"Our January transformation programme is 3 months with a certified trainer, personalised meal guidance, and weekly check-ins. We keep batches small &mdash; max 12 people &mdash; because we&rsquo;ve learned that accountability requires actual attention.", cta:"First session is FREE. Call us or drop your number in the comments and we&rsquo;ll reach out.", tags:["#GymPune","#FitnessGoals","#NewYearFitness","+23 more"] },
+    linkedin: { topic:"Why most gym memberships fail by February", hook:"73% of January gym memberships are unused by February 15th. I&rsquo;ve watched this happen for 8 years.", body:"The problem isn&rsquo;t motivation. It&rsquo;s accountability. People join alone, train alone, and quit alone. The gyms that retain members are the ones that make the first 30 days social, not solo.", cta:"If you run a fitness business, what does your first-30-days experience look like? I&rsquo;d genuinely like to know.", tags:["#FitnessBusiness","#GymOwner","#MemberRetention"] },
+    google: { topic:"Personal training and gym membership at FitZone, Kothrud Pune", hook:"FitZone Gym &mdash; Kothrud, Pune &mdash; open 5:30am to 10pm daily.", body:"Fully equipped gym with certified personal trainers, group fitness classes, and individualised programmes. Offering memberships from &#8377;1,500/month. First session free for new members.", cta:"Walk in or call 98765 43210. Find us on Google Maps opposite Kothrud Bus Stand.", tags:["#GymKothrud","#GymPune","#PersonalTrainerPune"] }
+  },
+  ca: {
+    instagram: { topic:"5 tax deductions most Indians miss every year &mdash; CA firm Mumbai", hook:"5 tax deductions most Indians miss &mdash; and how much each one actually saves you &#128202;", body:"Section 80D covers health insurance for parents up to &#8377;50,000. Section 80E covers education loan interest with no upper limit. Section 24(b) covers home loan interest up to &#8377;2L. Most people claim only 80C and stop there.", cta:"Save this. Check if you&rsquo;re missing any of these before March 31st. Drop your question below and we&rsquo;ll answer it.", tags:["#TaxSaving","#IncomeTax","#TaxPlanning","+26 more"] },
+    facebook: { topic:"Tax filing deadline reminder from Mehta &amp; Associates", hook:"March 31st is 3 weeks away. Are your taxes in order?", body:"Every year we get a flood of panic calls in the last week of March. Documents missing, deductions forgotten, last-minute errors that cost more to fix than they save. We&rsquo;ve extended our consultation availability this month &mdash; early mornings and weekends included.", cta:"Call us on 98765 43210 or fill the contact form on our website. First consultation is free.", tags:["#TaxFiling","#IncomeTax","#TaxDeadline","+20 more"] },
+    linkedin: { topic:"Why most startup founders overpay on taxes in their first 3 years", hook:"Most startup founders I meet are leaving &#8377;3&ndash;8 lakhs on the table every year in tax savings they don&rsquo;t know exist.", body:"Here are 5 Section 80 deductions that most CAs don&rsquo;t proactively tell their clients about &mdash; and how each one compounds over 3 years of consistent claiming. The difference between a CA who files and a CA who plans is about &#8377;6L on average per founder.", cta:"If you found one deduction you weren&rsquo;t claiming, drop a &#128202; below. I read every comment.", tags:["#TaxPlanning","#StartupIndia","#FinanceIndia"] },
+    google: { topic:"Income tax filing and GST services at Mehta &amp; Associates, Andheri Mumbai", hook:"CA firm in Andheri, Mumbai &mdash; income tax, GST, audit, and startup compliance.", body:"Mehta &amp; Associates handles individual ITR filing, business GST returns, company audits, and new startup registration. Over 15 years serving clients across Mumbai. Appointments available on weekdays and Saturday mornings.", cta:"Call 98765 43210 or WhatsApp for a free first consultation. Find us near Andheri West Metro.", tags:["#CAMumbai","#TaxConsultant","#IncomeTaxFiling"] }
+  }
+};
+
+var currentBiz = 'restaurant';
+var currentPlat = 'instagram';
+var genTimer = null;
+
+function renderCaption(data) {
+  document.getElementById('cw-topic').innerHTML = data.topic;
+  document.getElementById('cap-hook').innerHTML = data.hook;
+  document.getElementById('cap-body').innerHTML = data.body;
+  document.getElementById('cap-cta').innerHTML = data.cta;
+  var tagsEl = document.getElementById('cap-tags');
+  tagsEl.innerHTML = data.tags.map(function(t) {
+    var isMore = t.indexOf('+') === 0;
+    return '<span class="cap-tag" style="' + (isMore ? 'color:rgba(255,255,255,.3)' : '') + '">' + t + '</span>';
+  }).join('');
+}
+
+function triggerGenerate() {
+  if (genTimer) clearTimeout(genTimer);
+  var genEl = document.getElementById('cw-gen');
+  var capBox = document.getElementById('cw-cap-box');
+  var genLbl = document.getElementById('gen-lbl');
+  var bizNames = {restaurant:'Spice Garden',salon:'Glow Salon',gym:'FitZone Gym',ca:'Mehta & Associates'};
+  genLbl.textContent = bizNames[currentBiz];
+  capBox.style.opacity = '0.3';
+  genEl.classList.add('show');
+  genTimer = setTimeout(function() {
+    genEl.classList.remove('show');
+    capBox.style.opacity = '1';
+    renderCaption(captionData[currentBiz][currentPlat]);
+  }, 1100);
+}
+
+function setPlat(plat) {
+  currentPlat = plat;
+  document.querySelectorAll('.cw-plat').forEach(function(el) {
+    el.classList.toggle('active', el.getAttribute('onclick').includes("'" + plat + "'"));
+  });
+  triggerGenerate();
+}
+
+function switchBiz(biz) {
+  if (biz === currentBiz) return;
+  currentBiz = biz;
+  document.querySelectorAll('.cw-chip').forEach(function(el) {
+    el.classList.toggle('active', el.getAttribute('onclick').includes("'" + biz + "'"));
+  });
+  triggerGenerate();
+}
+
+window.addEventListener('load', function() {
+  renderCaption(captionData['restaurant']['instagram']);
+});
+
+function toggleFaq(btn) {
+  var item = btn.closest('.faq-item');
+  var open = item.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(open));
+}
+
+if ('IntersectionObserver' in window) {
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+  }, { threshold: .07, rootMargin: '0px 0px -28px 0px' });
+  document.querySelectorAll('[data-r]').forEach(function(el) { obs.observe(el); });
+} else {
+  document.querySelectorAll('[data-r]').forEach(function(el) { el.classList.add('vis'); });
+}
+
+var nav = document.getElementById('nav');
+window.addEventListener('scroll', function() {
+  nav.classList.toggle('scrolled', window.scrollY > 8);
+}, { passive: true });
+</script>
+</body>
+</html>
