@@ -128,15 +128,15 @@ const MEGA_MENUS: MegaMenu[] = [
                 items: [
                     { label: "AI Content Generator", href: "/shoutlyai-ai-content-generator.html", icon: Sparkles, desc: "Turn one prompt into a week of posts.", badge: "POPULAR" },
                     { label: "AI Image Generator", href: "/shoutlyai-ai-image-generator.html", icon: ImageIcon, desc: "On-brand visuals in your colors and fonts." },
-                    { label: "AI Reel Generator", href: "/#generator", icon: Clapperboard, desc: "Short-form video from a script or a URL.", badge: "NEW" },
-                    { label: "AI Caption Generator", icon: MessageSquare, desc: "Captions tuned per platform, not copy-pasted." },
-                    { label: "AI Hashtag Generator", icon: Hash, desc: "Tags ranked by reach, not by volume." },
+                    { label: "AI Reel Generator", icon: Clapperboard, desc: "Short-form video from a script or a URL.", badge: "NEW" },
+                    { label: "AI Caption Generator", href: "/shoutlyai-ai-caption-generator.html", icon: MessageSquare, desc: "Captions tuned per platform, not copy-pasted." },
+                    { label: "AI Hashtag Generator", href: "/shoutlyai-ai-hashtag-generator.html", icon: Hash, desc: "Tags ranked by reach, not by volume." },
                 ],
             },
             {
                 title: "Publishing",
                 items: [
-                    { label: "Social Media Scheduler", icon: Clock, desc: "Queue posts for the times your audience shows up." },
+                    { label: "Social Media Scheduler", href: "/shoutlyai-social-media-scheduler.html", icon: Clock, desc: "Queue posts for the times your audience shows up." },
                     { label: "Content Calendar", href: "/free-editorial", icon: Calendar, desc: "Every channel on one drag-and-drop grid." },
                     { label: "Multi-Platform Publishing", icon: Share2, desc: "Write once, reformat for each network." },
                     { label: "Bulk Scheduling", icon: ListChecks, desc: "Upload a CSV, fill the whole quarter." },

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import FloatingChatBot from '../components/FloatingChatBot';
 import Providers from "./providers";
+import GoogleAnalyticsPageTracker from "@/components/analytics/GoogleAnalyticsPageTracker";
 
 const siteUrl = "https://shoutlyai.com";
 
@@ -174,6 +176,12 @@ export default function RootLayout({
         <html lang="en">
             <head>
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+                <script async src="https://www.googletagmanager.com/gtag/js?id=G-YL39CRR7F2"></script>
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: "window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-YL39CRR7F2', { send_page_view: false });",
+                    }}
+                />
             </head>
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
@@ -186,6 +194,9 @@ export default function RootLayout({
                     }}
                 />
                 <Providers>
+                    <Suspense fallback={null}>
+                        <GoogleAnalyticsPageTracker />
+                    </Suspense>
                     <Header />
                     {children}
                     <Footer />

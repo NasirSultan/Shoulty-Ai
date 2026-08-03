@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI Social Media Scheduler &mdash; Auto-Schedule & Publish to 10 Platforms | Shoutly AI</title>
+<meta name="description" content="Shoutly AI's Social Media Scheduler auto-schedules and publishes your posts to Instagram, Facebook, LinkedIn, X, TikTok, YouTube, and 4 more platforms at the optimal time for your audience. Set it once, post forever.">
+<link rel="canonical" href="https://shoutlyai.com/features/social-media-scheduler">
+<meta property="og:title" content="AI Social Media Scheduler &mdash; Shoutly AI">
+<meta property="og:description" content="Auto-schedule and publish to 10 platforms at the optimal time for your audience. Set it once. Posts go live automatically — forever.">
+<meta property="og:url" content="https://shoutlyai.com/features/social-media-scheduler">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shoutly AI">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@shoutlyai">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Shoutly AI Social Media Scheduler","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":"https://shoutlyai.com/features/social-media-scheduler","description":"AI-powered social media scheduler that auto-schedules and publishes posts to 10 platforms at the optimal time for your audience. Supports Instagram, Facebook, LinkedIn, X, TikTok, YouTube, Threads, Pinterest, Google Business Profile, and Bluesky.","featureList":["Social media scheduler","Auto-publish to Instagram","Auto-publish to Facebook","Auto-publish to LinkedIn","Auto-publish to X Twitter","Auto-publish to TikTok","Auto-publish to YouTube","Auto-publish to Google Business Profile","AI optimal time scheduling","365-day content calendar","Bulk scheduling","Multi-platform publishing","Queue management","Post preview"],"offers":{"@type":"Offer","price":"10000","priceCurrency":"INR"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"2847","bestRating":"5"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Which social media platforms does Shoutly AI support?","acceptedAnswer":{"@type":"Answer","text":"Shoutly AI supports 10 platforms: Instagram (feed posts, Reels, Stories, carousels), Facebook (pages and posts), LinkedIn (personal and company pages), X/Twitter, TikTok, YouTube (Shorts and videos), Threads, Pinterest, Google Business Profile, and Bluesky. All 10 are included in one plan at Rs 10,000/month."}},{"@type":"Question","name":"Does it auto-publish or just remind me to post?","acceptedAnswer":{"@type":"Answer","text":"It fully auto-publishes. Shoutly AI connects to each platform via the official API and publishes your posts automatically at the scheduled time — no manual action, no reminders, no logging in. You approve your calendar once and it runs on autopilot."}},{"@type":"Question","name":"How does it choose the best time to post?","acceptedAnswer":{"@type":"Answer","text":"Shoutly AI analyses your audience's active hours on each platform and schedules posts to go live at your specific peak engagement window. For most Indian businesses this is 9-11am and 7-9pm IST, but your audience data may show different peaks. The AI recalculates this continuously as your audience grows."}},{"@type":"Question","name":"Can I schedule posts for all 10 platforms at once?","acceptedAnswer":{"@type":"Answer","text":"Yes. You can create one post and publish it to all 10 platforms simultaneously, or schedule different content for each platform individually. The scheduler adapts the format automatically for each platform's requirements."}},{"@type":"Question","name":"Can I schedule a full year of content in advance?","acceptedAnswer":{"@type":"Answer","text":"Yes. Shoutly AI's 365-day content calendar lets you approve and schedule an entire year of posts in one session. Indian festival posts, seasonal campaigns, product launches, and daily content — all scheduled and published automatically without any further action from you."}},{"@type":"Question","name":"Is there a limit on how many posts I can schedule?","acceptedAnswer":{"@type":"Answer","text":"No. The Rs 10,000/month plan includes unlimited posting and scheduling across all 10 platforms with no caps on posts, queues, or connected accounts."}}]}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:#0f0f0f;-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+:root{
+  --p:#f97316;--p2:#fb923c;--p3:#fdba74;
+  --pg:linear-gradient(135deg,#f97316,#ea580c);
+  --dark:#08021a;--glow:rgba(249,115,22,.26);
+  --ink:#0f0f0f;--ink2:#262626;--ink3:#525252;--ink4:#a3a3a3;
+  --surface:#f7f7fb;--border:#fde7cf;--border2:#fed7aa;
+  --green:#16a34a;--green-l:#f0fdf4;
+  --max:1200px;
+  --r:8px;--r2:12px;--r3:16px;--r4:22px;--r5:30px;
+}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:62px;display:flex;align-items:center;transition:box-shadow .2s}
+.nav.scrolled{box-shadow:0 1px 14px rgba(0,0,0,.07)}
+.nav-inner{display:flex;align-items:center;width:100%;max-width:var(--max);margin:0 auto;padding:0 28px;gap:8px}
+.nav-logo{display:flex;align-items:center;gap:9px;font-size:15.5px;font-weight:800;color:var(--ink);letter-spacing:-.3px}
+.nav-mark{width:32px;height:32px;border-radius:9px;background:var(--pg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-mark svg{width:16px;height:16px;fill:#fff}
+.feat-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#fff7ed,#ffedd5);border:1px solid #fed7aa;color:var(--p);border-radius:100px;padding:3px 10px;font-size:11.5px;font-weight:700;margin-left:6px}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:18px}
+.nav-links a{font-size:13.5px;color:var(--ink3);padding:5px 12px;border-radius:var(--r);font-weight:500;transition:all .14s}
+.nav-links a:hover{color:var(--ink);background:var(--surface)}
+.nav-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:600;border-radius:var(--r2);padding:9px 20px;transition:all .15s;cursor:pointer;border:1.5px solid transparent;white-space:nowrap;letter-spacing:-.01em}
+.btn-ghost{color:var(--ink2);border-color:var(--border2)}
+.btn-ghost:hover{background:var(--surface)}
+.btn-primary{background:var(--pg);color:#fff;border:none;box-shadow:0 2px 10px var(--glow)}
+.btn-primary:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 6px 22px var(--glow)}
+.btn-lg{padding:13px 28px;font-size:15.5px;font-weight:700;border-radius:var(--r3)}
+.btn-xl{padding:15px 34px;font-size:16px;font-weight:700;border-radius:var(--r3)}
+.btn-white{background:#fff;color:var(--p);font-weight:700;border:none}
+.btn-white:hover{background:#fff7ed;transform:translateY(-1px)}
+.btn-wh-ghost{background:transparent;color:rgba(255,255,255,.8);border:1.5px solid rgba(255,255,255,.3)}
+.btn-wh-ghost:hover{border-color:rgba(255,255,255,.65);color:#fff}
+.btn-sm{padding:7px 16px;font-size:13px}
+
+/* BC */
+.bc{background:var(--surface);border-bottom:1px solid var(--border);padding:11px 0}
+.bc-inner{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink4)}
+.bc-inner a{color:var(--ink4)}.bc-inner a:hover{color:var(--p)}
+
+/* HERO */
+.hero{background:var(--dark);padding:80px 0 76px;position:relative;overflow:hidden}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none}
+.hero-orb-1{width:700px;height:700px;background:radial-gradient(circle,rgba(249,115,22,.42),transparent 68%);top:-250px;left:-180px}
+.hero-orb-2{width:450px;height:450px;background:radial-gradient(circle,rgba(251,146,60,.24),transparent 65%);bottom:-120px;right:-80px}
+.hero-inner{display:grid;grid-template-columns:1.1fr 1fr;gap:64px;align-items:center;position:relative;z-index:1}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(249,115,22,.16);border:1px solid rgba(249,115,22,.34);border-radius:100px;padding:5px 14px 5px 9px;font-size:12.5px;font-weight:600;color:#fed7aa;margin-bottom:22px}
+.ey-dot{width:7px;height:7px;border-radius:50%;background:#ea580c;animation:pulse 2.2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+.hero-h1{font-family:'Inter Tight',sans-serif;font-size:clamp(38px,5vw,62px);font-weight:900;letter-spacing:-2.8px;line-height:.96;color:#fff;margin-bottom:22px}
+.hero-h1 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(15px,1.6vw,18px);color:rgba(255,255,255,.6);line-height:1.72;max-width:480px;margin-bottom:34px}
+.hero-ctas{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:30px}
+.hero-proof{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.hp{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.45)}
+.hp svg{width:13px;height:13px;stroke:rgba(249,115,22,.85);stroke-width:2.5;fill:none;flex-shrink:0}
+
+/* SCHEDULER WINDOW */
+.sched-window{background:#0c0820;border:1px solid rgba(255,255,255,.1);border-radius:var(--r5);overflow:hidden;box-shadow:0 32px 70px rgba(0,0,0,.5),0 0 0 1px rgba(249,115,22,.12),inset 0 1px 0 rgba(255,255,255,.06)}
+.sw-bar{background:#150e2e;border-bottom:1px solid rgba(255,255,255,.07);padding:10px 16px;display:flex;align-items:center;gap:10px}
+.sw-dots{display:flex;gap:6px}
+.sw-dot{width:10px;height:10px;border-radius:50%}
+.sw-dot.r{background:#ff5f57}.sw-dot.y{background:#febc2e}.sw-dot.g{background:#28c840}
+.sw-title{font-size:11px;color:rgba(255,255,255,.3);margin-left:8px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.sw-toolbar{background:#1a1030;border-bottom:1px solid rgba(255,255,255,.06);padding:8px 14px;display:flex;align-items:center;gap:8px}
+.sw-view-btn{font-size:10.5px;font-weight:600;padding:4px 10px;border-radius:var(--r);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.45);cursor:pointer;transition:all .15s}
+.sw-view-btn.active{background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.42);color:#fed7aa}
+.sw-month{font-size:12px;font-weight:700;color:rgba(255,255,255,.5);margin-left:auto}
+/* CALENDAR GRID */
+.sw-cal{padding:12px 14px}
+.sw-days-row{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px}
+.sw-day-hdr{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.25);text-align:center;padding:4px 0}
+.sw-cells{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.sw-cell{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:var(--r);padding:6px 5px;min-height:72px;position:relative;transition:background .15s}
+.sw-cell.today{border-color:rgba(249,115,22,.34);background:rgba(249,115,22,.08)}
+.sw-cell.empty{background:transparent;border-color:transparent}
+.sw-date{font-size:10px;font-weight:700;color:rgba(255,255,255,.3);margin-bottom:4px}
+.sw-cell.today .sw-date{color:#fdba74;font-weight:800}
+.sw-post{border-radius:4px;padding:3px 5px;margin-bottom:3px;font-size:9px;font-weight:600;display:flex;align-items:center;gap:3px;animation:slideIn .3s ease both}
+@keyframes slideIn{from{opacity:0;transform:translateX(-4px)}to{opacity:1;transform:none}}
+.sp-ig{background:rgba(221,42,123,.2);color:#f472b6;border-left:2px solid #dd2a7b}
+.sp-fb{background:rgba(24,119,242,.2);color:#60a5fa;border-left:2px solid #1877f2}
+.sp-li{background:rgba(0,119,181,.2);color:#7dd3fc;border-left:2px solid #0077b5}
+.sp-yt{background:rgba(255,0,0,.18);color:#fca5a5;border-left:2px solid #ff0000}
+.sp-gb{background:rgba(52,168,83,.2);color:#6ee7b7;border-left:2px solid #34a853}
+.sp-x{background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border-left:2px solid rgba(255,255,255,.4)}
+.sw-more{font-size:8.5px;color:rgba(255,255,255,.3);font-weight:600;padding-left:2px}
+/* QUEUE PANEL */
+.sw-queue{border-top:1px solid rgba(255,255,255,.06);padding:10px 14px}
+.sw-q-lbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.28);margin-bottom:8px}
+.sw-q-items{display:flex;flex-direction:column;gap:6px}
+.sw-q-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:var(--r2);padding:8px 10px;display:flex;align-items:center;gap:9px}
+.sq-plat-ico{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.sq-info{flex:1}
+.sq-title{font-size:11.5px;font-weight:600;color:rgba(255,255,255,.75)}
+.sq-meta{font-size:10px;color:rgba(255,255,255,.35);margin-top:1px}
+.sq-status{font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:100px;flex-shrink:0}
+.sq-live{background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.22)}
+.sq-sched{background:rgba(249,115,22,.12);color:#fdba74;border:1px solid rgba(249,115,22,.2)}
+.sq-draft{background:rgba(251,146,60,.1);color:#fb923c;border:1px solid rgba(251,146,60,.22)}
+/* footer stats */
+.sw-footer{background:#150e2e;border-top:1px solid rgba(255,255,255,.06);padding:9px 14px;display:flex;align-items:center;gap:16px}
+.sw-f-stat{display:flex;align-items:center;gap:5px;font-size:10.5px;color:rgba(255,255,255,.35);font-weight:600}
+.sw-f-dot{width:6px;height:6px;border-radius:50%}
+
+/* STAT STRIP */
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);background:var(--border);gap:1px;border:1px solid var(--border);border-radius:var(--r4);overflow:hidden}
+.ss-cell{background:#fff;padding:26px 20px;text-align:center}
+.ss-n{font-family:'Inter Tight',sans-serif;font-size:clamp(26px,2.8vw,38px);font-weight:900;background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-2px;line-height:1;margin-bottom:5px}
+.ss-l{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.ss-s{font-size:12px;color:var(--ink4)}
+
+/* SECTIONS */
+.section{padding:88px 0}
+.section-alt{background:var(--surface)}
+.sec-ey{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--p);margin-bottom:10px;display:block}
+.sec-h2{font-family:'Inter Tight',sans-serif;font-size:clamp(26px,3.3vw,42px);font-weight:900;letter-spacing:-1.5px;color:var(--ink);line-height:1.05;margin-bottom:12px}
+.sec-p{font-size:17px;color:var(--ink2);line-height:1.72;max-width:600px}
+.center{text-align:center}.center .sec-p{margin:0 auto}
+
+/* PAIN */
+.pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pain-card{background:#fff;border:1px solid var(--border);border-radius:var(--r3);padding:22px;display:flex;gap:14px;transition:border-color .18s}
+.pain-card:hover{border-color:var(--border2)}
+.pain-ico{width:42px;height:42px;border-radius:11px;background:#fef2f2;border:1px solid #fecaca;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.pain-title{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.pain-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+
+/* PLATFORMS */
+.plat-matrix{border:1px solid var(--border);border-radius:var(--r4);overflow:hidden}
+.pm-table{width:100%;border-collapse:collapse}
+.pm-table th{padding:13px 18px;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);text-align:left;background:var(--pg);color:#fff}
+.pm-table th:first-child{background:var(--surface);color:var(--ink3)}
+.pm-table td{padding:13px 18px;border-bottom:1px solid var(--border);font-size:14px;vertical-align:middle}
+.pm-table tr:last-child td{border-bottom:none}
+.pm-table tr:hover td{background:#fff7ed}
+.pm-plat{display:flex;align-items:center;gap:10px}
+.pm-ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.pm-name{font-weight:700;color:var(--ink);font-size:14px}
+.pm-sub{font-size:12px;color:var(--ink4)}
+.check{color:var(--green);font-size:18px;font-weight:700;text-align:center}
+.dash{color:var(--ink4);font-size:16px;text-align:center}
+td.check,td.dash{text-align:center}
+
+/* HOW IT WORKS */
+.hiw-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+.hiw-steps{display:flex;flex-direction:column;gap:0}
+.hiw-step{display:flex;gap:18px;position:relative;padding-bottom:28px}
+.hiw-step:last-child{padding-bottom:0}
+.hiw-step::before{content:'';position:absolute;left:19px;top:44px;bottom:0;width:2px;background:var(--border)}
+.hiw-step:last-child::before{display:none}
+.hiw-num{width:40px;height:40px;border-radius:50%;background:var(--pg);color:#fff;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 12px var(--glow);position:relative;z-index:1;font-family:'Inter Tight',sans-serif}
+.hiw-body{padding-top:8px}
+.hiw-title{font-size:15.5px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.hiw-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+.hiw-time{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--p);background:#fff7ed;border-radius:100px;padding:2px 8px;margin-top:6px}
+
+/* OPTIMAL TIME */
+.time-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.time-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:24px;transition:all .18s}
+.time-card:hover{border-color:#fed7aa;box-shadow:0 4px 18px rgba(249,115,22,.08)}
+.tc-plat{display:flex;align-items:center;gap:9px;margin-bottom:14px}
+.tc-ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.tc-name{font-size:14px;font-weight:800;color:var(--ink)}
+.tc-times{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.tc-time-row{display:flex;align-items:center;justify-content:space-between}
+.tc-time{font-size:13px;font-weight:600;color:var(--ink2)}
+.tc-bar-wrap{flex:1;height:6px;background:var(--surface);border-radius:100px;margin:0 10px;overflow:hidden}
+.tc-bar{height:100%;border-radius:100px;background:var(--pg)}
+.tc-day{font-size:11px;color:var(--ink4)}
+.tc-note{font-size:12px;color:var(--ink3);background:var(--surface);border-radius:var(--r);padding:8px 10px;line-height:1.55}
+
+/* FEATURES */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.feat-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:26px;transition:all .18s}
+.feat-card:hover{border-color:#fed7aa;box-shadow:0 4px 18px rgba(249,115,22,.08)}
+.fc-ico{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#fff7ed,#faf5ff);display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:13px}
+.fc-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:7px}
+.fc-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+
+/* TESTIMONIALS */
+.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.test-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:28px;display:flex;flex-direction:column;transition:all .18s}
+.test-card:hover{border-color:var(--border2);box-shadow:0 6px 24px rgba(249,115,22,.08);transform:translateY(-2px)}
+.test-stars{color:#f59e0b;font-size:13px;letter-spacing:2px;margin-bottom:13px}
+.test-quote{font-size:14px;color:var(--ink2);line-height:1.76;font-style:italic;flex:1;margin-bottom:18px}
+.test-author{display:flex;align-items:center;gap:11px}
+.ta-av{width:40px;height:40px;border-radius:50%;background:var(--pg);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+.ta-name{font-size:13.5px;font-weight:700;color:var(--ink);display:block}
+.ta-biz{font-size:12px;color:var(--ink4)}
+
+/* FAQ */
+.faq-list{border:1px solid var(--border);border-radius:var(--r4);overflow:hidden;max-width:740px;margin:40px auto 0}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-item:last-child{border-bottom:none}
+.faq-q{width:100%;padding:18px 22px;background:#fff;border:none;display:flex;align-items:center;justify-content:space-between;text-align:left;cursor:pointer;font-size:15px;font-weight:600;color:var(--ink);gap:14px;transition:background .14s;font-family:inherit}
+.faq-q:hover{background:var(--surface)}
+.faq-arr{width:24px;height:24px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--ink4);flex-shrink:0;transition:all .22s}
+.faq-item.open .faq-arr{background:var(--pg);border-color:transparent;color:#fff;transform:rotate(45deg)}
+.faq-a{display:none;padding:0 22px 18px;font-size:14.5px;color:var(--ink2);line-height:1.75;background:#fff}
+.faq-item.open .faq-a{display:block}
+
+/* LINKS */
+.links-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.link-card{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:var(--r2);padding:12px 14px;font-size:13.5px;font-weight:500;color:var(--ink2);transition:all .15s}
+.link-card:hover{border-color:#fed7aa;background:#fff7ed;color:var(--p)}
+.link-arr{margin-left:auto;font-size:12px;color:var(--ink4)}
+.link-card:hover .link-arr{color:var(--p)}
+
+/* CTA */
+.cta-section{background:var(--dark);padding:96px 0;text-align:center;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 65% at 50% 110%,rgba(249,115,22,.24) 0%,transparent 70%);pointer-events:none}
+.cta-section h2{font-family:'Inter Tight',sans-serif;font-size:clamp(30px,5vw,54px);font-weight:900;letter-spacing:-2.5px;line-height:1.03;color:#fff;margin-bottom:16px;position:relative;z-index:1}
+.cta-section h2 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-section p{font-size:17.5px;color:rgba(255,255,255,.6);line-height:1.7;max-width:520px;margin:0 auto 38px;position:relative;z-index:1}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:22px;position:relative;z-index:1}
+.cta-trust{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,.4);position:relative;z-index:1}
+.ct{display:flex;align-items:center;gap:5px}
+.ct svg{width:13px;height:13px;stroke:rgba(249,115,22,.85);stroke-width:2.5;fill:none}
+
+/* FOOTER */
+.footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.07);padding:32px 0}
+.ft-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ft-logo{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:800;color:rgba(255,255,255,.6)}
+.ft-links{display:flex;gap:18px;flex-wrap:wrap}
+.ft-links a{font-size:13px;color:rgba(255,255,255,.3);transition:color .14s}
+.ft-links a:hover{color:rgba(255,255,255,.65)}
+.ft-copy{font-size:12px;color:rgba(255,255,255,.2);margin-top:14px}
+
+@media(max-width:1024px){
+  .hero-inner{grid-template-columns:1fr;gap:44px}
+  .sched-window{max-width:560px;margin:0 auto}
+  .hiw-grid{grid-template-columns:1fr;gap:44px}
+  .time-grid{grid-template-columns:1fr 1fr}
+  .feat-grid,.test-grid{grid-template-columns:1fr 1fr}
+  .links-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:720px){
+  .nav-links,.nav-right .btn-ghost{display:none}
+  .pain-grid,.feat-grid,.test-grid{grid-template-columns:1fr}
+  .time-grid{grid-template-columns:1fr}
+  .stat-strip{grid-template-columns:1fr 1fr}
+  .section{padding:60px 0}
+  .wrap{padding:0 18px}
+  .pm-table{font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){.ey-dot{animation:none}.sw-post{animation:none}}
+[data-r]{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}
+[data-r].vis{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<main>
+
+<!-- HERO -->
+<section class="hero" aria-labelledby="hero-h1">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="wrap">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-eyebrow"><span class="ey-dot"></span>Social Media Scheduler &mdash; Publishing</div>
+        <h1 class="hero-h1" id="hero-h1">Schedule once.<br>Post to 10 platforms.<br><span class="grad">Automatically.</span></h1>
+        <p class="hero-sub">Approve your content calendar once. Shoutly AI schedules every post at the optimal time for your audience and publishes automatically across all 10 platforms &mdash; forever. No reminders. No manual posting. No missing an upload.</p>
+        <div class="hero-ctas">
+          <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-lg">Start scheduling for free <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+          <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-lg">See a live demo</a>
+        </div>
+        <div class="hero-proof">
+          <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>10 platforms, one dashboard</span>
+          <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>AI picks your best posting times</span>
+          <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Unlimited posts &mdash; no caps</span>
+        </div>
+      </div>
+
+      <!-- LIVE SCHEDULER WINDOW -->
+      <div>
+        <div class="sched-window" role="region" aria-label="Social media scheduler preview">
+          <div class="sw-bar">
+            <div class="sw-dots"><div class="sw-dot r"></div><div class="sw-dot y"></div><div class="sw-dot g"></div></div>
+            <span class="sw-title">Shoutly AI &mdash; Scheduler</span>
+          </div>
+          <div class="sw-toolbar">
+            <span class="sw-view-btn active">Weekly</span>
+            <span class="sw-view-btn">Monthly</span>
+            <span class="sw-view-btn">Queue</span>
+            <span class="sw-month">August 2026</span>
+          </div>
+          <div class="sw-cal">
+            <div class="sw-days-row">
+              <div class="sw-day-hdr">Sun</div><div class="sw-day-hdr">Mon</div><div class="sw-day-hdr">Tue</div><div class="sw-day-hdr">Wed</div><div class="sw-day-hdr">Thu</div><div class="sw-day-hdr">Fri</div><div class="sw-day-hdr">Sat</div>
+            </div>
+            <div class="sw-cells" id="sw-cells">
+              <!-- filled by JS -->
+            </div>
+          </div>
+          <div class="sw-queue">
+            <div class="sw-q-lbl">Publishing queue &mdash; next 3 posts</div>
+            <div class="sw-q-items" id="sw-queue-items">
+              <div class="sw-q-item">
+                <div class="sq-plat-ico" style="background:linear-gradient(135deg,#f58529,#dd2a7b)">&#128247;</div>
+                <div class="sq-info"><div class="sq-title">Diwali special offer &mdash; 20% off all thalis</div><div class="sq-meta">Instagram &middot; Today 9:00am IST</div></div>
+                <span class="sq-status sq-live">&#9679; Publishing</span>
+              </div>
+              <div class="sw-q-item">
+                <div class="sq-plat-ico" style="background:#1877f2">&#128153;</div>
+                <div class="sq-info"><div class="sq-title">Behind the scenes &mdash; kitchen prep</div><div class="sq-meta">Facebook &middot; Today 12:00pm IST</div></div>
+                <span class="sq-status sq-sched">Scheduled</span>
+              </div>
+              <div class="sw-q-item">
+                <div class="sq-plat-ico" style="background:#0077b5">&#128188;</div>
+                <div class="sq-info"><div class="sq-title">How we built a restaurant in Bengaluru</div><div class="sq-meta">LinkedIn &middot; Tomorrow 8:00am IST</div></div>
+                <span class="sq-status sq-draft">Draft</span>
+              </div>
+            </div>
+          </div>
+          <div class="sw-footer">
+            <span class="sw-f-stat"><span class="sw-f-dot" style="background:#4ade80"></span>28 posts live</span>
+            <span class="sw-f-stat"><span class="sw-f-dot" style="background:#fdba74"></span>154 scheduled</span>
+            <span class="sw-f-stat"><span class="sw-f-dot" style="background:#fb923c"></span>3 drafts</span>
+            <span style="margin-left:auto;font-size:10px;color:rgba(255,255,255,.25);font-weight:600">10 platforms connected</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STAT STRIP -->
+<section style="padding:52px 0 0" data-r>
+  <div class="wrap">
+    <div class="stat-strip">
+      <div class="ss-cell"><div class="ss-n">10</div><div class="ss-l">Platforms</div><div class="ss-s">All in one dashboard, one plan</div></div>
+      <div class="ss-cell"><div class="ss-n">&#8734;</div><div class="ss-l">Unlimited posts</div><div class="ss-s">No caps, queues, or throttles</div></div>
+      <div class="ss-cell"><div class="ss-n">365</div><div class="ss-l">Days scheduled at once</div><div class="ss-s">Approve once, auto-runs forever</div></div>
+      <div class="ss-cell"><div class="ss-n">0</div><div class="ss-l">Manual uploads needed</div><div class="ss-s">Fully automated via official APIs</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN -->
+<section class="section" aria-labelledby="pain-h2" data-r>
+  <div class="wrap">
+    <div style="margin-bottom:48px">
+      <span class="sec-ey">The scheduling problem</span>
+      <h2 class="sec-h2" id="pain-h2">Manual posting is costing you more than just time.</h2>
+      <p class="sec-p">Every business knows they should post consistently. Almost none of them do &mdash; because manual posting at the right times, across 10 platforms, every single day is simply not sustainable for a real business.</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-ico">&#128336;</div>
+        <div>
+          <div class="pain-title">Posting at the wrong time kills your reach</div>
+          <div class="pain-desc">Instagram distributes posts based on early engagement. If you post at 2pm when your audience is at work, the first hour gets 12 likes &mdash; and the algorithm decides it&rsquo;s low-interest content and stops distributing it. The same post at 9am to the same audience could get 120 likes and go to the Explore page.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#128165;</div>
+        <div>
+          <div class="pain-title">Inconsistency is the algorithm&rsquo;s biggest red flag</div>
+          <div class="pain-desc">Instagram, LinkedIn, and Facebook all penalise accounts that post 5 times one week and once the next. The algorithm reduces distribution to non-followers for inconsistent accounts. Businesses that post on schedule, every day, compound their organic reach continuously. Those that don&rsquo;t start from scratch every time.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#128247;</div>
+        <div>
+          <div class="pain-title">Manual posting to 10 platforms takes 2 hours a day</div>
+          <div class="pain-desc">Log into Instagram. Post. Log into Facebook. Post. Open LinkedIn. Reformat. Post. Open Google Business. Post differently. Now repeat this for TikTok, YouTube, Pinterest, X, Threads, and Bluesky. That&rsquo;s 2 hours of copy-paste work daily for something that should take zero minutes.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#127773;</div>
+        <div>
+          <div class="pain-title">Festival and special occasion posts are always missed</div>
+          <div class="pain-desc">Diwali is the biggest revenue day for most Indian businesses. The businesses that capitalise on it posted their festival content 2 weeks in advance. The ones that didn&rsquo;t scrambled on Diwali morning. The difference in sales between the two groups is not small.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#128204;</div>
+        <div>
+          <div class="pain-title">Third-party schedulers break platform connections</div>
+          <div class="pain-desc">Most generic schedulers (Buffer, Later, Hootsuite) rely on unofficial API workarounds that break every few weeks when platforms update their APIs. You wake up to find 3 weeks of posts never published &mdash; and no notification that anything was wrong.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#128202;</div>
+        <div>
+          <div class="pain-title">No visibility into what&rsquo;s actually been published</div>
+          <div class="pain-desc">When you&rsquo;re manually posting, there&rsquo;s no single view of what went live, what&rsquo;s queued, what failed, or what&rsquo;s performing. You&rsquo;re flying blind &mdash; and you find out a post failed only when a customer asks why you&rsquo;ve gone quiet.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLATFORM MATRIX -->
+<section class="section section-alt" id="platforms" aria-labelledby="plat-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">All 10 platforms included</span>
+      <h2 class="sec-h2" id="plat-h2">One plan. Every platform your business needs.</h2>
+      <p class="sec-p">Every platform is connected via its official API &mdash; not workarounds. Shoutly AI is an official Meta Business Partner, LinkedIn Partner, and Google API Partner.</p>
+    </div>
+    <div class="plat-matrix">
+      <table class="pm-table">
+        <thead>
+          <tr>
+            <th>Platform</th>
+            <th style="text-align:center">Post</th>
+            <th style="text-align:center">Schedule</th>
+            <th style="text-align:center">Auto-Publish</th>
+            <th style="text-align:center">Analytics</th>
+            <th style="text-align:center">Comments</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="pm-plat"><div class="pm-ico" style="background:linear-gradient(135deg,#f58529,#dd2a7b)">&#128247;</div><div><div class="pm-name">Instagram</div><div class="pm-sub">Feed, Reels, Stories, Carousels</div></div></div></td>
+            <td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td>
+          </tr>
+          <tr>
+            <td><div class="pm-plat"><div class="pm-ico" style="background:#1877f2">&#128153;</div><div><div class="pm-name">Facebook</div><div class="pm-sub">Pages, Stories, Reels</div></div></div></td>
+            <td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td>
+          </tr>
+          <tr>
+            <td><div class="pm-plat"><div class="pm-ico" style="background:#0077b5">&#128188;</div><div><div class="pm-name">LinkedIn</div><div class="pm-sub">Personal &amp; Company pages</div></div></div></td>
+            <td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td>
+          </tr>
+          <tr>
+            <td><div class="pm-plat"><div class="pm-ico" style="background:#0f0f0f;border:1px solid #333">&#10005;</div><div><div class="pm-name">X &mdash; Twitter</div><div class="pm-sub">Tweets, Threads, Spaces</div></div></div></td>
+            <td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td>
+          </tr>
+          <tr>
+            <td><div class="pm-plat"><div class="pm-ico" style="background:linear-gradient(135deg,#010101,#69c9d0)">&#127929;</div><div><div class="pm-name">TikTok</div><div class="pm-sub">Videos, Carousels, Stories</div></div></div></td>
+            <td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td>
+          </tr>
+          <tr>
+            <td><div class="pm-plat"><div class="pm-ico" style="background:#ff0000">&#9654;&#65039;</div><div><div class="pm-name">YouTube</div><div class="pm-sub">Shorts, Videos, Community posts</div></div></div></td>
+            <td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td>
+          </tr>
+          <tr>
+            <td><div class="pm-plat"><div class="pm-ico" style="background:linear-gradient(135deg,#4285f4,#34a853)">&#128205;</div><div><div class="pm-name">Google Business Profile</div><div class="pm-sub">Posts, Offers, Events</div></div></div></td>
+            <td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td>
+          </tr>
+          <tr>
+            <td><div class="pm-plat"><div class="pm-ico" style="background:#e60023">&#128204;</div><div><div class="pm-name">Pinterest</div><div class="pm-sub">Pins, Idea Pins, Boards</div></div></div></td>
+            <td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="dash">&mdash;</td>
+          </tr>
+          <tr>
+            <td><div class="pm-plat"><div class="pm-ico" style="background:#0f0f0f;border:1px solid #333">@</div><div><div class="pm-name">Threads</div><div class="pm-sub">Posts, Replies</div></div></div></td>
+            <td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="dash">&mdash;</td>
+          </tr>
+          <tr>
+            <td><div class="pm-plat"><div class="pm-ico" style="background:linear-gradient(135deg,#0085ff,#00c6ff)">&#9729;&#65039;</div><div><div class="pm-name">Bluesky</div><div class="pm-sub">Posts, Threads</div></div></div></td>
+            <td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="dash">&mdash;</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="text-align:center;margin-top:16px;font-size:13.5px;color:var(--ink3)">All 10 platforms included in the &#8377;10,000/month plan &mdash; no per-platform fees, no add-ons.</div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how-it-works" aria-labelledby="hiw-h2" data-r>
+  <div class="wrap">
+    <div class="hiw-grid">
+      <div>
+        <span class="sec-ey">How it works</span>
+        <h2 class="sec-h2" id="hiw-h2">From content approval to auto-publishing on autopilot</h2>
+        <p class="sec-p" style="margin-bottom:40px">Set up your connected accounts once. Approve your content calendar once. After that, Shoutly AI runs your entire social media presence without you touching it again.</p>
+        <div class="hiw-steps">
+          <div class="hiw-step">
+            <div class="hiw-num">1</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Connect your accounts &mdash; one time only</div>
+              <div class="hiw-desc">Connect Instagram, Facebook, LinkedIn, and any other platforms via OAuth in under 5 minutes. All connections use official platform APIs &mdash; not workarounds that break. Your credentials are encrypted and never stored in plain text.</div>
+              <span class="hiw-time">&#8987; 5 minutes, once</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">2</div>
+            <div class="hiw-body">
+              <div class="hiw-title">AI generates your 365-day content calendar</div>
+              <div class="hiw-desc">Describe your business once and Shoutly AI generates a full year of posts, Reels scripts, carousels, festival content, and platform-specific captions &mdash; all queued in your scheduler automatically.</div>
+              <span class="hiw-time">&#8987; Under 2 minutes</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">3</div>
+            <div class="hiw-body">
+              <div class="hiw-title">AI schedules at your audience&rsquo;s peak times</div>
+              <div class="hiw-desc">The scheduler analyses your followers&rsquo; active hours on each platform and assigns each post to the optimal time slot. Your restaurant&rsquo;s Instagram post goes at 9am when local food searchers are active. Your LinkedIn post goes at 8am when professionals check feeds.</div>
+              <span class="hiw-time">&#8987; Automatic</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">4</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Review your calendar &mdash; approve in one click</div>
+              <div class="hiw-desc">Scan your week or month view, tweak anything you want, add a specific offer or event, then approve. You can also auto-approve and let the entire year run without any review &mdash; the quality is that consistent.</div>
+              <span class="hiw-time">&#8987; 10 minutes per month</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">5</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Posts publish automatically &mdash; every day</div>
+              <div class="hiw-desc">At the scheduled time, Shoutly AI publishes directly via the platform&rsquo;s official API. No push notifications. No manual action. No logging in. Your post goes live, the algorithm picks it up, and your audience sees it at the exact right moment.</div>
+              <span class="hiw-time">&#8987; Zero effort from you</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparison panel -->
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:28px">
+          <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink4);margin-bottom:18px">&#8987; Before Shoutly AI</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;gap:10px;align-items:center;font-size:13.5px;color:var(--ink3)"><span style="color:#dc2626;font-size:16px">&#10007;</span> Log into each platform manually every day</div>
+            <div style="display:flex;gap:10px;align-items:center;font-size:13.5px;color:var(--ink3)"><span style="color:#dc2626;font-size:16px">&#10007;</span> Forget to post when work gets busy</div>
+            <div style="display:flex;gap:10px;align-items:center;font-size:13.5px;color:var(--ink3)"><span style="color:#dc2626;font-size:16px">&#10007;</span> Post at wrong time &mdash; miss peak audience</div>
+            <div style="display:flex;gap:10px;align-items:center;font-size:13.5px;color:var(--ink3)"><span style="color:#dc2626;font-size:16px">&#10007;</span> Miss festival and seasonal campaigns</div>
+            <div style="display:flex;gap:10px;align-items:center;font-size:13.5px;color:var(--ink3)"><span style="color:#dc2626;font-size:16px">&#10007;</span> No consistent brand presence on any platform</div>
+            <div style="display:flex;gap:10px;align-items:center;font-size:13.5px;color:var(--ink3);font-weight:700"><span style="color:#dc2626">Total: </span> 2+ hours daily wasted</div>
+          </div>
+        </div>
+        <div style="background:var(--pg);border-radius:var(--r4);padding:28px">
+          <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.5);margin-bottom:18px">&#10022; After Shoutly AI</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;gap:10px;align-items:center;font-size:13.5px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px">&#10003;</span> All 10 platforms publish automatically</div>
+            <div style="display:flex;gap:10px;align-items:center;font-size:13.5px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px">&#10003;</span> Never miss a post &mdash; calendar runs itself</div>
+            <div style="display:flex;gap:10px;align-items:center;font-size:13.5px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px">&#10003;</span> AI posts at your audience&rsquo;s peak hours</div>
+            <div style="display:flex;gap:10px;align-items:center;font-size:13.5px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px">&#10003;</span> All 30+ Indian festivals planned in advance</div>
+            <div style="display:flex;gap:10px;align-items:center;font-size:13.5px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px">&#10003;</span> Consistent daily presence across every platform</div>
+            <div style="display:flex;gap:10px;align-items:center;font-size:13.5px;color:#fff;font-weight:700"><span style="color:#4ade80">Total: </span> ~10 minutes per month</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OPTIMAL POSTING TIMES -->
+<section class="section section-alt" id="optimal-times" aria-labelledby="time-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">AI-optimal scheduling</span>
+      <h2 class="sec-h2" id="time-h2">The AI knows when your audience is most active &mdash; and posts exactly then.</h2>
+      <p class="sec-p">Generic scheduling tools let you pick a time. Shoutly AI analyses your specific audience&rsquo;s active hours and auto-schedules to your personal peak windows &mdash; not industry averages.</p>
+    </div>
+    <div class="time-grid">
+      <div class="time-card">
+        <div class="tc-plat">
+          <div class="tc-ico" style="background:linear-gradient(135deg,#f58529,#dd2a7b)">&#128247;</div>
+          <div class="tc-name">Instagram</div>
+        </div>
+        <div class="tc-times">
+          <div class="tc-time-row"><span class="tc-time">9:00am IST</span><div class="tc-bar-wrap"><div class="tc-bar" style="width:90%"></div></div><span class="tc-day">Tue&ndash;Thu</span></div>
+          <div class="tc-time-row"><span class="tc-time">12:00pm IST</span><div class="tc-bar-wrap"><div class="tc-bar" style="width:72%"></div></div><span class="tc-day">Mon, Wed</span></div>
+          <div class="tc-time-row"><span class="tc-time">7:00pm IST</span><div class="tc-bar-wrap"><div class="tc-bar" style="width:85%"></div></div><span class="tc-day">Wed&ndash;Fri</span></div>
+        </div>
+        <div class="tc-note">For most Indian local businesses. Your specific audience data may show different peaks &mdash; the AI recalculates continuously.</div>
+      </div>
+      <div class="time-card">
+        <div class="tc-plat">
+          <div class="tc-ico" style="background:#1877f2">&#128153;</div>
+          <div class="tc-name">Facebook</div>
+        </div>
+        <div class="tc-times">
+          <div class="tc-time-row"><span class="tc-time">10:00am IST</span><div class="tc-bar-wrap"><div class="tc-bar" style="width:82%"></div></div><span class="tc-day">Tue&ndash;Thu</span></div>
+          <div class="tc-time-row"><span class="tc-time">1:00pm IST</span><div class="tc-bar-wrap"><div class="tc-bar" style="width:68%"></div></div><span class="tc-day">Wed, Fri</span></div>
+          <div class="tc-time-row"><span class="tc-time">8:00pm IST</span><div class="tc-bar-wrap"><div class="tc-bar" style="width:76%"></div></div><span class="tc-day">Thu&ndash;Sat</span></div>
+        </div>
+        <div class="tc-note">Facebook&rsquo;s older demographic peaks later in the day. Evening posts consistently outperform morning for most Indian business Pages.</div>
+      </div>
+      <div class="time-card">
+        <div class="tc-plat">
+          <div class="tc-ico" style="background:#0077b5">&#128188;</div>
+          <div class="tc-name">LinkedIn</div>
+        </div>
+        <div class="tc-times">
+          <div class="tc-time-row"><span class="tc-time">8:00am IST</span><div class="tc-bar-wrap"><div class="tc-bar" style="width:88%"></div></div><span class="tc-day">Tue&ndash;Thu</span></div>
+          <div class="tc-time-row"><span class="tc-time">12:00pm IST</span><div class="tc-bar-wrap"><div class="tc-bar" style="width:74%"></div></div><span class="tc-day">Mon, Wed</span></div>
+          <div class="tc-time-row"><span class="tc-time">5:30pm IST</span><div class="tc-bar-wrap"><div class="tc-bar" style="width:65%"></div></div><span class="tc-day">Tue, Thu</span></div>
+        </div>
+        <div class="tc-note">LinkedIn professionals check feeds before work and during lunch. Morning posts on Tue&ndash;Thu get 2&ndash;3x the reach of Friday or weekend posts.</div>
+      </div>
+      <div class="time-card">
+        <div class="tc-plat">
+          <div class="tc-ico" style="background:linear-gradient(135deg,#4285f4,#34a853)">&#128205;</div>
+          <div class="tc-name">Google Business</div>
+        </div>
+        <div class="tc-times">
+          <div class="tc-time-row"><span class="tc-time">Tue morning</span><div class="tc-bar-wrap"><div class="tc-bar" style="width:84%"></div></div><span class="tc-day">Weekly</span></div>
+          <div class="tc-time-row"><span class="tc-time">Fri morning</span><div class="tc-bar-wrap"><div class="tc-bar" style="width:78%"></div></div><span class="tc-day">Weekend prep</span></div>
+          <div class="tc-time-row"><span class="tc-time">Pre-festival</span><div class="tc-bar-wrap"><div class="tc-bar" style="width:95%"></div></div><span class="tc-day">Auto-planned</span></div>
+        </div>
+        <div class="tc-note">GBP posts improve your local search ranking. Posting weekly consistently is more important than posting at a specific time &mdash; Shoutly AI handles both.</div>
+      </div>
+      <div class="time-card">
+        <div class="tc-plat">
+          <div class="tc-ico" style="background:linear-gradient(135deg,#010101,#69c9d0)">&#127929;</div>
+          <div class="tc-name">TikTok</div>
+        </div>
+        <div class="tc-times">
+          <div class="tc-time-row"><span class="tc-time">7:00am IST</span><div class="tc-bar-wrap"><div class="tc-bar" style="width:76%"></div></div><span class="tc-day">Mon&ndash;Fri</span></div>
+          <div class="tc-time-row"><span class="tc-time">3:00pm IST</span><div class="tc-bar-wrap"><div class="tc-bar" style="width:82%"></div></div><span class="tc-day">Tue&ndash;Thu</span></div>
+          <div class="tc-time-row"><span class="tc-time">9:00pm IST</span><div class="tc-bar-wrap"><div class="tc-bar" style="width:90%"></div></div><span class="tc-day">Tue&ndash;Sat</span></div>
+        </div>
+        <div class="tc-note">TikTok&rsquo;s younger audience peaks hard in the evening. 9pm&ndash;11pm IST is consistently the highest-reach window for Indian TikTok accounts.</div>
+      </div>
+      <div class="time-card">
+        <div class="tc-plat">
+          <div class="tc-ico" style="background:#ff0000">&#9654;&#65039;</div>
+          <div class="tc-name">YouTube</div>
+        </div>
+        <div class="tc-times">
+          <div class="tc-time-row"><span class="tc-time">2:00pm IST</span><div class="tc-bar-wrap"><div class="tc-bar" style="width:72%"></div></div><span class="tc-day">Fri&ndash;Sat</span></div>
+          <div class="tc-time-row"><span class="tc-time">7:00pm IST</span><div class="tc-bar-wrap"><div class="tc-bar" style="width:86%"></div></div><span class="tc-day">Daily</span></div>
+          <div class="tc-time-row"><span class="tc-time">9:00pm IST</span><div class="tc-bar-wrap"><div class="tc-bar" style="width:79%"></div></div><span class="tc-day">Sat&ndash;Sun</span></div>
+        </div>
+        <div class="tc-note">YouTube watch time in India peaks in the evening. Publishing Shorts and videos at 7&ndash;9pm IST consistently outperforms midday uploads by 40&ndash;60%.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" aria-labelledby="feat-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">Scheduler features</span>
+      <h2 class="sec-h2" id="feat-h2">Everything built into the Shoutly AI Scheduler</h2>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="fc-ico">&#128197;</div>
+        <div class="fc-title">365-day content calendar</div>
+        <div class="fc-desc">View your entire year of scheduled posts in week or month view. Drag and drop to reschedule. Add new posts, remove any, or edit content directly in the calendar. A complete picture of your social media presence, always visible.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#128228;</div>
+        <div class="fc-title">Bulk scheduling</div>
+        <div class="fc-desc">Approve and schedule an entire month &mdash; or an entire year &mdash; in one click. The AI queues everything in the right order, at the right times, across all platforms simultaneously. One approval action, 365 days of content live.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#127881;</div>
+        <div class="fc-title">Indian festival auto-scheduling</div>
+        <div class="fc-desc">All 30+ major Indian festivals are automatically added to your calendar and scheduled 1&ndash;2 weeks in advance. Diwali, Holi, Eid, Navratri, Independence Day &mdash; your festival content is always ready, always on time.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#128101;</div>
+        <div class="fc-title">Multi-account management</div>
+        <div class="fc-desc">Connect and manage multiple social accounts from one dashboard &mdash; each with its own content calendar, brand kit, and posting schedule. Ideal for businesses with multiple locations and agencies managing multiple clients.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#128247;</div>
+        <div class="fc-title">Post preview before publishing</div>
+        <div class="fc-desc">See exactly how each post will look on Instagram, Facebook, LinkedIn, and every other platform before it goes live. Mobile and desktop previews. Catch formatting issues before your audience does.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#128202;</div>
+        <div class="fc-title">Publishing analytics</div>
+        <div class="fc-desc">Track what published, when, and how it performed &mdash; reach, impressions, engagement, and follower impact &mdash; all in the same dashboard where you schedule. Close the loop between scheduling decisions and results.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#128204;</div>
+        <div class="fc-title">Queue management</div>
+        <div class="fc-desc">See your upcoming posts in a clean queue view. Drag to reorder. Pause the queue if you&rsquo;re in a PR-sensitive moment. Resume it when you&rsquo;re ready. Full control without losing any scheduled content.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#128274;</div>
+        <div class="fc-title">Official API connections only</div>
+        <div class="fc-desc">Shoutly AI uses only official Meta, LinkedIn, Google, and platform APIs. Zero risk of account bans from unofficial automation. No workarounds, no browser extensions, no fake engagement. 100% compliant with every platform&rsquo;s terms of service.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#128161;</div>
+        <div class="fc-title">Failure alerts &amp; retry</div>
+        <div class="fc-desc">If a post fails to publish for any reason (API timeout, media format issue, account token expired), Shoutly AI alerts you immediately and retries automatically. You never find out about a failed post from a customer.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section section-alt" aria-labelledby="test-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">What businesses say</span>
+      <h2 class="sec-h2" id="test-h2">Businesses that put their social media on autopilot</h2>
+    </div>
+    <div class="test-grid">
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;I used to spend every Sunday evening scheduling posts manually for the week. Now I approve a month in one session and forget about it. My Instagram posts go live at 9am every day while I&rsquo;m still asleep. The consistency has completely changed our follower growth trajectory.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av">RK</div>
+          <div><span class="ta-name">Ravi Kumar</span><span class="ta-biz">Spice Garden Restaurant &middot; Bengaluru</span></div>
+        </div>
+      </article>
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;Managing 12 clients, I was logging in and out of 50+ accounts daily. The scheduler is the only reason I can actually scale an agency. Each client&rsquo;s posts go live automatically, at the right time, on the right platforms. I haven&rsquo;t manually published a post in 8 months.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av" style="background:linear-gradient(135deg,#ec4899,#fb923c)">AM</div>
+          <div><span class="ta-name">Anjali Mehta</span><span class="ta-biz">Social Media Agency &middot; Delhi</span></div>
+        </div>
+      </article>
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;The optimal time feature is what got me. I&rsquo;d been posting at whatever time was convenient &mdash; usually 2pm. When Shoutly AI moved my posts to 9am and 7pm, engagement literally doubled overnight. Same content, same captions, same images. Just the time changed. I couldn&rsquo;t believe it.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">PS</div>
+          <div><span class="ta-name">Priya Sharma</span><span class="ta-biz">Fitness Coach &middot; Mumbai</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq" aria-labelledby="faq-h2" data-r>
+  <div class="wrap center">
+    <span class="sec-ey">Common questions</span>
+    <h2 class="sec-h2" id="faq-h2">Everything you need to know about the Social Media Scheduler</h2>
+    <div class="faq-list">
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Which social media platforms does Shoutly AI support?<span class="faq-arr">+</span></button><div class="faq-a"><p>Shoutly AI supports 10 platforms: Instagram (feed posts, Reels, Stories, Carousels), Facebook (Pages and Reels), LinkedIn (personal and Company pages), X/Twitter, TikTok, YouTube (Shorts and videos), Threads, Pinterest, Google Business Profile, and Bluesky. All 10 are included in the &#8377;10,000/month plan at no extra cost.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Does it auto-publish or just send reminders to post manually?<span class="faq-arr">+</span></button><div class="faq-a"><p>It fully auto-publishes. Shoutly AI connects to each platform via the official API and publishes your posts automatically at the scheduled time &mdash; no manual action, no push notifications, no logging in required. You approve your calendar once and it runs indefinitely on autopilot.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">How does it choose the best time to post?<span class="faq-arr">+</span></button><div class="faq-a"><p>Shoutly AI analyses your audience&rsquo;s active hours on each platform &mdash; specifically when your followers are most active &mdash; and schedules posts to go live at your personal peak engagement window. This is recalculated continuously as your audience grows and evolves. The general benchmarks for Indian audiences are 9&ndash;11am and 7&ndash;9pm IST, but your data may show different peaks.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Can I schedule posts for all 10 platforms at once?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. You can create one post and publish it to all 10 platforms simultaneously from one interface, or schedule different content for each platform individually. The scheduler automatically adapts image sizes and caption formats for each platform&rsquo;s requirements &mdash; no manual reformatting.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Can I schedule a full year of content in advance?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Shoutly AI&rsquo;s 365-day content calendar lets you approve and schedule an entire year of posts in one session. Indian festival posts, seasonal campaigns, product launches, and daily content &mdash; all scheduled and published automatically without any further action from you. Most users spend around 10 minutes per month reviewing and approving their upcoming content.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Is there a limit on how many posts I can schedule?<span class="faq-arr">+</span></button><div class="faq-a"><p>No. The &#8377;10,000/month plan includes unlimited posting and scheduling across all 10 platforms. No caps on posts per day, no limits on queue size, no restrictions on connected accounts. Schedule as many posts as you want &mdash; daily posting on all 10 platforms simultaneously if needed.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">What happens if a post fails to publish?<span class="faq-arr">+</span></button><div class="faq-a"><p>Shoutly AI alerts you immediately via email and in-app notification if any post fails to publish. The system automatically retries, and you can see the failure reason in your dashboard &mdash; usually an expired account token (re-authorise in one click) or a temporary platform API issue (auto-resolves). You&rsquo;ll never find out about a failed post from a customer again.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Does it use official platform APIs or unofficial workarounds?<span class="faq-arr">+</span></button><div class="faq-a"><p>Official APIs only. Shoutly AI uses the Meta Graph API for Instagram and Facebook, the LinkedIn Marketing API, the Google My Business API, and the official APIs for every other platform. No browser automation, no unofficial workarounds, no fake engagement. 100% compliant with every platform&rsquo;s terms of service &mdash; zero risk of account bans.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LINKS -->
+<section class="section section-alt" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:36px">
+      <span class="sec-ey">More features</span>
+      <h2 class="sec-h2" style="font-size:clamp(22px,2.8vw,34px)">The Scheduler works with every other Shoutly AI feature</h2>
+    </div>
+    <div class="links-grid">
+      <a href="https://shoutlyai.com/features/ai-content-generator" class="link-card"><span style="font-size:18px">&#10022;</span> AI Content Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/ai-caption-generator" class="link-card"><span style="font-size:18px">&#9999;&#65039;</span> AI Caption Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/ai-image-generator" class="link-card"><span style="font-size:18px">&#127912;</span> AI Image Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/ai-hashtag-generator" class="link-card"><span style="font-size:18px">#</span> AI Hashtag Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/ai-reel-generator" class="link-card"><span style="font-size:18px">&#127909;</span> AI Reel Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/content-calendar" class="link-card"><span style="font-size:18px">&#128200;</span> 365-Day Calendar <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/analytics" class="link-card"><span style="font-size:18px">&#128202;</span> Analytics Dashboard <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/brand-kit" class="link-card"><span style="font-size:18px">&#127859;</span> Brand Kit <span class="link-arr">&#8594;</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" aria-labelledby="cta-h2">
+  <div class="wrap">
+    <h2 id="cta-h2">Stop posting manually.<br><span class="grad">Put your social media on autopilot.</span></h2>
+    <p>Approve your calendar once. Shoutly AI publishes to all 10 platforms at the optimal time for your audience &mdash; every day, forever. Free 14-day trial.</p>
+    <div class="cta-btns">
+      <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-xl">Start scheduling for free <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+      <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-xl">Book a live demo</a>
+    </div>
+    <div class="cta-trust">
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>10 platforms included</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Unlimited posts</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>No credit card required</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>&#8377;10,000/month &mdash; all features</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>4.9&#9733; &mdash; 41,000+ businesses</span>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="ft-inner">
+      <a href="https://shoutlyai.com" class="ft-logo">
+        <div class="nav-mark" style="width:26px;height:26px;border-radius:7px"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" fill="#fff"/></svg></div>
+        Shoutly AI
+      </a>
+      <nav class="ft-links">
+        <a href="https://shoutlyai.com">Home</a>
+        <a href="https://shoutlyai.com/pricing">Pricing</a>
+        <a href="https://shoutlyai.com/demo">Book Demo</a>
+        <a href="https://shoutlyai.com/case-studies">Case Studies</a>
+        <a href="https://shoutlyai.com/help-center">Help</a>
+        <a href="https://shoutlyai.com/contact-us">Contact</a>
+        <a href="https://shoutlyai.com/policy">Privacy</a>
+        <a href="https://shoutlyai.com/terms">Terms</a>
+      </nav>
+    </div>
+    <p class="ft-copy">&copy; 2026 Shoutly AI &mdash; Qubixel Technologies Private Limited. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+/* ── Build the calendar grid ──────────────────────────────────────────────── */
+var calData = [
+  {d:1, posts:[{cls:'sp-ig',ico:'&#128247;',t:'Promo'},{cls:'sp-fb',ico:'&#128153;',t:'Offer'}]},
+  {d:2, posts:[{cls:'sp-li',ico:'&#128188;',t:'Article'}]},
+  {d:3, posts:[{cls:'sp-ig',ico:'&#128247;',t:'Reel'},{cls:'sp-yt',ico:'&#9654;',t:'Short'}]},
+  {d:4, posts:[{cls:'sp-x',ico:'&#10005;',t:'Thread'},{cls:'sp-fb',ico:'&#128153;',t:'Post'}]},
+  {d:5, posts:[{cls:'sp-ig',ico:'&#128247;',t:'Story'},{cls:'sp-gb',ico:'&#128205;',t:'GBP'}]},
+  {d:6, posts:[{cls:'sp-ig',ico:'&#128247;',t:'Carousel'}]},
+  {d:7, posts:[]},
+  {d:8, posts:[{cls:'sp-ig',ico:'&#128247;',t:'Post'},{cls:'sp-li',ico:'&#128188;',t:'Post'}]},
+  {d:9, posts:[{cls:'sp-fb',ico:'&#128153;',t:'Reel'},{cls:'sp-ig',ico:'&#128247;',t:'Reel'}]},
+  {d:10,today:true, posts:[{cls:'sp-ig',ico:'&#128247;',t:'Diwali'},{cls:'sp-fb',ico:'&#128153;',t:'Diwali'},{cls:'sp-li',ico:'&#128188;',t:'Post'}]},
+  {d:11, posts:[{cls:'sp-yt',ico:'&#9654;',t:'Short'},{cls:'sp-x',ico:'&#10005;',t:'Tweet'}]},
+  {d:12, posts:[{cls:'sp-ig',ico:'&#128247;',t:'Story'},{cls:'sp-gb',ico:'&#128205;',t:'GBP'}]},
+  {d:13, posts:[{cls:'sp-ig',ico:'&#128247;',t:'Reel'}]},
+  {d:14, posts:[]},
+];
+
+var cells = document.getElementById('sw-cells');
+// pad first row
+for(var i=0;i<2;i++){var e=document.createElement('div');e.className='sw-cell empty';cells.appendChild(e);}
+calData.forEach(function(day, idx) {
+  var cell = document.createElement('div');
+  cell.className = 'sw-cell' + (day.today ? ' today' : '');
+  var html = '<div class="sw-date">' + day.d + '</div>';
+  var shown = day.posts.slice(0,2);
+  shown.forEach(function(p, pi) {
+    html += '<div class="sw-post ' + p.cls + '" style="animation-delay:' + ((idx*2+pi)*60) + 'ms">' + p.ico + ' ' + p.t + '</div>';
+  });
+  if(day.posts.length > 2) html += '<div class="sw-more">+' + (day.posts.length-2) + ' more</div>';
+  cell.innerHTML = html;
+  cells.appendChild(cell);
+});
+
+/* ── FAQ ──────────────────────────────────────────────────────────────────── */
+function faq(btn) {
+  var item = btn.closest('.faq-item');
+  var open = item.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(open));
+}
+
+/* ── Scroll reveal ───────────────────────────────────────────────────────── */
+if ('IntersectionObserver' in window) {
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+  }, { threshold: .07, rootMargin: '0px 0px -28px 0px' });
+  document.querySelectorAll('[data-r]').forEach(function(el) { obs.observe(el); });
+} else {
+  document.querySelectorAll('[data-r]').forEach(function(el) { el.classList.add('vis'); });
+}
+
+/* ── Nav ──────────────────────────────────────────────────────────────────── */
+window.addEventListener('scroll', function() {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 8);
+}, { passive: true });
+</script>
+</body>
+</html>

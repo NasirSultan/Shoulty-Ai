@@ -22,6 +22,15 @@ import {
   FaBolt,
   FaHeadset,
 } from 'react-icons/fa';
+import {
+  FaXTwitter,
+  FaLinkedinIn,
+  FaTiktok,
+  FaThreads,
+  FaBluesky,
+  FaPinterestP,
+  FaSnapchat,
+} from 'react-icons/fa6';
 
 type FooterLink = { label: string; href?: string; external?: boolean };
 
@@ -127,7 +136,9 @@ const Footer = () => {
     { label: "AI Content Generator", href: "/#generator" },
     { label: "AI Image Generator", href: "/#generator" },
     { label: "AI Reel Generator", href: "/#generator" },
-    { label: "AI Social Scheduler" },
+    { label: "AI Caption Generator", href: "/shoutlyai-ai-caption-generator.html" },
+    { label: "AI Hashtag Generator", href: "/shoutlyai-ai-hashtag-generator.html" },
+    { label: "AI Social Scheduler", href: "/shoutlyai-social-media-scheduler.html" },
     { label: "Content Calendar", href: "/free-editorial" },
     { label: "Multi-Platform Publishing" },
     { label: "Analytics" },
@@ -239,8 +250,6 @@ const Footer = () => {
       className="bg-gradient-to-b from-slate-950  to-slate-900"
       style={{ fontFamily: "'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif", background: "#020618" }}
     >
-      {/* Include FontAwesome Kit Script */}
-  <script src="https://kit.fontawesome.com/ff762d7bfc.js"></script>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
 
         {/* Top band — brand blurb + newsletter */}
@@ -265,23 +274,24 @@ const Footer = () => {
                             <p className="text-xs text-white/50 uppercase tracking-widest font-semibold mb-3">Post across 10 platforms</p>
                             <div className="flex flex-wrap gap-2">
                                 {[
-                                    { icon: "fa-x-twitter",    bg: "#000000" },
-                                    { icon: "fa-linkedin-in",  bg: "#0A66C2" },
-                                    { icon: "fa-instagram",    bg: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)" },
-                                    { icon: "fa-tiktok",       bg: "#010101" },
-                                    { icon: "fa-facebook-f",   bg: "#1877F2" },
-                                    { icon: "fa-threads",      bg: "#000000" },
-                                    { icon: "fa-bluesky",      bg: "#0085ff" },
-                                    { icon: "fa-youtube",      bg: "#FF0000" },
-                                    { icon: "fa-pinterest-p",  bg: "#E60023" },
-                                    { icon: "fa-snapchat",     bg: "#FFFC00", color: "#000" },
-                                ].map(({ icon, bg, color }, i) => (
+                                { icon: <FaXTwitter size={16} />, bg: "#000000" },
+                                { icon: <FaLinkedinIn size={16} />, bg: "#0A66C2" },
+                                { icon: <FaInstagram size={16} />, bg: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)" },
+                                { icon: <FaTiktok size={16} />, bg: "#010101" },
+                                { icon: <FaFacebook size={16} />, bg: "#1877F2" },
+                                { icon: <FaThreads size={16} />, bg: "#000000" },
+                                { icon: <FaBluesky size={16} />, bg: "#0085ff" },
+                                { icon: <FaYoutube size={16} />, bg: "#FF0000" },
+                                { icon: <FaPinterestP size={16} />, bg: "#E60023" },
+                                { icon: <FaSnapchat size={16} />, bg: "#FFFC00", color: "#000" },
+                              ].map(({ icon, bg, color }, i) => (
                                     <div key={i} style={{
                                         width: 36, height: 36, borderRadius: 10,
                                         background: bg, display: "flex", alignItems: "center", justifyContent: "center",
-                                        flexShrink: 0
+                                  flexShrink: 0,
+                                  color: color || "#fff"
                                     }}>
-                                        <i className={`fa-brands ${icon}`} style={{ fontSize: 16, color: color || "#fff" }} />
+                                  {icon}
                                     </div>
                                 ))}
                             </div>
