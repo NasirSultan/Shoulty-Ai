@@ -20,7 +20,7 @@ const AUPPolicy: React.FC = () => {
               1. Purpose
             </h2>
             <p className="text-[#4b5563]">
-              This Acceptable Use Policy ("AUP") applies to all users of ShoutlyAI, a service provided by <strong>Qubixel Technologies Private Limited</strong>. This AUP forms part of our <a href="/terms" className="text-[#f97316] hover:underline">Terms of Service</a>. Violation of this AUP may result in suspension or termination of your account.
+              This Acceptable Use Policy ("AUP") applies to all users of ShoutlyAI, a service provided by <strong>Qubixel Technologies Private Limited</strong>. This AUP forms part of our <a href="/terms-and-conditions" className="text-[#f97316] hover:underline">Terms of Service</a>. Violation of this AUP may result in suspension or termination of your account.
             </p>
           </section>
 

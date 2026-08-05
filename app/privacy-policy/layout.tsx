@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Review the Shoutly AI privacy policy and how we collect, use, and protect your information.",
   alternates: {
-    canonical: "/policy",
+    canonical: "/privacy-policy",
   },
 };
 

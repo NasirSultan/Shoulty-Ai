@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Multi-Platform Publishing &mdash; Publish to 10 Social Media Platforms at Once | Shoutly AI</title>
+<meta name="description" content="Publish to Instagram, Facebook, LinkedIn, X, TikTok, YouTube, Google Business, Pinterest, Threads, and Bluesky from one dashboard. One post, all platforms, auto-formatted. No switching apps.">
+<link rel="canonical" href="https://shoutlyai.com/features/multi-platform-publishing">
+<meta property="og:title" content="Multi-Platform Publishing &mdash; Shoutly AI">
+<meta property="og:description" content="Write once. Publish everywhere. Shoutly AI formats, optimises, and publishes your content to all 10 platforms simultaneously from one dashboard.">
+<meta property="og:url" content="https://shoutlyai.com/features/multi-platform-publishing">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shoutly AI">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@shoutlyai">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Shoutly AI Multi-Platform Publishing","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":"https://shoutlyai.com/features/multi-platform-publishing","description":"Publish to 10 social media platforms simultaneously from one dashboard. Auto-formats content for each platform, adapts captions, resizes images, and adjusts hashtag counts per platform requirements.","featureList":["Multi-platform publishing","Cross-platform posting","One-click publish to all platforms","Auto-format for each platform","Instagram publishing","Facebook publishing","LinkedIn publishing","TikTok publishing","YouTube publishing","Google Business Profile publishing","Pinterest publishing","Threads publishing","Bluesky publishing","X Twitter publishing","Platform preview before publish"],"offers":{"@type":"Offer","price":"10000","priceCurrency":"INR"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"2847","bestRating":"5"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I publish to all 10 platforms at once?","acceptedAnswer":{"@type":"Answer","text":"Yes. Create one post in Shoutly AI and publish it to all 10 platforms simultaneously with one click. The system automatically adapts the caption, image dimensions, hashtag count, and format for each platform's specific requirements."}},{"@type":"Question","name":"Does it auto-format content for each platform?","acceptedAnswer":{"@type":"Answer","text":"Yes. Shoutly AI automatically reformats your content for each platform — square images for Instagram, landscape for YouTube, portrait for TikTok, correct aspect ratios for Pinterest. Captions are also adapted: 30 hashtags for Instagram, 3-5 for LinkedIn, 1-2 for X."}},{"@type":"Question","name":"Does it use official platform APIs?","acceptedAnswer":{"@type":"Answer","text":"Yes. Every platform connection uses the official API — Meta Graph API for Instagram and Facebook, LinkedIn Marketing API, Google My Business API, and official APIs for all others. No browser automation, no unofficial workarounds, zero risk of account suspension."}},{"@type":"Question","name":"Can I preview how a post will look on each platform before publishing?","acceptedAnswer":{"@type":"Answer","text":"Yes. Before publishing, Shoutly AI shows you a live preview of exactly how your post will appear on each platform — correct image crop, caption length, hashtag formatting, and link handling. You see it before your audience does."}},{"@type":"Question","name":"Can I customise the post differently for each platform?","acceptedAnswer":{"@type":"Answer","text":"Yes. While Shoutly AI auto-adapts content for each platform, you can override any platform individually — change the caption tone, swap the image, add a platform-specific offer, or remove a platform entirely from the publish batch. Full control at every level."}},{"@type":"Question","name":"Which platforms are supported?","acceptedAnswer":{"@type":"Answer","text":"Shoutly AI supports 10 platforms: Instagram (Feed, Reels, Stories, Carousels), Facebook (Pages, Reels), LinkedIn (Personal and Company pages), X/Twitter, TikTok, YouTube (Shorts and Videos), Google Business Profile (Posts, Offers, Events), Pinterest, Threads, and Bluesky."}}]}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:#0f0f0f;-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+:root{
+  --p:#6c3bf5;--pg:linear-gradient(135deg,#6c3bf5,#a855f7);
+  --dark:#08021a;--glow:rgba(108,59,245,.32);
+  --ink:#0f0f0f;--ink2:#262626;--ink3:#525252;--ink4:#a3a3a3;
+  --surface:#f7f7fb;--border:#e5e4f0;--border2:#ccc9ea;
+  --green:#16a34a;
+  --max:1200px;--r:8px;--r2:12px;--r3:16px;--r4:22px;--r5:30px;
+}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:62px;display:flex;align-items:center;transition:box-shadow .2s}
+.nav.scrolled{box-shadow:0 1px 14px rgba(0,0,0,.07)}
+.nav-inner{display:flex;align-items:center;width:100%;max-width:var(--max);margin:0 auto;padding:0 28px;gap:8px}
+.nav-logo{display:flex;align-items:center;gap:9px;font-size:15.5px;font-weight:800;color:var(--ink)}
+.nav-mark{width:32px;height:32px;border-radius:9px;background:var(--pg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-mark svg{width:16px;height:16px;fill:#fff}
+.feat-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#ede9fe,#f5f3ff);border:1px solid #ddd6fe;color:var(--p);border-radius:100px;padding:3px 10px;font-size:11.5px;font-weight:700;margin-left:6px}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:18px}
+.nav-links a{font-size:13.5px;color:var(--ink3);padding:5px 12px;border-radius:var(--r);font-weight:500;transition:all .14s}
+.nav-links a:hover{color:var(--ink);background:var(--surface)}
+.nav-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:600;border-radius:var(--r2);padding:9px 20px;transition:all .15s;cursor:pointer;border:1.5px solid transparent;white-space:nowrap}
+.btn-ghost{color:var(--ink2);border-color:var(--border2)}.btn-ghost:hover{background:var(--surface)}
+.btn-primary{background:var(--pg);color:#fff;border:none;box-shadow:0 2px 10px var(--glow)}.btn-primary:hover{opacity:.88;transform:translateY(-1px)}
+.btn-lg{padding:13px 28px;font-size:15.5px;font-weight:700;border-radius:var(--r3)}
+.btn-xl{padding:15px 34px;font-size:16px;font-weight:700;border-radius:var(--r3)}
+.btn-white{background:#fff;color:var(--p);font-weight:700;border:none}.btn-white:hover{background:#f0ecff;transform:translateY(-1px)}
+.btn-wh-ghost{background:transparent;color:rgba(255,255,255,.8);border:1.5px solid rgba(255,255,255,.3)}.btn-wh-ghost:hover{border-color:rgba(255,255,255,.65);color:#fff}
+.btn-sm{padding:7px 16px;font-size:13px}
+
+/* BC */
+.bc{background:var(--surface);border-bottom:1px solid var(--border);padding:11px 0}
+.bc-inner{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink4)}
+.bc-inner a{color:var(--ink4)}.bc-inner a:hover{color:var(--p)}
+
+/* HERO */
+.hero{background:var(--dark);padding:80px 0 76px;position:relative;overflow:hidden}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none}
+.hero-orb-1{width:700px;height:700px;background:radial-gradient(circle,rgba(108,59,245,.5),transparent 68%);top:-250px;left:-180px}
+.hero-orb-2{width:450px;height:450px;background:radial-gradient(circle,rgba(168,85,247,.3),transparent 65%);bottom:-120px;right:-80px}
+.hero-inner{display:grid;grid-template-columns:1.05fr 1fr;gap:60px;align-items:center;position:relative;z-index:1}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(108,59,245,.18);border:1px solid rgba(108,59,245,.4);border-radius:100px;padding:5px 14px 5px 9px;font-size:12.5px;font-weight:600;color:#c4b5fd;margin-bottom:22px}
+.ey-dot{width:7px;height:7px;border-radius:50%;background:#a855f7;animation:pulse 2.2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+.hero-h1{font-family:'Inter Tight',sans-serif;font-size:clamp(36px,5vw,62px);font-weight:900;letter-spacing:-2.8px;line-height:.95;color:#fff;margin-bottom:22px}
+.hero-h1 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(15px,1.6vw,18px);color:rgba(255,255,255,.58);line-height:1.72;max-width:480px;margin-bottom:34px}
+.hero-ctas{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:30px}
+.hero-proof{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.hp{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.42)}
+.hp svg{width:13px;height:13px;stroke:rgba(108,59,245,.9);stroke-width:2.5;fill:none;flex-shrink:0}
+
+/* ─── PUBLISH PANEL (hero signature) ───────────────────────────────────── */
+.pub-window{background:#0c0820;border:1px solid rgba(255,255,255,.1);border-radius:var(--r5);overflow:hidden;box-shadow:0 32px 70px rgba(0,0,0,.5),0 0 0 1px rgba(108,59,245,.12),inset 0 1px 0 rgba(255,255,255,.06)}
+.pw-bar{background:#150e2e;border-bottom:1px solid rgba(255,255,255,.07);padding:10px 16px;display:flex;align-items:center;gap:8px}
+.pw-dots{display:flex;gap:6px}
+.pw-dot{width:10px;height:10px;border-radius:50%}
+.pw-dot.r{background:#ff5f57}.pw-dot.y{background:#febc2e}.pw-dot.g{background:#28c840}
+.pw-title{font-size:11px;color:rgba(255,255,255,.3);margin-left:8px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+/* compose area */
+.pw-compose{padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.06)}
+.pw-compose-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.25);margin-bottom:8px}
+.pw-caption-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:var(--r2);padding:10px 13px;font-size:12px;color:rgba(255,255,255,.65);line-height:1.6;margin-bottom:10px}
+.pw-img-strip{display:flex;gap:8px;align-items:center}
+.pw-img-thumb{width:52px;height:52px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.pw-img-meta{font-size:11px;color:rgba(255,255,255,.35);line-height:1.6}
+.pw-img-meta strong{color:rgba(255,255,255,.65)}
+/* platform selector */
+.pw-plat-section{padding:12px 18px;border-bottom:1px solid rgba(255,255,255,.06)}
+.pw-plat-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.25);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.pw-plat-lbl span{font-size:10px;font-weight:700;color:#a78bfa;cursor:pointer}
+.pw-plats{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.pp-item{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all .16s}
+.pp-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;border:2px solid transparent;transition:all .16s;position:relative}
+.pp-item.on .pp-ico{border-color:rgba(108,59,245,.6);box-shadow:0 0 0 3px rgba(108,59,245,.18)}
+.pp-item.off .pp-ico{opacity:.35;filter:grayscale(.6)}
+.pp-check{position:absolute;top:-5px;right:-5px;width:14px;height:14px;border-radius:50%;background:var(--pg);display:none;align-items:center;justify-content:center;font-size:8px;color:#fff;font-weight:800}
+.pp-item.on .pp-check{display:flex}
+.pp-name{font-size:8.5px;font-weight:700;color:rgba(255,255,255,.35);text-align:center}
+.pp-item.on .pp-name{color:rgba(255,255,255,.65)}
+/* format adaption row */
+.pw-adapt{padding:12px 18px;border-bottom:1px solid rgba(255,255,255,.06)}
+.pw-adapt-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.25);margin-bottom:9px}
+.pw-adapt-rows{display:flex;flex-direction:column;gap:5px}
+.pa-row{display:flex;align-items:center;gap:8px;font-size:11px}
+.pa-plat-ico{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.pa-plat-name{color:rgba(255,255,255,.5);font-weight:600;min-width:80px}
+.pa-tag{font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:100px;margin-left:auto}
+.pa-done{background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.2)}
+.pa-auto{background:rgba(108,59,245,.14);color:#a78bfa;border:1px solid rgba(108,59,245,.25)}
+/* publish btn */
+.pw-publish-row{padding:12px 18px;display:flex;align-items:center;gap:10px}
+.pw-pub-btn{flex:1;background:var(--pg);color:#fff;border:none;border-radius:var(--r2);padding:11px;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .2s;font-family:inherit}
+.pw-pub-btn:hover{opacity:.88;transform:translateY(-1px)}
+.pw-pub-btn.publishing{background:linear-gradient(135deg,#16a34a,#15803d)}
+.pw-sched-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.55);border-radius:var(--r2);padding:11px 16px;font-size:12px;font-weight:700;cursor:pointer;transition:all .18s;font-family:inherit}
+.pw-sched-btn:hover{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8)}
+/* publish progress */
+.pw-progress{padding:0 18px 14px;display:none}
+.pw-progress.show{display:block}
+.pw-prog-items{display:flex;flex-direction:column;gap:5px}
+.pp-prog-row{display:flex;align-items:center;gap:9px;font-size:11px}
+.pp-prog-ico{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.pp-prog-name{color:rgba(255,255,255,.55);font-weight:600;flex:1}
+.pp-prog-status{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:100px}
+.pps-wait{background:rgba(255,255,255,.06);color:rgba(255,255,255,.3)}
+.pps-pub{background:rgba(251,146,60,.12);color:#fb923c;border:1px solid rgba(251,146,60,.2)}
+.pps-done{background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.2)}
+
+/* STAT STRIP */
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);background:var(--border);gap:1px;border:1px solid var(--border);border-radius:var(--r4);overflow:hidden}
+.ss-cell{background:#fff;padding:26px 20px;text-align:center}
+.ss-n{font-family:'Inter Tight',sans-serif;font-size:clamp(26px,2.8vw,38px);font-weight:900;background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-2px;line-height:1;margin-bottom:5px}
+.ss-l{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.ss-s{font-size:12px;color:var(--ink4)}
+
+/* SECTIONS */
+.section{padding:88px 0}
+.section-alt{background:var(--surface)}
+.sec-ey{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--p);margin-bottom:10px;display:block}
+.sec-h2{font-family:'Inter Tight',sans-serif;font-size:clamp(26px,3.3vw,42px);font-weight:900;letter-spacing:-1.5px;color:var(--ink);line-height:1.05;margin-bottom:12px}
+.sec-p{font-size:17px;color:var(--ink2);line-height:1.72;max-width:600px}
+.center{text-align:center}.center .sec-p{margin:0 auto}
+
+/* PAIN */
+.pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pain-card{background:#fff;border:1px solid var(--border);border-radius:var(--r3);padding:22px;display:flex;gap:14px;transition:border-color .18s}
+.pain-card:hover{border-color:var(--border2)}
+.pain-ico{width:42px;height:42px;border-radius:11px;background:#fef2f2;border:1px solid #fecaca;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.pain-title{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.pain-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+
+/* PLATFORM DEEP DIVE */
+.plat-deep-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.pd-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);overflow:hidden;transition:all .2s}
+.pd-card:hover{border-color:var(--border2);box-shadow:0 6px 24px rgba(108,59,245,.08);transform:translateY(-2px)}
+.pd-head{padding:18px 20px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border)}
+.pd-ico{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.pd-name{font-size:16px;font-weight:800;color:var(--ink);letter-spacing:-.3px}
+.pd-sub{font-size:12px;color:var(--ink4);margin-top:1px}
+.pd-body{padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+.pd-row{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--ink2)}
+.pd-row-ico{font-size:14px;flex-shrink:0;margin-top:1px}
+.pd-formats{display:flex;gap:5px;flex-wrap:wrap;padding:12px 20px;border-top:1px solid var(--border);background:var(--surface)}
+.pd-fmt{font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;background:#fff;border:1px solid var(--border);color:var(--ink3)}
+
+/* AUTO-ADAPT TABLE */
+.adapt-table-wrap{border:1px solid var(--border);border-radius:var(--r4);overflow:hidden}
+.adapt-table{width:100%;border-collapse:collapse}
+.adapt-table th{padding:13px 18px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);text-align:left;background:var(--surface);color:var(--ink3)}
+.adapt-table th:first-child{background:var(--pg);color:#fff}
+.adapt-table td{padding:13px 18px;border-bottom:1px solid var(--border);font-size:13.5px;vertical-align:middle}
+.adapt-table tr:last-child td{border-bottom:none}
+.adapt-table tr:hover td{background:#faf8ff}
+.plat-cell{display:flex;align-items:center;gap:9px}
+.plat-cell-ico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.plat-cell-name{font-weight:700;color:var(--ink)}
+.val-tag{font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:100px;background:var(--surface);border:1px solid var(--border);color:var(--ink3);white-space:nowrap}
+.val-green{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
+
+/* HOW IT WORKS */
+.hiw-steps{display:flex;flex-direction:column}
+.hiw-step{display:flex;gap:18px;position:relative;padding-bottom:28px}
+.hiw-step:last-child{padding-bottom:0}
+.hiw-step::before{content:'';position:absolute;left:19px;top:44px;bottom:0;width:2px;background:var(--border)}
+.hiw-step:last-child::before{display:none}
+.hiw-num{width:40px;height:40px;border-radius:50%;background:var(--pg);color:#fff;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 12px var(--glow);z-index:1;font-family:'Inter Tight',sans-serif}
+.hiw-body{padding-top:8px}
+.hiw-title{font-size:15.5px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.hiw-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+.hiw-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--p);background:#ede9fe;border-radius:100px;padding:2px 8px;margin-top:6px}
+
+/* FEATURES */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.feat-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:26px;transition:all .18s}
+.feat-card:hover{border-color:#c4b5fd;box-shadow:0 4px 18px rgba(108,59,245,.06)}
+.fc-ico{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#ede9fe,#faf5ff);display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:13px}
+.fc-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:7px}
+.fc-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+
+/* TESTIMONIALS */
+.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.test-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:28px;display:flex;flex-direction:column;transition:all .18s}
+.test-card:hover{border-color:var(--border2);box-shadow:0 6px 24px rgba(108,59,245,.07);transform:translateY(-2px)}
+.test-stars{color:#f59e0b;font-size:13px;letter-spacing:2px;margin-bottom:13px}
+.test-quote{font-size:14px;color:var(--ink2);line-height:1.76;font-style:italic;flex:1;margin-bottom:18px}
+.test-author{display:flex;align-items:center;gap:11px}
+.ta-av{width:40px;height:40px;border-radius:50%;background:var(--pg);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+.ta-name{font-size:13.5px;font-weight:700;color:var(--ink);display:block}
+.ta-biz{font-size:12px;color:var(--ink4)}
+
+/* FAQ */
+.faq-list{border:1px solid var(--border);border-radius:var(--r4);overflow:hidden;max-width:740px;margin:40px auto 0}
+.faq-item{border-bottom:1px solid var(--border)}.faq-item:last-child{border-bottom:none}
+.faq-q{width:100%;padding:18px 22px;background:#fff;border:none;display:flex;align-items:center;justify-content:space-between;text-align:left;cursor:pointer;font-size:15px;font-weight:600;color:var(--ink);gap:14px;transition:background .14s;font-family:inherit}
+.faq-q:hover{background:var(--surface)}
+.faq-arr{width:24px;height:24px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--ink4);flex-shrink:0;transition:all .22s}
+.faq-item.open .faq-arr{background:var(--pg);border-color:transparent;color:#fff;transform:rotate(45deg)}
+.faq-a{display:none;padding:0 22px 18px;font-size:14.5px;color:var(--ink2);line-height:1.75;background:#fff}
+.faq-item.open .faq-a{display:block}
+
+/* LINKS */
+.links-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.link-card{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:var(--r2);padding:12px 14px;font-size:13.5px;font-weight:500;color:var(--ink2);transition:all .15s}
+.link-card:hover{border-color:#c4b5fd;background:#faf8ff;color:var(--p)}
+.link-arr{margin-left:auto;font-size:12px;color:var(--ink4)}
+
+/* CTA */
+.cta-section{background:var(--dark);padding:96px 0;text-align:center;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 65% at 50% 110%,rgba(108,59,245,.3) 0%,transparent 70%);pointer-events:none}
+.cta-section h2{font-family:'Inter Tight',sans-serif;font-size:clamp(30px,5vw,54px);font-weight:900;letter-spacing:-2.5px;line-height:1.03;color:#fff;margin-bottom:16px;position:relative;z-index:1}
+.cta-section h2 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-section p{font-size:17.5px;color:rgba(255,255,255,.6);line-height:1.7;max-width:520px;margin:0 auto 38px;position:relative;z-index:1}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:22px;position:relative;z-index:1}
+.cta-trust{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,.4);position:relative;z-index:1}
+.ct{display:flex;align-items:center;gap:5px}
+.ct svg{width:13px;height:13px;stroke:rgba(108,59,245,.9);stroke-width:2.5;fill:none}
+
+/* FOOTER */
+.footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.07);padding:32px 0}
+.ft-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ft-logo{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:800;color:rgba(255,255,255,.6)}
+.ft-links{display:flex;gap:18px;flex-wrap:wrap}
+.ft-links a{font-size:13px;color:rgba(255,255,255,.3);transition:color .14s}.ft-links a:hover{color:rgba(255,255,255,.65)}
+.ft-copy{font-size:12px;color:rgba(255,255,255,.2);margin-top:14px}
+
+@media(max-width:1024px){
+  .hero-inner{grid-template-columns:1fr;gap:44px}
+  .pub-window{max-width:540px;margin:0 auto}
+  .plat-deep-grid{grid-template-columns:1fr}
+  .feat-grid,.test-grid{grid-template-columns:1fr 1fr}
+  .links-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:720px){
+  .nav-links,.nav-right .btn-ghost{display:none}
+  .pain-grid,.feat-grid,.test-grid{grid-template-columns:1fr}
+  .stat-strip{grid-template-columns:1fr 1fr}
+  .section{padding:60px 0}
+  .wrap{padding:0 18px}
+  .adapt-table{font-size:12px}
+  .adapt-table th,.adapt-table td{padding:10px 12px}
+}
+@media(prefers-reduced-motion:reduce){.ey-dot{animation:none}}
+[data-r]{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}
+[data-r].vis{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="https://shoutlyai.com" class="nav-logo">
+      <div class="nav-mark"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>
+      Shoutly AI
+    </a>
+    <span class="feat-badge">&#128228; Publishing</span>
+    <nav class="nav-links">
+      <a href="#platforms">10 platforms</a>
+      <a href="#auto-adapt">Auto-formatting</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-right">
+      <a href="https://shoutlyai.com/sign-in" class="btn btn-ghost btn-sm">Log in</a>
+      <a href="https://shoutlyai.com/sign-up" class="btn btn-primary btn-sm">Start free trial</a>
+    </div>
+  </div>
+</nav>
+<main>
+
+<!-- HERO -->
+<section class="hero" aria-labelledby="hero-h1">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="wrap">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-eyebrow"><span class="ey-dot"></span>Multi-Platform Publishing &mdash; Feature</div>
+        <h1 class="hero-h1" id="hero-h1">Write once.<br>Publish to<br><span class="grad">10 platforms.</span></h1>
+        <p class="hero-sub">One post. One click. Shoutly AI auto-formats your content for every platform — right image size, right caption length, right hashtag count, right tone — and publishes simultaneously via official APIs. No switching apps. No manual reformatting. No copy-pasting.</p>
+        <div class="hero-ctas">
+          <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-lg">Start publishing for free <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+          <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-lg">See a live demo</a>
+        </div>
+        <div class="hero-proof">
+          <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Auto-formats for each platform</span>
+          <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Official APIs — zero ban risk</span>
+          <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Preview before every publish</span>
+        </div>
+      </div>
+
+      <!-- PUBLISH PANEL -->
+      <div>
+        <div class="pub-window" role="region" aria-label="Multi-platform publishing preview">
+          <div class="pw-bar">
+            <div class="pw-dots"><div class="pw-dot r"></div><div class="pw-dot y"></div><div class="pw-dot g"></div></div>
+            <span class="pw-title">Shoutly AI &mdash; Publish</span>
+          </div>
+          <div class="pw-compose">
+            <div class="pw-compose-lbl">Post content</div>
+            <div class="pw-caption-box">This Diwali, celebrate at Spice Garden &#10024;&#127806; &mdash; 20% off all thali combos, Nov 1&ndash;3. Book early, we fill up fast. Wishing you a bright Diwali! &#128293; <span style="color:#8b5cf6">#DiwaliSpecial #BengaluruFood #DiwaliOffer</span></div>
+            <div class="pw-img-strip">
+              <div class="pw-img-thumb" style="background:linear-gradient(135deg,#fb923c,#f59e0b)">&#127983;</div>
+              <div class="pw-img-meta">
+                <strong>diwali-thali-offer.jpg</strong><br>
+                AI auto-resizes for each platform &bull; 1:1 &bull; 9:16 &bull; 16:9
+              </div>
+            </div>
+          </div>
+          <div class="pw-plat-section">
+            <div class="pw-plat-lbl">Publish to <span onclick="toggleAll()">Select all</span></div>
+            <div class="pw-plats" id="pw-plats">
+              <div class="pp-item on" data-plat="ig" onclick="togglePlat(this)"><div class="pp-ico" style="background:linear-gradient(135deg,#f58529,#dd2a7b)"><span style="font-size:18px">&#128247;</span><span class="pp-check">&#10003;</span></div><div class="pp-name">Instagram</div></div>
+              <div class="pp-item on" data-plat="fb" onclick="togglePlat(this)"><div class="pp-ico" style="background:#1877f2"><span style="font-size:18px">&#128153;</span><span class="pp-check">&#10003;</span></div><div class="pp-name">Facebook</div></div>
+              <div class="pp-item on" data-plat="li" onclick="togglePlat(this)"><div class="pp-ico" style="background:#0077b5"><span style="font-size:18px">&#128188;</span><span class="pp-check">&#10003;</span></div><div class="pp-name">LinkedIn</div></div>
+              <div class="pp-item on" data-plat="x" onclick="togglePlat(this)"><div class="pp-ico" style="background:#0f0f0f;border:1px solid #333"><span style="font-size:16px">&#10005;</span><span class="pp-check">&#10003;</span></div><div class="pp-name">X</div></div>
+              <div class="pp-item on" data-plat="gb" onclick="togglePlat(this)"><div class="pp-ico" style="background:linear-gradient(135deg,#4285f4,#34a853)"><span style="font-size:18px">&#128205;</span><span class="pp-check">&#10003;</span></div><div class="pp-name">Google Biz</div></div>
+              <div class="pp-item on" data-plat="tt" onclick="togglePlat(this)"><div class="pp-ico" style="background:linear-gradient(135deg,#010101,#69c9d0)"><span style="font-size:18px">&#127929;</span><span class="pp-check">&#10003;</span></div><div class="pp-name">TikTok</div></div>
+              <div class="pp-item on" data-plat="yt" onclick="togglePlat(this)"><div class="pp-ico" style="background:#ff0000"><span style="font-size:18px">&#9654;&#65039;</span><span class="pp-check">&#10003;</span></div><div class="pp-name">YouTube</div></div>
+              <div class="pp-item on" data-plat="pi" onclick="togglePlat(this)"><div class="pp-ico" style="background:#e60023"><span style="font-size:18px">&#128204;</span><span class="pp-check">&#10003;</span></div><div class="pp-name">Pinterest</div></div>
+              <div class="pp-item on" data-plat="th" onclick="togglePlat(this)"><div class="pp-ico" style="background:#0f0f0f;border:1px solid #333"><span style="font-size:15px">@</span><span class="pp-check">&#10003;</span></div><div class="pp-name">Threads</div></div>
+              <div class="pp-item on" data-plat="bs" onclick="togglePlat(this)"><div class="pp-ico" style="background:linear-gradient(135deg,#0085ff,#00c6ff)"><span style="font-size:18px">&#9729;&#65039;</span><span class="pp-check">&#10003;</span></div><div class="pp-name">Bluesky</div></div>
+            </div>
+          </div>
+          <div class="pw-adapt">
+            <div class="pw-adapt-lbl">Auto-formatting applied</div>
+            <div class="pw-adapt-rows">
+              <div class="pa-row"><div class="pa-plat-ico" style="background:linear-gradient(135deg,#f58529,#dd2a7b)">&#128247;</div><span class="pa-plat-name">Instagram</span><span style="font-size:11px;color:rgba(255,255,255,.4)">1:1 image &bull; 30 hashtags &bull; hook line first</span><span class="pa-tag pa-done">&#10003; Ready</span></div>
+              <div class="pa-row"><div class="pa-plat-ico" style="background:#1877f2">&#128153;</div><span class="pa-plat-name">Facebook</span><span style="font-size:11px;color:rgba(255,255,255,.4)">1.91:1 image &bull; 5 hashtags &bull; conversational</span><span class="pa-tag pa-done">&#10003; Ready</span></div>
+              <div class="pa-row"><div class="pa-plat-ico" style="background:#0077b5">&#128188;</div><span class="pa-plat-name">LinkedIn</span><span style="font-size:11px;color:rgba(255,255,255,.4)">1.91:1 &bull; 3 hashtags &bull; professional tone</span><span class="pa-tag pa-done">&#10003; Ready</span></div>
+              <div class="pa-row"><div class="pa-plat-ico" style="background:#0f0f0f;border:1px solid #333">&#10005;</div><span class="pa-plat-name">X</span><span style="font-size:11px;color:rgba(255,255,255,.4)">16:9 &bull; 1 hashtag &bull; 280 char limit</span><span class="pa-tag pa-auto">&#10022; Auto-adapted</span></div>
+              <div class="pa-row"><div class="pa-plat-ico" style="background:linear-gradient(135deg,#4285f4,#34a853)">&#128205;</div><span class="pa-plat-name">Google Biz</span><span style="font-size:11px;color:rgba(255,255,255,.4)">4:3 &bull; local keywords &bull; 1500 char limit</span><span class="pa-tag pa-done">&#10003; Ready</span></div>
+            </div>
+          </div>
+          <div class="pw-publish-row">
+            <button class="pw-pub-btn" id="pub-btn" onclick="triggerPublish()">&#128228; Publish to <span id="pub-count">10</span> platforms now</button>
+            <button class="pw-sched-btn">&#128197; Schedule</button>
+          </div>
+          <div class="pw-progress" id="pw-progress">
+            <div class="pw-prog-items" id="prog-items"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STAT STRIP -->
+<section style="padding:52px 0 0" data-r>
+  <div class="wrap">
+    <div class="stat-strip">
+      <div class="ss-cell"><div class="ss-n">10</div><div class="ss-l">Platforms at once</div><div class="ss-s">One click, all published</div></div>
+      <div class="ss-cell"><div class="ss-n">0</div><div class="ss-l">Manual reformatting</div><div class="ss-s">AI handles every platform's format</div></div>
+      <div class="ss-cell"><div class="ss-n">100%</div><div class="ss-l">Official APIs only</div><div class="ss-s">Zero ban risk, zero workarounds</div></div>
+      <div class="ss-cell"><div class="ss-n">2hrs</div><div class="ss-l">Saved per day</div><div class="ss-s">vs. logging in and posting manually</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN -->
+<section class="section" aria-labelledby="pain-h2" data-r>
+  <div class="wrap">
+    <div style="margin-bottom:48px">
+      <span class="sec-ey">The multi-platform problem</span>
+      <h2 class="sec-h2" id="pain-h2">Publishing manually to 10 platforms is a full-time job. It shouldn&rsquo;t be.</h2>
+      <p class="sec-p">Every platform has different image sizes, caption limits, hashtag rules, and posting interfaces. Publishing one piece of content across all of them takes 45–90 minutes of repetitive, error-prone work — every single post.</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-ico">&#128247;</div>
+        <div>
+          <div class="pain-title">Every platform needs a different image size &mdash; manually</div>
+          <div class="pain-desc">Instagram wants a 1:1 square. Facebook wants 1.91:1 landscape. TikTok wants 9:16 portrait. Pinterest wants 2:3. YouTube thumbnails are 16:9. Resizing one image for all 10 platforms means opening Canva 10 times and exporting 10 files. Most businesses skip this and post misformatted content that looks unprofessional.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#128196;</div>
+        <div>
+          <div class="pain-title">Caption rules are completely different on every platform</div>
+          <div class="pain-desc">Instagram captions need a hook in the first line and 30 hashtags at the end. LinkedIn posts need short paragraphs and 3 hashtags maximum. X has a 280-character hard limit. Google Business has a 1,500-character limit with no hashtags. Copying the same caption to all platforms violates at least 4 of these rules simultaneously.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#128257;</div>
+        <div>
+          <div class="pain-title">Logging in and out of 10 different accounts daily</div>
+          <div class="pain-desc">Open Instagram. Switch to business account. Upload image. Write caption. Add hashtags. Post. Open Facebook. Log into business page. Upload differently-sized image. Rewrite caption. Post. Repeat for LinkedIn, X, TikTok, YouTube, Google Business, Pinterest, Threads, Bluesky. That&rsquo;s 90 minutes of tab-switching before you&rsquo;ve done any real work today.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#128204;</div>
+        <div>
+          <div class="pain-title">Platforms are missed entirely because it&rsquo;s too much work</div>
+          <div class="pain-desc">Most businesses that manage their own social media end up active on 2&ndash;3 platforms and ignoring the rest. They know they should be on Google Business. They know Pinterest drives traffic. They know LinkedIn builds credibility. But logging into each one manually every day is simply not sustainable alongside running an actual business.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#128683;</div>
+        <div>
+          <div class="pain-title">Third-party tools break connections without warning</div>
+          <div class="pain-desc">Most generic multi-platform tools use unofficial API workarounds that Instagram and Facebook actively block. Every few weeks, you wake up to find your connections have silently failed &mdash; and 2 weeks of scheduled posts never published. You find out when a customer notices you&rsquo;ve gone quiet, not from a notification.</div>
+        </div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-ico">&#128269;</div>
+        <div>
+          <div class="pain-title">No way to preview how posts look on each platform before publishing</div>
+          <div class="pain-desc">What looks great on Instagram can look wrong on LinkedIn. The image crop that works on Facebook cuts off the subject on Pinterest. The caption that fits on Instagram gets truncated on X. Without platform-by-platform previews before publishing, formatting errors reach your audience before you can fix them.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLATFORM DEEP DIVE -->
+<section class="section section-alt" id="platforms" aria-labelledby="plat-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:52px">
+      <span class="sec-ey">All 10 platforms, connected via official APIs</span>
+      <h2 class="sec-h2" id="plat-h2">Every platform your business needs. One dashboard.</h2>
+      <p class="sec-p">All 10 platforms use their official APIs — Meta Graph API, LinkedIn Marketing API, Google My Business API. Your accounts are safe, your posts always publish, your data is always accurate.</p>
+    </div>
+    <div class="plat-deep-grid">
+      <div class="pd-card">
+        <div class="pd-head">
+          <div class="pd-ico" style="background:linear-gradient(135deg,#f58529,#dd2a7b)">&#128247;</div>
+          <div><div class="pd-name">Instagram</div><div class="pd-sub">Official Meta Graph API &bull; Meta Business Partner</div></div>
+        </div>
+        <div class="pd-body">
+          <div class="pd-row"><span class="pd-row-ico">&#128200;</span>Auto-formats to 1:1 (Feed), 9:16 (Reels &amp; Stories), 4:5 (Portrait Feed)</div>
+          <div class="pd-row"><span class="pd-row-ico">#</span>30 researched hashtags generated and appended automatically</div>
+          <div class="pd-row"><span class="pd-row-ico">&#9999;&#65039;</span>Hook line placed in first 125 characters &mdash; earns the &ldquo;more&rdquo; tap</div>
+          <div class="pd-row"><span class="pd-row-ico">&#128247;</span>Carousel uploads handled automatically &mdash; all slides, correct order</div>
+          <div class="pd-row"><span class="pd-row-ico">&#128202;</span>Reach, impressions, saves, and engagement pulled back into dashboard</div>
+        </div>
+        <div class="pd-formats">
+          <span class="pd-fmt">Feed Post</span><span class="pd-fmt">Reels</span><span class="pd-fmt">Stories</span><span class="pd-fmt">Carousels</span>
+        </div>
+      </div>
+      <div class="pd-card">
+        <div class="pd-head">
+          <div class="pd-ico" style="background:#1877f2">&#128153;</div>
+          <div><div class="pd-name">Facebook</div><div class="pd-sub">Official Meta Graph API &bull; Meta Business Partner</div></div>
+        </div>
+        <div class="pd-body">
+          <div class="pd-row"><span class="pd-row-ico">&#128200;</span>Auto-formats to 1.91:1 landscape for feed posts &mdash; no manual crop</div>
+          <div class="pd-row"><span class="pd-row-ico">#</span>Caption adapted to Facebook tone &mdash; more conversational, community-first</div>
+          <div class="pd-row"><span class="pd-row-ico">&#9999;&#65039;</span>Hashtag count reduced to 5&ndash;10 &mdash; optimal for Facebook&rsquo;s algorithm</div>
+          <div class="pd-row"><span class="pd-row-ico">&#128197;</span>Events and offers published to Facebook Business Page natively</div>
+          <div class="pd-row"><span class="pd-row-ico">&#128202;</span>Reach, page likes, link clicks, and video views tracked in real-time</div>
+        </div>
+        <div class="pd-formats">
+          <span class="pd-fmt">Page Posts</span><span class="pd-fmt">Reels</span><span class="pd-fmt">Stories</span><span class="pd-fmt">Events</span>
+        </div>
+      </div>
+      <div class="pd-card">
+        <div class="pd-head">
+          <div class="pd-ico" style="background:#0077b5">&#128188;</div>
+          <div><div class="pd-name">LinkedIn</div><div class="pd-sub">Official LinkedIn Marketing API &bull; LinkedIn Partner</div></div>
+        </div>
+        <div class="pd-body">
+          <div class="pd-row"><span class="pd-row-ico">&#128200;</span>Auto-formats to 1.91:1 &mdash; optimal for LinkedIn feed display</div>
+          <div class="pd-row"><span class="pd-row-ico">#</span>Caption rewritten in professional tone &mdash; no emojis, short paragraphs</div>
+          <div class="pd-row"><span class="pd-row-ico">#</span>Hashtag count capped at 3&ndash;5 &mdash; more than 5 looks spammy on LinkedIn</div>
+          <div class="pd-row"><span class="pd-row-ico">&#128101;</span>Publishes to both personal profile and Company page simultaneously</div>
+          <div class="pd-row"><span class="pd-row-ico">&#128202;</span>Impressions, reactions, comments, and follower growth tracked</div>
+        </div>
+        <div class="pd-formats">
+          <span class="pd-fmt">Feed Posts</span><span class="pd-fmt">Articles</span><span class="pd-fmt">Company Page</span><span class="pd-fmt">Personal</span>
+        </div>
+      </div>
+      <div class="pd-card">
+        <div class="pd-head">
+          <div class="pd-ico" style="background:linear-gradient(135deg,#4285f4,#34a853)">&#128205;</div>
+          <div><div class="pd-name">Google Business Profile</div><div class="pd-sub">Official Google My Business API &bull; Google Partner</div></div>
+        </div>
+        <div class="pd-body">
+          <div class="pd-row"><span class="pd-row-ico">&#128270;</span>Caption auto-rewrites with local SEO keywords &mdash; city, area, service</div>
+          <div class="pd-row"><span class="pd-row-ico">&#128200;</span>Auto-formats to 4:3 ratio &mdash; Google&rsquo;s preferred display format</div>
+          <div class="pd-row"><span class="pd-row-ico">&#127881;</span>Offers and events published natively with expiry dates and CTAs</div>
+          <div class="pd-row"><span class="pd-row-ico">&#128270;</span>Consistent GBP posting directly improves local Google Maps ranking</div>
+          <div class="pd-row"><span class="pd-row-ico">&#128202;</span>Search views, map clicks, calls, and direction requests tracked</div>
+        </div>
+        <div class="pd-formats">
+          <span class="pd-fmt">Posts</span><span class="pd-fmt">Offers</span><span class="pd-fmt">Events</span><span class="pd-fmt">Products</span>
+        </div>
+      </div>
+      <div class="pd-card">
+        <div class="pd-head">
+          <div class="pd-ico" style="background:linear-gradient(135deg,#010101,#69c9d0)">&#127929;</div>
+          <div><div class="pd-name">TikTok</div><div class="pd-sub">Official TikTok for Business API</div></div>
+        </div>
+        <div class="pd-body">
+          <div class="pd-row"><span class="pd-row-ico">&#128200;</span>Auto-formats to 9:16 vertical &mdash; TikTok&rsquo;s only supported format</div>
+          <div class="pd-row"><span class="pd-row-ico">&#9999;&#65039;</span>Caption kept under 150 characters &mdash; TikTok&rsquo;s visible caption limit</div>
+          <div class="pd-row"><span class="pd-row-ico">#</span>3&ndash;5 trending hashtags selected &mdash; TikTok hashtag strategy differs from Instagram</div>
+          <div class="pd-row"><span class="pd-row-ico">&#127909;</span>Video upload supported &mdash; AI-generated Reel scripts ready to film</div>
+          <div class="pd-row"><span class="pd-row-ico">&#128202;</span>Video views, profile visits, likes, shares, and comments tracked</div>
+        </div>
+        <div class="pd-formats">
+          <span class="pd-fmt">Videos</span><span class="pd-fmt">Carousels</span><span class="pd-fmt">Stories</span>
+        </div>
+      </div>
+      <div class="pd-card">
+        <div class="pd-head">
+          <div class="pd-ico" style="background:#ff0000">&#9654;&#65039;</div>
+          <div><div class="pd-name">YouTube</div><div class="pd-sub">Official YouTube Data API v3</div></div>
+        </div>
+        <div class="pd-body">
+          <div class="pd-row"><span class="pd-row-ico">&#128200;</span>Shorts uploaded in 9:16 &mdash; Long-form in 16:9 &mdash; auto-detected from file</div>
+          <div class="pd-row"><span class="pd-row-ico">&#9999;&#65039;</span>Description auto-generated with timestamps, keywords, and subscribe CTA</div>
+          <div class="pd-row"><span class="pd-row-ico">&#127991;</span>Tags populated from AI keyword research &mdash; up to 500 characters</div>
+          <div class="pd-row"><span class="pd-row-ico">&#127775;</span>Thumbnails auto-generated from video frame &mdash; no Canva needed</div>
+          <div class="pd-row"><span class="pd-row-ico">&#128202;</span>Views, watch time, subscribers, and impressions tracked</div>
+        </div>
+        <div class="pd-formats">
+          <span class="pd-fmt">Shorts</span><span class="pd-fmt">Videos</span><span class="pd-fmt">Community Posts</span>
+        </div>
+      </div>
+      <div class="pd-card">
+        <div class="pd-head">
+          <div class="pd-ico" style="background:#e60023">&#128204;</div>
+          <div><div class="pd-name">Pinterest</div><div class="pd-sub">Official Pinterest API v5</div></div>
+        </div>
+        <div class="pd-body">
+          <div class="pd-row"><span class="pd-row-ico">&#128200;</span>Auto-formats to 2:3 vertical Pin format &mdash; Pinterest&rsquo;s highest-performing ratio</div>
+          <div class="pd-row"><span class="pd-row-ico">&#9999;&#65039;</span>Pin title and description auto-generated with search keywords</div>
+          <div class="pd-row"><span class="pd-row-ico">&#128196;</span>Board assignment suggested based on content type &mdash; you confirm</div>
+          <div class="pd-row"><span class="pd-row-ico">&#127760;</span>Ideal for businesses in food, fashion, home, fitness, and retail</div>
+          <div class="pd-row"><span class="pd-row-ico">&#128202;</span>Impressions, saves, outbound clicks, and Pin engagement tracked</div>
+        </div>
+        <div class="pd-formats">
+          <span class="pd-fmt">Pins</span><span class="pd-fmt">Idea Pins</span><span class="pd-fmt">Video Pins</span>
+        </div>
+      </div>
+      <div class="pd-card">
+        <div class="pd-head">
+          <div class="pd-ico" style="background:#0f0f0f;border:1px solid #333">&#10005;</div>
+          <div><div class="pd-name">X &mdash; Twitter</div><div class="pd-sub">Official X API v2</div></div>
+        </div>
+        <div class="pd-body">
+          <div class="pd-row"><span class="pd-row-ico">&#128200;</span>Auto-formats to 16:9 landscape &mdash; X&rsquo;s standard image display</div>
+          <div class="pd-row"><span class="pd-row-ico">&#9999;&#65039;</span>Caption auto-trimmed to 280 characters with link appended if needed</div>
+          <div class="pd-row"><span class="pd-row-ico">#</span>1&ndash;2 hashtags selected &mdash; more than 2 reduces X reach</div>
+          <div class="pd-row"><span class="pd-row-ico">&#128257;</span>Thread mode available for longer content &mdash; auto-split across tweets</div>
+          <div class="pd-row"><span class="pd-row-ico">&#128202;</span>Impressions, retweets, likes, link clicks, and profile visits tracked</div>
+        </div>
+        <div class="pd-formats">
+          <span class="pd-fmt">Tweets</span><span class="pd-fmt">Threads</span><span class="pd-fmt">Images</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
+      <div class="pd-card">
+        <div class="pd-head">
+          <div class="pd-ico" style="background:#0f0f0f;border:1px solid #333">@</div>
+          <div><div class="pd-name">Threads</div><div class="pd-sub">Official Meta Threads API</div></div>
+        </div>
+        <div class="pd-body">
+          <div class="pd-row"><span class="pd-row-ico">&#9999;&#65039;</span>Posts auto-formatted to Threads&rsquo; conversational short-form style</div>
+          <div class="pd-row"><span class="pd-row-ico">&#128200;</span>Images auto-cropped to 1:1 &mdash; Threads&rsquo; primary image format</div>
+          <div class="pd-row"><span class="pd-row-ico">&#128202;</span>Views, likes, replies, and reposts tracked in analytics dashboard</div>
+        </div>
+        <div class="pd-formats"><span class="pd-fmt">Posts</span><span class="pd-fmt">Images</span><span class="pd-fmt">Videos</span></div>
+      </div>
+      <div class="pd-card">
+        <div class="pd-head">
+          <div class="pd-ico" style="background:linear-gradient(135deg,#0085ff,#00c6ff)">&#9729;&#65039;</div>
+          <div><div class="pd-name">Bluesky</div><div class="pd-sub">AT Protocol &bull; Official Bluesky API</div></div>
+        </div>
+        <div class="pd-body">
+          <div class="pd-row"><span class="pd-row-ico">&#9999;&#65039;</span>Posts adapted to Bluesky&rsquo;s 300-character limit &mdash; concise and direct</div>
+          <div class="pd-row"><span class="pd-row-ico">&#128200;</span>Images auto-formatted to Bluesky&rsquo;s supported aspect ratios</div>
+          <div class="pd-row"><span class="pd-row-ico">&#128202;</span>Reach, likes, reposts, and reply engagement tracked</div>
+        </div>
+        <div class="pd-formats"><span class="pd-fmt">Posts</span><span class="pd-fmt">Threads</span><span class="pd-fmt">Images</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUTO-ADAPT TABLE -->
+<section class="section" id="auto-adapt" aria-labelledby="adapt-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">Auto-formatting — what changes per platform</span>
+      <h2 class="sec-h2" id="adapt-h2">You write once. The AI reformats everything for every platform automatically.</h2>
+      <p class="sec-p">Every platform has strict format requirements. Shoutly AI handles all of them — image dimensions, caption length, hashtag count, tone, and link handling — without any manual action from you.</p>
+    </div>
+    <div class="adapt-table-wrap">
+      <table class="adapt-table">
+        <thead>
+          <tr>
+            <th>Platform</th>
+            <th>Image ratio</th>
+            <th>Caption style</th>
+            <th>Hashtags</th>
+            <th>Char limit</th>
+            <th>Auto-adapted</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="plat-cell"><div class="plat-cell-ico" style="background:linear-gradient(135deg,#f58529,#dd2a7b)">&#128247;</div><div class="plat-cell-name">Instagram</div></div></td>
+            <td><span class="val-tag">1:1 &bull; 4:5 &bull; 9:16</span></td>
+            <td>Hook-first, emojis, conversational</td>
+            <td><span class="val-tag val-green">30 tags</span></td>
+            <td>2,200 chars</td>
+            <td><span class="val-tag val-green">&#10003; Auto</span></td>
+          </tr>
+          <tr>
+            <td><div class="plat-cell"><div class="plat-cell-ico" style="background:#1877f2">&#128153;</div><div class="plat-cell-name">Facebook</div></div></td>
+            <td><span class="val-tag">1.91:1 &bull; 1:1</span></td>
+            <td>Conversational, community, warm</td>
+            <td><span class="val-tag">5&ndash;10 tags</span></td>
+            <td>63,206 chars</td>
+            <td><span class="val-tag val-green">&#10003; Auto</span></td>
+          </tr>
+          <tr>
+            <td><div class="plat-cell"><div class="plat-cell-ico" style="background:#0077b5">&#128188;</div><div class="plat-cell-name">LinkedIn</div></div></td>
+            <td><span class="val-tag">1.91:1 &bull; 1:1</span></td>
+            <td>Professional, story-driven, no emojis</td>
+            <td><span class="val-tag">3&ndash;5 tags</span></td>
+            <td>3,000 chars</td>
+            <td><span class="val-tag val-green">&#10003; Auto</span></td>
+          </tr>
+          <tr>
+            <td><div class="plat-cell"><div class="plat-cell-ico" style="background:#0f0f0f;border:1px solid #ddd">&#10005;</div><div class="plat-cell-name">X &mdash; Twitter</div></div></td>
+            <td><span class="val-tag">16:9 &bull; 1:1</span></td>
+            <td>Punchy, no hashtag stuffing, link-ready</td>
+            <td><span class="val-tag">1&ndash;2 tags</span></td>
+            <td><span style="color:#dc2626;font-weight:700">280 chars</span></td>
+            <td><span class="val-tag val-green">&#10003; Auto-trimmed</span></td>
+          </tr>
+          <tr>
+            <td><div class="plat-cell"><div class="plat-cell-ico" style="background:linear-gradient(135deg,#4285f4,#34a853)">&#128205;</div><div class="plat-cell-name">Google Biz</div></div></td>
+            <td><span class="val-tag">4:3 &bull; 1:1</span></td>
+            <td>Local SEO keywords, direct, location-aware</td>
+            <td><span class="val-tag">None</span></td>
+            <td>1,500 chars</td>
+            <td><span class="val-tag val-green">&#10003; Auto</span></td>
+          </tr>
+          <tr>
+            <td><div class="plat-cell"><div class="plat-cell-ico" style="background:linear-gradient(135deg,#010101,#69c9d0)">&#127929;</div><div class="plat-cell-name">TikTok</div></div></td>
+            <td><span class="val-tag">9:16 only</span></td>
+            <td>Short, trend-aware, under 150 chars</td>
+            <td><span class="val-tag">3&ndash;5 tags</span></td>
+            <td>2,200 chars</td>
+            <td><span class="val-tag val-green">&#10003; Auto</span></td>
+          </tr>
+          <tr>
+            <td><div class="plat-cell"><div class="plat-cell-ico" style="background:#ff0000">&#9654;&#65039;</div><div class="plat-cell-name">YouTube</div></div></td>
+            <td><span class="val-tag">16:9 &bull; 9:16 (Shorts)</span></td>
+            <td>Description with timestamps &amp; keywords</td>
+            <td><span class="val-tag">Tags field</span></td>
+            <td>5,000 chars</td>
+            <td><span class="val-tag val-green">&#10003; Auto</span></td>
+          </tr>
+          <tr>
+            <td><div class="plat-cell"><div class="plat-cell-ico" style="background:#e60023">&#128204;</div><div class="plat-cell-name">Pinterest</div></div></td>
+            <td><span class="val-tag">2:3 (vertical)</span></td>
+            <td>Search-optimised title &amp; description</td>
+            <td><span class="val-tag">5&ndash;10 tags</span></td>
+            <td>500 chars</td>
+            <td><span class="val-tag val-green">&#10003; Auto</span></td>
+          </tr>
+          <tr>
+            <td><div class="plat-cell"><div class="plat-cell-ico" style="background:#0f0f0f;border:1px solid #ddd">@</div><div class="plat-cell-name">Threads</div></div></td>
+            <td><span class="val-tag">1:1 &bull; 16:9</span></td>
+            <td>Conversational, short-form, casual</td>
+            <td><span class="val-tag">0&ndash;3 tags</span></td>
+            <td>500 chars</td>
+            <td><span class="val-tag val-green">&#10003; Auto</span></td>
+          </tr>
+          <tr>
+            <td><div class="plat-cell"><div class="plat-cell-ico" style="background:linear-gradient(135deg,#0085ff,#00c6ff)">&#9729;&#65039;</div><div class="plat-cell-name">Bluesky</div></div></td>
+            <td><span class="val-tag">1:1 &bull; 16:9</span></td>
+            <td>Direct, concise, no hashtag spam</td>
+            <td><span class="val-tag">0&ndash;3 tags</span></td>
+            <td>300 chars</td>
+            <td><span class="val-tag val-green">&#10003; Auto</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section section-alt" id="how-it-works" aria-labelledby="hiw-h2" data-r>
+  <div class="wrap">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start">
+      <div>
+        <span class="sec-ey">How it works</span>
+        <h2 class="sec-h2" id="hiw-h2">From one draft to 10 published posts in under 30 seconds</h2>
+        <p class="sec-p" style="margin-bottom:40px">No reformatting. No resizing. No switching apps. Create your content once and Shoutly AI handles everything else — format, adapt, publish, confirm.</p>
+        <div class="hiw-steps">
+          <div class="hiw-step">
+            <div class="hiw-num">1</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Create or approve your content</div>
+              <div class="hiw-desc">Write a post, approve an AI-generated one, or select from your content calendar. Attach an image, Reel, or carousel. This is the only step that requires any creative input from you.</div>
+              <span class="hiw-badge">&#8987; 30 seconds</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">2</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Select your platforms</div>
+              <div class="hiw-desc">Toggle which platforms to publish to. All 10 are selected by default. Deselect any platform individually. Shoutly AI remembers your default platform selection for future posts.</div>
+              <span class="hiw-badge">&#8987; 5 seconds</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">3</div>
+            <div class="hiw-body">
+              <div class="hiw-title">AI auto-formats for every platform</div>
+              <div class="hiw-desc">Shoutly AI instantly reformats your content for each platform — resizing images to the correct ratio, adapting the caption tone and length, adjusting hashtag counts, rewriting for character limits. You see a live preview of each version before confirming.</div>
+              <span class="hiw-badge">&#8987; Automatic &mdash; instant</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">4</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Preview every platform before publishing</div>
+              <div class="hiw-desc">See exactly how your post will look on Instagram, Facebook, LinkedIn, and every other selected platform. Check image crops, caption truncations, hashtag display, and link handling. Edit any platform individually without affecting the others.</div>
+              <span class="hiw-badge">&#128247; Optional — 10 seconds</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">5</div>
+            <div class="hiw-body">
+              <div class="hiw-title">One click &mdash; all platforms publish simultaneously</div>
+              <div class="hiw-desc">Click &ldquo;Publish now&rdquo; and Shoutly AI publishes to all selected platforms via their official APIs simultaneously. You see a live progress feed confirming each platform as it goes live. Total time from click to all 10 platforms published: under 30 seconds.</div>
+              <span class="hiw-badge">&#10022; Under 30 seconds</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- comparison panel -->
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:26px">
+          <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink4);margin-bottom:16px">&#8987; Before Shoutly AI &mdash; publishing one post manually</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--ink3)"><span style="color:#dc2626;font-size:16px;flex-shrink:0">&#10007;</span>Log into Instagram. Resize image to 1:1. Write caption with 30 hashtags. Post.</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--ink3)"><span style="color:#dc2626;font-size:16px;flex-shrink:0">&#10007;</span>Open Facebook. Resize image to 1.91:1. Rewrite caption. Remove 25 hashtags. Post.</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--ink3)"><span style="color:#dc2626;font-size:16px;flex-shrink:0">&#10007;</span>Open LinkedIn. Resize again. Rewrite professionally. Remove all emojis. Post.</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--ink3)"><span style="color:#dc2626;font-size:16px;flex-shrink:0">&#10007;</span>Open X. Trim caption to 280 chars. Choose 1 hashtag. Post.</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--ink3)"><span style="color:#dc2626;font-size:16px;flex-shrink:0">&#10007;</span>Open Google Business. Rewrite with local keywords. No hashtags. Post.</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--ink3)"><span style="color:#dc2626;font-size:16px;flex-shrink:0">&#10007;</span>Repeat for TikTok, YouTube, Pinterest, Threads, Bluesky&hellip;</div>
+            <div style="font-size:13.5px;font-weight:700;color:#dc2626;border-top:1px solid var(--border);padding-top:10px;margin-top:4px">Total time: 60&ndash;90 minutes per post &times; 2 posts/day = 2.5 hours daily</div>
+          </div>
+        </div>
+        <div style="background:var(--pg);border-radius:var(--r4);padding:26px">
+          <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.5);margin-bottom:16px">&#10022; After Shoutly AI &mdash; publishing one post</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px;flex-shrink:0">&#10003;</span>Write or approve content once. Attach image.</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px;flex-shrink:0">&#10003;</span>AI auto-resizes image for all 10 platforms simultaneously.</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px;flex-shrink:0">&#10003;</span>AI auto-adapts caption, hashtags, and tone per platform.</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px;flex-shrink:0">&#10003;</span>Preview all 10 versions in one screen. Edit anything if needed.</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px;flex-shrink:0">&#10003;</span>Click &ldquo;Publish&rdquo; once. All 10 platforms go live in under 30 seconds.</div>
+            <div style="font-size:13.5px;font-weight:800;color:#fff;border-top:1px solid rgba(255,255,255,.2);padding-top:10px;margin-top:4px">Total time: under 2 minutes per post. Fully automated via official APIs.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" aria-labelledby="feat-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">Publisher features</span>
+      <h2 class="sec-h2" id="feat-h2">Everything built into Shoutly AI&rsquo;s Multi-Platform Publisher</h2>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="fc-ico">&#128200;</div>
+        <div class="fc-title">AI image resizing &mdash; all ratios, all platforms</div>
+        <div class="fc-desc">Upload one image. Shoutly AI automatically crops and resizes it to the correct aspect ratio for every selected platform — 1:1 for Instagram, 1.91:1 for Facebook, 9:16 for TikTok, 2:3 for Pinterest, 16:9 for YouTube. You never open Canva again just to resize.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#9999;&#65039;</div>
+        <div class="fc-title">Platform-specific caption adaptation</div>
+        <div class="fc-desc">Your caption is automatically rewritten for each platform's requirements and audience expectations — professional for LinkedIn, conversational for Facebook, hook-first for Instagram, 280-character-trimmed for X, keyword-rich for Google Business. One draft, 10 perfect captions.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#128247;</div>
+        <div class="fc-title">Live platform preview before publishing</div>
+        <div class="fc-desc">See exactly how your post will render on each platform before it goes live. Check image crops, caption display, hashtag formatting, link previews, and character truncation. Fix anything in one platform without affecting the others.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#128274;</div>
+        <div class="fc-title">Official APIs — zero ban risk</div>
+        <div class="fc-desc">Every platform connection uses the official, approved API — Meta Graph API, LinkedIn Marketing API, Google My Business API, YouTube Data API v3, and official APIs for all others. No browser automation, no session hijacking, no unofficial workarounds. Your accounts are never at risk.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#128228;</div>
+        <div class="fc-title">Failure detection &amp; instant retry</div>
+        <div class="fc-desc">If any platform fails to accept a post (API timeout, token expiry, format error), Shoutly AI detects it immediately, notifies you in-app and via email, and retries automatically. You&rsquo;ll never discover a failed post from a customer noticing your silence.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#128101;</div>
+        <div class="fc-title">Multiple account support</div>
+        <div class="fc-desc">Connect multiple Instagram accounts, multiple Facebook Pages, multiple LinkedIn profiles, multiple Google Business locations. Publish to all of them from one dashboard. Essential for businesses with multiple locations and agencies managing multiple clients.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#128196;</div>
+        <div class="fc-title">Bulk publishing</div>
+        <div class="fc-desc">Approve and publish an entire month of content in one batch action. All posts go into the scheduler queue and publish automatically at the optimal time for each platform. 30 days of multi-platform content, published with one approval click.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#127881;</div>
+        <div class="fc-title">Festival content auto-routing</div>
+        <div class="fc-desc">Festival posts (Diwali, Holi, Eid, Navratri) are automatically routed to the platforms where they perform best for your business type. A restaurant&rsquo;s Diwali offer goes to Instagram + Facebook + Google Business. A CA firm&rsquo;s tax deadline reminder goes to LinkedIn + X.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#128202;</div>
+        <div class="fc-title">Unified publish history &amp; analytics</div>
+        <div class="fc-desc">Every post published across all 10 platforms is tracked in one timeline — what went live, when, on which platform, and how it performed. No more logging into each platform to check analytics. All cross-platform performance data in one view.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section section-alt" aria-labelledby="test-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">What businesses say</span>
+      <h2 class="sec-h2" id="test-h2">Businesses that publish to all 10 platforms without switching apps</h2>
+    </div>
+    <div class="test-grid">
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;Before Shoutly AI, publishing to Instagram, Facebook, and LinkedIn took me 45 minutes per post because I was resizing images and rewriting captions manually for each one. Now I click publish once and all three go live in seconds. We went from posting 3 times a week to every day.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av">RK</div>
+          <div><span class="ta-name">Ravi Kumar</span><span class="ta-biz">Spice Garden Restaurant &middot; Bengaluru</span></div>
+        </div>
+      </article>
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;I manage 12 clients. Each client needed content on Instagram, Facebook, LinkedIn, and Google Business. That&rsquo;s 48 publishing sessions per client per month. Shoutly AI collapsed that to 12 approvals. The auto-formatting is what actually made this possible &mdash; each platform gets the right version automatically.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">AM</div>
+          <div><span class="ta-name">Anjali Mehta</span><span class="ta-biz">Social Media Agency &middot; Delhi</span></div>
+        </div>
+      </article>
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;We had a Google Business Profile for 2 years and never posted to it because logging in separately just to post felt like too much effort. Since Shoutly AI publishes there automatically with every post, our Google Maps listing now ranks #3 in Kothrud for &lsquo;gym near me&rsquo;. It literally changed our business.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">VS</div>
+          <div><span class="ta-name">Vikram Shetty</span><span class="ta-biz">FitZone Gym &middot; Pune</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq" aria-labelledby="faq-h2" data-r>
+  <div class="wrap center">
+    <span class="sec-ey">Common questions</span>
+    <h2 class="sec-h2" id="faq-h2">Everything you need to know about Multi-Platform Publishing</h2>
+    <div class="faq-list">
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Can I publish to all 10 platforms at once?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Create one post in Shoutly AI and publish it to all 10 platforms simultaneously with one click. The system automatically adapts the caption, image dimensions, hashtag count, and format for each platform&rsquo;s specific requirements. You can also deselect any platform individually if you don&rsquo;t want it included in a specific publish.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Does it auto-format content for each platform?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Shoutly AI automatically reformats your content for each platform. Images are resized to the correct aspect ratio (1:1 for Instagram, 9:16 for TikTok, 2:3 for Pinterest, 16:9 for YouTube). Captions are adapted in tone and length (30 hashtags for Instagram, 3&ndash;5 for LinkedIn, 280 characters for X). You see a preview of each adapted version before confirming the publish.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Does it use official platform APIs?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes, exclusively. Shoutly AI uses the Meta Graph API for Instagram and Facebook, the LinkedIn Marketing API, the Google My Business API, the YouTube Data API v3, the TikTok for Business API, the Pinterest API v5, the X API v2, and the official Threads and Bluesky APIs. No browser automation, no unofficial workarounds, no session tokens. Zero risk of account suspension. 100% compliant with every platform&rsquo;s terms of service.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Can I preview how a post looks on each platform before publishing?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Before publishing, Shoutly AI shows you a live preview of exactly how your post will appear on each selected platform — correct image crop, caption length, hashtag formatting, and link handling. You see exactly what your audience will see before the post goes live. Edit any platform individually without affecting the others.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Can I customise the post differently for each platform?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. While Shoutly AI auto-adapts content for each platform, you can override any platform individually — change the caption tone, swap the image, add a platform-specific offer or CTA, or remove a platform entirely from the publish batch. Full control at every level, without having to start from scratch for each platform.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">What happens if one platform fails to publish?<span class="faq-arr">+</span></button><div class="faq-a"><p>Shoutly AI detects publish failures immediately and notifies you in-app and via email with the specific reason — API timeout, token expiry, media format issue, or account permission error. The system retries automatically for transient errors. For token expiry (the most common failure), you can re-authorise the account in one click. You&rsquo;ll never discover a failed post from your audience noticing you&rsquo;ve gone quiet.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Is there a limit on how many platforms I can connect?<span class="faq-arr">+</span></button><div class="faq-a"><p>No limits. The &#8377;10,000/month plan includes unlimited connected accounts across all 10 platforms with no per-account fees. Connect multiple Instagram profiles, multiple Facebook Pages, multiple LinkedIn accounts, multiple Google Business locations &mdash; all from one dashboard, all publishing simultaneously.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LINKS -->
+<section class="section section-alt" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:36px">
+      <span class="sec-ey">More features</span>
+      <h2 class="sec-h2" style="font-size:clamp(22px,2.8vw,34px)">Multi-Platform Publishing connects with every Shoutly AI feature</h2>
+    </div>
+    <div class="links-grid">
+      <a href="https://shoutlyai.com/features/ai-content-generator" class="link-card"><span style="font-size:18px">&#10022;</span> AI Content Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/ai-caption-generator" class="link-card"><span style="font-size:18px">&#9999;&#65039;</span> AI Caption Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/ai-image-generator" class="link-card"><span style="font-size:18px">&#127912;</span> AI Image Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/ai-hashtag-generator" class="link-card"><span style="font-size:18px">#</span> Hashtag Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/social-media-scheduler" class="link-card"><span style="font-size:18px">&#128197;</span> Social Scheduler <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/content-calendar" class="link-card"><span style="font-size:18px">&#128200;</span> Content Calendar <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/analytics" class="link-card"><span style="font-size:18px">&#128202;</span> Analytics <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/brand-kit" class="link-card"><span style="font-size:18px">&#127859;</span> Brand Kit <span class="link-arr">&#8594;</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" aria-labelledby="cta-h2">
+  <div class="wrap">
+    <h2 id="cta-h2">Stop publishing manually.<br><span class="grad">One click. 10 platforms. Done.</span></h2>
+    <p>Auto-formatted for every platform. Official APIs. Live preview before every publish. Free 14-day trial, no credit card required.</p>
+    <div class="cta-btns">
+      <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-xl">Start publishing for free <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+      <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-xl">Book a live demo</a>
+    </div>
+    <div class="cta-trust">
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>10 platforms, one click</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Official APIs only</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>No credit card required</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>&#8377;10,000/month &mdash; all features</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>4.9&#9733; &mdash; 41,000+ businesses</span>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="ft-inner">
+      <a href="https://shoutlyai.com" class="ft-logo">
+        <div class="nav-mark" style="width:26px;height:26px;border-radius:7px"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" fill="#fff"/></svg></div>
+        Shoutly AI
+      </a>
+      <nav class="ft-links">
+        <a href="https://shoutlyai.com">Home</a>
+        <a href="https://shoutlyai.com/pricing">Pricing</a>
+        <a href="https://shoutlyai.com/demo">Book Demo</a>
+        <a href="https://shoutlyai.com/case-studies">Case Studies</a>
+        <a href="https://shoutlyai.com/help-center">Help</a>
+        <a href="https://shoutlyai.com/contact-us">Contact</a>
+        <a href="https://shoutlyai.com/policy">Privacy</a>
+        <a href="https://shoutlyai.com/terms">Terms</a>
+      </nav>
+    </div>
+    <p class="ft-copy">&copy; 2026 Shoutly AI &mdash; Qubixel Technologies Private Limited. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+/* ── Platform toggle ──────────────────────────────────────────────────── */
+function togglePlat(el) {
+  el.classList.toggle('on');
+  el.classList.toggle('off');
+  updateCount();
+}
+function toggleAll() {
+  var items = document.querySelectorAll('.pp-item');
+  var allOn = Array.from(items).every(function(i){return i.classList.contains('on');});
+  items.forEach(function(i){
+    i.classList.toggle('on', !allOn);
+    i.classList.toggle('off', allOn);
+  });
+  updateCount();
+}
+function updateCount() {
+  var n = document.querySelectorAll('.pp-item.on').length;
+  document.getElementById('pub-count').textContent = n;
+}
+
+/* ── Publish animation ────────────────────────────────────────────────── */
+var platforms = [
+  {name:'Instagram',ico:'&#128247;',bg:'linear-gradient(135deg,#f58529,#dd2a7b)'},
+  {name:'Facebook',ico:'&#128153;',bg:'#1877f2'},
+  {name:'LinkedIn',ico:'&#128188;',bg:'#0077b5'},
+  {name:'X',ico:'&#10005;',bg:'#0f0f0f'},
+  {name:'Google Biz',ico:'&#128205;',bg:'linear-gradient(135deg,#4285f4,#34a853)'},
+  {name:'TikTok',ico:'&#127929;',bg:'linear-gradient(135deg,#010101,#69c9d0)'},
+  {name:'YouTube',ico:'&#9654;&#65039;',bg:'#ff0000'},
+  {name:'Pinterest',ico:'&#128204;',bg:'#e60023'},
+  {name:'Threads',ico:'@',bg:'#0f0f0f'},
+  {name:'Bluesky',ico:'&#9729;&#65039;',bg:'linear-gradient(135deg,#0085ff,#00c6ff)'},
+];
+var publishing = false;
+
+function triggerPublish() {
+  if(publishing) return;
+  publishing = true;
+  var btn = document.getElementById('pub-btn');
+  var prog = document.getElementById('pw-progress');
+  var items = document.getElementById('prog-items');
+
+  btn.innerHTML = '&#128228; Publishing&hellip;';
+  btn.classList.add('publishing');
+  prog.classList.add('show');
+
+  var active = Array.from(document.querySelectorAll('.pp-item.on')).map(function(el){
+    return el.dataset.plat;
+  });
+  var platMap = {ig:0,fb:1,li:2,x:3,gb:4,tt:5,yt:6,pi:7,th:8,bs:9};
+
+  items.innerHTML = '';
+  active.forEach(function(plat) {
+    var p = platforms[platMap[plat]];
+    var row = document.createElement('div');
+    row.className = 'pp-prog-row';
+    row.id = 'prog-' + plat;
+    row.innerHTML = '<div class="pp-prog-ico" style="background:' + p.bg + '">' + p.ico + '</div>' +
+      '<span class="pp-prog-name">' + p.name + '</span>' +
+      '<span class="pp-prog-status pps-wait" id="ps-' + plat + '">Queued</span>';
+    items.appendChild(row);
+  });
+
+  active.forEach(function(plat, i) {
+    setTimeout(function(){
+      var s = document.getElementById('ps-' + plat);
+      if(s){s.className='pp-prog-status pps-pub';s.textContent='Publishing\u2026';}
+    }, i * 280);
+    setTimeout(function(){
+      var s = document.getElementById('ps-' + plat);
+      if(s){s.className='pp-prog-status pps-done';s.textContent='\u2713 Live';}
+    }, i * 280 + 700);
+  });
+
+  setTimeout(function(){
+    btn.innerHTML = '&#10003; Published to ' + active.length + ' platforms';
+    setTimeout(function(){
+      btn.innerHTML = '&#128228; Publish to <span id="pub-count">' + active.length + '</span> platforms now';
+      btn.classList.remove('publishing');
+      prog.classList.remove('show');
+      publishing = false;
+    }, 2500);
+  }, active.length * 280 + 800);
+}
+
+/* ── FAQ ──────────────────────────────────────────────────────────────── */
+function faq(btn) {
+  var item = btn.closest('.faq-item');
+  var open = item.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(open));
+}
+
+/* ── Scroll reveal ────────────────────────────────────────────────────── */
+if('IntersectionObserver' in window){
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);}});
+  },{threshold:.07,rootMargin:'0px 0px -28px 0px'});
+  document.querySelectorAll('[data-r]').forEach(function(el){obs.observe(el);});
+}else{
+  document.querySelectorAll('[data-r]').forEach(function(el){el.classList.add('vis');});
+}
+
+window.addEventListener('scroll',function(){
+  document.getElementById('nav').classList.toggle('scrolled',window.scrollY>8);
+},{passive:true});
+</script>
+</body>
+</html>

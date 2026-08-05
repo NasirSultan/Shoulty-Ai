@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Read the Shoutly AI terms and conditions for platform usage, billing, and policies.",
   alternates: {
-    canonical: "/terms",
+    canonical: "/terms-and-conditions",
   },
 };
 

@@ -241,7 +241,7 @@ export default function SignUpForm() {
                     </p>
 
                     <p className="mt-6 text-center text-[11px] text-gray-400 leading-relaxed px-4">
-                        By creating an account, you agree to our <Link href="/terms" className="underline font-bold text-gray-400">Terms of Service</Link> and <br /> <Link href="/privacy" className="underline font-bold text-gray-400">Privacy Policy</Link>
+                        By creating an account, you agree to our <Link href="/terms-and-conditions" className="underline font-bold text-gray-400">Terms of Service</Link> and <br /> <Link href="/privacy-policy" className="underline font-bold text-gray-400">Privacy Policy</Link>
                     </p>
                 </div>
 

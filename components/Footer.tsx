@@ -139,9 +139,9 @@ const Footer = () => {
     { label: "AI Caption Generator", href: "/shoutlyai-ai-caption-generator.html" },
     { label: "AI Hashtag Generator", href: "/shoutlyai-ai-hashtag-generator.html" },
     { label: "AI Social Scheduler", href: "/shoutlyai-social-media-scheduler.html" },
-    { label: "Content Calendar", href: "/free-editorial" },
-    { label: "Multi-Platform Publishing" },
-    { label: "Analytics" },
+    { label: "Content Calendar", href: "/shoutlyai-content-calendar.html" },
+    { label: "Multi-Platform Publishing", href: "/shoutlyai-multi-platform-publishing.html" },
+    { label: "Analytics", href: "/shoutlyai-analytics-dashboard.html" },
     { label: "Brand Kit" },
     { label: "Integrations" },
     { label: "Pricing", href: "/pricing" },
@@ -225,8 +225,8 @@ const Footer = () => {
   ];
 
   const legalLinks = [
-    { label: "Privacy Policy", href: "/policy" },
-    { label: "Terms of Service", href: "/terms" },
+    { label: "Privacy Policy", href: "/privacy-policy" },
+    { label: "Terms of Service", href: "/terms-and-conditions" },
     { label: "Cookie Policy", href: "/cookie" },
     { label: "GDPR", href: "/gdpr" },
     { label: "CCPA", href: "/ccpa" },
@@ -234,7 +234,8 @@ const Footer = () => {
     { label: "Refunds", href: "/refunds" },
     { label: "Security", href: "/security" },
     { label: "DMCA", href: "/dmca" },
-    { label: "EULA", href: "/eula" }
+    { label: "EULA", href: "/eula" },
+    { label: "Data Deletion", href: "/data-deletion" }
   ];
 
   const socialLinks = [

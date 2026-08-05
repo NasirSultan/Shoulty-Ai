@@ -16,11 +16,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/free-editorial",
     "/help-center",
     "/join-community",
-    "/policy",
+    "/privacy-policy",
     "/pricing",
     "/sign-in",
     "/sign-up",
-    "/terms",
+    "/terms-and-conditions",
   ];
 
   const lastModified = new Date();

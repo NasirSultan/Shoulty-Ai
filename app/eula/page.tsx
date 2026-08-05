@@ -20,7 +20,7 @@ const EULAPolicy: React.FC = () => {
               1. License Grant
             </h2>
             <p className="text-[#4b5563]">
-              <strong>Qubixel Technologies Private Limited</strong> grants you a non-exclusive, non-transferable, revocable license to access and use the ShoutlyAI platform (the "Software") solely for your internal business or personal purposes, subject to these terms and your compliance with our <a href="/terms" className="text-[#f97316] hover:underline">Terms of Service</a>.
+              <strong>Qubixel Technologies Private Limited</strong> grants you a non-exclusive, non-transferable, revocable license to access and use the ShoutlyAI platform (the "Software") solely for your internal business or personal purposes, subject to these terms and your compliance with our <a href="/terms-and-conditions" className="text-[#f97316] hover:underline">Terms of Service</a>.
             </p>
           </section>
 

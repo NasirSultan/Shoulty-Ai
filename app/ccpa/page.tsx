@@ -20,7 +20,7 @@ const CCPAPolicy: React.FC = () => {
               1. Introduction
             </h2>
             <p className="text-[#4b5563]">
-              This California Privacy Notice applies to <strong>California residents</strong> ("consumers" or "you") and supplements our main <a href="/policy" className="text-[#f97316] hover:underline">Privacy Policy</a>. It describes your rights under the California Consumer Privacy Act of 2018 (CCPA) as amended by the California Privacy Rights Act of 2020 (CPRA).
+              This California Privacy Notice applies to <strong>California residents</strong> ("consumers" or "you") and supplements our main <a href="/privacy-policy" className="text-[#f97316] hover:underline">Privacy Policy</a>. It describes your rights under the California Consumer Privacy Act of 2018 (CCPA) as amended by the California Privacy Rights Act of 2020 (CPRA).
             </p>
           </section>
 
