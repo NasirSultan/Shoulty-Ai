@@ -137,15 +137,15 @@ const MEGA_MENUS: MegaMenu[] = [
                 title: "Publishing",
                 items: [
                     { label: "Social Media Scheduler", href: "/shoutlyai-social-media-scheduler.html", icon: Clock, desc: "Queue posts for the times your audience shows up." },
-                    { label: "Content Calendar", href: "/free-editorial", icon: Calendar, desc: "Every channel on one drag-and-drop grid." },
-                    { label: "Multi-Platform Publishing", icon: Share2, desc: "Write once, reformat for each network." },
+                    { label: "Content Calendar", href: "/shoutlyai-content-calendar.html", icon: Calendar, desc: "Every channel on one drag-and-drop grid." },
+                    { label: "Multi-Platform Publishing", href: "/shoutlyai-multi-platform-publishing.html", icon: Share2, desc: "Write once, reformat for each network." },
                     { label: "Bulk Scheduling", icon: ListChecks, desc: "Upload a CSV, fill the whole quarter." },
                 ],
             },
             {
                 title: "Management",
                 items: [
-                    { label: "Analytics Dashboard", icon: BarChart3, desc: "See what earned reach, and what didn't." },
+                    { label: "Analytics Dashboard", href: "/shoutlyai-analytics-dashboard.html", icon: BarChart3, desc: "See what earned reach, and what didn't." },
                     { label: "Brand Kit", icon: Palette, desc: "Lock your colors, fonts, and voice." },
                     { label: "Media Library", href: "/#library", icon: FolderOpen, desc: "Every asset, searchable and reusable." },
                     { label: "Team Collaboration", icon: Users, desc: "Comment, assign, and hand off in place." },

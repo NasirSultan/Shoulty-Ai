@@ -20,7 +20,7 @@ const DPDPPolicy: React.FC = () => {
               1. Introduction
             </h2>
             <p className="text-[#4b5563]">
-              This notice applies to <strong>data principals</strong> (individuals) located in India and supplements our main <a href="/policy" className="text-[#f97316] hover:underline">Privacy Policy</a>. It describes your rights under India's <strong>Digital Personal Data Protection Act, 2023</strong> (DPDP Act).
+              This notice applies to <strong>data principals</strong> (individuals) located in India and supplements our main <a href="/privacy-policy" className="text-[#f97316] hover:underline">Privacy Policy</a>. It describes your rights under India's <strong>Digital Personal Data Protection Act, 2023</strong> (DPDP Act).
             </p>
           </section>
 
