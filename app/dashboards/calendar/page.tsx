@@ -614,7 +614,6 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
   user: Record<string, unknown> | null | undefined;
   industrySelection: { industryId: string; subIndustryId: string } | null | undefined;
 }) {
-  console.log(state);
   const p = state.postId ? posts.find(x => x.id === state.postId) : null;
   const [caption, setCaption] = useState("");
   const [dateVal, setDateVal] = useState("");
