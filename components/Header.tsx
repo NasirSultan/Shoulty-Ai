@@ -139,14 +139,14 @@ const MEGA_MENUS: MegaMenu[] = [
                     { label: "Social Media Scheduler", href: "/shoutlyai-social-media-scheduler.html", icon: Clock, desc: "Queue posts for the times your audience shows up." },
                     { label: "Content Calendar", href: "/shoutlyai-content-calendar.html", icon: Calendar, desc: "Every channel on one drag-and-drop grid." },
                     { label: "Multi-Platform Publishing", href: "/shoutlyai-multi-platform-publishing.html", icon: Share2, desc: "Write once, reformat for each network." },
-                    { label: "Bulk Scheduling", icon: ListChecks, desc: "Upload a CSV, fill the whole quarter." },
+                    { label: "Bulk Scheduling", href: "/shoutlyai-bulk-scheduling.html", icon: ListChecks, desc: "Upload a CSV, fill the whole quarter." },
                 ],
             },
             {
                 title: "Management",
                 items: [
                     { label: "Analytics Dashboard", href: "/shoutlyai-analytics-dashboard.html", icon: BarChart3, desc: "See what earned reach, and what didn't." },
-                    { label: "Brand Kit", icon: Palette, desc: "Lock your colors, fonts, and voice." },
+                    { label: "Brand Kit", href: "/shoutlyai-brand-kit.html", icon: Palette, desc: "Lock your colors, fonts, and voice." },
                     { label: "Media Library", href: "/#library", icon: FolderOpen, desc: "Every asset, searchable and reusable." },
                     { label: "Team Collaboration", icon: Users, desc: "Comment, assign, and hand off in place." },
                     { label: "Approval Workflow", icon: CheckSquare, desc: "Nothing ships until the right person signs off." },
@@ -309,7 +309,7 @@ function MegaMenuPanel({ menu }: { menu: MegaMenu }) {
                 <div className={`flex-1 grid gap-8`} style={{ gridTemplateColumns: `repeat(${menu.columns.length}, minmax(0,1fr))` }}>
                     {menu.columns.map((col) => (
                         <div key={col.title}>
-                            <div className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">{col.title}</div>
+                            <div className="text-xs font-bold uppercase tracking-widest text-orange-600 mb-3">{col.title}</div>
                             <div className={col.items.length > 6 ? "grid grid-cols-2 gap-x-8 gap-y-0.5 max-w-md" : "space-y-0.5"}>
                                 {col.items.map((item) => (
                                     <MegaMenuItemRow key={item.label} item={item} />

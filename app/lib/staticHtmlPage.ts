@@ -15,6 +15,28 @@ export type HtmlDocumentMeta = {
 function hardenInlineScript(scriptContent: string): string {
   let safeScript = scriptContent;
 
+  // Ensure reveal CSS can opt into JS-only hidden state.
+  safeScript = `document.documentElement.classList.add('js');\n${safeScript}`;
+
+  // On client-side route transitions, DOMContentLoaded may already have fired.
+  // This wrapper runs the callback immediately when the document is ready.
+  safeScript = safeScript.replace(
+    /document\.addEventListener\('DOMContentLoaded',\s*function\s*\(\)\s*\{/g,
+    "(function(__shoutlyRun){if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',__shoutlyRun);}else{__shoutlyRun();}})(function(){",
+  );
+  safeScript = safeScript.replace(
+    /document\.addEventListener\("DOMContentLoaded",\s*function\s*\(\)\s*\{/g,
+    "(function(__shoutlyRun){if(document.readyState==='loading'){document.addEventListener(\"DOMContentLoaded\",__shoutlyRun);}else{__shoutlyRun();}})(function(){",
+  );
+  safeScript = safeScript.replace(
+    /document\.addEventListener\('DOMContentLoaded',\s*\(\)\s*=>\s*\{/g,
+    "(function(__shoutlyRun){if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',__shoutlyRun);}else{__shoutlyRun();}})(function(){",
+  );
+  safeScript = safeScript.replace(
+    /document\.addEventListener\("DOMContentLoaded",\s*\(\)\s*=>\s*\{/g,
+    "(function(__shoutlyRun){if(document.readyState==='loading'){document.addEventListener(\"DOMContentLoaded\",__shoutlyRun);}else{__shoutlyRun();}})(function(){",
+  );
+
   // Static source pages often expect a local #nav element; this layout removes
   // static nav so guard those calls to avoid runtime null errors.
   safeScript = safeScript.replace(
@@ -100,6 +122,13 @@ export function extractStaticHtml(rawHtml: string, scopeClass: string): StaticHt
   pageStyles = pageStyles.replace(/img\{[\s\S]*?\}/i, `.${scopeClass} img{display:block;max-width:100%;height:auto}`);
   pageStyles = pageStyles.replace(/a\{[\s\S]*?\}/i, `.${scopeClass} a{color:inherit;text-decoration:none}`);
   pageStyles = pageStyles.replace(/button\{[\s\S]*?\}/i, `.${scopeClass} button{font-family:inherit}`);
+
+  // Prevent empty-looking pages when reveal scripts run late on client navigation.
+  // Content stays visible by default; JS-enabled pages still animate in.
+  pageStyles = pageStyles.replace(
+    /\[data-r\]\{([^}]*)opacity\s*:\s*0([^}]*)\}/gi,
+    "[data-r]{opacity:1;transform:none}.js [data-r]{$1opacity:0$2}",
+  );
 
   return {
     bodyHtml,

@@ -23,10 +23,10 @@ body{font-family:"Inter",system-ui,sans-serif;background:#fff;color:#0f0f0f;-web
 a{color:inherit;text-decoration:none}
 button{font-family:inherit;cursor:pointer;border:none;background:none}
 :root{
-  --p:#6c3bf5;--pg:linear-gradient(135deg,#6c3bf5,#a855f7);
-  --dark:#08021a;--glow:rgba(108,59,245,.32);
+  --p:#f97316;--pg:linear-gradient(135deg,#f97316,#ea580c);
+  --dark:#08021a;--glow:rgba(249,115,22,.26);
   --ink:#0f0f0f;--ink2:#262626;--ink3:#525252;--ink4:#a3a3a3;
-  --surface:#f7f7fb;--border:#e5e4f0;--border2:#ccc9ea;
+  --surface:#f7f7fb;--border:#fde7cf;--border2:#fed7aa;
   --green:#16a34a;
   --max:1200px;--r:8px;--r2:12px;--r3:16px;--r4:22px;--r5:30px;
 }
@@ -37,7 +37,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .nav-logo{display:flex;align-items:center;gap:9px;font-size:15.5px;font-weight:800;color:var(--ink)}
 .nav-mark{width:32px;height:32px;border-radius:9px;background:var(--pg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .nav-mark svg{width:16px;height:16px;fill:#fff}
-.feat-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#ede9fe,#f5f3ff);border:1px solid #ddd6fe;color:var(--p);border-radius:100px;padding:3px 10px;font-size:11.5px;font-weight:700;margin-left:6px}
+.feat-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#fff7ed,#ffedd5);border:1px solid #fed7aa;color:var(--p);border-radius:100px;padding:3px 10px;font-size:11.5px;font-weight:700;margin-left:6px}
 .nav-links{display:flex;align-items:center;gap:2px;margin-left:18px}
 .nav-links a{font-size:13.5px;color:var(--ink3);padding:5px 12px;border-radius:var(--r);font-weight:500;transition:all .14s}
 .nav-links a:hover{color:var(--ink);background:var(--surface)}
@@ -47,7 +47,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .btn-primary{background:var(--pg);color:#fff;border:none;box-shadow:0 2px 10px var(--glow)}.btn-primary:hover{opacity:.88;transform:translateY(-1px)}
 .btn-lg{padding:13px 28px;font-size:15.5px;font-weight:700;border-radius:var(--r3)}
 .btn-xl{padding:15px 34px;font-size:16px;font-weight:700;border-radius:var(--r3)}
-.btn-white{background:#fff;color:var(--p);font-weight:700;border:none}.btn-white:hover{background:#f0ecff;transform:translateY(-1px)}
+.btn-white{background:#fff;color:var(--p);font-weight:700;border:none}.btn-white:hover{background:#fff7ed;transform:translateY(-1px)}
 .btn-wh-ghost{background:transparent;color:rgba(255,255,255,.8);border:1.5px solid rgba(255,255,255,.3)}.btn-wh-ghost:hover{border-color:rgba(255,255,255,.65);color:#fff}
 .btn-sm{padding:7px 16px;font-size:13px}
 .bc{background:var(--surface);border-bottom:1px solid var(--border);padding:11px 0}
@@ -55,11 +55,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .bc-inner a{color:var(--ink4)}.bc-inner a:hover{color:var(--p)}
 .hero{background:var(--dark);padding:80px 0 0;position:relative;overflow:hidden}
 .hero-orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none}
-.hero-orb-1{width:700px;height:700px;background:radial-gradient(circle,rgba(108,59,245,.5),transparent 68%);top:-250px;left:-180px}
-.hero-orb-2{width:500px;height:500px;background:radial-gradient(circle,rgba(168,85,247,.35),transparent 65%);top:-100px;right:-120px}
+.hero-orb-1{width:700px;height:700px;background:radial-gradient(circle,rgba(249,115,22,.5),transparent 68%);top:-250px;left:-180px}
+.hero-orb-2{width:500px;height:500px;background:radial-gradient(circle,rgba(251,146,60,.35),transparent 65%);top:-100px;right:-120px}
 .hero-top{position:relative;z-index:1;text-align:center;padding-bottom:52px}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(108,59,245,.18);border:1px solid rgba(108,59,245,.4);border-radius:100px;padding:5px 14px 5px 9px;font-size:12.5px;font-weight:600;color:#c4b5fd;margin-bottom:22px}
-.ey-dot{width:7px;height:7px;border-radius:50%;background:#a855f7;animation:pulse 2.2s ease-in-out infinite;flex-shrink:0}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(249,115,22,.18);border:1px solid rgba(249,115,22,.4);border-radius:100px;padding:5px 14px 5px 9px;font-size:12.5px;font-weight:600;color:#fed7aa;margin-bottom:22px}
+.ey-dot{width:7px;height:7px;border-radius:50%;background:#ea580c;animation:pulse 2.2s ease-in-out infinite;flex-shrink:0}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
 .hero-h1{font-family:"Inter Tight",sans-serif;font-size:clamp(36px,5.5vw,68px);font-weight:900;letter-spacing:-3px;line-height:.94;color:#fff;margin-bottom:22px}
 .hero-h1 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
@@ -67,10 +67,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .hero-ctas{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:28px}
 .hero-proof{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center}
 .hp{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.42)}
-.hp svg{width:13px;height:13px;stroke:rgba(108,59,245,.9);stroke-width:2.5;fill:none;flex-shrink:0}
+.hp svg{width:13px;height:13px;stroke:rgba(249,115,22,.9);stroke-width:2.5;fill:none;flex-shrink:0}
 /* DASHBOARD WINDOW */
 .dash-container{position:relative;z-index:2;max-width:1000px;margin:0 auto;padding:0 28px}
-.dash-window{background:#0c0820;border:1px solid rgba(255,255,255,.1);border-radius:20px 20px 0 0;overflow:hidden;box-shadow:0 -8px 60px rgba(108,59,245,.22),0 0 0 1px rgba(108,59,245,.1)}
+.dash-window{background:#0c0820;border:1px solid rgba(255,255,255,.1);border-radius:20px 20px 0 0;overflow:hidden;box-shadow:0 -8px 60px rgba(249,115,22,.22),0 0 0 1px rgba(249,115,22,.1)}
 .dw-bar{background:#150e2e;border-bottom:1px solid rgba(255,255,255,.07);padding:10px 18px;display:flex;align-items:center;gap:10px}
 .dw-dots{display:flex;gap:6px}
 .dw-dot{width:10px;height:10px;border-radius:50%}
@@ -78,11 +78,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .dw-title{font-size:12px;font-weight:700;color:rgba(255,255,255,.5);margin-left:8px;font-family:"Inter Tight",sans-serif}
 .dw-range{margin-left:auto;display:flex;gap:4px}
 .dr-btn{font-size:10px;font-weight:700;padding:3px 10px;border-radius:var(--r);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.35);cursor:pointer;transition:all .14s}
-.dr-btn.active{background:rgba(108,59,245,.25);border-color:rgba(108,59,245,.45);color:#c4b5fd}
+.dr-btn.active{background:rgba(249,115,22,.25);border-color:rgba(249,115,22,.45);color:#fed7aa}
 .dw-plat-row{background:#130a28;border-bottom:1px solid rgba(255,255,255,.05);padding:8px 18px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
 .dw-plat-row::-webkit-scrollbar{display:none}
 .dp-chip{font-size:10px;font-weight:700;padding:4px 11px;border-radius:100px;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);cursor:pointer;transition:all .15s;white-space:nowrap}
-.dp-chip.active{background:rgba(108,59,245,.22);border-color:rgba(108,59,245,.45);color:#c4b5fd}
+.dp-chip.active{background:rgba(249,115,22,.22);border-color:rgba(249,115,22,.45);color:#fed7aa}
 .dw-kpis{display:grid;grid-template-columns:repeat(5,1fr);background:rgba(255,255,255,.02);border-bottom:1px solid rgba(255,255,255,.06)}
 .dw-kpi{padding:14px 16px;border-right:1px solid rgba(255,255,255,.05)}
 .dw-kpi:last-child{border-right:none}
@@ -106,7 +106,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .tp-info{flex:1;min-width:0}
 .tp-title{font-size:10.5px;font-weight:700;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tp-meta{font-size:9.5px;color:rgba(255,255,255,.3);margin-top:1px}
-.tp-reach{font-size:10.5px;font-weight:800;color:#a78bfa;font-family:"Inter Tight",sans-serif;text-align:right;white-space:nowrap}
+.tp-reach{font-size:10.5px;font-weight:800;color:#fdba74;font-family:"Inter Tight",sans-serif;text-align:right;white-space:nowrap}
 .dw-breakdown{border-top:1px solid rgba(255,255,255,.05);padding:12px 18px;display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
 .db-item{display:flex;flex-direction:column;gap:5px}
 .db-plat{display:flex;align-items:center;gap:5px;font-size:9.5px;font-weight:700;color:rgba(255,255,255,.4)}
@@ -136,7 +136,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 /* METRICS */
 .metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .metric-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:26px;transition:all .18s}
-.metric-card:hover{border-color:#c4b5fd;box-shadow:0 4px 18px rgba(108,59,245,.07)}
+.metric-card:hover{border-color:#fed7aa;box-shadow:0 4px 18px rgba(249,115,22,.07)}
 .mc-ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px}
 .mc-name{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:6px}
 .mc-desc{font-size:13.5px;color:var(--ink3);line-height:1.65;margin-bottom:12px}
@@ -149,7 +149,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .pm-table th:first-child{background:var(--pg);color:#fff}
 .pm-table td{padding:12px 18px;border-bottom:1px solid var(--border);font-size:13.5px;vertical-align:middle}
 .pm-table tr:last-child td{border-bottom:none}
-.pm-table tr:hover td{background:#faf8ff}
+.pm-table tr:hover td{background:#fff7ed}
 .plat-cell{display:flex;align-items:center;gap:9px}
 .pc-ico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
 .pc-name{font-weight:700;color:var(--ink)}
@@ -160,17 +160,17 @@ td.chk,td.dash-cell{text-align:center}
 .ai-learn-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
 .al-steps{display:flex;flex-direction:column;gap:14px}
 .al-step{background:#fff;border:1px solid var(--border);border-radius:var(--r3);padding:20px 22px;display:flex;gap:14px;transition:all .18s}
-.al-step:hover{border-color:#c4b5fd;box-shadow:0 3px 14px rgba(108,59,245,.07)}
+.al-step:hover{border-color:#fed7aa;box-shadow:0 3px 14px rgba(249,115,22,.07)}
 .al-num{width:34px;height:34px;border-radius:50%;background:var(--pg);color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:"Inter Tight",sans-serif}
 .al-title{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:4px}
 .al-desc{font-size:13px;color:var(--ink3);line-height:1.6}
 .insight-card{background:var(--dark);border-radius:var(--r4);padding:28px;border:1px solid rgba(255,255,255,.08)}
 .ic-header{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.35);margin-bottom:18px;display:flex;align-items:center;gap:8px}
-.ic-live{width:8px;height:8px;border-radius:50%;background:#a855f7;animation:pulse 2.2s ease-in-out infinite;flex-shrink:0}
+.ic-live{width:8px;height:8px;border-radius:50%;background:#ea580c;animation:pulse 2.2s ease-in-out infinite;flex-shrink:0}
 .ic-items{display:flex;flex-direction:column;gap:10px}
 .ic-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:var(--r2);padding:14px}
 .ic-tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:2px 7px;border-radius:100px;display:inline-block;margin-bottom:6px}
-.ic-tag.insight{background:rgba(108,59,245,.2);color:#c4b5fd;border:1px solid rgba(108,59,245,.3)}
+.ic-tag.insight{background:rgba(249,115,22,.2);color:#fed7aa;border:1px solid rgba(249,115,22,.3)}
 .ic-tag.action{background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.2)}
 .ic-tag.warn{background:rgba(251,146,60,.1);color:#fb923c;border:1px solid rgba(251,146,60,.2)}
 .ic-text{font-size:12px;color:rgba(255,255,255,.65);line-height:1.6}
@@ -178,14 +178,14 @@ td.chk,td.dash-cell{text-align:center}
 /* FEATURES */
 .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .feat-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:26px;transition:all .18s}
-.feat-card:hover{border-color:#c4b5fd;box-shadow:0 4px 18px rgba(108,59,245,.06)}
-.fc-ico{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#ede9fe,#faf5ff);display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:13px}
+.feat-card:hover{border-color:#fed7aa;box-shadow:0 4px 18px rgba(249,115,22,.06)}
+.fc-ico{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#fff7ed,#faf5ff);display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:13px}
 .fc-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:7px}
 .fc-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
 /* TESTIMONIALS */
 .test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .test-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:28px;display:flex;flex-direction:column;transition:all .18s}
-.test-card:hover{border-color:var(--border2);box-shadow:0 6px 24px rgba(108,59,245,.07);transform:translateY(-2px)}
+.test-card:hover{border-color:var(--border2);box-shadow:0 6px 24px rgba(249,115,22,.07);transform:translateY(-2px)}
 .test-stars{color:#f59e0b;font-size:13px;letter-spacing:2px;margin-bottom:13px}
 .test-quote{font-size:14px;color:var(--ink2);line-height:1.76;font-style:italic;flex:1;margin-bottom:18px}
 .test-author{display:flex;align-items:center;gap:11px}
@@ -204,18 +204,18 @@ td.chk,td.dash-cell{text-align:center}
 /* LINKS */
 .links-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .link-card{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:var(--r2);padding:12px 14px;font-size:13.5px;font-weight:500;color:var(--ink2);transition:all .15s}
-.link-card:hover{border-color:#c4b5fd;background:#faf8ff;color:var(--p)}
+.link-card:hover{border-color:#fed7aa;background:#fff7ed;color:var(--p)}
 .link-arr{margin-left:auto;font-size:12px;color:var(--ink4)}
 /* CTA */
 .cta-section{background:var(--dark);padding:96px 0;text-align:center;position:relative;overflow:hidden}
-.cta-section::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 65% at 50% 110%,rgba(108,59,245,.3) 0%,transparent 70%);pointer-events:none}
+.cta-section::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 65% at 50% 110%,rgba(249,115,22,.3) 0%,transparent 70%);pointer-events:none}
 .cta-section h2{font-family:"Inter Tight",sans-serif;font-size:clamp(30px,5vw,54px);font-weight:900;letter-spacing:-2.5px;line-height:1.03;color:#fff;margin-bottom:16px;position:relative;z-index:1}
 .cta-section h2 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .cta-section p{font-size:17.5px;color:rgba(255,255,255,.6);line-height:1.7;max-width:520px;margin:0 auto 38px;position:relative;z-index:1}
 .cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:22px;position:relative;z-index:1}
 .cta-trust{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,.4);position:relative;z-index:1}
 .ct{display:flex;align-items:center;gap:5px}
-.ct svg{width:13px;height:13px;stroke:rgba(108,59,245,.9);stroke-width:2.5;fill:none}
+.ct svg{width:13px;height:13px;stroke:rgba(249,115,22,.9);stroke-width:2.5;fill:none}
 .footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.07);padding:32px 0}
 .ft-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
 .ft-logo{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:800;color:rgba(255,255,255,.6)}
@@ -302,17 +302,17 @@ td.chk,td.dash-cell{text-align:center}
           <div class="dw-chart-hdr">
             <span class="dw-chart-lbl">Reach &amp; Engagement &mdash; last 30 days</span>
             <div class="dw-chart-legend">
-              <span class="dcl-item"><span class="dcl-dot" style="background:#8b5cf6"></span>Reach</span>
+              <span class="dcl-item"><span class="dcl-dot" style="background:#f97316"></span>Reach</span>
               <span class="dcl-item"><span class="dcl-dot" style="background:#ec4899"></span>Engagement</span>
             </div>
           </div>
           <svg class="dw-chart-svg" viewBox="0 0 560 120" preserveAspectRatio="none" aria-hidden="true">
             <defs>
-              <linearGradient id="rg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8b5cf6" stop-opacity=".3"/><stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/></linearGradient>
+              <linearGradient id="rg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f97316" stop-opacity=".3"/><stop offset="100%" stop-color="#f97316" stop-opacity="0"/></linearGradient>
               <linearGradient id="eg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ec4899" stop-opacity=".25"/><stop offset="100%" stop-color="#ec4899" stop-opacity="0"/></linearGradient>
             </defs>
             <path d="M0,90 C30,85 60,78 90,70 C120,62 150,56 180,48 C210,40 230,44 260,36 C290,28 310,32 340,22 C370,12 390,18 420,14 C450,10 480,12 510,9 C530,7 545,9 560,8 L560,120 L0,120 Z" fill="url(#rg)"/>
-            <path d="M0,90 C30,85 60,78 90,70 C120,62 150,56 180,48 C210,40 230,44 260,36 C290,28 310,32 340,22 C370,12 390,18 420,14 C450,10 480,12 510,9 C530,7 545,9 560,8" fill="none" stroke="#8b5cf6" stroke-width="2"/>
+            <path d="M0,90 C30,85 60,78 90,70 C120,62 150,56 180,48 C210,40 230,44 260,36 C290,28 310,32 340,22 C370,12 390,18 420,14 C450,10 480,12 510,9 C530,7 545,9 560,8" fill="none" stroke="#f97316" stroke-width="2"/>
             <path d="M0,105 C30,103 60,99 90,95 C120,91 150,88 180,84 C210,80 230,82 260,76 C290,70 310,73 340,66 C370,59 390,63 420,57 C450,51 480,53 510,49 C530,46 545,47 560,45 L560,120 L0,120 Z" fill="url(#eg)"/>
             <path d="M0,105 C30,103 60,99 90,95 C120,91 150,88 180,84 C210,80 230,82 260,76 C290,70 310,73 340,66 C370,59 390,63 420,57 C450,51 480,53 510,49 C530,46 545,47 560,45" fill="none" stroke="#ec4899" stroke-width="1.5" stroke-dasharray="4 2"/>
             <line x1="0" y1="30" x2="560" y2="30" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
@@ -334,7 +334,7 @@ td.chk,td.dash-cell{text-align:center}
             <div class="tp-reach">74.2K<div style="font-size:8px;color:#4ade80;text-align:right">reach</div></div>
           </div>
           <div class="tp-item">
-            <div class="tp-thumb" style="background:linear-gradient(135deg,#8b5cf6,#6c3bf5)">&#128218;</div>
+            <div class="tp-thumb" style="background:linear-gradient(135deg,#f97316,#f97316)">&#128218;</div>
             <div class="tp-info"><div class="tp-title">5 dishes to try</div><div class="tp-meta">Instagram &bull; Nov 7</div></div>
             <div class="tp-reach">38.1K<div style="font-size:8px;color:#4ade80;text-align:right">reach</div></div>
           </div>
@@ -344,7 +344,7 @@ td.chk,td.dash-cell{text-align:center}
             <div class="tp-reach">22.4K<div style="font-size:8px;color:#4ade80;text-align:right">reach</div></div>
           </div>
           <div class="tp-item">
-            <div class="tp-thumb" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">&#127909;</div>
+            <div class="tp-thumb" style="background:linear-gradient(135deg,#ec4899,#f97316)">&#127909;</div>
             <div class="tp-info"><div class="tp-title">Kitchen behind scenes</div><div class="tp-meta">Instagram &bull; Nov 16</div></div>
             <div class="tp-reach">19.8K<div style="font-size:8px;color:#4ade80;text-align:right">reach</div></div>
           </div>
@@ -400,7 +400,7 @@ td.chk,td.dash-cell{text-align:center}
       <p class="sec-p">Not vanity metrics. The ones that tell you whether social media is driving real business outcomes &mdash; reach, engagement, saves, follower growth, and conversions.</p>
     </div>
     <div class="metrics-grid">
-      <div class="metric-card"><div class="mc-ico" style="background:linear-gradient(135deg,#ede9fe,#faf5ff)">&#128200;</div><div class="mc-name">Reach &amp; Impressions</div><div class="mc-desc">How many unique people saw your content (reach) vs how many total times it was displayed (impressions). Tracked per post, per content type, and as a rolling 30/90/365-day trend. Normalised across platforms so numbers are actually comparable.</div><div class="mc-plats"><span class="mc-plat">&#128247; Instagram</span><span class="mc-plat">&#128153; Facebook</span><span class="mc-plat">&#128188; LinkedIn</span><span class="mc-plat">&#127929; TikTok</span><span class="mc-plat">&#9654;&#65039; YouTube</span></div></div>
+      <div class="metric-card"><div class="mc-ico" style="background:linear-gradient(135deg,#fff7ed,#faf5ff)">&#128200;</div><div class="mc-name">Reach &amp; Impressions</div><div class="mc-desc">How many unique people saw your content (reach) vs how many total times it was displayed (impressions). Tracked per post, per content type, and as a rolling 30/90/365-day trend. Normalised across platforms so numbers are actually comparable.</div><div class="mc-plats"><span class="mc-plat">&#128247; Instagram</span><span class="mc-plat">&#128153; Facebook</span><span class="mc-plat">&#128188; LinkedIn</span><span class="mc-plat">&#127929; TikTok</span><span class="mc-plat">&#9654;&#65039; YouTube</span></div></div>
       <div class="metric-card"><div class="mc-ico" style="background:linear-gradient(135deg,#fdf2f8,#fff)">&#10084;&#65039;</div><div class="mc-name">Engagement Rate</div><div class="mc-desc">Likes, comments, saves, shares, and reactions as a percentage of reach &mdash; not followers. Engagement rate is the clearest signal of content quality. Benchmarked against your industry average so you always know where you stand.</div><div class="mc-plats"><span class="mc-plat">&#128247; Instagram</span><span class="mc-plat">&#128153; Facebook</span><span class="mc-plat">&#128188; LinkedIn</span><span class="mc-plat">&#128204; Pinterest</span></div></div>
       <div class="metric-card"><div class="mc-ico" style="background:linear-gradient(135deg,#f0fdf4,#fff)">&#128101;</div><div class="mc-name">Follower Growth</div><div class="mc-desc">Net new followers per day, week, month &mdash; for each platform individually and combined. Broken down by the specific posts that drove the most new follows so you know exactly which content to replicate.</div><div class="mc-plats"><span class="mc-plat">&#128247; Instagram</span><span class="mc-plat">&#128153; Facebook</span><span class="mc-plat">&#128188; LinkedIn</span><span class="mc-plat">&#127929; TikTok</span><span class="mc-plat">&#9654;&#65039; YouTube</span></div></div>
       <div class="metric-card"><div class="mc-ico" style="background:linear-gradient(135deg,#eff6ff,#fff)">&#128190;</div><div class="mc-name">Saves &amp; Shares</div><div class="mc-desc">Saves are Instagram&rsquo;s highest-quality signal &mdash; someone found your content valuable enough to return to. Shares indicate content so useful people forward it. Both tracked per post and per content type to identify your highest-value formats.</div><div class="mc-plats"><span class="mc-plat">&#128247; Instagram</span><span class="mc-plat">&#128153; Facebook</span><span class="mc-plat">&#128188; LinkedIn</span><span class="mc-plat">&#128204; Pinterest</span></div></div>
@@ -408,7 +408,7 @@ td.chk,td.dash-cell{text-align:center}
       <div class="metric-card"><div class="mc-ico" style="background:linear-gradient(135deg,#f0fdf4,#fff)">&#128205;</div><div class="mc-name">Local Search &amp; Google Actions</div><div class="mc-desc">For Google Business Profile: search views (how many times your listing appeared in Maps and Search), direction requests, phone calls, and website clicks driven by your GBP posts. The only analytics that directly shows social media impact on footfall and calls.</div><div class="mc-plats"><span class="mc-plat">&#128205; Google Biz</span></div></div>
       <div class="metric-card"><div class="mc-ico" style="background:linear-gradient(135deg,#fdf4ff,#fff)">&#127775;</div><div class="mc-name">Top Performing Posts</div><div class="mc-desc">Your highest-reach, highest-engagement, and highest-save posts ranked across all platforms in one view. The AI identifies what they have in common and gets AI suggestions to replicate the pattern across your upcoming content calendar.</div><div class="mc-plats"><span class="mc-plat">All 10 platforms</span></div></div>
       <div class="metric-card"><div class="mc-ico" style="background:linear-gradient(135deg,#fff7ed,#fff)">&#127993;</div><div class="mc-name">Content Type Performance</div><div class="mc-desc">Reels vs Carousels vs Feed Posts vs Educational vs Promotional &mdash; average reach, engagement, saves, and follower gain by content type. The most actionable view in the dashboard: tells you exactly which formats to do more of and which to cut.</div><div class="mc-plats"><span class="mc-plat">&#128247; Instagram</span><span class="mc-plat">&#128153; Facebook</span><span class="mc-plat">&#128188; LinkedIn</span></div></div>
-      <div class="metric-card"><div class="mc-ico" style="background:linear-gradient(135deg,#ede9fe,#fff)">&#128336;</div><div class="mc-name">Best Time to Post</div><div class="mc-desc">Your specific audience&rsquo;s peak activity hours on each platform, updated weekly as your follower base grows. Not generic benchmarks &mdash; your actual audience&rsquo;s behaviour. The scheduler uses this to automatically post at your personal peak window every time.</div><div class="mc-plats"><span class="mc-plat">All 10 platforms</span></div></div>
+      <div class="metric-card"><div class="mc-ico" style="background:linear-gradient(135deg,#fff7ed,#fff)">&#128336;</div><div class="mc-name">Best Time to Post</div><div class="mc-desc">Your specific audience&rsquo;s peak activity hours on each platform, updated weekly as your follower base grows. Not generic benchmarks &mdash; your actual audience&rsquo;s behaviour. The scheduler uses this to automatically post at your personal peak window every time.</div><div class="mc-plats"><span class="mc-plat">All 10 platforms</span></div></div>
     </div>
   </div>
 </section>
@@ -510,7 +510,7 @@ td.chk,td.dash-cell{text-align:center}
     </div>
     <div class="test-grid">
       <article class="test-card"><div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><blockquote class="test-quote">&ldquo;I never looked at analytics before because it meant logging into five different apps. Now I open one dashboard every Monday and my content calendar has already adjusted for the week. The insight that our Reels get 4x more reach than feed posts completely changed our entire strategy.&rdquo;</blockquote><div class="test-author"><div class="ta-av">RK</div><div><span class="ta-name">Ravi Kumar</span><span class="ta-biz">Spice Garden Restaurant &middot; Bengaluru</span></div></div></article>
-      <article class="test-card"><div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><blockquote class="test-quote">&ldquo;The client reporting feature alone saved my agency 40+ hours a month. I used to spend half a day per client compiling screenshots. Now I click export and a branded PDF is ready in 30 seconds. Clients actually read the reports now because they look professional and are easy to understand.&rdquo;</blockquote><div class="test-author"><div class="ta-av" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">AM</div><div><span class="ta-name">Anjali Mehta</span><span class="ta-biz">Social Media Agency &middot; Delhi</span></div></div></article>
+      <article class="test-card"><div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><blockquote class="test-quote">&ldquo;The client reporting feature alone saved my agency 40+ hours a month. I used to spend half a day per client compiling screenshots. Now I click export and a branded PDF is ready in 30 seconds. Clients actually read the reports now because they look professional and are easy to understand.&rdquo;</blockquote><div class="test-author"><div class="ta-av" style="background:linear-gradient(135deg,#ec4899,#f97316)">AM</div><div><span class="ta-name">Anjali Mehta</span><span class="ta-biz">Social Media Agency &middot; Delhi</span></div></div></article>
       <article class="test-card"><div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><blockquote class="test-quote">&ldquo;The Google Business analytics showed for the first time that our GBP posts were driving 340 direction requests and 180 phone calls last month. I had no idea GBP posts were doing that much work for us. We doubled our GBP posting frequency immediately and saw footfall increase within 2 weeks.&rdquo;</blockquote><div class="test-author"><div class="ta-av" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">VS</div><div><span class="ta-name">Vikram Shetty</span><span class="ta-biz">FitZone Gym &middot; Pune</span></div></div></article>
     </div>
   </div>

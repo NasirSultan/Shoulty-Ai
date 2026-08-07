@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Brand Kit &mdash; Keep Your Brand Consistent Across Every Post | Shoutly AI</title>
+<meta name="description" content="Shoutly AI's Brand Kit stores your logo, colours, fonts, and brand voice in one place. Every AI-generated post, caption, and image automatically matches your brand — every time, across all 10 platforms.">
+<link rel="canonical" href="https://shoutlyai.com/features/brand-kit">
+<meta property="og:title" content="Brand Kit &mdash; Shoutly AI">
+<meta property="og:description" content="Store your brand identity once. Every AI-generated post, image, and caption automatically uses your exact colours, fonts, logo, and voice — across all 10 platforms.">
+<meta property="og:url" content="https://shoutlyai.com/features/brand-kit">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shoutly AI">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@shoutlyai">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Shoutly AI Brand Kit","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":"https://shoutlyai.com/features/brand-kit","description":"Brand Kit that stores your logo, brand colours, fonts, and brand voice so every AI-generated social media post, image, and caption automatically matches your brand identity across all 10 platforms.","featureList":["Brand kit management","Logo storage","Brand colour palette","Brand fonts","Brand voice AI","Social media templates","Consistent branding","Multi-platform brand identity","Festival post branding","AI brand voice"],"offers":{"@type":"Offer","price":"10000","priceCurrency":"INR"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"2847","bestRating":"5"}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:#0f0f0f;-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+:root{
+  --p:#f97316;--pg:linear-gradient(135deg,#f97316,#ea580c);
+  --dark:#08021a;--glow:rgba(249,115,22,.25);
+  --ink:#0f0f0f;--ink2:#262626;--ink3:#525252;--ink4:#a3a3a3;
+  --surface:#f7f7fb;--border:#e5e4f0;--border2:#ccc9ea;
+  --green:#16a34a;
+  --max:1200px;--r:8px;--r2:12px;--r3:16px;--r4:22px;--r5:30px;
+}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:62px;display:flex;align-items:center;transition:box-shadow .2s}
+.nav.scrolled{box-shadow:0 1px 14px rgba(0,0,0,.07)}
+.nav-inner{display:flex;align-items:center;width:100%;max-width:var(--max);margin:0 auto;padding:0 28px;gap:8px}
+.nav-logo{display:flex;align-items:center;gap:9px;font-size:15.5px;font-weight:800;color:var(--ink)}
+.nav-mark{width:32px;height:32px;border-radius:9px;background:var(--pg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-mark svg{width:16px;height:16px;fill:#fff}
+.feat-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#fff7ed,#ffedd5);border:1px solid #fed7aa;color:var(--p);border-radius:100px;padding:3px 10px;font-size:11.5px;font-weight:700;margin-left:6px}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:18px}
+.nav-links a{font-size:13.5px;color:var(--ink3);padding:5px 12px;border-radius:var(--r);font-weight:500;transition:all .14s}
+.nav-links a:hover{color:var(--ink);background:var(--surface)}
+.nav-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:600;border-radius:var(--r2);padding:9px 20px;transition:all .15s;cursor:pointer;border:1.5px solid transparent;white-space:nowrap}
+.btn-ghost{color:var(--ink2);border-color:var(--border2)}.btn-ghost:hover{background:var(--surface)}
+.btn-primary{background:var(--pg);color:#fff;border:none;box-shadow:0 2px 10px var(--glow)}.btn-primary:hover{opacity:.88;transform:translateY(-1px)}
+.btn-lg{padding:13px 28px;font-size:15.5px;font-weight:700;border-radius:var(--r3)}
+.btn-xl{padding:15px 34px;font-size:16px;font-weight:700;border-radius:var(--r3)}
+.btn-white{background:#fff;color:var(--p);font-weight:700;border:none}.btn-white:hover{background:#fff7ed;transform:translateY(-1px)}
+.btn-wh-ghost{background:transparent;color:rgba(255,255,255,.8);border:1.5px solid rgba(255,255,255,.3)}.btn-wh-ghost:hover{border-color:rgba(255,255,255,.65);color:#fff}
+.btn-sm{padding:7px 16px;font-size:13px}
+
+/* BC */
+.bc{background:var(--surface);border-bottom:1px solid var(--border);padding:11px 0}
+.bc-inner{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink4)}
+.bc-inner a{color:var(--ink4)}.bc-inner a:hover{color:var(--p)}
+
+/* HERO */
+.hero{background:var(--dark);padding:80px 0 0;position:relative;overflow:hidden}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none}
+.hero-orb-1{width:700px;height:700px;background:radial-gradient(circle,rgba(249,115,22,.35),transparent 68%);top:-250px;left:-180px}
+.hero-orb-2{width:450px;height:450px;background:radial-gradient(circle,rgba(234,88,12,.2),transparent 65%);bottom:0;right:-80px}
+.hero-inner{display:grid;grid-template-columns:1.05fr 1fr;gap:60px;align-items:center;position:relative;z-index:1;padding-bottom:60px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(249,115,22,.14);border:1px solid rgba(249,115,22,.28);border-radius:100px;padding:5px 14px 5px 9px;font-size:12.5px;font-weight:600;color:#fdba74;margin-bottom:22px}
+.ey-dot{width:7px;height:7px;border-radius:50%;background:#ea580c;animation:pulse 2.2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+.hero-h1{font-family:'Inter Tight',sans-serif;font-size:clamp(36px,5vw,62px);font-weight:900;letter-spacing:-2.8px;line-height:.95;color:#fff;margin-bottom:22px}
+.hero-h1 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(15px,1.6vw,18px);color:rgba(255,255,255,.58);line-height:1.72;max-width:480px;margin-bottom:34px}
+.hero-ctas{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:30px}
+.hero-proof{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.hp{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.42)}
+.hp svg{width:13px;height:13px;stroke:rgba(249,115,22,.9);stroke-width:2.5;fill:none;flex-shrink:0}
+
+/* ═══ BRAND KIT WINDOW (hero signature) ════════════════════════════════ */
+.bk-window{background:#0c0820;border:1px solid rgba(255,255,255,.1);border-radius:var(--r5);overflow:hidden;box-shadow:0 32px 70px rgba(0,0,0,.5),0 0 0 1px rgba(249,115,22,.12),inset 0 1px 0 rgba(255,255,255,.06)}
+.bkw-bar{background:#150e2e;border-bottom:1px solid rgba(255,255,255,.07);padding:10px 16px;display:flex;align-items:center;gap:10px}
+.bkw-dots{display:flex;gap:6px}
+.bkw-dot{width:10px;height:10px;border-radius:50%}
+.bkw-dot.r{background:#ff5f57}.bkw-dot.y{background:#febc2e}.bkw-dot.g{background:#28c840}
+.bkw-title{font-size:11px;color:rgba(255,255,255,.3);margin-left:8px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+/* Tabs */
+.bkw-tabs{background:#130a28;border-bottom:1px solid rgba(255,255,255,.06);padding:0 16px;display:flex;gap:2px}
+.bkw-tab{font-size:11px;font-weight:700;padding:9px 14px;color:rgba(255,255,255,.35);cursor:pointer;border-bottom:2px solid transparent;transition:all .16s}
+.bkw-tab.active{color:#fdba74;border-bottom-color:var(--p)}
+.bkw-body{padding:18px}
+/* Logo section */
+.bk-section-lbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.28);margin-bottom:10px}
+.bk-logo-row{display:flex;gap:10px;margin-bottom:16px}
+.bk-logo-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:var(--r2);padding:14px;display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;cursor:pointer;transition:all .18s}
+.bk-logo-box:hover{border-color:rgba(249,115,22,.28);background:rgba(249,115,22,.07)}
+.bk-logo-preview{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.bk-logo-lbl{font-size:9.5px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.07em}
+/* Colours */
+.bk-colours{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.bk-swatch{border-radius:var(--r);overflow:hidden;cursor:pointer;transition:transform .15s;position:relative}
+.bk-swatch:hover{transform:scale(1.08)}
+.bk-swatch-color{width:36px;height:36px}
+.bk-swatch-hex{font-size:8px;font-weight:700;text-align:center;padding:2px;color:rgba(255,255,255,.5);background:#0c0820}
+.bk-swatch.primary .bk-swatch-color::after{content:'P';position:absolute;top:2px;left:2px;font-size:8px;font-weight:800;color:rgba(255,255,255,.7)}
+.bk-add-swatch{width:36px;height:36px;border-radius:var(--r);border:1.5px dashed rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:18px;color:rgba(255,255,255,.3);cursor:pointer;transition:all .16s}
+.bk-add-swatch:hover{border-color:rgba(249,115,22,.35);color:#fdba74}
+/* Fonts */
+.bk-fonts{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.bk-font-row{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:var(--r2);padding:9px 12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:all .16s}
+.bk-font-row:hover{border-color:rgba(249,115,22,.22);background:rgba(249,115,22,.06)}
+.bk-font-name{font-size:12px;font-weight:700;color:rgba(255,255,255,.65)}
+.bk-font-role{font-size:9.5px;color:rgba(255,255,255,.3);font-weight:600;text-transform:uppercase;letter-spacing:.07em}
+.bk-font-sample{font-size:13px;color:rgba(255,255,255,.45);font-style:italic}
+/* Voice */
+.bk-voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px}
+.bk-voice-chip{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:var(--r);padding:7px 10px;cursor:pointer;transition:all .16s}
+.bk-voice-chip.active{background:rgba(249,115,22,.14);border-color:rgba(249,115,22,.32)}
+.bk-vc-title{font-size:11px;font-weight:700;color:rgba(255,255,255,.65);margin-bottom:2px}
+.bk-vc-desc{font-size:9.5px;color:rgba(255,255,255,.3)}
+/* Preview card */
+.bk-preview{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:var(--r2);padding:12px;display:flex;gap:10px;align-items:flex-start}
+.bkp-img{width:48px;height:48px;border-radius:var(--r);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px}
+.bkp-caption{font-size:11px;color:rgba(255,255,255,.55);line-height:1.6;flex:1}
+.bkp-caption strong{color:#fff}
+.bkp-ai-lbl{font-size:9.5px;font-weight:700;color:#fdba74;margin-top:5px;display:block}
+
+/* STAT STRIP */
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);background:var(--border);gap:1px;border:1px solid var(--border);border-radius:var(--r4);overflow:hidden}
+.ss-cell{background:#fff;padding:26px 20px;text-align:center}
+.ss-n{font-family:'Inter Tight',sans-serif;font-size:clamp(26px,2.8vw,38px);font-weight:900;background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-2px;line-height:1;margin-bottom:5px}
+.ss-l{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.ss-s{font-size:12px;color:var(--ink4)}
+
+/* SECTIONS */
+.section{padding:88px 0}
+.section-alt{background:var(--surface)}
+.sec-ey{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--p);margin-bottom:10px;display:block}
+.sec-h2{font-family:'Inter Tight',sans-serif;font-size:clamp(26px,3.3vw,42px);font-weight:900;letter-spacing:-1.5px;color:var(--ink);line-height:1.05;margin-bottom:12px}
+.sec-p{font-size:17px;color:var(--ink2);line-height:1.72;max-width:600px}
+.center{text-align:center}.center .sec-p{margin:0 auto}
+
+/* PAIN */
+.pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pain-card{background:#fff;border:1px solid var(--border);border-radius:var(--r3);padding:22px;display:flex;gap:14px;transition:border-color .18s}
+.pain-card:hover{border-color:var(--border2)}
+.pain-ico{width:42px;height:42px;border-radius:11px;background:#fef2f2;border:1px solid #fecaca;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.pain-title{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.pain-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+
+/* WHAT'S INSIDE */
+.inside-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.inside-items{display:flex;flex-direction:column;gap:16px}
+.inside-item{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:22px 24px;display:flex;gap:16px;transition:all .2s;cursor:default}
+.inside-item:hover{border-color:#fdba74;box-shadow:0 4px 18px rgba(249,115,22,.07);transform:translateY(-1px)}
+.ii-ico{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.ii-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.ii-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+/* live brand preview panel */
+.brand-preview-panel{background:var(--dark);border-radius:var(--r4);overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+.bpp-head{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07)}
+.bpp-brand{display:flex;align-items:center;gap:10px}
+.bpp-logo{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.bpp-name{font-size:13px;font-weight:800;color:#fff}
+.bpp-tagline{font-size:11px;color:rgba(255,255,255,.4)}
+.bpp-status{font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px;background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.22)}
+/* colour palette strip */
+.bpp-palette{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.07)}
+.bpp-palette-lbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.28);margin-bottom:8px}
+.bpp-swatches{display:flex;gap:8px;flex-wrap:wrap}
+.bpp-swatch{border-radius:var(--r);overflow:hidden}
+.bpp-swatch-c{width:42px;height:32px}
+.bpp-swatch-lbl{font-size:8px;font-weight:700;text-align:center;padding:2px 4px;color:rgba(255,255,255,.45);background:#0c0820;white-space:nowrap}
+/* voice preview */
+.bpp-voice{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.07)}
+.bpp-voice-lbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.28);margin-bottom:8px}
+.bpp-voice-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.bpp-vt{font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px;background:rgba(249,115,22,.14);border:1px solid rgba(249,115,22,.22);color:#fdba74}
+.bpp-sample{font-size:12px;color:rgba(255,255,255,.55);line-height:1.6;font-style:italic}
+/* generated posts preview */
+.bpp-posts{padding:14px 18px}
+.bpp-posts-lbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.28);margin-bottom:8px}
+.bpp-post-strip{display:flex;gap:8px}
+.bpp-post{flex:1;border-radius:var(--r2);overflow:hidden;border:1px solid rgba(255,255,255,.07)}
+.bpp-post-img{height:54px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.bpp-post-body{padding:6px 8px;background:rgba(255,255,255,.03)}
+.bpp-post-plat{font-size:8.5px;font-weight:700;color:rgba(255,255,255,.35)}
+.bpp-post-cap{font-size:9px;color:rgba(255,255,255,.5);line-height:1.5;margin-top:2px}
+
+/* HOW IT WORKS */
+.hiw-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+.hiw-steps{display:flex;flex-direction:column}
+.hiw-step{display:flex;gap:18px;position:relative;padding-bottom:28px}
+.hiw-step:last-child{padding-bottom:0}
+.hiw-step::before{content:'';position:absolute;left:19px;top:44px;bottom:0;width:2px;background:var(--border)}
+.hiw-step:last-child::before{display:none}
+.hiw-num{width:40px;height:40px;border-radius:50%;background:var(--pg);color:#fff;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 12px var(--glow);z-index:1;font-family:'Inter Tight',sans-serif}
+.hiw-body{padding-top:8px}
+.hiw-title{font-size:15.5px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.hiw-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+.hiw-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--p);background:#fff7ed;border-radius:100px;padding:2px 8px;margin-top:6px}
+
+/* CONSISTENCY SHOWCASE */
+.consistency-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.cs-card{border-radius:var(--r4);overflow:hidden;border:1px solid var(--border);transition:all .2s}
+.cs-card:hover{box-shadow:0 6px 24px rgba(249,115,22,.1);transform:translateY(-2px)}
+.cs-head{padding:14px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.cs-plat-ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.cs-plat-name{font-size:13px;font-weight:700;color:var(--ink)}
+.cs-post-preview{display:flex;align-items:center;justify-content:center;font-size:36px;padding:24px}
+.cs-body{padding:12px 18px;background:#fff}
+.cs-caption{font-size:12.5px;color:var(--ink2);line-height:1.65;margin-bottom:8px}
+.cs-brand-row{display:flex;align-items:center;gap:6px}
+.cs-swatch{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.cs-brand-note{font-size:10.5px;color:var(--ink4);font-weight:600}
+
+/* FEATURES */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.feat-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:26px;transition:all .18s}
+.feat-card:hover{border-color:#fdba74;box-shadow:0 4px 18px rgba(249,115,22,.06)}
+.fc-ico{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#fff7ed,#ffedd5);display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:13px}
+.fc-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:7px}
+.fc-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+
+/* TESTIMONIALS */
+.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.test-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:28px;display:flex;flex-direction:column;transition:all .18s}
+.test-card:hover{border-color:var(--border2);box-shadow:0 6px 24px rgba(249,115,22,.07);transform:translateY(-2px)}
+.test-stars{color:#f59e0b;font-size:13px;letter-spacing:2px;margin-bottom:13px}
+.test-quote{font-size:14px;color:var(--ink2);line-height:1.76;font-style:italic;flex:1;margin-bottom:18px}
+.test-author{display:flex;align-items:center;gap:11px}
+.ta-av{width:40px;height:40px;border-radius:50%;background:var(--pg);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+.ta-name{font-size:13.5px;font-weight:700;color:var(--ink);display:block}
+.ta-biz{font-size:12px;color:var(--ink4)}
+
+/* FAQ */
+.faq-list{border:1px solid var(--border);border-radius:var(--r4);overflow:hidden;max-width:740px;margin:40px auto 0}
+.faq-item{border-bottom:1px solid var(--border)}.faq-item:last-child{border-bottom:none}
+.faq-q{width:100%;padding:18px 22px;background:#fff;border:none;display:flex;align-items:center;justify-content:space-between;text-align:left;cursor:pointer;font-size:15px;font-weight:600;color:var(--ink);gap:14px;transition:background .14s;font-family:inherit}
+.faq-q:hover{background:var(--surface)}
+.faq-arr{width:24px;height:24px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--ink4);flex-shrink:0;transition:all .22s}
+.faq-item.open .faq-arr{background:var(--pg);border-color:transparent;color:#fff;transform:rotate(45deg)}
+.faq-a{display:none;padding:0 22px 18px;font-size:14.5px;color:var(--ink2);line-height:1.75;background:#fff}
+.faq-item.open .faq-a{display:block}
+
+/* LINKS */
+.links-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.link-card{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:var(--r2);padding:12px 14px;font-size:13.5px;font-weight:500;color:var(--ink2);transition:all .15s}
+.link-card:hover{border-color:#fdba74;background:#fff7ed;color:var(--p)}
+.link-arr{margin-left:auto;font-size:12px;color:var(--ink4)}
+
+/* CTA */
+.cta-section{background:var(--dark);padding:96px 0;text-align:center;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 65% at 50% 110%,rgba(249,115,22,.22) 0%,transparent 70%);pointer-events:none}
+.cta-section h2{font-family:'Inter Tight',sans-serif;font-size:clamp(30px,5vw,54px);font-weight:900;letter-spacing:-2.5px;line-height:1.03;color:#fff;margin-bottom:16px;position:relative;z-index:1}
+.cta-section h2 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-section p{font-size:17.5px;color:rgba(255,255,255,.6);line-height:1.7;max-width:520px;margin:0 auto 38px;position:relative;z-index:1}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:22px;position:relative;z-index:1}
+.cta-trust{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,.4);position:relative;z-index:1}
+.ct{display:flex;align-items:center;gap:5px}
+.ct svg{width:13px;height:13px;stroke:rgba(249,115,22,.9);stroke-width:2.5;fill:none}
+
+/* FOOTER */
+.footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.07);padding:32px 0}
+.ft-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ft-logo{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:800;color:rgba(255,255,255,.6)}
+.ft-links{display:flex;gap:18px;flex-wrap:wrap}
+.ft-links a{font-size:13px;color:rgba(255,255,255,.3);transition:color .14s}.ft-links a:hover{color:rgba(255,255,255,.65)}
+.ft-copy{font-size:12px;color:rgba(255,255,255,.2);margin-top:14px}
+
+@media(max-width:1024px){
+  .hero-inner{grid-template-columns:1fr;gap:44px}
+  .inside-grid,.hiw-grid{grid-template-columns:1fr;gap:44px}
+  .consistency-grid,.feat-grid,.test-grid{grid-template-columns:1fr 1fr}
+  .links-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:720px){
+  .nav-links,.nav-right .btn-ghost{display:none}
+  .pain-grid,.consistency-grid,.feat-grid,.test-grid{grid-template-columns:1fr}
+  .stat-strip{grid-template-columns:1fr 1fr}
+  .section{padding:60px 0}
+  .wrap{padding:0 18px}
+}
+@media(prefers-reduced-motion:reduce){.ey-dot{animation:none}}
+[data-r]{opacity:1;transform:none}.js [data-r]{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}
+[data-r].vis{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<main>
+
+<!-- HERO -->
+<section class="hero" aria-labelledby="hero-h1">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="wrap">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-eyebrow"><span class="ey-dot"></span>Brand Kit &mdash; Management</div>
+        <h1 class="hero-h1" id="hero-h1">Set your brand once.<br>Every post looks<br><span class="grad">on-brand forever.</span></h1>
+        <p class="hero-sub">Upload your logo, colours, fonts, and brand voice once. Every AI-generated post, image, caption, and Reel script automatically uses your exact brand identity &mdash; across all 10 platforms, for every post, forever.</p>
+        <div class="hero-ctas">
+          <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-lg">Set up my Brand Kit free <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+          <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-lg">See a live demo</a>
+        </div>
+        <div class="hero-proof">
+          <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Set up once &mdash; works on every post</span>
+          <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Logo, colours, fonts, voice &mdash; all in one kit</span>
+          <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Multi-client brand kits for agencies</span>
+        </div>
+      </div>
+
+      <!-- BRAND KIT WINDOW -->
+      <div>
+        <div class="bk-window" role="region" aria-label="Brand Kit preview">
+          <div class="bkw-bar">
+            <div class="bkw-dots"><div class="bkw-dot r"></div><div class="bkw-dot y"></div><div class="bkw-dot g"></div></div>
+            <span class="bkw-title">Shoutly AI &mdash; Brand Kit</span>
+          </div>
+          <div class="bkw-tabs">
+            <span class="bkw-tab active" onclick="switchTab('logo',this)">&#128247; Logo</span>
+            <span class="bkw-tab" onclick="switchTab('colours',this)">&#127775; Colours</span>
+            <span class="bkw-tab" onclick="switchTab('fonts',this)">&#65332; Fonts</span>
+            <span class="bkw-tab" onclick="switchTab('voice',this)">&#127908; Voice</span>
+            <span class="bkw-tab" onclick="switchTab('preview',this)">&#128247; Preview</span>
+          </div>
+          <div class="bkw-body">
+
+            <!-- LOGO TAB -->
+            <div id="tab-logo">
+              <div class="bk-section-lbl">Your logos &mdash; all variants</div>
+              <div class="bk-logo-row">
+                <div class="bk-logo-box">
+                  <div class="bk-logo-preview" style="background:linear-gradient(135deg,#f97316,#ea580c)">&#127829;</div>
+                  <div class="bk-logo-lbl">Primary</div>
+                </div>
+                <div class="bk-logo-box">
+                  <div class="bk-logo-preview" style="background:#0c0820;border:1px solid rgba(255,255,255,.1)">&#127829;</div>
+                  <div class="bk-logo-lbl">Dark bg</div>
+                </div>
+                <div class="bk-logo-box">
+                  <div class="bk-logo-preview" style="background:#fff">&#127829;</div>
+                  <div class="bk-logo-lbl">Light bg</div>
+                </div>
+                <div class="bk-logo-box" style="border-style:dashed">
+                  <div style="font-size:20px;color:rgba(255,255,255,.3)">+</div>
+                  <div class="bk-logo-lbl">Add variant</div>
+                </div>
+              </div>
+              <div style="background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18);border-radius:var(--r2);padding:9px 12px;font-size:11px;color:rgba(255,255,255,.5);line-height:1.6">
+                &#10003; &nbsp;Logos auto-placed on every AI-generated image at the correct size and position for each platform format (1:1, 9:16, 16:9, 4:5).
+              </div>
+            </div>
+
+            <!-- COLOURS TAB -->
+            <div id="tab-colours" style="display:none">
+              <div class="bk-section-lbl">Brand colour palette</div>
+              <div class="bk-colours">
+                <div class="bk-swatch primary">
+                  <div class="bk-swatch-color" style="background:#f97316"></div>
+                  <div class="bk-swatch-hex">#F97316</div>
+                </div>
+                <div class="bk-swatch">
+                  <div class="bk-swatch-color" style="background:#ea580c"></div>
+                  <div class="bk-swatch-hex">#EA580C</div>
+                </div>
+                <div class="bk-swatch">
+                  <div class="bk-swatch-color" style="background:#08021a"></div>
+                  <div class="bk-swatch-hex">#08021A</div>
+                </div>
+                <div class="bk-swatch">
+                  <div class="bk-swatch-color" style="background:#fff;border:1px solid rgba(255,255,255,.1)"></div>
+                  <div class="bk-swatch-hex">#FFFFFF</div>
+                </div>
+                <div class="bk-swatch">
+                  <div class="bk-swatch-color" style="background:#f7f7fb"></div>
+                  <div class="bk-swatch-hex">#F7F7FB</div>
+                </div>
+                <div class="bk-add-swatch">+</div>
+              </div>
+              <div style="background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.14);border-radius:var(--r2);padding:9px 12px;font-size:11px;color:rgba(255,255,255,.5);line-height:1.6;margin-top:4px">
+                &#10022; &nbsp;AI uses your primary colour as the dominant accent on every generated graphic, social card, and festival image. Secondary colours are applied to backgrounds and supporting elements automatically.
+              </div>
+            </div>
+
+            <!-- FONTS TAB -->
+            <div id="tab-fonts" style="display:none">
+              <div class="bk-section-lbl">Brand typography</div>
+              <div class="bk-fonts">
+                <div class="bk-font-row">
+                  <div><div class="bk-font-name">Inter Tight</div><div class="bk-font-role">Headlines &bull; Weight 900</div></div>
+                  <div class="bk-font-sample" style="font-size:18px;font-family:'Inter Tight',sans-serif;font-weight:900">Aa</div>
+                </div>
+                <div class="bk-font-row">
+                  <div><div class="bk-font-name">Inter</div><div class="bk-font-role">Body text &bull; Weight 400&ndash;600</div></div>
+                  <div class="bk-font-sample" style="font-size:16px">Aa</div>
+                </div>
+              </div>
+              <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:var(--r2);padding:9px 12px;font-size:11px;color:rgba(255,255,255,.5);line-height:1.6">
+                &#128257; &nbsp;Fonts are embedded into all AI-generated social media graphics. If your brand font isn&rsquo;t in our library, upload a custom .ttf or .otf file and we&rsquo;ll apply it to every image.
+              </div>
+            </div>
+
+            <!-- VOICE TAB -->
+            <div id="tab-voice" style="display:none">
+              <div class="bk-section-lbl">Brand voice &mdash; select all that apply</div>
+              <div class="bk-voice-grid">
+                <div class="bk-voice-chip active"><div class="bk-vc-title">&#128293; Energetic</div><div class="bk-vc-desc">High-energy, motivating, action-driven</div></div>
+                <div class="bk-voice-chip active"><div class="bk-vc-title">&#128172; Conversational</div><div class="bk-vc-desc">Warm, friendly, approachable</div></div>
+                <div class="bk-voice-chip"><div class="bk-vc-title">&#128084; Professional</div><div class="bk-vc-desc">Formal, authoritative, expert</div></div>
+                <div class="bk-voice-chip"><div class="bk-vc-title">&#127775; Aspirational</div><div class="bk-vc-desc">Inspiring, premium, elevated</div></div>
+                <div class="bk-voice-chip active"><div class="bk-vc-title">&#127757; Local</div><div class="bk-vc-desc">Community-focused, regional pride</div></div>
+                <div class="bk-voice-chip"><div class="bk-vc-title">&#128514; Playful</div><div class="bk-vc-desc">Fun, witty, light-hearted</div></div>
+              </div>
+            </div>
+
+            <!-- PREVIEW TAB -->
+            <div id="tab-preview" style="display:none">
+              <div class="bk-section-lbl">Live preview &mdash; AI applies your brand kit</div>
+              <div class="bk-preview">
+                <div class="bkp-img" style="background:linear-gradient(135deg,#f97316,#ea580c)">&#127829;</div>
+                <div>
+                  <div class="bkp-caption">
+                    <strong>This Diwali, celebrate at Spice Garden &#10024;</strong><br>
+                    20% off all thali combos, Nov 1&ndash;3. Walk-ins welcome &mdash; we fill up fast during the festive season. Wishing you and your family a beautiful Diwali! &#128293;<br><br>
+                    <span style="color:#fdba74">#DiwaliSpecial #BengaluruFood #DiwaliOffer +26</span>
+                  </div>
+                  <span class="bkp-ai-lbl">&#10022; Caption written in your brand voice &bull; Logo placed on image &bull; Brand colours applied</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STAT STRIP -->
+<section style="padding:52px 0 0" data-r>
+  <div class="wrap">
+    <div class="stat-strip">
+      <div class="ss-cell"><div class="ss-n">1x</div><div class="ss-l">Setup — forever</div><div class="ss-s">Set it once, works on every post</div></div>
+      <div class="ss-cell"><div class="ss-n">10</div><div class="ss-l">Platforms covered</div><div class="ss-s">Same brand, every platform</div></div>
+      <div class="ss-cell"><div class="ss-n">&#8734;</div><div class="ss-l">Brand kits</div><div class="ss-s">One per client for agencies</div></div>
+      <div class="ss-cell"><div class="ss-n">0</div><div class="ss-l">Off-brand posts</div><div class="ss-s">AI enforces your brand every time</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN -->
+<section class="section" aria-labelledby="pain-h2" data-r>
+  <div class="wrap">
+    <div style="margin-bottom:48px">
+      <span class="sec-ey">The brand consistency problem</span>
+      <h2 class="sec-h2" id="pain-h2">Inconsistent branding is silently eroding customer trust on every platform.</h2>
+      <p class="sec-p">Your audience sees your posts on Instagram, Facebook, LinkedIn, and Google in the same week. If your colours, tone, and logo placement look different on each one &mdash; you look like an amateur, even if the content is great.</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card"><div class="pain-ico">&#127775;</div><div><div class="pain-title">Every post looks slightly different &mdash; nothing feels cohesive</div><div class="pain-desc">Your Instagram post uses one shade of blue. Your Facebook post uses a different one. Your LinkedIn graphic uses a stock template with completely different typography. To your audience, these don&rsquo;t feel like the same business. Inconsistency breaks trust &mdash; and trust is what converts followers into customers.</div></div></div>
+      <div class="pain-card"><div class="pain-ico">&#9999;&#65039;</div><div><div class="pain-title">Recreating your brand identity on every single design tool</div><div class="pain-desc">Canva. Adobe Express. Instagram native. Each tool needs your hex codes, font name, and logo file re-uploaded every session. Most businesses give up and use whatever default colours the template provides &mdash; which is why their social media never looks like their website or business card.</div></div></div>
+      <div class="pain-card"><div class="pain-ico">&#128100;</div><div><div class="pain-title">Your captions sound different every day &mdash; no consistent voice</div><div class="pain-desc">Monday&rsquo;s caption is formal and corporate. Wednesday&rsquo;s is casual and fun. Friday&rsquo;s is urgent and promotional. Without a defined brand voice that every piece of content follows, your audience never gets a clear feeling of who you are &mdash; and unclear brands don&rsquo;t build loyal followings.</div></div></div>
+      <div class="pain-card"><div class="pain-ico">&#128101;</div><div><div class="pain-title">Agencies re-briefing the AI or designer every single post</div><div class="pain-desc">For agencies managing multiple clients, brand consistency is the hardest thing to maintain at scale. Every new post means re-specifying the client&rsquo;s brand: &ldquo;Use the blue from their logo, not the purple&rdquo;, &ldquo;They&rsquo;re a formal brand, not casual&rdquo;, &ldquo;Add their watermark to the bottom right.&rdquo; Multiplied by 12 clients and 30 posts a month &mdash; it&rsquo;s hundreds of repetitive briefing corrections.</div></div></div>
+      <div class="pain-card"><div class="pain-ico">&#127773;</div><div><div class="pain-title">Festival posts go completely off-brand in a rush</div><div class="pain-desc">Diwali is tomorrow. You&rsquo;re scrambling to create a post. You grab a random template from Canva because there&rsquo;s no time to maintain brand standards. The colours are wrong, the font is wrong, the logo is too small &mdash; but it goes out anyway. Every time you publish a rushed off-brand post, you undo weeks of consistent brand building.</div></div></div>
+      <div class="pain-card"><div class="pain-ico">&#128247;</div><div><div class="pain-title">Logo placement is different on every image</div><div class="pain-desc">Top left on some posts. Bottom right on others. Sometimes huge, sometimes tiny. Sometimes missing entirely. Professional brands have a consistent logo placement rule across every single visual. Without a Brand Kit enforcing it, every post becomes a new logo placement decision &mdash; and they&rsquo;re almost always made inconsistently under time pressure.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT'S INSIDE THE BRAND KIT -->
+<section class="section section-alt" id="whats-inside" aria-labelledby="inside-h2" data-r>
+  <div class="wrap">
+    <div class="inside-grid">
+      <div>
+        <span class="sec-ey">What&rsquo;s inside the Brand Kit</span>
+        <h2 class="sec-h2" id="inside-h2">Everything your brand needs. Stored once. Applied everywhere.</h2>
+        <p class="sec-p" style="margin-bottom:36px">The Brand Kit is your single source of brand truth inside Shoutly AI. Every element you store here is automatically applied to every post, image, caption, and Reel the AI generates &mdash; without you having to specify it again.</p>
+        <div class="inside-items">
+          <div class="inside-item">
+            <div class="ii-ico" style="background:linear-gradient(135deg,#fff7ed,#ffedd5)">&#128247;</div>
+            <div>
+              <div class="ii-title">Logo &mdash; all variants</div>
+              <div class="ii-desc">Upload your primary logo, dark background version, light background version, and icon-only variant. The AI selects the correct version automatically based on each post&rsquo;s background colour and platform format &mdash; always in the right position, always the right size.</div>
+            </div>
+          </div>
+          <div class="inside-item">
+            <div class="ii-ico" style="background:linear-gradient(135deg,#fdf4ff,#fff7ed)">&#127775;</div>
+            <div>
+              <div class="ii-title">Brand colour palette</div>
+              <div class="ii-desc">Define your primary, secondary, and accent colours with exact hex codes. Every AI-generated image, social card, festival graphic, and Reel thumbnail uses your exact palette &mdash; not Canva defaults, not stock template colours. Your brand colours, on every piece of content.</div>
+            </div>
+          </div>
+          <div class="inside-item">
+            <div class="ii-ico" style="background:linear-gradient(135deg,#eff6ff,#fff7ed)">&#65332;</div>
+            <div>
+              <div class="ii-title">Brand fonts</div>
+              <div class="ii-desc">Select from Google Fonts or upload custom .ttf/.otf font files. Your headline font and body font are embedded into every generated graphic. The same typeface on every Instagram post, every Facebook image, every YouTube thumbnail &mdash; automatically.</div>
+            </div>
+          </div>
+          <div class="inside-item">
+            <div class="ii-ico" style="background:linear-gradient(135deg,#f0fdf4,#fff7ed)">&#127908;</div>
+            <div>
+              <div class="ii-title">Brand voice</div>
+              <div class="ii-desc">Select your tone attributes: Professional, Conversational, Energetic, Aspirational, Local, Playful &mdash; or define a custom voice with example sentences. Every AI-generated caption, hook, CTA, and Reel script is written in this voice &mdash; consistently, across every post, every platform, every day.</div>
+            </div>
+          </div>
+          <div class="inside-item">
+            <div class="ii-ico" style="background:linear-gradient(135deg,#fff7ed,#fff7ed)">&#127991;</div>
+            <div>
+              <div class="ii-title">Brand tagline &amp; keywords</div>
+              <div class="ii-desc">Store your business tagline, key messages, unique selling points, and brand keywords. The AI weaves these naturally into captions, article intros, and promotional posts &mdash; so your core brand messages are reinforced in every piece of content without you having to specify them each time.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live brand preview -->
+      <div>
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--p);margin-bottom:16px">&#10022; Live Brand Kit &mdash; Spice Garden Restaurant</div>
+        <div class="brand-preview-panel">
+          <div class="bpp-head">
+            <div class="bpp-brand">
+              <div class="bpp-logo" style="background:linear-gradient(135deg,#f97316,#ea580c)">&#127829;</div>
+              <div>
+                <div class="bpp-name">Spice Garden</div>
+                <div class="bpp-tagline">Multi-cuisine restaurant &bull; Bengaluru</div>
+              </div>
+            </div>
+            <span class="bpp-status">&#10003; Active</span>
+          </div>
+          <div class="bpp-palette">
+            <div class="bpp-palette-lbl">Brand colours</div>
+            <div class="bpp-swatches">
+              <div class="bpp-swatch"><div class="bpp-swatch-c" style="background:#d97706"></div><div class="bpp-swatch-lbl">Primary</div></div>
+              <div class="bpp-swatch"><div class="bpp-swatch-c" style="background:#92400e"></div><div class="bpp-swatch-lbl">Secondary</div></div>
+              <div class="bpp-swatch"><div class="bpp-swatch-c" style="background:#fef3c7"></div><div class="bpp-swatch-lbl">Accent</div></div>
+              <div class="bpp-swatch"><div class="bpp-swatch-c" style="background:#1c1917"></div><div class="bpp-swatch-lbl">Dark</div></div>
+              <div class="bpp-swatch"><div class="bpp-swatch-c" style="background:#fff"></div><div class="bpp-swatch-lbl">Light</div></div>
+            </div>
+          </div>
+          <div class="bpp-voice">
+            <div class="bpp-voice-lbl">Brand voice</div>
+            <div class="bpp-voice-tags">
+              <span class="bpp-vt">Warm</span>
+              <span class="bpp-vt">Local</span>
+              <span class="bpp-vt">Conversational</span>
+              <span class="bpp-vt">Community-first</span>
+            </div>
+            <div class="bpp-sample">&ldquo;Our chef has been making the same Lucknowi Biryani for 30 years. Some things are too good to change.&rdquo;</div>
+          </div>
+          <div class="bpp-posts">
+            <div class="bpp-posts-lbl">AI-generated posts using this Brand Kit</div>
+            <div class="bpp-post-strip">
+              <div class="bpp-post">
+                <div class="bpp-post-img" style="background:linear-gradient(135deg,#d97706,#92400e)">&#127829;</div>
+                <div class="bpp-post-body">
+                  <div class="bpp-post-plat">&#128247; Instagram</div>
+                  <div class="bpp-post-cap">This Diwali, celebrate at Spice Garden &#10024;</div>
+                </div>
+              </div>
+              <div class="bpp-post">
+                <div class="bpp-post-img" style="background:linear-gradient(135deg,#92400e,#d97706)">&#127858;</div>
+                <div class="bpp-post-body">
+                  <div class="bpp-post-plat">&#128153; Facebook</div>
+                  <div class="bpp-post-cap">Weekend thali is back &mdash; &#8377;299 per person</div>
+                </div>
+              </div>
+              <div class="bpp-post">
+                <div class="bpp-post-img" style="background:linear-gradient(135deg,#fef3c7,#d97706)">&#127775;</div>
+                <div class="bpp-post-body">
+                  <div class="bpp-post-plat">&#128205; Google Biz</div>
+                  <div class="bpp-post-cap">New menu &bull; Koramangala, Bengaluru</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how-it-works" aria-labelledby="hiw-h2" data-r>
+  <div class="wrap">
+    <div class="hiw-grid">
+      <div>
+        <span class="sec-ey">Setup in under 5 minutes</span>
+        <h2 class="sec-h2" id="hiw-h2">Set up once. The AI enforces your brand on every post forever.</h2>
+        <p class="sec-p" style="margin-bottom:40px">The Brand Kit setup takes 3&ndash;5 minutes. After that, you never think about brand consistency again &mdash; the AI handles it automatically on every piece of content it generates.</p>
+        <div class="hiw-steps">
+          <div class="hiw-step">
+            <div class="hiw-num">1</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Upload your logo files</div>
+              <div class="hiw-desc">Upload your logo in PNG or SVG format. Add a dark-background variant and a light-background variant if you have them. Shoutly AI automatically selects the right version based on each generated image&rsquo;s background and places it in your preferred position at the correct size for each platform format.</div>
+              <span class="hiw-badge">&#8987; 60 seconds</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">2</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Add your brand colours</div>
+              <div class="hiw-desc">Enter your hex codes for primary, secondary, and accent colours. You can also use the colour picker or paste from your brand guidelines. These exact colours are applied to every graphic, social card, Reel thumbnail, and festival image the AI generates &mdash; never approximated, never substituted.</div>
+              <span class="hiw-badge">&#8987; 60 seconds</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">3</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Select or upload your fonts</div>
+              <div class="hiw-desc">Choose from Google Fonts or upload your own custom font files (.ttf, .otf). Set your headline font and body font. These are embedded directly into every AI-generated graphic &mdash; not approximated with a similar-looking system font.</div>
+              <span class="hiw-badge">&#8987; 60 seconds</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">4</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Define your brand voice</div>
+              <div class="hiw-desc">Select tone attributes that describe how your brand sounds &mdash; Professional, Conversational, Energetic, Warm, Local, Aspirational. Add example phrases if you want to fine-tune it further. Every caption, hook, CTA, and Reel script is written in this voice automatically.</div>
+              <span class="hiw-badge">&#8987; 90 seconds</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">5</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Save &mdash; every post is now on-brand</div>
+              <div class="hiw-desc">Click Save. From this point, every post Shoutly AI generates &mdash; content, captions, images, Reels, festival posts, carousels &mdash; automatically uses your logo, colours, fonts, and voice. You never need to specify any of it again.</div>
+              <span class="hiw-badge">&#10003; Brand enforced forever</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- For agencies -->
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="background:var(--pg);border-radius:var(--r4);padding:28px;color:#fff">
+          <div style="font-size:13px;font-weight:800;margin-bottom:8px">&#128101; For agencies: one Brand Kit per client</div>
+          <div style="font-size:13.5px;color:rgba(255,255,255,.75);line-height:1.7;margin-bottom:16px">Create a separate Brand Kit for every client you manage. Each kit stores that client&rsquo;s logo, colours, fonts, and voice independently. Switch between client accounts and Shoutly AI automatically applies the correct brand kit for every generated post &mdash; no cross-contamination, no re-briefing.</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px">&#10003;</span>Unlimited Brand Kits &mdash; one per client</div>
+            <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px">&#10003;</span>No brand bleed between client accounts</div>
+            <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px">&#10003;</span>Share Brand Kit access with client for review</div>
+            <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px">&#10003;</span>Export brand assets for offline use</div>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:28px">
+          <div style="font-size:13px;font-weight:800;color:var(--ink);margin-bottom:8px">&#127881; Festival posts: always on-brand, automatically</div>
+          <div style="font-size:13.5px;color:var(--ink3);line-height:1.7;margin-bottom:14px">Every festival post Shoutly AI generates &mdash; Diwali, Holi, Eid, Navratri, Ganesh Chaturthi &mdash; uses your exact brand colours, logo, font, and voice. Festival templates are never generic. Your Diwali post looks like your brand, not a stock template everyone else is using.</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;background:var(--surface);border:1px solid var(--border);color:var(--ink3)">&#127983; Diwali</span>
+            <span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;background:var(--surface);border:1px solid var(--border);color:var(--ink3)">&#127752; Holi</span>
+            <span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;background:var(--surface);border:1px solid var(--border);color:var(--ink3)">&#9790;&#65039; Eid</span>
+            <span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;background:var(--surface);border:1px solid var(--border);color:var(--ink3)">&#129332; Ganesh Chaturthi</span>
+            <span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;background:var(--surface);border:1px solid var(--border);color:var(--ink3)">+26 festivals</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRAND CONSISTENCY ACROSS PLATFORMS -->
+<section class="section section-alt" id="consistency" aria-labelledby="cons-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:52px">
+      <span class="sec-ey">Brand consistency across every platform</span>
+      <h2 class="sec-h2" id="cons-h2">The same business. The same brand. Every platform.</h2>
+      <p class="sec-p">Your audience sees you on Instagram on Monday, LinkedIn on Wednesday, and Google on Friday. The Brand Kit ensures every touchpoint feels like the same business &mdash; same colours, same logo, same voice.</p>
+    </div>
+    <div class="consistency-grid">
+      <div class="cs-card">
+        <div class="cs-head">
+          <div class="cs-plat-ico" style="background:linear-gradient(135deg,#f58529,#dd2a7b)">&#128247;</div>
+          <div class="cs-plat-name">Instagram &mdash; Reel thumbnail</div>
+        </div>
+        <div class="cs-post-preview" style="background:linear-gradient(135deg,#d97706,#92400e)">&#127829;</div>
+        <div class="cs-body">
+          <div class="cs-caption">Brand colours applied to gradient. Logo top-left at 9:16 format. Energetic caption with hook: &ldquo;Our chef has made this Biryani for 30 years. Here&rsquo;s why it still sells out every day &#128170;&rdquo;</div>
+          <div class="cs-brand-row">
+            <div class="cs-swatch" style="background:#d97706"></div>
+            <div class="cs-swatch" style="background:#92400e"></div>
+            <span class="cs-brand-note">&#10003; Brand Kit applied &mdash; primary + secondary</span>
+          </div>
+        </div>
+      </div>
+      <div class="cs-card">
+        <div class="cs-head">
+          <div class="cs-plat-ico" style="background:#0077b5">&#128188;</div>
+          <div class="cs-plat-name">LinkedIn &mdash; Article graphic</div>
+        </div>
+        <div class="cs-post-preview" style="background:linear-gradient(135deg,#1c1917,#92400e)">&#128202;</div>
+        <div class="cs-body">
+          <div class="cs-caption">Same brand colours, professional tone. Logo bottom-right at 1.91:1 ratio. Caption: &ldquo;How we added 340 new customers in 3 months without spending on ads &mdash; and what we learned about social media consistency.&rdquo;</div>
+          <div class="cs-brand-row">
+            <div class="cs-swatch" style="background:#1c1917"></div>
+            <div class="cs-swatch" style="background:#d97706"></div>
+            <span class="cs-brand-note">&#10003; Brand Kit applied &mdash; dark + primary</span>
+          </div>
+        </div>
+      </div>
+      <div class="cs-card">
+        <div class="cs-head">
+          <div class="cs-plat-ico" style="background:linear-gradient(135deg,#4285f4,#34a853)">&#128205;</div>
+          <div class="cs-plat-name">Google Business &mdash; Post image</div>
+        </div>
+        <div class="cs-post-preview" style="background:linear-gradient(135deg,#fef3c7,#d97706)">&#127775;</div>
+        <div class="cs-body">
+          <div class="cs-caption">Accent + primary colours. Logo centred at 4:3 ratio. Local SEO caption: &ldquo;Weekend thali at Spice Garden, Koramangala &mdash; &#8377;299 per person. Walk-ins welcome Sat &amp; Sun 12&ndash;3pm.&rdquo;</div>
+          <div class="cs-brand-row">
+            <div class="cs-swatch" style="background:#fef3c7"></div>
+            <div class="cs-swatch" style="background:#d97706"></div>
+            <span class="cs-brand-note">&#10003; Brand Kit applied &mdash; accent + primary</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" aria-labelledby="feat-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">Brand Kit features</span>
+      <h2 class="sec-h2" id="feat-h2">Everything built into Shoutly AI&rsquo;s Brand Kit</h2>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card"><div class="fc-ico">&#128247;</div><div class="fc-title">Multi-variant logo storage</div><div class="fc-desc">Upload primary, dark background, light background, and icon-only logo variants. The AI auto-selects the correct version based on each image&rsquo;s background and places it at the right size and position for every platform format &mdash; 1:1, 9:16, 16:9, 4:5, and 2:3.</div></div>
+      <div class="feat-card"><div class="fc-ico">&#127775;</div><div class="fc-title">Exact hex colour palette</div><div class="fc-desc">Store up to 10 brand colours with exact hex codes. Primary, secondary, accent, dark, and light. Every AI-generated graphic uses these exact colours &mdash; never approximated, never auto-adjusted. Your brand colours, pixel-perfect, on every piece of content.</div></div>
+      <div class="feat-card"><div class="fc-ico">&#65332;</div><div class="fc-title">Custom font upload</div><div class="fc-desc">Select from 1,400+ Google Fonts or upload your own .ttf and .otf files. Your brand&rsquo;s exact typeface is embedded in every generated graphic, social card, and festival image &mdash; the same headline font and body font your brand guidelines specify.</div></div>
+      <div class="feat-card"><div class="fc-ico">&#127908;</div><div class="fc-title">AI brand voice engine</div><div class="fc-desc">Define your voice with tone attributes and example sentences. The AI internalises your brand voice and applies it to every caption, hook line, CTA, Reel script, and LinkedIn article it generates &mdash; consistently, across every platform and every content type.</div></div>
+      <div class="feat-card"><div class="fc-ico">&#127991;</div><div class="fc-title">Brand taglines &amp; keywords</div><div class="fc-desc">Store your tagline, key selling points, and brand keywords. The AI weaves these naturally into generated content without you specifying them each time &mdash; so your USPs are consistently reinforced across your entire social media presence.</div></div>
+      <div class="feat-card"><div class="fc-ico">&#128101;</div><div class="fc-title">Unlimited Brand Kits for agencies</div><div class="fc-desc">Create a separate Brand Kit for every client. Each kit is fully isolated &mdash; no brand bleed between accounts. Switch between client Brand Kits instantly. Share Brand Kit access with clients for review and approval. Unlimited kits, no extra cost.</div></div>
+      <div class="feat-card"><div class="fc-ico">&#127381;</div><div class="fc-title">Festival post branding</div><div class="fc-desc">Every festival post &mdash; Diwali, Holi, Eid, Navratri, and 26+ more &mdash; uses your Brand Kit colours, logo, and voice automatically. Your Diwali graphic looks like your business, not a stock template from a free design tool.</div></div>
+      <div class="feat-card"><div class="fc-ico">&#128196;</div><div class="fc-title">Brand guidelines export</div><div class="fc-desc">Export your Brand Kit as a PDF brand guidelines document &mdash; useful for briefing freelancers, onboarding team members, or sharing with partners. Includes all logo variants, colour swatches, font specimens, and voice guidelines in one professional document.</div></div>
+      <div class="feat-card"><div class="fc-ico">&#128257;</div><div class="fc-title">Brand Kit version history</div><div class="fc-desc">Updated your logo or refreshed your brand colours? Brand Kit keeps a version history so you can see what changed, when, and revert to any previous version if needed &mdash; without losing your current setup.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section section-alt" aria-labelledby="test-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">What businesses say</span>
+      <h2 class="sec-h2" id="test-h2">Businesses that never worry about brand consistency again</h2>
+    </div>
+    <div class="test-grid">
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;Before Shoutly AI, every post looked slightly different because we were designing in Canva and someone was always picking the wrong shade of orange. The Brand Kit fixed that permanently. Now every single post is the exact right colour, the exact right font, our logo in the exact right place. We haven&rsquo;t had an off-brand post in 6 months.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av">RK</div>
+          <div><span class="ta-name">Ravi Kumar</span><span class="ta-biz">Spice Garden Restaurant &middot; Bengaluru</span></div>
+        </div>
+      </article>
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;Managing 12 clients, brand consistency used to be my biggest operational headache. I was constantly correcting the AI or my designers: wrong colour, wrong font, wrong tone. With Brand Kits, I set each client&rsquo;s brand once and every post comes out right. That correction loop is completely gone. It saves me 3&ndash;4 hours per week.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av" style="background:linear-gradient(135deg,#ec4899,#fb923c)">AM</div>
+          <div><span class="ta-name">Anjali Mehta</span><span class="ta-biz">Social Media Agency &middot; Delhi</span></div>
+        </div>
+      </article>
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;What surprised me most was the voice consistency. I set my brand voice as &lsquo;warm, local, and community-first&rsquo; and gave 3 example sentences. Now every caption Shoutly AI writes sounds like me &mdash; not like a corporate press release, not like a generic AI. My clients actually comment that my captions have gotten better. They haven&rsquo;t. The AI just sounds like me now.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">PS</div>
+          <div><span class="ta-name">Priya Sharma</span><span class="ta-biz">Glow Salon &middot; Mumbai</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq" aria-labelledby="faq-h2" data-r>
+  <div class="wrap center">
+    <span class="sec-ey">Common questions</span>
+    <h2 class="sec-h2" id="faq-h2">Everything you need to know about the Brand Kit</h2>
+    <div class="faq-list">
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">How long does it take to set up a Brand Kit?<span class="faq-arr">+</span></button><div class="faq-a"><p>Most businesses complete their Brand Kit setup in 3&ndash;5 minutes. It takes about 60 seconds to upload your logo files, 60 seconds to enter your hex codes, 60 seconds to select your fonts, and 90 seconds to define your brand voice. After that, every post Shoutly AI generates automatically applies your brand identity &mdash; forever.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Can I upload a custom font that&rsquo;s not on Google Fonts?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Upload your own font files in .ttf or .otf format. Your custom font is embedded directly into every AI-generated graphic &mdash; social cards, Reel thumbnails, festival images, carousels. The same exact typeface your brand guidelines specify, on every piece of visual content.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">How does the brand voice feature work?<span class="faq-arr">+</span></button><div class="faq-a"><p>You select tone attributes that describe how your brand sounds &mdash; Professional, Conversational, Energetic, Warm, Local, Aspirational &mdash; and optionally provide 2&ndash;3 example sentences from your existing content. The AI analyses these and internalises your voice, then applies it consistently to every caption, hook, CTA, Reel script, and article it generates across all platforms.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Can agencies create separate Brand Kits for each client?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. You can create unlimited Brand Kits &mdash; one per client &mdash; all included in the &#8377;10,000/month plan. Each kit is fully isolated. Switching between client accounts automatically applies the correct Brand Kit without any manual specification. There is no cross-contamination between client brands.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Does the Brand Kit apply to festival posts automatically?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Every festival post Shoutly AI generates &mdash; Diwali, Holi, Eid, Navratri, Ganesh Chaturthi, and 26+ other Indian occasions &mdash; uses your Brand Kit colours, logo, and voice automatically. You never get a generic stock template with the wrong colours. Every festival post looks like your brand.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Can I update the Brand Kit after setup?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Update your Brand Kit at any time &mdash; when you refresh your logo, update your colour palette, or change your brand voice direction. The updated Brand Kit applies to all future generated content immediately. Version history lets you see previous Brand Kit states and revert if needed.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Is the Brand Kit included in the plan?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. The Brand Kit is fully included in the &#8377;10,000/month Shoutly AI plan &mdash; unlimited Brand Kits, no extra cost. The plan also includes AI Content Generator, AI Caption Generator, AI Image Generator, AI Hashtag Generator, Social Scheduler, Content Calendar, Bulk Scheduling, Multi-Platform Publishing, and Analytics Dashboard.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LINKS -->
+<section class="section section-alt" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:36px">
+      <span class="sec-ey">More features</span>
+      <h2 class="sec-h2" style="font-size:clamp(22px,2.8vw,34px)">Brand Kit connects with every Shoutly AI feature</h2>
+    </div>
+    <div class="links-grid">
+      <a href="https://shoutlyai.com/features/ai-image-generator" class="link-card"><span style="font-size:18px">&#127912;</span> AI Image Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/ai-caption-generator" class="link-card"><span style="font-size:18px">&#9999;&#65039;</span> AI Caption Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/ai-content-generator" class="link-card"><span style="font-size:18px">&#10022;</span> AI Content Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/content-calendar" class="link-card"><span style="font-size:18px">&#128200;</span> Content Calendar <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/bulk-scheduling" class="link-card"><span style="font-size:18px">&#128197;</span> Bulk Scheduling <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/multi-platform-publishing" class="link-card"><span style="font-size:18px">&#128228;</span> Multi-Platform Publishing <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/analytics" class="link-card"><span style="font-size:18px">&#128202;</span> Analytics Dashboard <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/ai-reel-generator" class="link-card"><span style="font-size:18px">&#127909;</span> AI Reel Generator <span class="link-arr">&#8594;</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" aria-labelledby="cta-h2">
+  <div class="wrap">
+    <h2 id="cta-h2">Set your brand once.<br><span class="grad">Let every post reflect it.</span></h2>
+    <p>Logo, colours, fonts, voice &mdash; stored once in your Brand Kit. Every AI-generated post, caption, image, and Reel automatically matches your brand. Free 14-day trial.</p>
+    <div class="cta-btns">
+      <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-xl">Set up my Brand Kit free <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+      <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-xl">Book a live demo</a>
+    </div>
+    <div class="cta-trust">
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>3&ndash;5 minute setup</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Unlimited Brand Kits</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>No credit card required</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>&#8377;10,000/month &mdash; all features</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>4.9&#9733; &mdash; 41,000+ businesses</span>
+    </div>
+  </div>
+</section>
+</main>
+
+<script>document.documentElement.classList.add('js');
+/* Tab switcher */
+var tabs = ['logo','colours','fonts','voice','preview'];
+function switchTab(name, el) {
+  tabs.forEach(function(t) {
+    var panel = document.getElementById('tab-' + t);
+    if (panel) panel.style.display = t === name ? 'block' : 'none';
+  });
+  document.querySelectorAll('.bkw-tab').forEach(function(t) { t.classList.remove('active'); });
+  if (el) el.classList.add('active');
+}
+
+/* FAQ */
+function faq(btn) {
+  var item = btn.closest('.faq-item');
+  var open = item.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(open));
+}
+
+/* Scroll reveal */
+if ('IntersectionObserver' in window) {
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+  }, { threshold: .07, rootMargin: '0px 0px -28px 0px' });
+  document.querySelectorAll('[data-r]').forEach(function(el) { obs.observe(el); });
+} else {
+  document.querySelectorAll('[data-r]').forEach(function(el) { el.classList.add('vis'); });
+}
+
+window.addEventListener('scroll', function() {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 8);
+}, { passive: true });
+</script>
+</body>
+</html>

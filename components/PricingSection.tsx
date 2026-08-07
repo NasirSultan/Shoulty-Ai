@@ -44,7 +44,7 @@ const DATA: Record<string, any> = {
 
 export default function PricingSection() {
   const [billing, setBilling] = useState<'m' | 'y'>('m');
-  const [currency, setCurrency] = useState<'INR' | 'USD'>('INR');
+  const [currency, setCurrency] = useState<'INR' | 'USD'>('USD');
   const [flip, setFlip] = useState(false);
 
   useEffect(() => {
@@ -1133,8 +1133,8 @@ export default function PricingSection() {
                   </button>
                 </div>
                 <div className="cur-seg">
-                  <button className={currency === 'INR' ? 'active' : ''} onClick={() => setCurrency('INR')}>₹</button>
                   <button className={currency === 'USD' ? 'active' : ''} onClick={() => setCurrency('USD')}>$</button>
+                  <button className={currency === 'INR' ? 'active' : ''} onClick={() => setCurrency('INR')}>₹</button>
                 </div>
               </div>
 
