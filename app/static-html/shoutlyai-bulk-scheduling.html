@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Bulk Scheduling &mdash; Schedule Months of Content in One Click | Shoutly AI</title>
+<meta name="description" content="Shoutly AI's Bulk Scheduling lets you approve and schedule an entire month or year of social media content across all 10 platforms in one session. Drag, drop, publish. Done.">
+<link rel="canonical" href="https://shoutlyai.com/features/bulk-scheduling">
+<meta property="og:title" content="Bulk Scheduling &mdash; Shoutly AI">
+<meta property="og:description" content="Schedule 30, 90, or 365 days of social media content in one click. All 10 platforms. Auto-formatted. Auto-published at optimal times.">
+<meta property="og:url" content="https://shoutlyai.com/features/bulk-scheduling">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shoutly AI">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@shoutlyai">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Shoutly AI Bulk Scheduling","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":"https://shoutlyai.com/features/bulk-scheduling","description":"Bulk scheduling tool that lets businesses approve and schedule months of social media content across 10 platforms in one session. AI plans the calendar, you approve in bulk, posts auto-publish at optimal times.","featureList":["Bulk social media scheduling","Schedule months of content at once","One-click content approval","Multi-platform bulk publishing","AI content calendar","Drag and drop rescheduling","Bulk import via CSV","Content queue management","Festival content bulk planning","365-day social media calendar"],"offers":{"@type":"Offer","price":"10000","priceCurrency":"INR"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"2847","bestRating":"5"}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:#0f0f0f;-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+:root{
+  --p:#f97316;--pg:linear-gradient(135deg,#f97316,#ea580c);
+  --dark:#08021a;--glow:rgba(249,115,22,.26);
+  --ink:#0f0f0f;--ink2:#262626;--ink3:#525252;--ink4:#a3a3a3;
+  --surface:#f7f7fb;--border:#fde7cf;--border2:#fed7aa;
+  --green:#16a34a;
+  --max:1200px;--r:8px;--r2:12px;--r3:16px;--r4:22px;--r5:30px;
+}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:62px;display:flex;align-items:center;transition:box-shadow .2s}
+.nav.scrolled{box-shadow:0 1px 14px rgba(0,0,0,.07)}
+.nav-inner{display:flex;align-items:center;width:100%;max-width:var(--max);margin:0 auto;padding:0 28px;gap:8px}
+.nav-logo{display:flex;align-items:center;gap:9px;font-size:15.5px;font-weight:800;color:var(--ink)}
+.nav-mark{width:32px;height:32px;border-radius:9px;background:var(--pg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-mark svg{width:16px;height:16px;fill:#fff}
+.feat-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#fff7ed,#ffedd5);border:1px solid #fed7aa;color:var(--p);border-radius:100px;padding:3px 10px;font-size:11.5px;font-weight:700;margin-left:6px}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:18px}
+.nav-links a{font-size:13.5px;color:var(--ink3);padding:5px 12px;border-radius:var(--r);font-weight:500;transition:all .14s}
+.nav-links a:hover{color:var(--ink);background:var(--surface)}
+.nav-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:600;border-radius:var(--r2);padding:9px 20px;transition:all .15s;cursor:pointer;border:1.5px solid transparent;white-space:nowrap}
+.btn-ghost{color:var(--ink2);border-color:var(--border2)}.btn-ghost:hover{background:var(--surface)}
+.btn-primary{background:var(--pg);color:#fff;border:none;box-shadow:0 2px 10px var(--glow)}.btn-primary:hover{opacity:.88;transform:translateY(-1px)}
+.btn-lg{padding:13px 28px;font-size:15.5px;font-weight:700;border-radius:var(--r3)}
+.btn-xl{padding:15px 34px;font-size:16px;font-weight:700;border-radius:var(--r3)}
+.btn-white{background:#fff;color:var(--p);font-weight:700;border:none}.btn-white:hover{background:#fff7ed;transform:translateY(-1px)}
+.btn-wh-ghost{background:transparent;color:rgba(255,255,255,.8);border:1.5px solid rgba(255,255,255,.3)}.btn-wh-ghost:hover{border-color:rgba(255,255,255,.65);color:#fff}
+.btn-sm{padding:7px 16px;font-size:13px}
+
+/* BC */
+.bc{background:var(--surface);border-bottom:1px solid var(--border);padding:11px 0}
+.bc-inner{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink4)}
+.bc-inner a{color:var(--ink4)}.bc-inner a:hover{color:var(--p)}
+
+/* HERO */
+.hero{background:var(--dark);padding:80px 0 0;position:relative;overflow:hidden}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none}
+.hero-orb-1{width:700px;height:700px;background:radial-gradient(circle,rgba(249,115,22,.5),transparent 68%);top:-250px;left:-180px}
+.hero-orb-2{width:450px;height:450px;background:radial-gradient(circle,rgba(251,146,60,.3),transparent 65%);bottom:0;right:-80px}
+.hero-top{position:relative;z-index:1;text-align:center;padding-bottom:52px;max-width:720px;margin:0 auto;padding-left:28px;padding-right:28px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(249,115,22,.18);border:1px solid rgba(249,115,22,.4);border-radius:100px;padding:5px 14px 5px 9px;font-size:12.5px;font-weight:600;color:#fed7aa;margin-bottom:22px}
+.ey-dot{width:7px;height:7px;border-radius:50%;background:#ea580c;animation:pulse 2.2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+.hero-h1{font-family:'Inter Tight',sans-serif;font-size:clamp(36px,5.5vw,68px);font-weight:900;letter-spacing:-3px;line-height:.94;color:#fff;margin-bottom:22px}
+.hero-h1 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(15px,1.7vw,19px);color:rgba(255,255,255,.58);line-height:1.72;margin:0 auto 36px}
+.hero-ctas{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:28px}
+.hero-proof{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center}
+.hp{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.42)}
+.hp svg{width:13px;height:13px;stroke:rgba(249,115,22,.9);stroke-width:2.5;fill:none;flex-shrink:0}
+
+/* ═══ BULK QUEUE WINDOW (hero signature) ═══════════════════════════════ */
+.bq-container{position:relative;z-index:2;max-width:1000px;margin:0 auto;padding:0 28px}
+.bq-window{background:#0c0820;border:1px solid rgba(255,255,255,.1);border-radius:20px 20px 0 0;overflow:hidden;box-shadow:0 -8px 60px rgba(249,115,22,.22),0 0 0 1px rgba(249,115,22,.1)}
+.bq-bar{background:#150e2e;border-bottom:1px solid rgba(255,255,255,.07);padding:10px 18px;display:flex;align-items:center;gap:10px}
+.bq-dots{display:flex;gap:6px}
+.bq-dot{width:10px;height:10px;border-radius:50%}
+.bq-dot.r{background:#ff5f57}.bq-dot.y{background:#febc2e}.bq-dot.g{background:#28c840}
+.bq-title{font-size:12px;font-weight:700;color:rgba(255,255,255,.5);margin-left:8px;font-family:'Inter Tight',sans-serif}
+.bq-toolbar{background:#130a28;border-bottom:1px solid rgba(255,255,255,.06);padding:9px 18px;display:flex;align-items:center;gap:10px}
+.bq-sel-all{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:rgba(255,255,255,.5);cursor:pointer;padding:5px 12px;border-radius:var(--r);border:1px solid rgba(255,255,255,.1);transition:all .15s}
+.bq-sel-all:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.8)}
+.bq-sel-all input[type=checkbox]{accent-color:#f97316;width:14px;height:14px;cursor:pointer}
+.bq-filter{font-size:10.5px;font-weight:700;padding:5px 12px;border-radius:var(--r);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);cursor:pointer;transition:all .15s}
+.bq-filter.active{background:rgba(249,115,22,.22);border-color:rgba(249,115,22,.45);color:#fed7aa}
+.bq-action-btns{margin-left:auto;display:flex;gap:6px}
+.bq-act{font-size:11px;font-weight:700;padding:5px 13px;border-radius:var(--r);cursor:pointer;transition:all .16s;font-family:inherit}
+.bq-act.primary{background:var(--pg);color:#fff;border:none}
+.bq-act.primary:hover{opacity:.88}
+.bq-act.secondary{background:transparent;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5)}
+.bq-act.secondary:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.8)}
+/* stat bar */
+.bq-stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid rgba(255,255,255,.05)}
+.bqs-cell{padding:10px 18px;border-right:1px solid rgba(255,255,255,.04)}
+.bqs-cell:last-child{border-right:none}
+.bqs-n{font-size:18px;font-weight:900;color:#fff;font-family:'Inter Tight',sans-serif;letter-spacing:-.8px}
+.bqs-l{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.28);margin-top:1px}
+/* queue list */
+.bq-list{padding:12px 16px;display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(249,115,22,.3) transparent}
+.bq-item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:var(--r2);padding:10px 12px;display:flex;align-items:center;gap:10px;transition:all .18s;cursor:pointer}
+.bq-item:hover{background:rgba(249,115,22,.07);border-color:rgba(249,115,22,.22)}
+.bq-item.selected{background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.35)}
+.bq-item input[type=checkbox]{accent-color:#f97316;width:14px;height:14px;flex-shrink:0;cursor:pointer}
+.bq-thumb{width:36px;height:36px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.bq-info{flex:1;min-width:0}
+.bq-post-title{font-size:12px;font-weight:700;color:rgba(255,255,255,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.bq-meta{display:flex;align-items:center;gap:8px}
+.bq-plat-chip{font-size:9px;font-weight:700;padding:2px 7px;border-radius:100px}
+.bq-date{font-size:10px;color:rgba(255,255,255,.3);font-weight:600}
+.bq-type{font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:100px}
+.bq-status{font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:100px;flex-shrink:0}
+.bs-queued{background:rgba(249,115,22,.14);color:#fdba74;border:1px solid rgba(249,115,22,.25)}
+.bs-approved{background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.22)}
+.bs-draft{background:rgba(251,146,60,.1);color:#fb923c;border:1px solid rgba(251,146,60,.22)}
+.bs-festival{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.22)}
+/* bulk approve bar */
+.bq-approve-bar{background:linear-gradient(135deg,rgba(249,115,22,.18),rgba(251,146,60,.12));border-top:1px solid rgba(249,115,22,.25);padding:12px 18px;display:flex;align-items:center;gap:12px}
+.bab-text{font-size:12px;font-weight:700;color:rgba(255,255,255,.7)}
+.bab-text span{color:#fdba74}
+.bab-btns{margin-left:auto;display:flex;gap:8px}
+.bab-btn{font-size:11.5px;font-weight:800;padding:7px 18px;border-radius:var(--r2);cursor:pointer;transition:all .16s;font-family:inherit;display:flex;align-items:center;gap:5px}
+.bab-btn.approve{background:var(--pg);color:#fff;border:none;box-shadow:0 2px 8px var(--glow)}
+.bab-btn.approve:hover{opacity:.88;transform:translateY(-1px)}
+.bab-btn.sched{background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6)}
+.bab-btn.sched:hover{background:rgba(255,255,255,.08)}
+
+/* STAT STRIP */
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);background:var(--border);gap:1px;border:1px solid var(--border);border-radius:var(--r4);overflow:hidden}
+.ss-cell{background:#fff;padding:26px 20px;text-align:center}
+.ss-n{font-family:'Inter Tight',sans-serif;font-size:clamp(26px,2.8vw,38px);font-weight:900;background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-2px;line-height:1;margin-bottom:5px}
+.ss-l{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.ss-s{font-size:12px;color:var(--ink4)}
+
+/* SECTIONS */
+.section{padding:88px 0}
+.section-alt{background:var(--surface)}
+.sec-ey{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--p);margin-bottom:10px;display:block}
+.sec-h2{font-family:'Inter Tight',sans-serif;font-size:clamp(26px,3.3vw,42px);font-weight:900;letter-spacing:-1.5px;color:var(--ink);line-height:1.05;margin-bottom:12px}
+.sec-p{font-size:17px;color:var(--ink2);line-height:1.72;max-width:600px}
+.center{text-align:center}.center .sec-p{margin:0 auto}
+
+/* PAIN */
+.pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pain-card{background:#fff;border:1px solid var(--border);border-radius:var(--r3);padding:22px;display:flex;gap:14px;transition:border-color .18s}
+.pain-card:hover{border-color:var(--border2)}
+.pain-ico{width:42px;height:42px;border-radius:11px;background:#fef2f2;border:1px solid #fecaca;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.pain-title{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.pain-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+
+/* HOW IT WORKS */
+.hiw-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+.hiw-steps{display:flex;flex-direction:column}
+.hiw-step{display:flex;gap:18px;position:relative;padding-bottom:28px}
+.hiw-step:last-child{padding-bottom:0}
+.hiw-step::before{content:'';position:absolute;left:19px;top:44px;bottom:0;width:2px;background:var(--border)}
+.hiw-step:last-child::before{display:none}
+.hiw-num{width:40px;height:40px;border-radius:50%;background:var(--pg);color:#fff;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 12px var(--glow);z-index:1;font-family:'Inter Tight',sans-serif}
+.hiw-body{padding-top:8px}
+.hiw-title{font-size:15.5px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.hiw-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+.hiw-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--p);background:#fff7ed;border-radius:100px;padding:2px 8px;margin-top:6px}
+
+/* BULK MODES */
+.modes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.mode-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);overflow:hidden;transition:all .2s}
+.mode-card:hover{border-color:#fed7aa;box-shadow:0 6px 24px rgba(249,115,22,.08);transform:translateY(-2px)}
+.mc-head{padding:22px 24px 16px}
+.mc-badge{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;padding:3px 10px;border-radius:100px;display:inline-block;margin-bottom:12px}
+.mc-title{font-size:17px;font-weight:800;color:var(--ink);letter-spacing:-.3px;margin-bottom:6px}
+.mc-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+.mc-body{padding:0 24px 22px;border-top:1px solid var(--border);margin-top:16px;padding-top:16px}
+.mc-stat{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.mc-stat:last-child{margin-bottom:0}
+.mc-stat-l{font-size:13px;color:var(--ink3)}
+.mc-stat-v{font-size:13px;font-weight:700;color:var(--ink)}
+
+/* USE CASES */
+.usecase-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.uc-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:22px;transition:all .18s}
+.uc-card:hover{border-color:#fed7aa;box-shadow:0 4px 18px rgba(249,115,22,.07)}
+.uc-ico{font-size:28px;margin-bottom:10px}
+.uc-title{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.uc-desc{font-size:13px;color:var(--ink3);line-height:1.6}
+.uc-time{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--p);background:#fff7ed;border-radius:100px;padding:2px 8px;margin-top:8px}
+
+/* COMPARISON */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.cmp-card{border-radius:var(--r4);overflow:hidden}
+.cmp-head{padding:16px 22px;font-size:14px;font-weight:800}
+.cmp-body{padding:16px 22px;display:flex;flex-direction:column;gap:10px}
+.cmp-row{display:flex;align-items:flex-start;gap:10px;font-size:13.5px}
+.cmp-ico{font-size:16px;flex-shrink:0;margin-top:1px}
+
+/* FEATURES */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.feat-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:26px;transition:all .18s}
+.feat-card:hover{border-color:#fed7aa;box-shadow:0 4px 18px rgba(249,115,22,.06)}
+.fc-ico{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#fff7ed,#faf5ff);display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:13px}
+.fc-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:7px}
+.fc-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+
+/* TESTIMONIALS */
+.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.test-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:28px;display:flex;flex-direction:column;transition:all .18s}
+.test-card:hover{border-color:var(--border2);box-shadow:0 6px 24px rgba(249,115,22,.07);transform:translateY(-2px)}
+.test-stars{color:#f59e0b;font-size:13px;letter-spacing:2px;margin-bottom:13px}
+.test-quote{font-size:14px;color:var(--ink2);line-height:1.76;font-style:italic;flex:1;margin-bottom:18px}
+.test-author{display:flex;align-items:center;gap:11px}
+.ta-av{width:40px;height:40px;border-radius:50%;background:var(--pg);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+.ta-name{font-size:13.5px;font-weight:700;color:var(--ink);display:block}
+.ta-biz{font-size:12px;color:var(--ink4)}
+
+/* FAQ */
+.faq-list{border:1px solid var(--border);border-radius:var(--r4);overflow:hidden;max-width:740px;margin:40px auto 0}
+.faq-item{border-bottom:1px solid var(--border)}.faq-item:last-child{border-bottom:none}
+.faq-q{width:100%;padding:18px 22px;background:#fff;border:none;display:flex;align-items:center;justify-content:space-between;text-align:left;cursor:pointer;font-size:15px;font-weight:600;color:var(--ink);gap:14px;transition:background .14s;font-family:inherit}
+.faq-q:hover{background:var(--surface)}
+.faq-arr{width:24px;height:24px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--ink4);flex-shrink:0;transition:all .22s}
+.faq-item.open .faq-arr{background:var(--pg);border-color:transparent;color:#fff;transform:rotate(45deg)}
+.faq-a{display:none;padding:0 22px 18px;font-size:14.5px;color:var(--ink2);line-height:1.75;background:#fff}
+.faq-item.open .faq-a{display:block}
+
+/* LINKS */
+.links-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.link-card{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:var(--r2);padding:12px 14px;font-size:13.5px;font-weight:500;color:var(--ink2);transition:all .15s}
+.link-card:hover{border-color:#fed7aa;background:#fff7ed;color:var(--p)}
+.link-arr{margin-left:auto;font-size:12px;color:var(--ink4)}
+
+/* CTA */
+.cta-section{background:var(--dark);padding:96px 0;text-align:center;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 65% at 50% 110%,rgba(249,115,22,.24) 0%,transparent 70%);pointer-events:none}
+.cta-section h2{font-family:'Inter Tight',sans-serif;font-size:clamp(30px,5vw,54px);font-weight:900;letter-spacing:-2.5px;line-height:1.03;color:#fff;margin-bottom:16px;position:relative;z-index:1}
+.cta-section h2 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-section p{font-size:17.5px;color:rgba(255,255,255,.6);line-height:1.7;max-width:520px;margin:0 auto 38px;position:relative;z-index:1}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:22px;position:relative;z-index:1}
+.cta-trust{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,.4);position:relative;z-index:1}
+.ct{display:flex;align-items:center;gap:5px}
+.ct svg{width:13px;height:13px;stroke:rgba(249,115,22,.85);stroke-width:2.5;fill:none}
+
+/* FOOTER */
+.footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.07);padding:32px 0}
+.ft-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ft-logo{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:800;color:rgba(255,255,255,.6)}
+.ft-links{display:flex;gap:18px;flex-wrap:wrap}
+.ft-links a{font-size:13px;color:rgba(255,255,255,.3);transition:color .14s}.ft-links a:hover{color:rgba(255,255,255,.65)}
+.ft-copy{font-size:12px;color:rgba(255,255,255,.2);margin-top:14px}
+
+@media(max-width:1024px){
+  .hiw-grid{grid-template-columns:1fr;gap:44px}
+  .modes-grid{grid-template-columns:1fr}
+  .usecase-grid{grid-template-columns:1fr 1fr}
+  .feat-grid,.test-grid{grid-template-columns:1fr 1fr}
+  .links-grid{grid-template-columns:1fr 1fr}
+  .compare-grid{grid-template-columns:1fr}
+}
+@media(max-width:720px){
+  .nav-links,.nav-right .btn-ghost{display:none}
+  .pain-grid,.feat-grid,.test-grid,.usecase-grid{grid-template-columns:1fr}
+  .stat-strip{grid-template-columns:1fr 1fr}
+  .section{padding:60px 0}
+  .wrap,.bq-container{padding:0 18px}
+  .bq-stats{grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){.ey-dot{animation:none}}
+[data-r]{opacity:1;transform:none}
+.js [data-r]{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}
+[data-r].vis{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<main>
+
+<!-- HERO -->
+<section class="hero" aria-labelledby="hero-h1">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="wrap">
+    <div class="hero-top">
+      <div class="hero-eyebrow"><span class="ey-dot"></span>Bulk Scheduling &mdash; Publishing</div>
+      <h1 class="hero-h1" id="hero-h1">Schedule a month<br>of content in<br><span class="grad">one session.</span></h1>
+      <p class="hero-sub">Select all. Review. Approve. Done. Shoutly AI generates your entire content calendar, you bulk-approve everything in one click, and every post auto-publishes across all 10 platforms at the optimal time &mdash; forever.</p>
+      <div class="hero-ctas">
+        <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-lg">Start bulk scheduling free <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+        <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-lg">See a live demo</a>
+      </div>
+      <div class="hero-proof">
+        <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>30 days approved in under 10 minutes</span>
+        <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>All 10 platforms, one approval</span>
+        <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Unlimited posts, no caps</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BULK QUEUE WINDOW -->
+  <div class="bq-container">
+    <div class="bq-window" role="region" aria-label="Bulk scheduling preview">
+      <div class="bq-bar">
+        <div class="bq-dots"><div class="bq-dot r"></div><div class="bq-dot y"></div><div class="bq-dot g"></div></div>
+        <span class="bq-title">Shoutly AI &mdash; Bulk Scheduler &mdash; November 2026</span>
+      </div>
+      <div class="bq-toolbar">
+        <label class="bq-sel-all"><input type="checkbox" id="sel-all" onchange="toggleAll(this)"> Select all (42 posts)</label>
+        <span class="bq-filter active">All</span>
+        <span class="bq-filter">&#128247; Instagram</span>
+        <span class="bq-filter">&#128153; Facebook</span>
+        <span class="bq-filter">&#128188; LinkedIn</span>
+        <span class="bq-filter">&#127881; Festivals</span>
+        <div class="bq-action-btns">
+          <button class="bq-act secondary" onclick="bulkReschedule()">&#8635; Reschedule</button>
+          <button class="bq-act primary" onclick="bulkApprove()">&#10003; Bulk Approve</button>
+        </div>
+      </div>
+      <div class="bq-stats">
+        <div class="bqs-cell"><div class="bqs-n" id="bqs-total">42</div><div class="bqs-l">Total posts</div></div>
+        <div class="bqs-cell"><div class="bqs-n" id="bqs-selected">0</div><div class="bqs-l">Selected</div></div>
+        <div class="bqs-cell"><div class="bqs-n">10</div><div class="bqs-l">Platforms</div></div>
+        <div class="bqs-cell"><div class="bqs-n">4</div><div class="bqs-l">Festivals this month</div></div>
+      </div>
+      <div class="bq-list" id="bq-list"></div>
+      <div class="bq-approve-bar">
+        <div class="bab-text">&#10022; <span id="bab-count">0</span> posts selected &mdash; ready to bulk approve across all platforms</div>
+        <div class="bab-btns">
+          <button class="bab-btn sched" onclick="bulkApprove()">&#128197; Schedule selected</button>
+          <button class="bab-btn approve" onclick="bulkApprove()">&#10003; Approve all &amp; publish</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STAT STRIP -->
+<section style="padding:52px 0 0" data-r>
+  <div class="wrap">
+    <div class="stat-strip">
+      <div class="ss-cell"><div class="ss-n">&lt;10</div><div class="ss-l">Minutes per month</div><div class="ss-s">To approve 30 days of content</div></div>
+      <div class="ss-cell"><div class="ss-n">&#8734;</div><div class="ss-l">Posts, no cap</div><div class="ss-s">Schedule as many as you need</div></div>
+      <div class="ss-cell"><div class="ss-n">10</div><div class="ss-l">Platforms at once</div><div class="ss-s">One approval, all platforms</div></div>
+      <div class="ss-cell"><div class="ss-n">365</div><div class="ss-l">Days in one session</div><div class="ss-s">Approve a full year at once</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN -->
+<section class="section" aria-labelledby="pain-h2" data-r>
+  <div class="wrap">
+    <div style="margin-bottom:48px">
+      <span class="sec-ey">The scheduling problem</span>
+      <h2 class="sec-h2" id="pain-h2">Scheduling one post at a time is the biggest time drain in social media management.</h2>
+      <p class="sec-p">Every post needs a date, a time, a platform selection, a format check, and a publish click. Multiply that by 5 posts a day across 10 platforms and you&rsquo;re spending 2+ hours a day on pure admin &mdash; before you&rsquo;ve created a single piece of content.</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card"><div class="pain-ico">&#8987;</div><div><div class="pain-title">Scheduling one post at a time wastes hours every week</div><div class="pain-desc">Open post. Set date. Set time. Select platforms. Preview. Confirm. Repeat 30 times. For one week of content on one platform, that&rsquo;s 15&ndash;20 minutes of pure clicking. For a social media agency managing 12 clients posting daily, it&rsquo;s a full-time job just to maintain the schedule.</div></div></div>
+      <div class="pain-card"><div class="pain-ico">&#128196;</div><div><div class="pain-title">No way to review a full month of content at a glance</div><div class="pain-desc">When you schedule one post at a time, you can&rsquo;t see whether you have 3 promotional posts in a row, a missing festival campaign, or a gap in platform coverage. You only discover these problems after they&rsquo;ve already hurt your reach &mdash; never before.</div></div></div>
+      <div class="pain-card"><div class="pain-ico">&#128683;</div><div><div class="pain-title">Post-by-post scheduling means constant context-switching</div><div class="pain-desc">Every time you schedule a post, you interrupt whatever else you&rsquo;re working on. Context-switching kills productivity. The cost isn&rsquo;t just the 2 minutes to schedule the post &mdash; it&rsquo;s the 15 minutes of lost focus it takes to get back into what you were doing.</div></div></div>
+      <div class="pain-card"><div class="pain-ico">&#128197;</div><div><div class="pain-title">Festival and campaign content is always scheduled last-minute</div><div class="pain-desc">Without bulk scheduling, Diwali content gets scheduled the week before Diwali &mdash; instead of 3 weeks before, when customers are actively researching and planning. Businesses that plan in bulk get ahead of every occasion. Those that schedule one post at a time are always reacting.</div></div></div>
+      <div class="pain-card"><div class="pain-ico">&#128257;</div><div><div class="pain-title">Rescheduling disruptions take hours to fix manually</div><div class="pain-desc">Your business closes for a public holiday. A product launch gets delayed. A festival date shifts. Updating 30 individually-scheduled posts means 30 manual reschedules across 10 platforms. With bulk tools, you drag a date range and everything moves in one operation.</div></div></div>
+      <div class="pain-card"><div class="pain-ico">&#128101;</div><div><div class="pain-title">Agencies can&rsquo;t scale client count without bulk tools</div><div class="pain-desc">If scheduling one client&rsquo;s content takes 3 hours a week, you can manage 10 clients with a full team. With bulk scheduling, one person can manage 30+ clients because monthly approvals replace daily micro-scheduling. It&rsquo;s the difference between an agency that scales and one that plateaus.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section section-alt" id="how-it-works" aria-labelledby="hiw-h2" data-r>
+  <div class="wrap">
+    <div class="hiw-grid">
+      <div>
+        <span class="sec-ey">How bulk scheduling works</span>
+        <h2 class="sec-h2" id="hiw-h2">From AI-generated calendar to all posts approved in under 10 minutes.</h2>
+        <p class="sec-p" style="margin-bottom:40px">Bulk scheduling removes every individual scheduling decision. The AI does the planning, you do one approval session per month, and everything runs automatically.</p>
+        <div class="hiw-steps">
+          <div class="hiw-step">
+            <div class="hiw-num">1</div>
+            <div class="hiw-body">
+              <div class="hiw-title">AI generates your full content calendar</div>
+              <div class="hiw-desc">Describe your business once. Shoutly AI generates a full month &mdash; or full year &mdash; of posts, Reels, carousels, festival content, and platform-specific captions. Every post is already timed to your audience&rsquo;s peak hours on each platform.</div>
+              <span class="hiw-badge">&#8987; Under 2 minutes</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">2</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Open your bulk queue &mdash; see everything at once</div>
+              <div class="hiw-desc">Your entire month of content appears in a scrollable list. Every post shows its date, time, platform, content type, and status. You can see the whole month in one view &mdash; not one post at a time.</div>
+              <span class="hiw-badge">&#128200; Full month at a glance</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">3</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Filter, review, edit anything you want</div>
+              <div class="hiw-desc">Filter by platform, content type, or date range. Click any post to preview it or edit the caption, image, or scheduled time. Drag posts to different days. Add new ones. Remove any that don&rsquo;t fit. The bulk queue gives you total control without individual scheduling.</div>
+              <span class="hiw-badge">&#128247; Click any post to preview</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">4</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Select all &mdash; bulk approve in one click</div>
+              <div class="hiw-desc">Click &ldquo;Select All&rdquo; then &ldquo;Approve All &amp; Publish.&rdquo; Every post is instantly queued across all 10 platforms. The scheduler takes over and publishes each post automatically at the right time on the right platform &mdash; you don&rsquo;t touch it again until next month.</div>
+              <span class="hiw-badge">&#10003; One click &mdash; done for the month</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">5</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Posts auto-publish across all platforms</div>
+              <div class="hiw-desc">Every approved post publishes automatically at the scheduled time via official platform APIs &mdash; Instagram, Facebook, LinkedIn, X, TikTok, YouTube, Google Business, Pinterest, Threads, Bluesky &mdash; simultaneously. No reminders, no manual posting, no logging in.</div>
+              <span class="hiw-badge">&#128228; Zero effort after approval</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Before / After -->
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:26px">
+          <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink4);margin-bottom:16px">&#8987; Scheduling without Shoutly AI &mdash; one month</div>
+          <div style="display:flex;flex-direction:column;gap:9px">
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--ink3)"><span style="color:#dc2626;font-size:16px;flex-shrink:0">&#10007;</span>Create post 1. Set date. Set time. Select 10 platforms. Preview. Save. (4 min)</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--ink3)"><span style="color:#dc2626;font-size:16px;flex-shrink:0">&#10007;</span>Repeat for post 2. Repeat for post 3&hellip; (4 min each)</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--ink3)"><span style="color:#dc2626;font-size:16px;flex-shrink:0">&#10007;</span>150 posts &times; 4 minutes = 600 minutes of pure scheduling admin</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--ink3)"><span style="color:#dc2626;font-size:16px;flex-shrink:0">&#10007;</span>No way to see the full month &mdash; spot content gaps or over-promotion</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--ink3)"><span style="color:#dc2626;font-size:16px;flex-shrink:0">&#10007;</span>One date change &rarr; update every affected post individually</div>
+            <div style="font-size:13.5px;font-weight:700;color:#dc2626;border-top:1px solid var(--border);padding-top:10px;margin-top:4px">Total time: 10+ hours scheduling per month, per client</div>
+          </div>
+        </div>
+        <div style="background:var(--pg);border-radius:var(--r4);padding:26px">
+          <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.5);margin-bottom:16px">&#10022; With Shoutly AI Bulk Scheduling</div>
+          <div style="display:flex;flex-direction:column;gap:9px">
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px;flex-shrink:0">&#10003;</span>AI generates full month calendar automatically (2 min)</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px;flex-shrink:0">&#10003;</span>Scroll the bulk queue, preview and tweak a few posts (5&ndash;8 min)</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px;flex-shrink:0">&#10003;</span>Click &ldquo;Select All&rdquo; then &ldquo;Approve All&rdquo; (10 seconds)</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px;flex-shrink:0">&#10003;</span>All 150 posts scheduled across all 10 platforms simultaneously</div>
+            <div style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px;flex-shrink:0">&#10003;</span>Date change &rarr; drag the block, everything shifts in one move</div>
+            <div style="font-size:13.5px;font-weight:800;color:#fff;border-top:1px solid rgba(255,255,255,.2);padding-top:10px;margin-top:4px">Total time: Under 10 minutes per month, per client</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BULK MODES -->
+<section class="section" id="bulk-modes" aria-labelledby="modes-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:52px">
+      <span class="sec-ey">Three ways to bulk schedule</span>
+      <h2 class="sec-h2" id="modes-h2">Choose how far ahead you want to plan. The AI fills the calendar either way.</h2>
+      <p class="sec-p">Whether you prefer to review weekly, monthly, or approve an entire year in one session &mdash; Shoutly AI supports all three workflows. You&rsquo;re in control of how much you approve at once.</p>
+    </div>
+    <div class="modes-grid">
+      <div class="mode-card">
+        <div class="mc-head">
+          <span class="mc-badge" style="background:#fff7ed;color:var(--p);border:1px solid #fed7aa">Weekly</span>
+          <div class="mc-title">7-Day Bulk Approval</div>
+          <div class="mc-desc">Review and approve one week of content at a time. Ideal if you want to stay close to current events, trending topics, or last-minute offers. Takes about 3&ndash;5 minutes per session.</div>
+        </div>
+        <div class="mc-body">
+          <div class="mc-stat"><span class="mc-stat-l">Posts approved per session</span><span class="mc-stat-v">~35 posts</span></div>
+          <div class="mc-stat"><span class="mc-stat-l">Time per approval session</span><span class="mc-stat-v">3&ndash;5 minutes</span></div>
+          <div class="mc-stat"><span class="mc-stat-l">Sessions needed per month</span><span class="mc-stat-v">4 sessions</span></div>
+          <div class="mc-stat"><span class="mc-stat-l">Best for</span><span class="mc-stat-v">News-sensitive businesses</span></div>
+        </div>
+      </div>
+      <div class="mode-card" style="border-color:#fed7aa;box-shadow:0 4px 24px rgba(249,115,22,.1)">
+        <div class="mc-head">
+          <span class="mc-badge" style="background:var(--pg);color:#fff;border:none">&#9733; Most popular</span>
+          <div class="mc-title">30-Day Bulk Approval</div>
+          <div class="mc-desc">Review and approve a full month in one session. The most popular workflow for local businesses and agencies. You spend one Sunday morning approving the month &mdash; then forget about scheduling entirely for 30 days.</div>
+        </div>
+        <div class="mc-body">
+          <div class="mc-stat"><span class="mc-stat-l">Posts approved per session</span><span class="mc-stat-v">~140 posts</span></div>
+          <div class="mc-stat"><span class="mc-stat-l">Time per approval session</span><span class="mc-stat-v">8&ndash;12 minutes</span></div>
+          <div class="mc-stat"><span class="mc-stat-l">Sessions needed per month</span><span class="mc-stat-v">1 session</span></div>
+          <div class="mc-stat"><span class="mc-stat-l">Best for</span><span class="mc-stat-v">Most businesses &amp; agencies</span></div>
+        </div>
+      </div>
+      <div class="mode-card">
+        <div class="mc-head">
+          <span class="mc-badge" style="background:#f0fdf4;color:#166534;border:1px solid #bbf7d0">Annual</span>
+          <div class="mc-title">365-Day Bulk Approval</div>
+          <div class="mc-desc">Approve an entire year of content in one session and run your social media on complete autopilot. Best for businesses with consistent offerings and agencies with established brand voices that rarely change.</div>
+        </div>
+        <div class="mc-body">
+          <div class="mc-stat"><span class="mc-stat-l">Posts approved per session</span><span class="mc-stat-v">~1,460 posts</span></div>
+          <div class="mc-stat"><span class="mc-stat-l">Time per approval session</span><span class="mc-stat-v">45&ndash;90 minutes</span></div>
+          <div class="mc-stat"><span class="mc-stat-l">Sessions needed per year</span><span class="mc-stat-v">1 session</span></div>
+          <div class="mc-stat"><span class="mc-stat-l">Best for</span><span class="mc-stat-v">Established businesses</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USE CASES -->
+<section class="section section-alt" id="use-cases" aria-labelledby="uc-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:52px">
+      <span class="sec-ey">Who bulk scheduling is built for</span>
+      <h2 class="sec-h2" id="uc-h2">Any business that posts consistently needs bulk scheduling. Here&rsquo;s how different businesses use it.</h2>
+    </div>
+    <div class="usecase-grid">
+      <div class="uc-card">
+        <div class="uc-ico">&#127829;</div>
+        <div class="uc-title">Restaurants &amp; Cafes</div>
+        <div class="uc-desc">Approve daily dish posts, weekly specials, monthly offers, and all festival campaigns (Diwali menu, Holi discount, Republic Day offers) in one monthly session. Never miss a posting day.</div>
+        <span class="uc-time">&#8987; 10 min/month</span>
+      </div>
+      <div class="uc-card">
+        <div class="uc-ico">&#128188;</div>
+        <div class="uc-title">Social Media Agencies</div>
+        <div class="uc-desc">Manage 20+ clients. Each client gets a monthly bulk approval session instead of daily micro-scheduling. One team member can handle 3x more clients because bulk scheduling removes the biggest time drain in agency work.</div>
+        <span class="uc-time">&#8987; 10 min/client/month</span>
+      </div>
+      <div class="uc-card">
+        <div class="uc-ico">&#9986;</div>
+        <div class="uc-title">Salons &amp; Beauty</div>
+        <div class="uc-desc">Bulk approve before/after content, service promotions, festive packages, and tip posts for Instagram and Facebook. Get 2 months ahead during quieter periods so festival season runs automatically.</div>
+        <span class="uc-time">&#8987; 8 min/month</span>
+      </div>
+      <div class="uc-card">
+        <div class="uc-ico">&#127947;</div>
+        <div class="uc-title">Gyms &amp; Fitness Coaches</div>
+        <div class="uc-desc">Bulk schedule transformation posts, workout tips, nutrition content, member spotlights, and seasonal campaigns (New Year batch, Navratri fitness, pre-wedding). Approve 3 months in January and run on autopilot.</div>
+        <span class="uc-time">&#8987; 12 min/quarter</span>
+      </div>
+      <div class="uc-card">
+        <div class="uc-ico">&#127981;</div>
+        <div class="uc-title">Retail &amp; E-Commerce</div>
+        <div class="uc-desc">Bulk schedule product reveals, sale announcements, festive collections, and review posts for every major shopping season &mdash; Dussehra, Dhanteras, Diwali, New Year, Valentine&rsquo;s Day &mdash; months in advance.</div>
+        <span class="uc-time">&#8987; 15 min/month</span>
+      </div>
+      <div class="uc-card">
+        <div class="uc-ico">&#128205;</div>
+        <div class="uc-title">Real Estate</div>
+        <div class="uc-desc">Bulk approve property listings, market insight posts, buyer tips, and local area content for Instagram, LinkedIn, and Google Business simultaneously. One approval session covers all platforms for the month.</div>
+        <span class="uc-time">&#8987; 10 min/month</span>
+      </div>
+      <div class="uc-card">
+        <div class="uc-ico">&#128202;</div>
+        <div class="uc-title">CA Firms &amp; Financial Services</div>
+        <div class="uc-desc">Bulk schedule tax deadline reminders, GST updates, and financial tips timed to India&rsquo;s financial calendar. Approve Q1 content in January, Q2 in April &mdash; the entire quarter runs on autopilot.</div>
+        <span class="uc-time">&#8987; 10 min/quarter</span>
+      </div>
+      <div class="uc-card">
+        <div class="uc-ico">&#129658;</div>
+        <div class="uc-title">Healthcare &amp; Clinics</div>
+        <div class="uc-desc">Bulk approve monsoon health alerts, vaccination reminders, awareness weeks, and seasonal health tips. Approve a full quarter of patient education content in one session and focus entirely on patient care.</div>
+        <span class="uc-time">&#8987; 8 min/quarter</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" aria-labelledby="feat-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">Built-in features</span>
+      <h2 class="sec-h2" id="feat-h2">Everything in the Shoutly AI Bulk Scheduler</h2>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="fc-ico">&#9989;</div>
+        <div class="fc-title">Select all &mdash; one-click approval</div>
+        <div class="fc-desc">Check &ldquo;Select All&rdquo; and click &ldquo;Approve All &amp; Publish.&rdquo; Every post in your queue is instantly scheduled across all 10 platforms simultaneously. The fastest content approval workflow in social media management.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#128247;</div>
+        <div class="fc-title">Inline preview before approving</div>
+        <div class="fc-desc">Click any post in the bulk queue to expand a full preview &mdash; image, caption, hashtags, platform, time. Review without leaving the queue. Edit the caption, swap the image, or change the time inline &mdash; then move straight to the next post.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#127775;</div>
+        <div class="fc-title">Filter by platform, type, or date</div>
+        <div class="fc-desc">Filter the bulk queue to see only Instagram Reels, only Facebook posts, only festival content, or only the next 7 days. Review the category you care about, approve it, then move to the next filter. Systematic, not overwhelming.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#129517;</div>
+        <div class="fc-title">Drag-and-drop bulk rescheduling</div>
+        <div class="fc-desc">Select multiple posts and drag them to a new date block. All selected posts shift together. Reschedule a full week&rsquo;s content in one drag operation. Ideal for public holidays, event postponements, or last-minute campaign changes.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#127881;</div>
+        <div class="fc-title">Festival content pre-loaded in bulk</div>
+        <div class="fc-desc">All 30+ Indian festivals are already in your bulk queue &mdash; Diwali, Holi, Eid, Navratri, Republic Day, Independence Day &mdash; scheduled 2&ndash;4 weeks before each occasion and ready to approve in bulk with everything else.</div>
+      </div>
+      <div class="fc-ico" style="display:none"></div>
+      <div class="feat-card">
+        <div class="fc-ico">&#128196;</div>
+        <div class="fc-title">CSV bulk import</div>
+        <div class="fc-desc">Already have content in a spreadsheet? Upload a CSV with post content, dates, times, and platforms &mdash; Shoutly AI imports it, formats each post for each platform, and drops it directly into your bulk queue for review and approval.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#128101;</div>
+        <div class="fc-title">Multi-client bulk management</div>
+        <div class="fc-desc">For agencies: switch between client accounts within the same bulk scheduling session. Approve Client A&rsquo;s November calendar, switch to Client B, approve theirs &mdash; all in one morning. Unlimited clients, unlimited posts, one platform.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#128683;</div>
+        <div class="fc-title">Pause &amp; resume queue</div>
+        <div class="fc-desc">If you need to pause all scheduled posts &mdash; a crisis, a product recall, a PR situation &mdash; pause your entire queue with one click. Every post holds its position. Resume when ready and everything continues from where it stopped.</div>
+      </div>
+      <div class="feat-card">
+        <div class="fc-ico">&#128202;</div>
+        <div class="fc-title">Bulk performance review</div>
+        <div class="fc-desc">After approval, the analytics dashboard tracks the performance of your bulk-approved content as a batch &mdash; not just individual posts. See how the full month&rsquo;s strategy is performing, not just which single post did best.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section section-alt" aria-labelledby="test-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">What businesses say</span>
+      <h2 class="sec-h2" id="test-h2">Businesses that stopped scheduling one post at a time</h2>
+    </div>
+    <div class="test-grid">
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;I used to spend every Sunday night scheduling the week&rsquo;s posts. Now I spend one Sunday morning a month approving everything in bulk &mdash; and I mean everything: 140 posts across Instagram, Facebook, LinkedIn, and Google Business. It takes about 12 minutes. I still can&rsquo;t believe it&rsquo;s that fast.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av">RK</div>
+          <div><span class="ta-name">Ravi Kumar</span><span class="ta-biz">Spice Garden Restaurant &middot; Bengaluru</span></div>
+        </div>
+      </article>
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;Before bulk scheduling, I could manage 8 clients with a team of 3. Now I manage 22 clients with the same team because each client goes from daily scheduling sessions to one monthly bulk approval. The business math is simple: bulk scheduling doubled our capacity without hiring anyone.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av" style="background:linear-gradient(135deg,#ec4899,#f97316)">AM</div>
+          <div><span class="ta-name">Anjali Mehta</span><span class="ta-biz">Social Media Agency &middot; Delhi</span></div>
+        </div>
+      </article>
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;I approved our entire Diwali campaign &mdash; 3 weeks of content across Instagram, Facebook, and Google Business &mdash; in one session in September. By the time Diwali actually came around I&rsquo;d completely forgotten about it. Everything just published automatically. That&rsquo;s what good software should feel like.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">PS</div>
+          <div><span class="ta-name">Priya Sharma</span><span class="ta-biz">Glow Salon &middot; Mumbai</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq" aria-labelledby="faq-h2" data-r>
+  <div class="wrap center">
+    <span class="sec-ey">Common questions</span>
+    <h2 class="sec-h2" id="faq-h2">Everything you need to know about Bulk Scheduling</h2>
+    <div class="faq-list">
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">How many posts can I schedule in bulk at once?<span class="faq-arr">+</span></button><div class="faq-a"><p>There is no limit. The &#8377;10,000/month Shoutly AI plan includes unlimited bulk scheduling with no caps on posts, platforms, or queue size. You can approve 7 days, 30 days, 90 days, or a full 365-day calendar in a single bulk approval session. Agencies managing multiple clients can process each client&rsquo;s full calendar without any restrictions.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Can I edit individual posts within the bulk queue before approving?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Click any post in the bulk queue to expand an inline preview and editor. You can change the caption, swap the image, adjust the scheduled time, add or remove platforms, or change the content type &mdash; all without leaving the bulk queue. After editing, the post saves automatically and you continue down the queue.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Can I reschedule multiple posts at once if plans change?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Select the posts you want to move, then drag them to the new date in the calendar view. All selected posts shift together to the new date block, maintaining their relative time spacing. You can also bulk-reschedule by selecting posts and using the &ldquo;Reschedule&rdquo; button to pick a new date range for the entire selection.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Does bulk scheduling work for all 10 platforms simultaneously?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. When you bulk approve a set of posts, each post is queued across all its selected platforms simultaneously &mdash; Instagram, Facebook, LinkedIn, X, TikTok, YouTube, Google Business, Pinterest, Threads, and Bluesky. Each platform receives the auto-formatted version of the post (correct image ratio, caption length, and hashtag count for that platform) without any manual reformatting.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Can I import content from a spreadsheet using bulk upload?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Upload a CSV file with your post content, scheduled dates and times, platform targets, and captions. Shoutly AI imports the data, auto-formats each post for each platform&rsquo;s requirements, and drops everything into your bulk queue for review and approval. Useful for agencies transitioning existing content plans into Shoutly AI.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">What happens to bulk-approved posts if I pause the queue?<span class="faq-arr">+</span></button><div class="faq-a"><p>All scheduled posts hold their position in the queue and retain their approval status. When you resume, publishing continues from the next scheduled post &mdash; nothing is lost, cancelled, or sent out of order. If posts were supposed to publish during the pause, they are marked as &ldquo;held&rdquo; and you can choose to reschedule them or remove them from the queue.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Is bulk scheduling included in the plan?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Bulk Scheduling is fully included in the &#8377;10,000/month Shoutly AI plan &mdash; no add-ons, no extra cost. The plan also includes AI Content Generator, AI Caption Generator, AI Image Generator, AI Hashtag Generator, Social Scheduler, Content Calendar, Multi-Platform Publishing, Analytics Dashboard, and Brand Kit.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LINKS -->
+<section class="section section-alt" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:36px">
+      <span class="sec-ey">More features</span>
+      <h2 class="sec-h2" style="font-size:clamp(22px,2.8vw,34px)">Bulk Scheduling works with every other Shoutly AI feature</h2>
+    </div>
+    <div class="links-grid">
+      <a href="https://shoutlyai.com/features/content-calendar" class="link-card"><span style="font-size:18px">&#128200;</span> Content Calendar <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/social-media-scheduler" class="link-card"><span style="font-size:18px">&#128197;</span> Social Scheduler <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/multi-platform-publishing" class="link-card"><span style="font-size:18px">&#128228;</span> Multi-Platform Publishing <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/ai-content-generator" class="link-card"><span style="font-size:18px">&#10022;</span> AI Content Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/ai-caption-generator" class="link-card"><span style="font-size:18px">&#9999;&#65039;</span> AI Caption Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/ai-hashtag-generator" class="link-card"><span style="font-size:18px">#</span> Hashtag Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/analytics" class="link-card"><span style="font-size:18px">&#128202;</span> Analytics Dashboard <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/brand-kit" class="link-card"><span style="font-size:18px">&#127859;</span> Brand Kit <span class="link-arr">&#8594;</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" aria-labelledby="cta-h2">
+  <div class="wrap">
+    <h2 id="cta-h2">Stop scheduling one post at a time.<br><span class="grad">Approve a month in 10 minutes.</span></h2>
+    <p>AI generates your calendar. You approve everything in one bulk session. Every post auto-publishes across all 10 platforms. Free 14-day trial, no credit card required.</p>
+    <div class="cta-btns">
+      <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-xl">Start bulk scheduling free <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+      <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-xl">Book a live demo</a>
+    </div>
+    <div class="cta-trust">
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Unlimited posts</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>All 10 platforms</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>No credit card required</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>&#8377;10,000/month &mdash; all features</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>4.9&#9733; &mdash; 41,000+ businesses</span>
+    </div>
+  </div>
+</section>
+</main>
+<script>
+document.documentElement.classList.add('js');
+
+/* ── Bulk queue data ─────────────────────────────────────────────────── */
+var posts = [
+  {thumb:'&#127983;',bg:'linear-gradient(135deg,#fb923c,#f59e0b)',title:'Diwali special offer &mdash; 20% off all thalis',plat:'Instagram',platStyle:'background:linear-gradient(135deg,#f58529,#dd2a7b);color:#fff',type:'Festival',typeStyle:'background:rgba(251,191,36,.12);color:#fbbf24',date:'Nov 1 &bull; 9:00am',status:'bs-festival',statusText:'&#127881; Festival'},
+  {thumb:'&#128218;',bg:'linear-gradient(135deg,#f97316,#f97316)',title:'5 South Indian dishes every foodie must try',plat:'Instagram',platStyle:'background:linear-gradient(135deg,#f58529,#dd2a7b);color:#fff',type:'Carousel',typeStyle:'background:rgba(249,115,22,.14);color:#fdba74',date:'Nov 2 &bull; 9:00am',status:'bs-queued',statusText:'Queued'},
+  {thumb:'&#128153;',bg:'#1877f2',title:'Diwali offer &mdash; book a table this festive season',plat:'Facebook',platStyle:'background:#1877f2;color:#fff',type:'Festival',typeStyle:'background:rgba(251,191,36,.12);color:#fbbf24',date:'Nov 3 &bull; 10:00am',status:'bs-festival',statusText:'&#127881; Festival'},
+  {thumb:'&#127909;',bg:'linear-gradient(135deg,#ec4899,#f97316)',title:'Behind the kitchen &mdash; how we cook the Biryani',plat:'Instagram',platStyle:'background:linear-gradient(135deg,#f58529,#dd2a7b);color:#fff',type:'Reel',typeStyle:'background:rgba(236,72,153,.15);color:#f472b6',date:'Nov 4 &bull; 9:00am',status:'bs-approved',statusText:'&#10003; Approved'},
+  {thumb:'&#128188;',bg:'#0077b5',title:'How we built a restaurant loved by 12,000 customers',plat:'LinkedIn',platStyle:'background:#0077b5;color:#fff',type:'Article',typeStyle:'background:rgba(0,119,181,.12);color:#7dd3fc',date:'Nov 5 &bull; 8:00am',status:'bs-queued',statusText:'Queued'},
+  {thumb:'&#128205;',bg:'linear-gradient(135deg,#4285f4,#34a853)',title:'Weekend thali special &mdash; Koramangala, Bengaluru',plat:'Google Biz',platStyle:'background:linear-gradient(135deg,#4285f4,#34a853);color:#fff',type:'GBP Post',typeStyle:'background:rgba(52,168,83,.12);color:#6ee7b7',date:'Nov 6 &bull; 9:00am',status:'bs-queued',statusText:'Queued'},
+  {thumb:'&#10005;',bg:'#0f0f0f',title:'The secret to a fully-booked restaurant on weekdays',plat:'X',platStyle:'background:#0f0f0f;color:rgba(255,255,255,.8);border:1px solid #333',type:'Thread',typeStyle:'background:rgba(255,255,255,.08);color:rgba(255,255,255,.5)',date:'Nov 7 &bull; 9:15am',status:'bs-draft',statusText:'Draft'},
+  {thumb:'&#127752;',bg:'linear-gradient(135deg,#ea580c,#ec4899)',title:'Bhai Dooj special &mdash; dine together, celebrate together',plat:'Instagram',platStyle:'background:linear-gradient(135deg,#f58529,#dd2a7b);color:#fff',type:'Festival',typeStyle:'background:rgba(251,191,36,.12);color:#fbbf24',date:'Nov 10 &bull; 9:00am',status:'bs-festival',statusText:'&#127881; Festival'},
+  {thumb:'&#127917;',bg:'linear-gradient(135deg,#f97316,#0ea5e9)',title:'Guru Nanak Jayanti &mdash; warm wishes from our family',plat:'Facebook',platStyle:'background:#1877f2;color:#fff',type:'Festival',typeStyle:'background:rgba(251,191,36,.12);color:#fbbf24',date:'Nov 14 &bull; 9:00am',status:'bs-festival',statusText:'&#127881; Festival'},
+  {thumb:'&#128247;',bg:'linear-gradient(135deg,#f58529,#dd2a7b)',title:'Chef&rsquo;s special &mdash; new dish reveal this weekend',plat:'Instagram',platStyle:'background:linear-gradient(135deg,#f58529,#dd2a7b);color:#fff',type:'Reel',typeStyle:'background:rgba(236,72,153,.15);color:#f472b6',date:'Nov 15 &bull; 9:00am',status:'bs-queued',statusText:'Queued'},
+];
+
+var selected = new Set();
+
+function renderQueue() {
+  var list = document.getElementById('bq-list');
+  list.innerHTML = '';
+  posts.forEach(function(p, i) {
+    var div = document.createElement('div');
+    div.className = 'bq-item' + (selected.has(i) ? ' selected' : '');
+    div.innerHTML =
+      '<input type="checkbox" ' + (selected.has(i) ? 'checked' : '') + ' onchange="toggleItem(' + i + ',this)" onclick="event.stopPropagation()">' +
+      '<div class="bq-thumb" style="background:' + p.bg + '">' + p.thumb + '</div>' +
+      '<div class="bq-info">' +
+        '<div class="bq-post-title">' + p.title + '</div>' +
+        '<div class="bq-meta">' +
+          '<span class="bq-plat-chip" style="' + p.platStyle + ';font-size:9px;font-weight:700;padding:2px 7px;border-radius:100px">' + p.plat + '</span>' +
+          '<span class="bq-type" style="' + p.typeStyle + '">' + p.type + '</span>' +
+          '<span class="bq-date">' + p.date + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<span class="bq-status ' + p.status + '">' + p.statusText + '</span>';
+    div.addEventListener('click', function(e) {
+      if (e.target.type === 'checkbox') return;
+      toggleItem(i, null);
+    });
+    list.appendChild(div);
+  });
+  updateCounts();
+}
+
+function toggleItem(i, cb) {
+  if (selected.has(i)) selected.delete(i);
+  else selected.add(i);
+  renderQueue();
+}
+
+function toggleAll(el) {
+  if (el.checked) posts.forEach(function(_, i) { selected.add(i); });
+  else selected.clear();
+  renderQueue();
+}
+
+function updateCounts() {
+  document.getElementById('bqs-selected').textContent = selected.size;
+  document.getElementById('bab-count').textContent = selected.size;
+  var sa = document.getElementById('sel-all');
+  if (sa) sa.checked = selected.size === posts.length;
+}
+
+function bulkApprove() {
+  if (selected.size === 0) { toggleAll({checked:true}); return; }
+  selected.forEach(function(i) { posts[i].status = 'bs-approved'; posts[i].statusText = '&#10003; Approved'; });
+  selected.clear();
+  renderQueue();
+}
+
+function bulkReschedule() {
+  alert('Drag posts to a new date in the calendar view, or select posts and use the reschedule picker.');
+}
+
+/* Filters */
+document.querySelectorAll('.bq-filter').forEach(function(f) {
+  f.addEventListener('click', function() {
+    document.querySelectorAll('.bq-filter').forEach(function(x) { x.classList.remove('active'); });
+    this.classList.add('active');
+  });
+});
+
+/* FAQ */
+function faq(btn) {
+  var item = btn.closest('.faq-item');
+  var open = item.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(open));
+}
+
+/* Scroll reveal */
+if ('IntersectionObserver' in window) {
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+  }, { threshold: .07, rootMargin: '0px 0px -28px 0px' });
+  document.querySelectorAll('[data-r]').forEach(function(el) { obs.observe(el); });
+} else {
+  document.querySelectorAll('[data-r]').forEach(function(el) { el.classList.add('vis'); });
+}
+
+window.addEventListener('scroll', function() {
+  var nav = document.getElementById('nav');
+  if (nav) nav.classList.toggle('scrolled', window.scrollY > 8);
+}, { passive: true });
+
+renderQueue();
+</script>
+</body>
+</html>

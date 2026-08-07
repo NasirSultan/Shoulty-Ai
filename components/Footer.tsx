@@ -72,7 +72,7 @@ function FooterNavLink({ link }: { link: FooterLink }) {
 function FooterColumn({ title, links }: { title: string; links: FooterLink[] }) {
   return (
     <div className="col-span-1">
-      <div className="text-[13px] font-extrabold uppercase tracking-tight text-white mb-5">
+      <div className="text-[13px] font-extrabold uppercase tracking-tight text-orange-500 mb-5">
         {title}
       </div>
       <ul className="space-y-2.5">
@@ -139,6 +139,7 @@ const Footer = () => {
     { label: "AI Caption Generator", href: "/shoutlyai-ai-caption-generator.html" },
     { label: "AI Hashtag Generator", href: "/shoutlyai-ai-hashtag-generator.html" },
     { label: "AI Social Scheduler", href: "/shoutlyai-social-media-scheduler.html" },
+    { label: "Bulk Scheduling", href: "/shoutlyai-bulk-scheduling.html" },
     { label: "Content Calendar", href: "/shoutlyai-content-calendar.html" },
     { label: "Multi-Platform Publishing", href: "/shoutlyai-multi-platform-publishing.html" },
     { label: "Analytics", href: "/shoutlyai-analytics-dashboard.html" },
@@ -208,7 +209,7 @@ const Footer = () => {
     { label: "About Us", href: "/about-us" },
     { label: "Careers", href: "/careers" },
     { label: "Contact", href: "/contact-us" },
-    { label: "Brand Assets" },
+    { label: "Brand Assets", href: "/shoutlyai-brand-assets.html" },
   ];
 
   const trustBadges: { icon: React.ReactNode; label: string }[] = [
@@ -364,7 +365,7 @@ const Footer = () => {
 
         {/* Row 2 — Company */}
         <div className="mb-12">
-          <div className="text-[13px] font-extrabold uppercase tracking-tight text-white mb-5">
+          <div className="text-[13px] font-extrabold uppercase tracking-tight text-orange-500 mb-5">
             Company
           </div>
           <ul className="flex flex-wrap gap-x-8 gap-y-2.5">
@@ -378,7 +379,7 @@ const Footer = () => {
 
         {/* Trust & compliance badges */}
         <div className="border-t border-white pt-8 mb-8">
-          <div className="text-[13px] font-extrabold text-white mb-4">
+          <div className="text-[13px] font-extrabold text-orange-500 mb-4">
             Trust &amp; compliance
           </div>
           <div className="flex flex-wrap gap-2">
@@ -398,7 +399,7 @@ const Footer = () => {
         <div className="border-t border-white pt-8 mb-8">
           <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-10">
             <div className="sm:w-48 flex-shrink-0">
-              <div className="text-[13px] font-extrabold text-white mb-2">
+              <div className="text-[13px] font-extrabold text-orange-500 mb-2">
                 Legal hub
               </div>
               <p className="text-[13px] font-medium text-white/80 leading-[1.55]">
