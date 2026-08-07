@@ -59,6 +59,17 @@ interface Industry {
     subIndustries: SubIndustry[];
 }
 
+interface Festival {
+    id: string;
+    name: string;
+    date: string;
+    pic: string;
+}
+
+function fmtFestivalDate(iso: string) {
+    return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
 const MIN_BRAND_DESCRIPTION_CHARS = 30;
 const MAX_BRAND_DESCRIPTION_CHARS = 300;
 const MAX_REGENERATIONS_PER_DAY = 3;
@@ -319,6 +330,8 @@ export default function LandingPage() {
 
     const [industries, setIndustries] = useState<Industry[]>([]);
     const [loadingIndustries, setLoadingIndustries] = useState(true);
+    const [festivals, setFestivals] = useState<Festival[]>([]);
+    const [loadingFestivals, setLoadingFestivals] = useState(true);
     const handleSelectGenerateIndustry = (id: string) => {
         setGenerateSelectedIndustry(id);
         setGenerateSelectedSubIndustry(null);
@@ -759,6 +772,26 @@ export default function LandingPage() {
             setLoadingIndustries(false);
         };
         loadIndustries();
+    }, []);
+
+    useEffect(() => {
+        const loadFestivals = async () => {
+            try {
+                const res = await fetch(API_ENDPOINTS.festivalsRandom, {
+                    headers: { "Accept": "application/json", "ngrok-skip-browser-warning": "true" },
+                    cache: "no-store",
+                });
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                const data = await res.json();
+                setFestivals(Array.isArray(data) ? data : []);
+            } catch (error) {
+                console.error("❌ Failed to fetch festivals:", error);
+                setFestivals([]);
+            } finally {
+                setLoadingFestivals(false);
+            }
+        };
+        loadFestivals();
     }, []);
     
     // Hero mosaic setup - PERFECTLY MATCHED images with correct titles
@@ -1747,6 +1780,63 @@ const speeds = [120, 160, 110, 150, 130];
                     </div>
                 </div>
             </section>
+
+            {/* UPCOMING FESTIVALS */}
+            {(loadingFestivals || festivals.length > 0) && (
+                <section
+                    id="upcoming-festivals"
+                    className="py-6 sm:py-12 lg:py-20 relative"
+                    style={{ background: "linear-gradient(180deg, #f8fafc 0%, #fff7f0 60%, #ffffff 100%)" }}
+                >
+                    <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 text-center relative z-10">
+                        {/* Badge */}
+                        <div className="flex justify-center mb-3 sm:mb-4">
+                            <span className="inline-flex items-center gap-2 px-4 sm:px-5 py-1.5 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-[10px] sm:text-xs font-bold uppercase tracking-widest shadow-lg shadow-orange-200">
+                                <SparklesIcon className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
+                                Never Miss a Moment
+                            </span>
+                        </div>
+
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight mb-2 sm:mb-3">
+                            Upcoming Festivals & Occasions
+                        </h2>
+
+                        <p className="text-slate-500 max-w-2xl mx-auto mb-6 sm:mb-8 text-xs sm:text-sm lg:text-base leading-relaxed px-2">
+                            We automatically generate on-brand posts for every festival on the calendar, so your business never misses a chance to celebrate with your audience.
+                        </p>
+
+                        {/* Cards */}
+                        <div className="flex overflow-x-auto sm:overflow-visible sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5 pb-2 -mx-3 px-3 sm:mx-0 sm:px-0">
+                            {loadingFestivals
+                                ? Array.from({ length: 4 }).map((_, idx) => (
+                                    <div key={idx} className="min-w-[160px] sm:min-w-0 flex-shrink-0 rounded-xl sm:rounded-2xl overflow-hidden bg-white border border-orange-100 shadow-sm animate-pulse">
+                                        <div className="aspect-[4/3] bg-orange-50" />
+                                        <div className="p-3 sm:p-4">
+                                            <div className="h-3 w-2/3 bg-orange-50 rounded mb-2" />
+                                            <div className="h-2.5 w-1/3 bg-orange-50 rounded" />
+                                        </div>
+                                    </div>
+                                ))
+                                : festivals.map((festival) => (
+                                    <div key={festival.id} className="group min-w-[160px] sm:min-w-0 flex-shrink-0 rounded-xl sm:rounded-2xl overflow-hidden bg-white border border-orange-100 text-left shadow-sm hover:shadow-xl hover:shadow-orange-100/50 hover:-translate-y-1 transition-all duration-300">
+                                        <div className="aspect-[4/3] overflow-hidden bg-orange-50">
+                                            <img
+                                                src={festival.pic}
+                                                alt={festival.name}
+                                                loading="lazy"
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                            />
+                                        </div>
+                                        <div className="p-3 sm:p-4">
+                                            <h3 className="font-bold text-slate-900 text-xs sm:text-sm mb-1 truncate">{festival.name}</h3>
+                                            <span className="inline-block text-[10px] sm:text-xs font-semibold text-orange-500">{fmtFestivalDate(festival.date)}</span>
+                                        </div>
+                                    </div>
+                                ))}
+                        </div>
+                    </div>
+                </section>
+            )}
 
             {/* Industry Request Modal */}
             {industryReqOpen && (

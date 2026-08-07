@@ -14,7 +14,7 @@ import { publishPost, schedulePosts, Platform } from "@/api/autopostApi";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 type Status = "scheduled" | "draft" | "published";
-type PostType = "image" | "reel" | "carousel" | "story";
+type PostType = "image" | "reel" | "festival" | "carousel" | "story";
 type PlatKey = "ig" | "fb" | "li" | "tw" | "tk" | "yt" | "th";
 type ViewMode = "7d" | "month";
 type RpTab = "accounts" | "ideas" | "analytics";
@@ -72,6 +72,7 @@ const CONN_PLATS = [
 const TYPE_INFO: Record<PostType, { label: string; icon: string; bg: string }> = {
   image:    { label: "Image",    icon: "fa-image",             bg: "#3B82F6" },
   reel:     { label: "Reel",     icon: "fa-clapperboard",      bg: "#EC4899" },
+  festival: { label: "Festival", icon: "fa-star",              bg: "#F97316" },
   carousel: { label: "Carousel", icon: "fa-table-cells-large", bg: "#F97316" },
   story:    { label: "Story",    icon: "fa-mobile-screen",     bg: "#F59E0B" },
 };
@@ -458,7 +459,9 @@ function mapBackendPlanPost(
     caption: normalized.caption,
     hashtags: normalized.hashtags.length > 0 ? normalized.hashtags : buildRelevantHashtags(normalized.caption),
     plats,
-    type: backendPost.media?.type === "REEL" ? "reel" : "image" as PostType,
+    type: backendPost.media?.type === "REEL" ? "reel"
+        : backendPost.media?.type === "FESTIVAL" ? "festival"
+        : "image" as PostType,
     timeStr: postDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     timesOptions: TIMES_POOL[0],
     img,
@@ -611,7 +614,6 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
   user: Record<string, unknown> | null | undefined;
   industrySelection: { industryId: string; subIndustryId: string } | null | undefined;
 }) {
-  console.log(state);
   const p = state.postId ? posts.find(x => x.id === state.postId) : null;
   const [caption, setCaption] = useState("");
   const [dateVal, setDateVal] = useState("");
