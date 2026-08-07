@@ -133,8 +133,8 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const productLinks: FooterLink[] = [
-    { label: "AI Content Generator", href: "/#generator" },
-    { label: "AI Image Generator", href: "/#generator" },
+    { label: "AI Content Generator", href: "/shoutlyai-ai-content-generator.html" },
+    { label: "AI Image Generator", href: "/shoutlyai-ai-image-generator.html" },
     { label: "AI Reel Generator", href: "/#generator" },
     { label: "AI Caption Generator", href: "/shoutlyai-ai-caption-generator.html" },
     { label: "AI Hashtag Generator", href: "/shoutlyai-ai-hashtag-generator.html" },
@@ -143,7 +143,7 @@ const Footer = () => {
     { label: "Content Calendar", href: "/shoutlyai-content-calendar.html" },
     { label: "Multi-Platform Publishing", href: "/shoutlyai-multi-platform-publishing.html" },
     { label: "Analytics", href: "/shoutlyai-analytics-dashboard.html" },
-    { label: "Brand Kit" },
+    { label: "Brand Kit", href: "/shoutlyai-brand-kit.html" },
     { label: "Integrations" },
     { label: "Pricing", href: "/pricing" },
   ];
@@ -158,27 +158,26 @@ const Footer = () => {
     { label: "Startups", href: "/marketing-for-business-consultants.html" },
     { label: "Hotels", href: "/digital-marketing-for-hotels-and-resorts.html" },
     { label: "Event Planners", href: "/digital-marketing-for-event-planners.html" },
-    { label: "Makeup Services", href: "/social-media-marketing-for-makeup-artists.html" },
+    { label: "Makeup Services", href: "/digital-marketing-for-makeup-artists.html" },
   ];
 
   const channelsLinks: FooterLink[] = [
-    { label: "Facebook", href: "/channel/facebook" },
-    { label: "Instagram", href: "/channel/instagram" },
-    { label: "LinkedIn" },
-    { label: "YouTube" },
-    { label: "TikTok" },
     { label: "X", href: "/channel/twitter-x" },
-    { label: "Google Business Profile" },
-    { label: "Pinterest" },
-    { label: "Threads" },
+    { label: "Instagram", href: "/channel/instagram" },
+    { label: "Facebook", href: "/channel/facebook" },
     { label: "Bluesky" },
-    { label: "Mastodon" },
+    { label: "LinkedIn" },
+    { label: "TikTok" },
+    { label: "Threads" },
+    { label: "YouTube" },
+    { label: "Pinterest" },
+    { label: "Google Biz" },
   ];
 
   const compareLinks: FooterLink[] = [
     { label: "Buffer vs Shoutly AI", href: "/compare/buffer-vs-shoutly-ai" },
     { label: "Hootsuite vs Shoutly AI", href: "/compare/hootsuite-vs-shoutly-ai" },
-    { label: "Later vs Shoutly AI" },
+    { label: "Later vs Shoutly AI", href: "/compare/later-vs-shoutly-ai" },
     { label: "SocialPilot vs Shoutly AI" },
     { label: "Metricool vs Shoutly AI" },
     { label: "Publer vs Shoutly AI" },
@@ -207,7 +206,10 @@ const Footer = () => {
 
   const companyLinks: FooterLink[] = [
     { label: "About Us", href: "/about-us" },
+    { label: "Help Center", href: "/help-center" },
+    { label: "Security", href: "/security" },
     { label: "Careers", href: "/careers" },
+    { label: "Blog", href: "https://blog.shoutlyai.com/", external: true },
     { label: "Contact", href: "/contact-us" },
     { label: "Brand Assets", href: "/shoutlyai-brand-assets.html" },
   ];

@@ -73,6 +73,7 @@ export default function Head() {
         <>
             <title>{title}</title>
             <meta name="description" content={description} />
+            <meta name="msvalidate.01" content="2E8126E3D78B2BA6DC249EF6E8573E6B" />
             <link rel="canonical" href="https://shoutlyai.com/" />
 
             <meta property="og:type" content="website" />
