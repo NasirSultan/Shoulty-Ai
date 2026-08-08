@@ -51,8 +51,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({
             link.download = imageName || "image.png";
             link.click();
             window.URL.revokeObjectURL(url);
-        } catch (error) {
-            console.error("Download failed:", error);
+        } catch {
         }
     };
 
@@ -126,8 +125,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({
                 window.URL.revokeObjectURL(url);
                 handleCropCancel();
             });
-        } catch (error) {
-            console.warn("Crop failed (CORS?), downloading original instead:", error);
+        } catch {
             handleDownload();
             handleCropCancel();
         }

@@ -120,15 +120,12 @@ const streamPostGenerator = async <TChunk>(
   if (!response.ok) {
     const retryableStatuses = [502, 503, 504];
     if (retryableStatuses.includes(response.status)) {
-      console.warn(`[Stream] Proxy returned ${response.status}. Retrying via proxy...`);
-      
       // Attempt 2: Wait 3s
       await new Promise((resolve) => setTimeout(resolve, 3000));
       response = await doRequest(endpoint);
-      
+
       // Attempt 3: Wait 5s
       if (!response.ok && retryableStatuses.includes(response.status)) {
-        console.warn(`[Stream] Proxy still returning ${response.status}. Final retry attempt...`);
         await new Promise((resolve) => setTimeout(resolve, 5000));
         response = await doRequest(endpoint);
       }
@@ -150,9 +147,8 @@ const streamPostGenerator = async <TChunk>(
   let doneCalled = false;
 
   const processRawEvent = (rawEvent: string) => {
-    console.log("[SSE raw]", rawEvent.slice(0, 400));
     const dataString = parseSseEventData(rawEvent);
-    if (!dataString) { console.log("[SSE] skipped — no data line"); return; }
+    if (!dataString) { return; }
 
     let parsed: unknown;
     try {
@@ -243,10 +239,6 @@ export const generatePromptOnlyImages = async (
   });
 
   if (!response.ok) {
-    const message = await response.text().catch(() => "");
-    console.warn(
-      message || `Prompt image generation failed (${response.status}); falling back to stock images.`
-    );
     return [];
   }
 

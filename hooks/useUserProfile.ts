@@ -89,7 +89,6 @@ export function useUserProfile() {
             // 401/404 are handled by the axios interceptor (redirects to sign-in)
             // Suppress the Next.js error overlay for expected auth failures
             if (err?.response?.status !== 401 && err?.response?.status !== 404) {
-                console.warn("Profile fetch failed:", err);
             }
         } finally {
             setLoading(false);

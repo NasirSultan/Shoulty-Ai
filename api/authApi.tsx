@@ -77,7 +77,6 @@ export const emailLogin = async (email: string, password: string) => {
             password,
         });
 
-        console.log("🔑 Login response:", response.data);
         const authToken = response.data.accessToken || response.data.token;
         const { user } = response.data;
         localStorage.setItem("shoutly_token", authToken);
@@ -176,9 +175,6 @@ export const setUserProfile = async (payload: {
         const token = localStorage.getItem("shoutly_token");
         if (token) {
             headers.Authorization = `Bearer ${token}`;
-            console.log("[setUserProfile] Token present:", token.substring(0, 20) + "...");
-        } else {
-            console.warn("[setUserProfile] No token found in localStorage");
         }
     }
 
@@ -210,7 +206,6 @@ export const setUserProfile = async (payload: {
             formData.append("brandLogo", payload.brandLogo);
         }
         data = formData;
-        console.log("[setUserProfile] Using FormData (file upload)");
     } else {
         // Use JSON for non-file requests
         // Build a minimal payload with only core fields that backend supports
@@ -233,19 +228,13 @@ export const setUserProfile = async (payload: {
 
         data = jsonData;
         headers["Content-Type"] = "application/json";
-        console.log("[setUserProfile] Using JSON (no file)");
     }
-
-    // Debug log
-    console.log("[setUserProfile] API Endpoint:", API_ENDPOINTS.setProfile);
-    console.log("[setUserProfile] Sending data:", data);
 
     try {
         if (hasFile) {
             const response = await axios.post(API_ENDPOINTS.setProfile, data, {
                 headers,
             });
-            console.log("[setUserProfile] Success response:", response.data);
             return response.data;
         }
 
@@ -284,14 +273,9 @@ export const setUserProfile = async (payload: {
         for (let i = 0; i < payloadAttempts.length; i++) {
             const attempt = payloadAttempts[i];
             try {
-                if (i > 0) {
-                    console.warn(`[setUserProfile] Retry attempt ${i + 1}/${payloadAttempts.length} with fallback payload shape.`);
-                    console.log("[setUserProfile] Retry payload:", attempt.data);
-                }
                 const response = await axios.post(API_ENDPOINTS.setProfile, attempt.data, {
                     headers,
                 });
-                console.log("[setUserProfile] Success response:", response.data);
                 return response.data;
             } catch (err: unknown) {
                 lastError = err;
@@ -317,28 +301,6 @@ export const setUserProfile = async (payload: {
 
         throw lastError;
     } catch (error: unknown) {
-        console.error("[setUserProfile] Full error object:", error);
-        
-        if (error instanceof Error) {
-            console.error("[setUserProfile] Error message:", error.message);
-            console.error("[setUserProfile] Error stack:", error.stack);
-        }
-
-        // Check if it's an axios error
-        if (error && typeof error === 'object' && 'response' in error) {
-            const axiosError = error as { response?: { status: number; statusText: string; data: unknown } };
-            console.error("[setUserProfile] Axios error:", {
-                status: axiosError.response?.status,
-                statusText: axiosError.response?.statusText,
-                data: axiosError.response?.data,
-            });
-            
-            // Backend 500 error - might be an incompatibility issue
-            if (axiosError.response?.status === 500) {
-                console.error("[setUserProfile] Backend returned 500 - endpoint may have an issue or field validation failure");
-            }
-        }
-        
         throw error;
     }
 };
@@ -447,7 +409,6 @@ export const updateProfile = async (payload: {
         });
         return response.data;
     } catch (error) {
-        console.error("[updateProfile] Error:", error);
         throw error;
     }
 };
@@ -463,7 +424,6 @@ export const updatePassword = async (payload: {
         });
         return response.data;
     } catch (error) {
-        console.error("[updatePassword] Error:", error);
         throw error;
     }
 };

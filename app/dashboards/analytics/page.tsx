@@ -231,7 +231,6 @@ const AnalyticsPage: React.FC = () => {
 
       setData(json);
     } catch (err) {
-      console.error('Failed to fetch analytics:', err);
       setError(err instanceof Error ? err.message : 'UNKNOWN_ERROR');
       showToast('Could not load analytics data', 'red');
     } finally {

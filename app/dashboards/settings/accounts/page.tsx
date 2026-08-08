@@ -432,8 +432,7 @@ export default function SocialAccountsPage() {
       setTotals(overviewRes?.totals
         ? { totalFollowers: overviewRes.totals.totalFollowers, avgEngagementRate: overviewRes.totals.avgEngagementRate }
         : null);
-    } catch (err) {
-      console.error("Failed to load account status/analytics:", err);
+    } catch {
       showToast("Couldn't load account data. Try refreshing.", "red");
     } finally {
       setIsLoading(false);

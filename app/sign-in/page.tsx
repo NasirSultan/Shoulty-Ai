@@ -74,7 +74,6 @@ function SignInAccountContent() {
             routeAfterLogin(user);
             void hydrateUserProfileInBackground(user);
         } catch (err) {
-            console.error("Google login failed:", err);
             setFormError(
                 err instanceof Error
                     ? err.message
@@ -157,7 +156,7 @@ function SignInAccountContent() {
                     <div className="w-full max-w-full flex justify-center">
                         <GoogleSignInButton
                             onSuccess={handleGoogleSuccess}
-                            onError={() => console.error("Google login failed")}
+                            onError={() => {}}
                         />
                     </div>
                 </div>

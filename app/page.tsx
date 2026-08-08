@@ -305,15 +305,12 @@ export default function LandingPage() {
                     email: industryReqEmail.trim(),
                 }),
             });
-            const data = await res.json().catch(() => null);
+            await res.json().catch(() => null);
             if (!res.ok) {
-                console.error("Industry request failed:", res.status, data);
                 return;
             }
-            console.log("Industry request created:", data);
             setIndustryReqSuccess(true);
-        } catch (err) {
-            console.error("Industry request error:", err);
+        } catch {
         } finally {
             setIndustryReqSubmitting(false);
         }
@@ -593,8 +590,6 @@ export default function LandingPage() {
             return;
         }
 
-        console.log("[Generate] Selected industry:", selectedIndustryObj?.name, "Sub-industry:", selectedSubIndustryObj?.name);
-
         if (!selectedContent) {
             setSelectedContent("photos");
         }
@@ -784,8 +779,7 @@ export default function LandingPage() {
                 if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
                 const data = await res.json();
                 setFestivals(Array.isArray(data) ? data : []);
-            } catch (error) {
-                console.error("❌ Failed to fetch festivals:", error);
+            } catch {
                 setFestivals([]);
             } finally {
                 setLoadingFestivals(false);

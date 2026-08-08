@@ -1,8 +1,10 @@
 ﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import AdminHeader from "../../AdminHeader";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useIndustries } from "@/hooks/useIndustries";
 import { fetchImages } from "@/api/homeApi";
 import { setUserProfile } from "@/api/authApi";
 
@@ -97,6 +99,46 @@ function sliderFill(pct: number): string {
   return `linear-gradient(90deg,#F97316 ${pct}%,#E4E5EF ${pct}%)`;
 }
 
+// ── Brand settings cache (7 days) ─────────────────────────────────────────
+const BRAND_CACHE_KEY = "shoutly:brandOverlay:v1";
+const BRAND_CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+
+interface BrandCachePayload {
+  timestamp: number;
+  overlay: OverlayState;
+  brandName: string;
+  phone: string;
+  overlayText: string;
+  industryId: string;
+  subIndustryId: string;
+  applyPlatforms: Record<string, boolean>;
+}
+
+function readBrandCache(): BrandCachePayload | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(BRAND_CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as BrandCachePayload;
+    if (!parsed?.timestamp || Date.now() - parsed.timestamp > BRAND_CACHE_TTL_MS) {
+      localStorage.removeItem(BRAND_CACHE_KEY);
+      return null;
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function writeBrandCache(payload: Omit<BrandCachePayload, "timestamp">) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(BRAND_CACHE_KEY, JSON.stringify({ ...payload, timestamp: Date.now() }));
+  } catch {
+    // Ignore storage quota or private-mode storage errors.
+  }
+}
+
 
 // ── Toggle component ───────────────────────────────────────────────────────
 function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
@@ -149,20 +191,33 @@ export default function BrandOverlayPage() {
     return () => { cancelled = true; };
   }, []);
 
-  const [S, setS] = useState<OverlayState>({
+  const cachedBrand = useRef(readBrandCache()).current;
+
+  const [S, setS] = useState<OverlayState>(cachedBrand?.overlay ?? {
     pos: "tl", logoUrl: null, logoName: "", logoSize: "",
     primary: "#F97316", opacity: 90, blur: 12, radius: 10, size: 32,
     style: "glass", textColor: "white",
     showLogo: true, showName: true, showContact: true, showOvtext: true, showCorner: false, showTextbar: false,
   });
 
-  const [brandName, setBrandName] = useState("Your Brand");
-  const [phone, setPhone] = useState("+91 98765 43210");
-  const [overlayText, setOverlayText] = useState("yourbrand.com");
+  const [brandName, setBrandName] = useState(cachedBrand?.brandName ?? "Your Brand");
+  const [phone, setPhone] = useState(cachedBrand?.phone ?? "+91 98765 43210");
+  const [overlayText, setOverlayText] = useState(cachedBrand?.overlayText ?? "yourbrand.com");
+  const [industryId, setIndustryId] = useState(cachedBrand?.industryId ?? "");
+  const [subIndustryId, setSubIndustryId] = useState(cachedBrand?.subIndustryId ?? "");
   const { user } = useUserProfile();
+  const { industries, loading: industriesLoading } = useIndustries();
   const [applyPlatforms, setApplyPlatforms] = useState<Record<string, boolean>>(
-    Object.fromEntries(APPLY_PLATFORMS.map(p => [p.name, p.defaultOn]))
+    cachedBrand?.applyPlatforms ?? Object.fromEntries(APPLY_PLATFORMS.map(p => [p.name, p.defaultOn]))
   );
+
+  const selectedIndustry = industries.find(ind => String(ind.id) === String(industryId));
+  const selectedSubIndustry = selectedIndustry?.subIndustries.find(sub => String(sub.id) === String(subIndustryId));
+
+  // Keep the 7-day brand settings cache in sync with every change, not just on Save.
+  useEffect(() => {
+    writeBrandCache({ overlay: S, brandName, phone, overlayText, industryId, subIndustryId, applyPlatforms });
+  }, [S, brandName, phone, overlayText, industryId, subIndustryId, applyPlatforms]);
 
 
   useEffect(() => {
@@ -175,10 +230,22 @@ export default function BrandOverlayPage() {
       (typeof user["brandLogo"] === "string" && user["brandLogo"]) ||
       (typeof user.profilePicture === "string" && user.profilePicture) ||
       "";
+    const backendIndustryId =
+      (typeof user["industryId"] === "string" && user["industryId"]) ||
+      (typeof user["industry_id"] === "string" && user["industry_id"]) ||
+      (typeof user["selectedIndustryId"] === "string" && user["selectedIndustryId"]) ||
+      "";
+    const backendSubIndustryId =
+      (typeof user["subIndustryId"] === "string" && user["subIndustryId"]) ||
+      (typeof user["sub_industry_id"] === "string" && user["sub_industry_id"]) ||
+      (typeof user["selectedSubIndustryId"] === "string" && user["selectedSubIndustryId"]) ||
+      "";
 
     if (backendBrandName) setBrandName(backendBrandName);
     if (backendPhone) setPhone(backendPhone);
     if (backendWebsite) setOverlayText(backendWebsite);
+    if (backendIndustryId) setIndustryId(backendIndustryId);
+    if (backendSubIndustryId) setSubIndustryId(backendSubIndustryId);
     if (backendLogoRaw) {
       setS((prev) => ({
         ...prev,
@@ -227,6 +294,8 @@ export default function BrandOverlayPage() {
         website: overlayText.trim() || "https://shoutlyai.com",
         phone: phone.trim(),
         connectedSocials: [],
+        industryId: industryId || undefined,
+        subIndustryId: subIndustryId || undefined,
       });
 
       const backendUser =
@@ -240,6 +309,8 @@ export default function BrandOverlayPage() {
         brandName: brandName.trim(),
         website: overlayText.trim(),
         phone: phone.trim(),
+        industryId: industryId || undefined,
+        subIndustryId: subIndustryId || undefined,
       };
 
       if (typeof window !== "undefined") {
@@ -556,12 +627,30 @@ export default function BrandOverlayPage() {
                       { label: "Brand Name", val: brandName, set: setBrandName, placeholder: "Your Brand Name" },
                       { label: "Overlay / Tagline", val: overlayText, set: setOverlayText, placeholder: "Website or tagline…", tip: "Optional" },
                       { label: "Phone / Contact", val: phone, set: setPhone, placeholder: "+1 (555) 000-0000" },
-                    ].map((f, i) => (
-                      <div key={f.label} style={{ marginBottom: i < 2 ? 11 : 0 }}>
+                    ].map((f) => (
+                      <div key={f.label} style={{ marginBottom: 11 }}>
                         <div style={{ ...labelStyle }}>{f.label}{f.tip && <span style={{ fontSize: 10.5, color: "#C8CADF", fontWeight: 500, textTransform: "none", letterSpacing: 0, marginLeft: "auto" }}>{f.tip}</span>}</div>
                         <input value={f.val} onChange={e => { f.set(e.target.value); mark(); }} placeholder={f.placeholder} style={fieldStyle} />
                       </div>
                     ))}
+
+                    <div>
+                      <div style={{ ...labelStyle }}>Industry &amp; Sub-Industry</div>
+                      {selectedIndustry ? (
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "10px 12px", borderRadius: 7, border: "1px solid #E4E5EF", background: "#F0F1F8" }}>
+                          <div style={{ minWidth: 0 }}>
+                            <div style={{ fontSize: 13.5, fontWeight: 700, color: "#0D0E1A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{selectedIndustry.name}</div>
+                            {selectedSubIndustry && <div style={{ fontSize: 11.5, color: "#9496B5", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{selectedSubIndustry.name}</div>}
+                          </div>
+                          <Link href="/dashboards/settings?section=industry" style={{ fontSize: 12, fontWeight: 700, color: "#F97316", textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0, fontFamily: "Sora,sans-serif" }}>Update</Link>
+                        </div>
+                      ) : (
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "10px 12px", borderRadius: 7, border: "1.5px dashed #E4E5EF", background: "#F0F1F8" }}>
+                          <div style={{ fontSize: 12.5, color: "#9496B5" }}>{industriesLoading ? "Loading…" : "Not set yet"}</div>
+                          <Link href="/dashboards/settings?section=industry" style={{ fontSize: 12, fontWeight: 700, color: "#F97316", textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0, fontFamily: "Sora,sans-serif" }}>Set up →</Link>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>

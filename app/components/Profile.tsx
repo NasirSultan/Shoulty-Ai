@@ -7,12 +7,8 @@ export default function Profile() {
   
   if (status === "authenticated") {
     // ✅ Use 'as any' to tell TypeScript to ignore type checking
-    const googleToken = (session as any).accessToken;
     const idToken = (session as any).idToken;
-    
-    console.log("Google Token:", googleToken);
-    console.log("ID Token:", idToken);
-    
+
     return (
       <div>
         <p>Welcome {session.user?.email}</p>

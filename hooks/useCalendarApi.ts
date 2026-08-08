@@ -39,7 +39,6 @@ export function useCalendarApi() {
   const handleError = useCallback((error: unknown) => {
     const message = error instanceof Error ? error.message : "An error occurred";
     setState({ loading: false, error: message });
-    console.error("[Calendar API Error]", message);
     return null;
   }, []);
 

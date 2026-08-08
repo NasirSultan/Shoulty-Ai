@@ -81,15 +81,12 @@ export async function POST(request: Request) {
         );
     }
 
-    console.log("📝 [generate/text] Processing request with prompt:", body.prompt.substring(0, 50) + "...");
-
     let upstream: Response | null = null;
     const failures: Array<{ url: string; status?: number; message: string }> = [];
 
     for (const url of UPSTREAM_URLS) {
         for (let attempt = 1; attempt <= 2; attempt += 1) {
             try {
-                console.log(`📝 [generate/text] Forwarding to upstream (${attempt}/2):`, url);
                 const candidate = await tryUpstreamRequest(url, body);
                 if (candidate.ok) {
                     upstream = candidate;
@@ -120,11 +117,9 @@ export async function POST(request: Request) {
 
     if (!upstream) {
         const last = failures[failures.length - 1];
-        console.error("❌ [generate/text] Upstream retries exhausted:", failures);
         return buildFallbackSseResponse(body.prompt || last?.message || "");
     }
 
-    console.log("✅ [generate/text] Streaming response from upstream");
     return new Response(upstream.body, {
         status: 200,
         headers: {

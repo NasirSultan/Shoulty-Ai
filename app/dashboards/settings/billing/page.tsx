@@ -64,7 +64,7 @@ const fmtAmt = (amt: number | null, cur: string | null) => {
 };
 
 export default function BillingPage() {
-  const [currency, setCurrency]     = useState<Currency>("inr");
+  const [currency, setCurrency]     = useState<Currency>("usd");
   const [currentSub, setCurrentSub] = useState<CurrentSub | null>(null);
   const [history, setHistory]       = useState<HistoryRow[]>([]);
   const [loadingSub, setLoadingSub] = useState(true);
@@ -104,6 +104,11 @@ export default function BillingPage() {
   }, []);
 
   const handleBuy = async (billing: "MONTHLY" | "YEARLY") => {
+    const confirmed = window.confirm(
+      "Your payment method will be verified before this plan is activated. Continue?"
+    );
+    if (!confirmed) return;
+
     setBuyLoading(billing);
     try {
       const res = await fetch(`${SUB_BASE}/api/subscription/buy`, {
