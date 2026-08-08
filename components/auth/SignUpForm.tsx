@@ -50,8 +50,7 @@ export default function SignUpForm() {
     const handleGoogleSignIn = async () => {
         try {
             setError("");
-        } catch (err) {
-            console.error("Google sign-in error:", err);
+        } catch {
             setError("Something went wrong with Google sign-in. Please try again.");
         }
     };
@@ -91,8 +90,7 @@ export default function SignUpForm() {
 
             alert(`OTP sent to ${data.email || googleEmail}`);
             router.push(`/verification?email=${encodeURIComponent(googleEmail)}&source=google`);
-        } catch (err) {
-            console.error("Google sign-up failed:", err);
+        } catch {
             setError("Google sign-up failed. Please try again.");
         }
     };
@@ -112,8 +110,7 @@ export default function SignUpForm() {
             // Replace this with real signup logic for your backend
             await new Promise((resolve) => setTimeout(resolve, 1000));
             router.push("/verify-email");
-        } catch (err) {
-            console.error("Signup error:", err);
+        } catch {
             setError("Something went wrong. Please try again.");
             setLoading(false);
         }

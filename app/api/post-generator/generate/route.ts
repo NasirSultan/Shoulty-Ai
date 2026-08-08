@@ -52,7 +52,6 @@ export async function POST(request: Request) {
             msg.includes("aborted") ||
             msg.includes("ECONNRESET")
         ) return;
-        console.error("[Proxy] Stream error:", msg);
     });
 
     return new Response(readable, {

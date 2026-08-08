@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import AdminHeader from '../AdminHeader';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { fetchProfile, setAccountPassword, setUserProfile } from '@/api/authApi';
@@ -28,7 +29,7 @@ interface Industry {
 }
 
 // --- Data ---
-const NAV_GROUPS: Array<{ label: string; items: Array<{ id: string; label: string; icon: string; danger?: boolean }> }> = [
+const NAV_GROUPS: Array<{ label: string; items: Array<{ id: string; label: string; icon: string; danger?: boolean; href?: string }> }> = [
   {
     label: 'Workspace',
     items: [
@@ -41,6 +42,7 @@ const NAV_GROUPS: Array<{ label: string; items: Array<{ id: string; label: strin
     label: 'Organization',
     items: [
       { id: 'industry', label: 'Industry', icon: 'fa-industry' },
+      { id: 'billing', label: 'Billing', icon: 'fa-credit-card', href: '/dashboards/settings/billing' },
       { id: 'security', label: 'Security', icon: 'fa-shield-halved' },
       { id: 'danger', label: 'Danger Zone', icon: 'fa-triangle-exclamation', danger: true },
     ],
@@ -117,6 +119,18 @@ const SettingsPage: React.FC = () => {
     return init;
   });
   const [activeSection, setActiveSection] = useState<string>('profile');
+  const searchParams = useSearchParams();
+
+  // Deep-link support: ?section=industry opens directly on that settings tab.
+  useEffect(() => {
+    const section = searchParams.get('section');
+    const validIds = NAV_GROUPS.flatMap((g) => g.items).filter((item) => !item.href).map((item) => item.id);
+    if (section && validIds.includes(section)) {
+      setActiveSection(section);
+      const target = document.getElementById(`sec-${section}`);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [searchParams]);
   const [profileData, setProfileData] = useState({
     fullName: '',
     displayName: '',
@@ -144,7 +158,7 @@ const SettingsPage: React.FC = () => {
   const [avatarUrl, setAvatarUrl] = useState('');
   const [industries, setIndustries] = useState<Industry[]>([]);
   const [industriesLoading, setIndustriesLoading] = useState(false);
-  const [industrySearch, setIndustrySearch] = useState('');
+  const [industrySelectionLoading, setIndustrySelectionLoading] = useState(true);
   const [expandedIndustryId, setExpandedIndustryId] = useState<string | null>(null);
   const [selectedIndustry, setSelectedIndustry] = useState<{ id: string; name: string } | null>(null);
   const [selectedSubIndustry, setSelectedSubIndustry] = useState<{ id: string; name: string } | null>(null);
@@ -208,7 +222,8 @@ const SettingsPage: React.FC = () => {
 
     // Fetch user's saved selection from API
     const token = authToken();
-    if (!token) return;
+    if (!token) { setIndustrySelectionLoading(false); return; }
+    setIndustrySelectionLoading(true);
     fetch(`${API_BASE_URL}/api/users/me/industry-selection`, {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -224,7 +239,8 @@ const SettingsPage: React.FC = () => {
           setIndustryViewMode(true);
         }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setIndustrySelectionLoading(false));
   }, [activeSection]);
 
   // Refs for modal
@@ -670,7 +686,12 @@ const SettingsPage: React.FC = () => {
   }, []);
 
   // --- Scroll to section ---
-  const goToSection = (sectionId: string, el: HTMLElement) => {
+  const router = useRouter();
+  const goToSection = (sectionId: string, el: HTMLElement, href?: string) => {
+    if (href) {
+      router.push(href);
+      return;
+    }
     setActiveSection(sectionId);
     const target = document.getElementById(`sec-${sectionId}`);
     if (target) {
@@ -810,8 +831,8 @@ const SettingsPage: React.FC = () => {
                     {items.map((item) => (
                       <div
                         key={item.id}
-                        className={`sn-item ${item.danger ? 'danger-nav' : ''} ${activeSection === item.id ? 'active' : ''}`}
-                        onClick={(e) => goToSection(item.id, e.currentTarget)}
+                        className={`sn-item ${item.danger ? 'danger-nav' : ''} ${!item.href && activeSection === item.id ? 'active' : ''}`}
+                        onClick={(e) => goToSection(item.id, e.currentTarget, item.href)}
                       >
                         <i className={`fa-solid ${item.icon}`}></i>{item.label}
                       </div>
@@ -943,21 +964,13 @@ const SettingsPage: React.FC = () => {
                   </div>
                 </div>
                 <div className="sec-body">
-                  {/* Search */}
-                  <div style={{ marginBottom: 14, position: 'relative' }}>
-                    <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--t4)', fontSize: 12, pointerEvents: 'none' }} />
-                    <input
-                      className="field"
-                      type="text"
-                      placeholder="Search industries…"
-                      value={industrySearch}
-                      onChange={e => { setIndustrySearch(e.target.value); }}
-                      style={{ paddingLeft: 30 }}
-                    />
-                  </div>
-
                   {/* ── VIEW MODE: existing selection ── */}
-                  {industryViewMode && selectedIndustry && selectedSubIndustry ? (
+                  {industrySelectionLoading ? (
+                    <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--t4)' }}>
+                      <i className="fa-solid fa-spinner" style={{ fontSize: 22, animation: 'spin 1s linear infinite' }} />
+                      <div style={{ marginTop: 10, fontSize: 13 }}>Loading your industry…</div>
+                    </div>
+                  ) : industryViewMode && selectedIndustry && selectedSubIndustry ? (
                     <>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 16 }}>
                         {/* Selected industry card */}
@@ -1005,7 +1018,7 @@ const SettingsPage: React.FC = () => {
                       </div>
 
                       <button
-                        onClick={() => { setIndustryViewMode(false); setSelectedIndustry(null); setSelectedSubIndustry(null); setIndustrySearch(''); }}
+                        onClick={() => { setIndustryViewMode(false); setSelectedIndustry(null); setSelectedSubIndustry(null); }}
                         style={{
                           width: '100%', padding: '11px', borderRadius: 10,
                           border: '1.5px dashed var(--bdr)', background: 'var(--surf2)',
@@ -1034,7 +1047,6 @@ const SettingsPage: React.FC = () => {
                         <div style={{ maxHeight: 340, overflowY: 'auto', paddingRight: 4, scrollbarWidth: 'thin', marginBottom: 16 }}>
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
                             {industries
-                              .filter(ind => !industrySearch.trim() || ind.name.toLowerCase().includes(industrySearch.toLowerCase()))
                               .map((ind, idx) => (
                                 <div
                                   key={ind.id || ind.name}
@@ -1082,7 +1094,7 @@ const SettingsPage: React.FC = () => {
                               <span style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--brand)' }}>{selectedIndustry.name}</span>
                             </div>
                             <button
-                              onClick={() => { setSelectedIndustry(null); setSelectedSubIndustry(null); setIndustrySearch(''); }}
+                              onClick={() => { setSelectedIndustry(null); setSelectedSubIndustry(null); }}
                               style={{ padding: '9px 13px', borderRadius: 9, border: '1px solid var(--bdr)', background: 'var(--surf2)', color: 'var(--t3)', fontSize: 12, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
                             >
                               <i className="fa-solid fa-rotate-left" style={{ marginRight: 5, fontSize: 10 }} />Change
@@ -1164,6 +1176,8 @@ const SettingsPage: React.FC = () => {
                             showToast(err?.message || 'Failed to save — try a different sub-category', 'red');
                             return;
                           }
+                          // Invalidate the dashboard's cached snapshot so it reflects this selection immediately.
+                          if (typeof window !== 'undefined') sessionStorage.removeItem('shoutly:dashboard:v3');
                           showToast('Industry preferences saved!', 'green');
                           setIndustryViewMode(true);
                         } catch { showToast('Network error — could not save industry', 'red'); }

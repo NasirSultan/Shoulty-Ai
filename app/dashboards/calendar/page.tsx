@@ -15,7 +15,7 @@ import { publishPost, schedulePosts, Platform } from "@/api/autopostApi";
 // ── Types ──────────────────────────────────────────────────────────────────
 type Status = "scheduled" | "draft" | "published";
 type PostType = "image" | "reel" | "festival" | "carousel" | "story";
-type PlatKey = "ig" | "fb" | "li" | "tw" | "tk" | "yt" | "th";
+type PlatKey = "ig" | "fb" | "li" | "tw" | "tk" | "yt" | "th" | "bs" | "pi" | "gb";
 type ViewMode = "7d" | "month";
 type RpTab = "accounts" | "ideas" | "analytics";
 
@@ -46,14 +46,17 @@ type PostUpsert = Omit<Partial<Post>, "id"> & { id: number | null; imgFile?: Fil
 const PLAT_COLORS: Record<PlatKey, string> = {
   ig: "#E1306C", li: "#0A66C2", tw: "#1DA1F2",
   fb: "#1877F2", tk: "#111111", yt: "#FF0000", th: "#555555",
+  bs: "#0085FF", pi: "#BD081C", gb: "#4285F4",
 };
 const PLAT_ICONS: Record<PlatKey, string> = {
   ig: "fa-instagram", li: "fa-linkedin", tw: "fa-x-twitter",
   fb: "fa-facebook", tk: "fa-tiktok", yt: "fa-youtube", th: "fa-threads",
+  bs: "fa-bluesky", pi: "fa-pinterest", gb: "fa-google",
 };
 const PLAT_NAMES: Record<PlatKey, string> = {
   ig: "Instagram", li: "LinkedIn", tw: "Twitter/X",
   fb: "Facebook", tk: "TikTok", yt: "YouTube", th: "Threads",
+  bs: "Bluesky", pi: "Pinterest", gb: "Google Business",
 };
 // `backendKey` maps to GET /api/autopost/connection-status's `platform` field.
 // Platforms with no backendKey have no connect flow yet — always shown as not connected.
@@ -616,6 +619,8 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
 }) {
   const p = state.postId ? posts.find(x => x.id === state.postId) : null;
   const [caption, setCaption] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiResult, setAiResult] = useState("");
   const [dateVal, setDateVal] = useState("");
   const [typeVal, setTypeVal] = useState<PostType>("image");
   const [selPlats, setSelPlats] = useState<PlatKey[]>(["ig"]);
@@ -663,6 +668,7 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
     }
     setShowImagePreviewPopup(false);
     setImageZoom(1); setImagePan({ x: 0, y: 0 }); setIsPanningImage(false);
+    setAiResult(""); setAiLoading(false);
   }, [state.open, state.postId]);
 
   const clampZoom = (value: number) => Math.min(4, Math.max(1, value));
@@ -717,6 +723,51 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
     setCaption(nextCaption);
     if (nextCaption.trim()) {
       setTags(buildRelevantHashtags(nextCaption, img));
+    }
+  };
+
+  const doAiRewrite = async () => {
+    if (!industrySelection?.industryId || !industrySelection?.subIndustryId) {
+      showToast("Select industry/sub-industry before rewrite", "red");
+      return;
+    }
+
+    setAiLoading(true);
+    setAiResult("");
+    let received = false;
+
+    try {
+      await streamGeneratePosts(
+        {
+          industryId: industrySelection.industryId,
+          subIndustryId: industrySelection.subIndustryId,
+          prompt: caption.trim()
+            ? `Rewrite this post for higher engagement: ${caption}`
+            : "Write an engaging social media caption for this post.",
+        },
+        {
+          onChunk: (chunk) => {
+            const text = chunk.post?.text?.trim();
+            if (!text) return;
+            if (received && chunk.post?.source !== "LLM") return;
+
+            setAiResult(text);
+            if (!received || chunk.post?.source === "LLM") {
+              received = true;
+              setAiLoading(false);
+            }
+          },
+          onDone: () => {
+            if (!received) {
+              showToast("No rewrite received from stream", "red");
+            }
+            setAiLoading(false);
+          },
+        }
+      );
+    } catch {
+      setAiLoading(false);
+      showToast("Rewrite failed from API", "red");
     }
   };
 
@@ -792,7 +843,7 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
         {/* Body */}
         <div className="cal-modal-body" style={{ display: "flex", flex: 1, overflow: "hidden" }}>
           {/* Left panel */}
-          <div className="cal-modal-left" style={{ width: 240, flexShrink: 0, background: "#F0F1F9", borderRight: "1px solid #E2E4F0", display: "flex", flexDirection: "column" }}>
+          <div className="cal-modal-left" style={{ width: 260, flexShrink: 0, background: "#F0F1F9", borderRight: "1px solid #E2E4F0", display: "flex", flexDirection: "column" }}>
             <div
               style={{ flex: 1, overflow: "hidden", position: "relative", minHeight: 160, cursor: "pointer" }}
               onClick={() => setShowImagePreviewPopup(true)}
@@ -818,12 +869,12 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
             {/* Platforms */}
             <div style={{ padding: "10px 12px", borderTop: "1px solid #E2E4F0" }}>
               <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: "#8486AB", marginBottom: 6, fontFamily: "Sora,sans-serif" }}>Platforms</div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
-                {(["ig","fb","li","tw","tk","yt","th"] as PlatKey[]).map(pl => {
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(5, minmax(0, 1fr))", gap: 6 }}>
+                {(["ig","fb","li","tw","tk","yt","th","bs","pi","gb"] as PlatKey[]).map(pl => {
                   const on = selPlats.includes(pl);
                   return (
-                    <div key={pl} onClick={() => togglePlat(pl)} style={{ display: "flex", alignItems: "center", gap: 4, padding: "4px 9px", borderRadius: 6, border: `1.5px solid ${on ? PLAT_COLORS[pl] : "#E2E4F0"}`, background: on ? PLAT_COLORS[pl] : "#fff", color: on ? "#fff" : "#8486AB", fontSize: 11.5, fontWeight: 700, cursor: "pointer" }}>
-                      <i className={`fa-brands ${PLAT_ICONS[pl]}`} style={{ fontSize: 10 }} />{pl.toUpperCase()}
+                    <div key={pl} title={PLAT_NAMES[pl]} onClick={() => togglePlat(pl)} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, padding: "6px 4px", borderRadius: 6, border: `1.5px solid ${on ? PLAT_COLORS[pl] : "#E2E4F0"}`, background: on ? PLAT_COLORS[pl] : "#fff", color: on ? "#fff" : "#8486AB", fontSize: 11.5, fontWeight: 700, cursor: "pointer", overflow: "hidden" }}>
+                      <i className={`fa-brands ${PLAT_ICONS[pl]}`} style={{ fontSize: 10, flexShrink: 0 }} />{pl.toUpperCase()}
                     </div>
                   );
                 })}
@@ -832,6 +883,28 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
           </div>
           {/* Form */}
           <div className="cal-modal-form" style={{ flex: 1, overflowY: "auto", padding: "16px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
+            {/* AI Rewrite */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 7, background: "linear-gradient(135deg,#EEEEFF,rgba(236,233,255,.4))", border: "1px solid #E0E0FA" }}>
+              <i className="fa-solid fa-wand-magic-sparkles" style={{ color: "#F97316", fontSize: 14, flexShrink: 0 }} />
+              <div style={{ flex: 1, fontSize: 12.5, color: "#4B4D6B" }}>
+                <strong style={{ color: "#F97316" }}>AI ready</strong> — {caption.trim() ? "Rewrite this caption for your brand voice" : "Generate a caption for this post"}
+              </div>
+              <button onClick={doAiRewrite} disabled={aiLoading} style={{ display: "flex", alignItems: "center", gap: 5, padding: "6px 13px", borderRadius: 7, background: "linear-gradient(115deg,#F97316,#EA580C)", color: "#fff", fontSize: 12, fontWeight: 700, cursor: aiLoading ? "default" : "pointer", border: "none", fontFamily: "Sora,sans-serif", flexShrink: 0, opacity: aiLoading ? 0.7 : 1 }}>
+                {aiLoading
+                  ? <><i className="fa-solid fa-spinner" style={{ fontSize: 11, animation: "spin 1s linear infinite" }} /> Working…</>
+                  : <><i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 11 }} /> {caption.trim() ? "Rewrite" : "Generate"}</>}
+              </button>
+            </div>
+            {(aiLoading || aiResult) && (
+              <div style={{ background: "#EEEEFF", border: "1px solid #E0E0FA", borderRadius: 7, padding: "11px 13px", fontSize: 13.5, color: "#0B0C1A", lineHeight: 1.7 }}>
+                {aiLoading ? "Rewriting for your brand…" : (
+                  <>
+                    <div>{aiResult}</div>
+                    <button onClick={() => { applyCaptionWithRelatedTags(aiResult); setAiResult(""); showToast("✦ Caption applied!", "brand"); }} style={{ marginTop: 8, padding: "5px 12px", borderRadius: 6, background: "linear-gradient(115deg,#F97316,#EA580C)", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Sora,sans-serif", border: "none" }}>Use this →</button>
+                  </>
+                )}
+              </div>
+            )}
             {/* Caption */}
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: "#8486AB", fontFamily: "Sora,sans-serif", marginBottom: 6 }}>Caption</div>
@@ -1233,8 +1306,7 @@ export default function CalendarPage() {
           .sort((a, b) => a.date.getTime() - b.date.getTime());
         setPosts(mapped);
         setNextId(Math.max(10000, ...mapped.map((post) => post.id + 1)));
-      } catch (error) {
-        console.warn("Failed to load calendar plan from backend:", error);
+      } catch {
       } finally {
         setConnLoading(false);
       }
@@ -1262,10 +1334,6 @@ export default function CalendarPage() {
   const [planPostTime, setPlanPostTime] = useState("10:00");
   const [planLoading, setPlanLoading] = useState(false);
   const planTimeRef = useRef<HTMLInputElement>(null);
-  const connCarouselRef = useRef<HTMLDivElement>(null);
-  const scrollConnCarousel = (dir: 1 | -1) => {
-    connCarouselRef.current?.scrollBy({ left: dir * 240, behavior: "smooth" });
-  };
   const weekRowRef = useRef<HTMLDivElement>(null);
   const [weekActiveCol, setWeekActiveCol] = useState(0);
   const scrollWeekRow = (dir: 1 | -1) => {
@@ -1355,7 +1423,7 @@ export default function CalendarPage() {
               status: freshStatus ?? p.status,
             } : p));
           })
-          .catch((error) => console.warn("Failed to refresh post detail from backend:", error));
+          .catch(() => {});
       }
     }
   };
@@ -1401,8 +1469,7 @@ export default function CalendarPage() {
       }, token, imgFile ?? undefined);
       const created = res.post as { postId?: string; media?: { file?: string } } | undefined;
       return { backendId: created?.postId, imageUrl: created?.media?.file };
-    } catch (err) {
-      console.warn("Failed to sync new post to backend:", err);
+    } catch {
       if (!opts?.silent) {
         showToast("Saved locally, but backend sync failed.", "amber");
       }
@@ -1445,8 +1512,7 @@ export default function CalendarPage() {
             if (data.imgFile && updatedMedia?.file) {
               setPosts(prev => prev.map(p => p.id === data.id ? { ...p, img: updatedMedia.file! } : p));
             }
-          } catch (err) {
-            console.warn("Failed to sync post update to backend:", err);
+          } catch {
             showToast("Updated locally, but backend sync failed.", "amber");
           }
         }
@@ -1500,8 +1566,7 @@ export default function CalendarPage() {
               mediaUrls: savedPost.img ? [savedPost.img] : undefined,
             }]
           });
-        } catch (err) {
-          console.error("Auto-scheduling failed:", err);
+        } catch {
           showToast("Saved locally, but auto-scheduling failed.", "amber");
         }
       }
@@ -1510,7 +1575,6 @@ export default function CalendarPage() {
     closeModal();
   };
   const publishPostNow = async (data: PostUpsert) => {
-    console.log(data.backendId);
     if (!data.backendId) {
       throw new Error("This post hasn't been synced to the server yet, so it can't be published.");
     }
@@ -1689,14 +1753,10 @@ export default function CalendarPage() {
     try {
       const token = (typeof window !== "undefined" ? localStorage.getItem("shoutly_token") : null) ?? "";
 
-      console.log("📤 [createMonthlyPlan] request:", { postTime: planPostTime });
-
       const response = await createMonthlyPlan(
         { postTime: planPostTime },
         token
       );
-
-      console.log("📥 [createMonthlyPlan] response:", response);
 
       if (!response.success) {
         const msg = response.message || "";
@@ -1751,7 +1811,6 @@ export default function CalendarPage() {
       setOffset(0);
       showToast(`✅ Plan created and ${mappedPosts.length} posts added to calendar`, "green");
     } catch (error) {
-      console.log("❌ [createMonthlyPlan] error:", error);
       // ── Handle 401 Unauthorized (session expired) ────────────────────────────
       const statusCode = (error as any)?.statusCode;
       if (statusCode === 401 || (error instanceof Error && error.message.includes("Session expired"))) {
@@ -1889,22 +1948,10 @@ export default function CalendarPage() {
           }
         }
 
-        .cal-connected-grid {
-          scrollbar-width: none !important;
-        }
-        .cal-connected-grid::-webkit-scrollbar {
-          display: none !important;
-        }
-        .cal-connected-item {
-          width: 220px !important;
-        }
         .cal-week-arrow, .cal-week-dots {
           display: none;
         }
         @media (max-width: 767px) {
-          .cal-connected-arrows {
-            display: none !important;
-          }
           .cal-week-arrow {
             display: flex !important;
             position: absolute !important;
@@ -2006,8 +2053,7 @@ export default function CalendarPage() {
             gap: 6px !important;
           }
           .cal-connected-item {
-            width: 78% !important;
-            scroll-snap-align: start !important;
+            padding: 7px 9px !important;
           }
 
           .cal-stats-bar {
@@ -2108,9 +2154,19 @@ export default function CalendarPage() {
             showBell={false}
             showHelp={false}
             actionButton={
-              <button onClick={() => openModal(null)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 15px", borderRadius: 7, background: "linear-gradient(115deg,#F97316,#EA580C)", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 14px rgba(249,115,22,.4)" }}>
-                <i className="fa-solid fa-plus" style={{ fontSize: 11 }} /> New Post
-              </button>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <button
+                  onClick={() => router.push("/dashboards/settings?section=industry")}
+                  title="Change your industry & niche"
+                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 7, background: "#fff", color: "#374151", fontSize: 13, fontWeight: 700, cursor: "pointer", border: "1px solid #E2E4F0", fontFamily: "Sora,sans-serif" }}
+                >
+                  <i className="fa-solid fa-industry" style={{ fontSize: 11, color: "#F97316" }} />
+                  {industrySelection?.subIndustryName || "Set Industry"}
+                </button>
+                <button onClick={() => openModal(null)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 15px", borderRadius: 7, background: "linear-gradient(115deg,#F97316,#EA580C)", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", border: "none", fontFamily: "Sora,sans-serif", boxShadow: "0 4px 14px rgba(249,115,22,.4)" }}>
+                  <i className="fa-solid fa-plus" style={{ fontSize: 11 }} /> New Post
+                </button>
+              </div>
             }
           />
 
@@ -2178,38 +2234,30 @@ export default function CalendarPage() {
                   {CONN_PLATS.filter(p => p.backendKey && connectedPlats[p.backendKey]).length} of {CONN_PLATS.length} connected
                 </span>
               )}
-              <div className="cal-connected-arrows" style={{ display: "flex", alignItems: "center", gap: 6, marginLeft: "auto" }}>
-                <div onClick={() => scrollConnCarousel(-1)} style={{ width: 24, height: 24, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", color: "#3D3F60", cursor: "pointer", border: "1px solid #E2E4F0", background: "#fff", fontSize: 10 }}>
-                  <i className="fa-solid fa-chevron-left" />
-                </div>
-                <div onClick={() => scrollConnCarousel(1)} style={{ width: 24, height: 24, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", color: "#3D3F60", cursor: "pointer", border: "1px solid #E2E4F0", background: "#fff", fontSize: 10 }}>
-                  <i className="fa-solid fa-chevron-right" />
-                </div>
-              </div>
             </div>
             {connLoading ? (
-              <div className="cal-connected-grid" style={{ display: "flex", gap: 8, overflowX: "auto" }}>
+              <div className="cal-connected-grid" style={{ display: "flex", flexWrap: "nowrap", gap: 8 }}>
                 {Array.from({ length: 10 }).map((_, i) => (
-                  <div key={i} className="skeleton cal-connected-item" style={{ height: 46 }} />
+                  <div key={i} className="skeleton cal-connected-item" style={{ height: 40, flex: "1 1 0", minWidth: 0 }} />
                 ))}
               </div>
             ) : (
-              <div ref={connCarouselRef} className="cal-connected-grid" style={{ display: "flex", gap: 8, overflowX: "auto", scrollSnapType: "x proximity", scrollBehavior: "smooth" }}>
+              <div className="cal-connected-grid" style={{ display: "flex", flexWrap: "nowrap", gap: 8 }}>
                 {CONN_PLATS.map(p => {
                   const connected = Boolean(p.backendKey && connectedPlats[p.backendKey]);
                   return (
                     <div key={p.id}
                       className="cal-connected-item"
-                      style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 12px", borderRadius: 10, border: `1.5px solid ${connected ? "#10B981" : "#E4E5EF"}`, background: connected ? "rgba(16,185,129,.05)" : "#fff", cursor: "pointer", transition: "all .15s", flexShrink: 0, scrollSnapAlign: "start" }}
+                      title={p.name}
+                      style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, flex: "1 1 0", minWidth: 0, padding: "9px 8px", borderRadius: 10, border: `1.5px solid ${connected ? "#10B981" : "#E4E5EF"}`, background: connected ? "rgba(16,185,129,.05)" : "#fff", cursor: "pointer", transition: "all .15s" }}
                       onMouseEnter={e => { if (!connected) (e.currentTarget as HTMLDivElement).style.borderColor = "#F97316"; }}
                       onMouseLeave={e => { if (!connected) (e.currentTarget as HTMLDivElement).style.borderColor = "#E4E5EF"; }}>
                       <div style={{ width: 28, height: 28, borderRadius: "50%", background: p.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, flexShrink: 0 }}>
                         <i className={`fa-brands ${p.icon}`} />
                       </div>
-                      <span style={{ fontSize: 12.5, fontWeight: 600, color: connected ? "#0D0E1A" : "#4B4D6B", flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: "Sora,sans-serif" }}>{p.name}</span>
                       {connected
                         ? <i className="fa-solid fa-check" style={{ color: "#10B981", fontSize: 11, flexShrink: 0 }} />
-                        : <span style={{ fontSize: 10.5, color: "#9496B5", fontWeight: 700, flexShrink: 0, fontFamily: "Sora,sans-serif" }}>Connect</span>
+                        : <span style={{ fontSize: 10.5, color: "#9496B5", fontWeight: 700, fontFamily: "Sora,sans-serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", minWidth: 0 }}>Connect</span>
                       }
                     </div>
                   );

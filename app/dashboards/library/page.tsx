@@ -613,8 +613,7 @@ function ComposerModal({ card, onClose, showToast, industryId, subIndustryId }: 
           },
         }
       );
-    } catch (error) {
-      console.error("Library rewrite stream failed:", error);
+    } catch {
       setAiLoading(false);
       showToast("Rewrite failed from API", "red");
     }

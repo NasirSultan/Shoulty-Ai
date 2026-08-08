@@ -16,7 +16,6 @@ calendarClient.interceptors.request.use((config) => {
     const token = localStorage.getItem("shoutly_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log("📅 Token attached to request");
     }
   }
   return config;
@@ -197,21 +196,16 @@ export async function getUserPlan(token?: string): Promise<GetPlanResponse> {
 
   if (!authToken) {
     const error = "Authentication token is required";
-    console.error("❌ getUserPlan:", error);
     throw new Error(error);
   }
 
   try {
-    console.log("📋 getUserPlan: Fetching from", `${BASE_URL}/api/calendar/plan`);
-    console.log("📋 getUserPlan: Token present:", authToken ? "✓" : "✗");
-
     const response = await calendarClient.get("/api/calendar/plan", {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
     });
 
-    console.log("✅ getUserPlan: Success", response.data);
     return response.data as GetPlanResponse;
   } catch (error: any) {
     // ── Handle 401 Unauthorized (session expired) ──────────────────────────────
@@ -222,7 +216,6 @@ export async function getUserPlan(token?: string): Promise<GetPlanResponse> {
     }
 
     const errorMsg = error.response?.data?.message || error.message || "Failed to fetch plan";
-    console.error("❌ getUserPlan error:", errorMsg, error.response?.data);
     const err = new Error(errorMsg);
     (err as any).statusCode = error.response?.status || 500;
     throw err;

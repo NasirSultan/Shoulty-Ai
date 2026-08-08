@@ -12,8 +12,6 @@ export default function AdminLoginPage() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        console.log({ email, password });
-
         // Navigate to dashboard page
         router.push("/dashboard");
     };

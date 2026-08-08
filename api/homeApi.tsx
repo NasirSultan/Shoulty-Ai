@@ -84,7 +84,6 @@ export const fetchPosts = async (page: number = 1, subIndustryId?: string): Prom
     const params = new URLSearchParams({ page: String(page) });
     if (subIndustryId) params.set("subIndustryId", subIndustryId);
     const url = `${API_ENDPOINTS.posts}?${params.toString()}`;
-    console.log("📋 Fetching posts:", url);
     const res = await fetch(url, {
       method: "GET",
       headers: {
@@ -94,10 +93,9 @@ export const fetchPosts = async (page: number = 1, subIndustryId?: string): Prom
       },
       cache: "no-store",
     });
-    if (!res.ok) { console.error(`❌ Posts API ${res.status}`); return empty; }
+    if (!res.ok) { return empty; }
     return await res.json() as PostsResponse;
-  } catch (err) {
-    console.error("❌ fetchPosts failed:", err);
+  } catch {
     return empty;
   }
 };
@@ -110,7 +108,6 @@ export const fetchImages = async (subIndustryId?: string | null) => {
         } else {
             url += "?allowRandomPreview=1";
         }
-        console.log("📸 Fetching images from:", url);
         const res = await fetch(url, {
             method: "GET",
             headers: {
@@ -123,25 +120,20 @@ export const fetchImages = async (subIndustryId?: string | null) => {
 
         if (!res.ok) {
             const errorText = await res.text().catch(() => "Unknown error");
-            console.error(`❌ API Error ${res.status}:`, errorText);
             if (res.status === 400) {
-                console.warn("📸 [fetchImages] Invalid subIndustryId, returning empty array");
                 return [];
             }
             throw new Error(`HTTP error! status: ${res.status} - ${errorText}`);
         }
 
         const data = await res.json();
-        console.log("📸 Images response:", data);
         const images = Array.isArray(data)
             ? data
             : Array.isArray(data.images)
             ? data.images
             : data.data || [];
-        console.log("📸 Processed images:", images);
         return images;
-    } catch (error) {
-        console.error("❌ Failed to fetch images:", error);
+    } catch {
         // Return empty array on error instead of throwing
         return [];
     }
@@ -167,7 +159,6 @@ export const fetchIndustries = async () => {
     const requestPromise = (async () => {
         try {
             const url = API_ENDPOINTS.industries;
-            console.log("🏢 Fetching industries from:", url);
 
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort("timeout"), 12000);
@@ -192,7 +183,7 @@ export const fetchIndustries = async () => {
             industriesMemoryCache = { data: normalized, timestamp: Date.now() };
             writeIndustriesToSession(normalized);
             return normalized;
-        } catch (error: any) {
+        } catch {
             if (industriesMemoryCache?.data?.length) {
                 return industriesMemoryCache.data;
             }
@@ -202,11 +193,6 @@ export const fetchIndustries = async () => {
                 return staleSession.data;
             }
 
-            if (error.name === "AbortError" || error === "timeout") {
-                console.warn("Industry fetch timed out or was aborted.");
-            } else {
-                console.error("Industry fetch failed:", error);
-            }
             return [];
         } finally {
             industriesInFlight = null;

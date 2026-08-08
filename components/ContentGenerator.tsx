@@ -31,8 +31,7 @@ export default function ContentGenerator({
         try {
             const data = await fetchImages(selectedSubIndustry);
             setImages(data);
-        } catch (error) {
-            console.error('Error fetching images:', error);
+        } catch {
         } finally {
             setLoadingImages(false);
         }

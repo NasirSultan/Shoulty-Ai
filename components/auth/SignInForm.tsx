@@ -39,7 +39,6 @@ export default function SignInForm() {
                     ? err.message
                     : "Google sign-in failed. Please try again."
             );
-            console.error("Google login failed:", err);
         }
     };
 
@@ -90,7 +89,7 @@ export default function SignInForm() {
                     <div className="w-full flex justify-center mb-8">
                         <GoogleSignInButton
                             onSuccess={handleGoogleSuccess}
-                            onError={() => console.error("Google login failed")}
+                            onError={() => {}}
                         />
                     </div>
 
