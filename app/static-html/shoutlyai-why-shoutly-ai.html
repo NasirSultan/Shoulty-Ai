@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Why Shoutly AI &mdash; What Makes It Different from a Scheduler</title>
+<meta name="description" content="Shoutly AI isn't a scheduler. Schedulers move content you already made. Shoutly AI makes the content, brands it, schedules it, publishes it, and improves it automatically. Here's the difference.">
+<link rel="canonical" href="https://shoutlyai.com/why-shoutly-ai">
+<meta property="og:title" content="Why Shoutly AI &mdash; Not Just Another Scheduler">
+<meta property="og:description" content="Buffer and Hootsuite move content. Shoutly AI creates it, brands it, schedules it, and improves it. See the real difference.">
+<meta property="og:url" content="https://shoutlyai.com/why-shoutly-ai">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shoutly AI">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link rel="stylesheet" href="/css/site-nav.css">
+<link rel="stylesheet" href="/css/site-footer.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:#0f0f0f;-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+:root{
+  --p:#f97316;--pg:linear-gradient(135deg,#f97316,#ea580c);
+  --dark:#08021a;--glow:rgba(249,115,22,.28);
+  --ink:#0f0f0f;--ink2:#262626;--ink3:#525252;--ink4:#a3a3a3;
+  --surface:#f7f7fb;--border:#e5e4f0;--border2:#ccc9ea;
+  --red:#dc2626;--green:#16a34a;
+  --max:1200px;--r:8px;--r2:12px;--r3:16px;--r4:22px;--r5:30px;
+}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:62px;display:flex;align-items:center;transition:box-shadow .2s}
+.nav.scrolled{box-shadow:0 1px 14px rgba(0,0,0,.07)}
+.nav-inner{display:flex;align-items:center;width:100%;max-width:var(--max);margin:0 auto;padding:0 28px;gap:8px}
+.nav-logo{display:flex;align-items:center;gap:9px;font-size:15.5px;font-weight:800;color:var(--ink)}
+.nav-mark{width:32px;height:32px;border-radius:9px;background:var(--pg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-mark svg{width:16px;height:16px;fill:#fff}
+.feat-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#fff7ed,#ffedd5);border:1px solid #fed7aa;color:var(--p);border-radius:100px;padding:3px 10px;font-size:11.5px;font-weight:700;margin-left:6px}
+.nav-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:600;border-radius:var(--r2);padding:9px 20px;transition:all .15s;cursor:pointer;border:1.5px solid transparent;white-space:nowrap}
+.btn-ghost{color:var(--ink2);border-color:var(--border2)}.btn-ghost:hover{background:var(--surface)}
+.btn-primary{background:var(--pg);color:#fff;border:none;box-shadow:0 2px 10px var(--glow)}.btn-primary:hover{opacity:.88;transform:translateY(-1px)}
+.btn-white{background:#fff;color:var(--p);font-weight:700;border:none}.btn-white:hover{background:#fff7ed;transform:translateY(-1px)}
+.btn-wh-ghost{background:transparent;color:rgba(255,255,255,.8);border:1.5px solid rgba(255,255,255,.3)}.btn-wh-ghost:hover{border-color:rgba(255,255,255,.65);color:#fff}
+.btn-lg{padding:13px 28px;font-size:15.5px;font-weight:700;border-radius:var(--r3)}
+.btn-xl{padding:15px 34px;font-size:16px;font-weight:700;border-radius:var(--r3)}
+.btn-sm{padding:7px 16px;font-size:13px}
+
+/* HERO */
+.hero{background:var(--dark);padding:88px 0 80px;position:relative;overflow:hidden;text-align:center}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none}
+.hero-orb-1{width:700px;height:700px;background:radial-gradient(circle,rgba(249,115,22,.45),transparent 68%);top:-280px;left:-160px}
+.hero-orb-2{width:500px;height:500px;background:radial-gradient(circle,rgba(234,88,12,.26),transparent 65%);top:-150px;right:-100px}
+.hero-inner{position:relative;z-index:1;max-width:700px;margin:0 auto;padding:0 28px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(249,115,22,.16);border:1px solid rgba(249,115,22,.38);border-radius:100px;padding:5px 14px 5px 9px;font-size:12.5px;font-weight:600;color:#fdba74;margin-bottom:24px}
+.ey-dot{width:7px;height:7px;border-radius:50%;background:#fb923c;animation:pulse 2.2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+.hero-h1{font-family:'Inter Tight',sans-serif;font-size:clamp(38px,6vw,72px);font-weight:900;letter-spacing:-3.5px;line-height:.93;color:#fff;margin-bottom:24px}
+.hero-h1 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(15px,1.8vw,20px);color:rgba(255,255,255,.55);line-height:1.75;margin:0 auto 42px;max-width:580px}
+.hero-ctas{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center}
+
+/* THE ONE-LINE TRUTH */
+.truth-section{padding:64px 0;background:var(--surface);border-bottom:1px solid var(--border)}
+.truth-card{background:#fff;border:1px solid var(--border);border-radius:var(--r5);padding:48px;text-align:center;max-width:860px;margin:0 auto;box-shadow:0 4px 32px rgba(249,115,22,.06)}
+.truth-pre{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--ink4);margin-bottom:18px}
+.truth-h{font-family:'Inter Tight',sans-serif;font-size:clamp(22px,3vw,36px);font-weight:900;letter-spacing:-1.5px;color:var(--ink);line-height:1.15;margin-bottom:22px}
+.truth-h em{color:var(--p);font-style:normal}
+.truth-row{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;margin-top:28px}
+.truth-col{background:var(--surface);border:1px solid var(--border);border-radius:var(--r3);padding:18px 22px;text-align:left}
+.truth-col.bad{border-color:#fecaca;background:#fef2f2}
+.truth-col.good{border-color:#bbf7d0;background:#f0fdf4}
+.truth-col-label{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;margin-bottom:8px}
+.truth-col.bad .truth-col-label{color:var(--red)}
+.truth-col.good .truth-col-label{color:var(--green)}
+.truth-col-text{font-size:14px;color:var(--ink2);line-height:1.65}
+.truth-vs{font-size:13px;font-weight:800;color:var(--ink4);flex-shrink:0}
+
+/* SECTIONS */
+.section{padding:88px 0}
+.section-alt{background:var(--surface)}
+.sec-ey{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--p);margin-bottom:10px;display:block}
+.sec-h2{font-family:'Inter Tight',sans-serif;font-size:clamp(26px,3.3vw,44px);font-weight:900;letter-spacing:-1.8px;color:var(--ink);line-height:1.03;margin-bottom:14px}
+.sec-p{font-size:17px;color:var(--ink2);line-height:1.72;max-width:600px}
+.center{text-align:center}.center .sec-p{margin:0 auto}
+
+/* SCHEDULER VS SHOUTLY COMPARISON TABLE */
+.comp-table{width:100%;border-collapse:collapse;border-radius:var(--r4);overflow:hidden;border:1px solid var(--border)}
+.ct-head th{padding:14px 22px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;text-align:left;border-bottom:1px solid var(--border)}
+.ct-head .th-feat{background:var(--surface);color:var(--ink3)}
+.ct-head .th-sched{background:#fef2f2;color:var(--red)}
+.ct-head .th-shoutly{background:var(--pg);color:#fff}
+.ct-head th:not(:last-child){border-right:1px solid var(--border)}
+.comp-table tbody tr:hover td{background:#fff9f5}
+.comp-table td{padding:14px 22px;font-size:14px;border-bottom:1px solid var(--border);vertical-align:middle}
+.comp-table tr:last-child td{border-bottom:none}
+.comp-table td:not(:last-child){border-right:1px solid var(--border)}
+.td-feat{font-weight:700;color:var(--ink);background:#fff}
+.td-no{color:#dc2626;font-weight:700;font-size:17px;text-align:center;background:#fef2f2}
+.td-yes{color:#16a34a;font-weight:700;font-size:17px;text-align:center;background:#f0fdf4}
+.td-partial{color:#d97706;font-weight:700;font-size:13px;text-align:center;background:#fffbeb}
+
+/* REAL DIFFERENCE CARDS */
+.diff-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.diff-item{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:var(--r4);overflow:hidden;border:1px solid var(--border)}
+.diff-side{padding:24px}
+.diff-side.before{background:#fef2f2;border-right:1px solid #fecaca}
+.diff-side.after{background:#f0fdf4}
+.ds-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.ds-label.red{color:var(--red)}
+.ds-label.green{color:var(--green)}
+.ds-scenario{font-size:13px;color:var(--ink2);line-height:1.65}
+.ds-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:8px}
+
+/* THE 5 REASONS */
+.reasons-grid{display:grid;grid-template-columns:1fr;gap:0}
+.reason-item{display:grid;grid-template-columns:72px 1fr;gap:0;border-bottom:1px solid var(--border);padding:36px 0}
+.reason-item:last-child{border-bottom:none}
+.reason-num{font-family:'Inter Tight',sans-serif;font-size:56px;font-weight:900;color:var(--border);letter-spacing:-3px;line-height:1;padding-top:4px}
+.reason-body{padding-left:24px}
+.reason-title{font-family:'Inter Tight',sans-serif;font-size:clamp(22px,2.5vw,30px);font-weight:900;letter-spacing:-1px;color:var(--ink);margin-bottom:10px;line-height:1.1}
+.reason-desc{font-size:15.5px;color:var(--ink3);line-height:1.75;max-width:640px;margin-bottom:16px}
+.reason-proof{display:flex;gap:8px;flex-wrap:wrap}
+.rp-chip{font-size:12px;font-weight:700;padding:4px 12px;border-radius:100px;background:var(--surface);border:1px solid var(--border);color:var(--ink3)}
+
+/* WHO SCHEDULERS ARE FOR */
+.who-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.who-card{border-radius:var(--r4);overflow:hidden;border:1px solid var(--border)}
+.who-head{padding:14px 22px;font-size:14px;font-weight:800;display:flex;align-items:center;gap:10px}
+.who-body{padding:16px 22px;display:flex;flex-direction:column;gap:9px;background:#fff}
+.who-row{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--ink3);line-height:1.55}
+
+/* SWITCHER TESTIMONY */
+.switch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.switch-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:28px;display:flex;flex-direction:column;transition:all .18s}
+.switch-card:hover{border-color:#fed7aa;box-shadow:0 6px 24px rgba(249,115,22,.07);transform:translateY(-2px)}
+.sc-from{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink4);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.sc-from-arrow{font-size:11px;color:var(--green)}
+.sc-quote{font-size:14px;color:var(--ink2);line-height:1.76;font-style:italic;flex:1;margin-bottom:18px}
+.sc-stars{color:#f59e0b;font-size:13px;letter-spacing:2px;margin-bottom:8px}
+.sc-author{display:flex;align-items:center;gap:11px}
+.sc-av{width:38px;height:38px;border-radius:50%;background:var(--pg);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0}
+.sc-name{font-size:13px;font-weight:700;color:var(--ink);display:block}
+.sc-biz{font-size:11.5px;color:var(--ink4)}
+
+/* FAQ */
+.faq-list{border:1px solid var(--border);border-radius:var(--r4);overflow:hidden;max-width:760px;margin:40px auto 0}
+.faq-item{border-bottom:1px solid var(--border)}.faq-item:last-child{border-bottom:none}
+.faq-q{width:100%;padding:18px 22px;background:#fff;border:none;display:flex;align-items:center;justify-content:space-between;text-align:left;cursor:pointer;font-size:15px;font-weight:600;color:var(--ink);gap:14px;transition:background .14s;font-family:inherit}
+.faq-q:hover{background:var(--surface)}
+.faq-arr{width:24px;height:24px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--ink4);flex-shrink:0;transition:all .22s}
+.faq-item.open .faq-arr{background:var(--pg);border-color:transparent;color:#fff;transform:rotate(45deg)}
+.faq-a{display:none;padding:0 22px 18px;font-size:14.5px;color:var(--ink2);line-height:1.75;background:#fff}
+.faq-item.open .faq-a{display:block}
+
+/* CTA */
+.cta-section{background:var(--dark);padding:96px 0;text-align:center;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 65% at 50% 110%,rgba(249,115,22,.3) 0%,transparent 70%);pointer-events:none}
+.cta-section h2{font-family:'Inter Tight',sans-serif;font-size:clamp(30px,5vw,56px);font-weight:900;letter-spacing:-2.5px;line-height:1.03;color:#fff;margin-bottom:16px;position:relative;z-index:1}
+.cta-section h2 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-section p{font-size:17.5px;color:rgba(255,255,255,.6);line-height:1.7;max-width:520px;margin:0 auto 38px;position:relative;z-index:1}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:22px;position:relative;z-index:1}
+.cta-trust{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,.4);position:relative;z-index:1}
+.ct{display:flex;align-items:center;gap:5px}
+.ct svg{width:13px;height:13px;stroke:rgba(249,115,22,.9);stroke-width:2.5;fill:none}
+
+/* FOOTER */
+.footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.07);padding:32px 0}
+.ft-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ft-logo{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:800;color:rgba(255,255,255,.6)}
+.ft-links{display:flex;gap:18px;flex-wrap:wrap}
+.ft-links a{font-size:13px;color:rgba(255,255,255,.3);transition:color .14s}.ft-links a:hover{color:rgba(255,255,255,.65)}
+.ft-copy{font-size:12px;color:rgba(255,255,255,.2);margin-top:14px}
+
+@media(max-width:1024px){
+  .diff-grid{grid-template-columns:1fr}
+  .who-grid{grid-template-columns:1fr}
+  .switch-grid{grid-template-columns:1fr 1fr}
+  .truth-row{grid-template-columns:1fr;gap:12px}
+  .truth-vs{display:none}
+}
+@media(max-width:720px){
+  .nav-right .btn-ghost{display:none}
+  .diff-item{grid-template-columns:1fr}
+  .diff-side.before{border-right:none;border-bottom:1px solid #fecaca}
+  .switch-grid{grid-template-columns:1fr}
+  .reason-item{grid-template-columns:1fr}
+  .reason-num{font-size:36px;margin-bottom:6px}
+  .reason-body{padding-left:0}
+  .section{padding:60px 0}
+  .wrap{padding:0 18px}
+}
+@media(prefers-reduced-motion:reduce){.ey-dot{animation:none}}
+[data-r]{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}
+[data-r].vis{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="/" class="sh-logo"><img src="/images/logo-master.png" alt="Shoutly AI logo"></a>
+    <nav class="sh-links"><div class="sh-item" data-menu="home"><a href="/" class="sh-link" aria-haspopup="true" aria-expanded="false">Home<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></a></div><div class="sh-item" data-menu="solutions"><a href="#" class="sh-link" aria-haspopup="true" aria-expanded="false" data-toggle-only="true">Solutions<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></a></div><div class="sh-item" data-menu="features"><a href="#" class="sh-link" aria-haspopup="true" aria-expanded="false" data-toggle-only="true">Features<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></a></div><div class="sh-item" data-menu="compare"><a href="#" class="sh-link" aria-haspopup="true" aria-expanded="false" data-toggle-only="true">Compare<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></a></div><div class="sh-item" data-menu="pricing"><a href="/pricing" class="sh-link" aria-haspopup="true" aria-expanded="false">Pricing<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></a></div><div class="sh-item" data-menu="company"><a href="#" class="sh-link" aria-haspopup="true" aria-expanded="false" data-toggle-only="true">Company<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></a></div></nav>
+    <div class="sh-right">
+      <div class="sh-auth-guest" id="sh-auth-guest">
+        <a href="/sign-in" class="sh-login">Log in</a>
+        <a href="/sign-up" class="sh-start">Start Free Trial</a>
+      </div>
+      <div class="sh-profile" id="sh-profile" style="display:none">
+        <button type="button" class="sh-profile-btn" id="sh-profile-btn" aria-haspopup="true" aria-expanded="false">
+          <span class="sh-avatar" id="sh-avatar">U</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#6b7280;flex-shrink:0"><path d="m6 9 6 6 6-6"></path></svg>
+        </button>
+        <div class="sh-profile-menu" id="sh-profile-menu">
+          <div class="sh-profile-info" id="sh-profile-info">
+            <p class="sh-profile-name" id="sh-profile-name"></p>
+            <p class="sh-profile-email" id="sh-profile-email"></p>
+          </div>
+          <a href="/dashboards/settings" class="sh-profile-item">Profile</a>
+          <a href="/dashboards" class="sh-profile-item">Dashboard</a>
+          <button type="button" class="sh-profile-item sh-signout" id="sh-signout">Sign Out</button>
+        </div>
+      </div>
+    </div>
+    <button class="sh-burger" id="sh-burger-btn" aria-label="Open menu" aria-expanded="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+  </div>
+  <div class="sh-mega-wrap"><div class="sh-panel" data-menu="home"><div class="mp-inner"><div class="mp-cols" style="grid-template-columns:repeat(1,minmax(0,1fr))"><div class="mp-col"><div class="mp-col-title">Get oriented</div><div class="mp-col-items"><a href="/shoutlyai-overview.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-grid" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="14" rx="1"></rect><rect width="7" height="7" x="3" y="14" rx="1"></rect></svg></span><span class="mp-text"><span class="mp-label">Overview</span><span class="mp-desc">See how the whole platform fits together.</span></span></a><a href="/shoutlyai-why-shoutly-ai.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles" aria-hidden="true"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg></span><span class="mp-text"><span class="mp-label">Why Shoutly AI</span><span class="mp-desc">What makes it different from a scheduler.</span></span></a><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume2 lucide-volume-2" aria-hidden="true"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"></path><path d="M16 9a5 5 0 0 1 0 6"></path><path d="M19.364 18.364a9 9 0 0 0 0-12.728"></path></svg></span><span class="mp-text"><span class="mp-label">What's new<span class="mp-badge">NEW</span></span><span class="mp-desc">Latest releases, shipped weekly.</span></span></div></div></div></div><div class="mp-featured"><div class="mp-featured-eyebrow">FEATURED</div><div class="mp-featured-title">A month of posts in one sitting</div><p class="mp-featured-desc">Describe your business once. Shoutly drafts, designs, and schedules a full content calendar you can edit.</p><a href="/#generator" class="mp-cta">Try the generator <span aria-hidden="true">→</span></a></div></div></div><div class="sh-panel" data-menu="solutions"><div class="mp-inner"><div class="mp-cols" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div class="mp-col"><div class="mp-col-title">By industry</div><div class="mp-col-items mp-col-grid"><a href="/solutions/local-businesses" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-store" aria-hidden="true"><path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"></path><path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"></path><path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"></path></svg></span><span class="mp-text"><span class="mp-label">Local Businesses</span></span></a><a href="/social-media-marketing-for-restaurants.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-utensils" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg></span><span class="mp-text"><span class="mp-label">Restaurants</span></span></a><a href="/social-media-marketing-for-gyms.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dumbbell" aria-hidden="true"><path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"></path><path d="m2.5 21.5 1.4-1.4"></path><path d="m20.1 3.9 1.4-1.4"></path><path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"></path><path d="m9.6 14.4 4.8-4.8"></path></svg></span><span class="mp-text"><span class="mp-label">Fitness</span></span></a><a href="/social-media-marketing-for-interior-designers.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-bag" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0"></path><path d="M3.103 6.034h17.794"></path><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"></path></svg></span><span class="mp-text"><span class="mp-label">Interior Design</span></span></a><a href="/digital-marketing-for-footwear-brands.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-pulse" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path><path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"></path></svg></span><span class="mp-text"><span class="mp-label">Footwear</span></span></a><a href="/digital-marketing-for-real-estate-agents.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building2 lucide-building-2" aria-hidden="true"><path d="M10 12h4"></path><path d="M10 8h4"></path><path d="M14 21v-3a2 2 0 0 0-4 0v3"></path><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"></path><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"></path></svg></span><span class="mp-text"><span class="mp-label">Real Estate</span></span></a><a href="/marketing-for-business-consultants.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rocket" aria-hidden="true"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg></span><span class="mp-text"><span class="mp-label">Startups</span></span></a><a href="/digital-marketing-for-hotels-and-resorts.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg></span><span class="mp-text"><span class="mp-label">Hotels</span></span></a><a href="/digital-marketing-for-event-planners.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase" aria-hidden="true"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path><rect width="20" height="14" x="2" y="6" rx="2"></rect></svg></span><span class="mp-text"><span class="mp-label">Event Planners</span></span></a><a href="/digital-marketing-for-makeup-artists.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-landmark" aria-hidden="true"><path d="M10 18v-7"></path><path d="M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949z"></path><path d="M14 18v-7"></path><path d="M18 18v-7"></path><path d="M3 22h18"></path><path d="M6 18v-7"></path></svg></span><span class="mp-text"><span class="mp-label">Makeup Services</span></span></a></div></div><div class="mp-col"><div class="mp-col-title">By channel</div><div class="mp-col-items mp-col-grid"><a href="/channel/twitter-x" class="mp-row"><span class="mp-ico"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"></path></svg></span><span class="mp-text"><span class="mp-label">X</span></span></a><a href="/channel/instagram" class="mp-row"><span class="mp-ico"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"></path></svg></span><span class="mp-text"><span class="mp-label">Instagram</span></span></a><a href="/channel/facebook" class="mp-row"><span class="mp-ico"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M512 256C512 114.6 397.4 0 256 0S0 114.6 0 256C0 376 82.7 476.8 194.2 504.5V334.2H141.4V256h52.8V222.3c0-87.1 39.4-127.5 125-127.5c16.2 0 44.2 3.2 55.7 6.4V172c-6-.6-16.5-1-29.6-1c-42 0-58.2 15.9-58.2 57.2V256h83.6l-14.4 78.2H287V510.1C413.8 494.8 512 386.9 512 256h0z"></path></svg></span><span class="mp-text"><span class="mp-label">Facebook</span></span></a><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M407.8 294.7c-3.3-.4-6.7-.8-10-1.3c3.4 .4 6.7 .9 10 1.3zM288 227.1C261.9 176.4 190.9 81.9 124.9 35.3C61.6-9.4 37.5-1.7 21.6 5.5C3.3 13.8 0 41.9 0 58.4S9.1 194 15 213.9c19.5 65.7 89.1 87.9 153.2 80.7c3.3-.5 6.6-.9 10-1.4c-3.3 .5-6.6 1-10 1.4C74.3 308.6-9.1 342.8 100.3 464.5C220.6 589.1 265.1 437.8 288 361.1c22.9 76.7 49.2 222.5 185.6 103.4c102.4-103.4 28.1-156-65.8-169.9c-3.3-.4-6.7-.8-10-1.3c3.4 .4 6.7 .9 10 1.3c64.1 7.1 133.6-15.1 153.2-80.7C566.9 194 576 75 576 58.4s-3.3-44.7-21.6-52.9c-15.8-7.1-40-14.9-103.2 29.8C385.1 81.9 314.1 176.4 288 227.1z"></path></svg></span><span class="mp-text"><span class="mp-label">Bluesky</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path></svg></span><span class="mp-text"><span class="mp-label">LinkedIn</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z"></path></svg></span><span class="mp-text"><span class="mp-label">TikTok</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M331.5 235.7c2.2 .9 4.2 1.9 6.3 2.8c29.2 14.1 50.6 35.2 61.8 61.4c15.7 36.5 17.2 95.8-30.3 143.2c-36.2 36.2-80.3 52.5-142.6 53h-.3c-70.2-.5-124.1-24.1-160.4-70.2c-32.3-41-48.9-98.1-49.5-169.6V256v-.2C17 184.3 33.6 127.2 65.9 86.2C102.2 40.1 156.2 16.5 226.4 16h.3c70.3 .5 124.9 24 162.3 69.9c18.4 22.7 32 50 40.6 81.7l-40.4 10.8c-7.1-25.8-17.8-47.8-32.2-65.4c-29.2-35.8-73-54.2-130.5-54.6c-57 .5-100.1 18.8-128.2 54.4C72.1 146.1 58.5 194.3 58 256c.5 61.7 14.1 109.9 40.3 143.3c28 35.6 71.2 53.9 128.2 54.4c51.4-.4 85.4-12.6 113.7-40.9c32.3-32.2 31.7-71.8 21.4-95.9c-6.1-14.2-17.1-26-31.9-34.9c-3.7 26.9-11.8 48.3-24.7 64.8c-17.1 21.8-41.4 33.6-72.7 35.3c-23.6 1.3-46.3-4.4-63.9-16c-20.8-13.8-33-34.8-34.3-59.3c-2.5-48.3 35.7-83 95.2-86.4c21.1-1.2 40.9-.3 59.2 2.8c-2.4-14.8-7.3-26.6-14.6-35.2c-10-11.7-25.6-17.7-46.2-17.8H227c-16.6 0-39 4.6-53.3 26.3l-34.4-23.6c19.2-29.1 50.3-45.1 87.8-45.1h.8c62.6 .4 99.9 39.5 103.7 107.7l-.2 .2zm-156 68.8c1.3 25.1 28.4 36.8 54.6 35.3c25.6-1.4 54.6-11.4 59.5-73.2c-13.2-2.9-27.8-4.4-43.4-4.4c-4.8 0-9.6 .1-14.4 .4c-42.9 2.4-57.2 23.2-56.2 41.8l-.1 .1z"></path></svg></span><span class="mp-text"><span class="mp-label">Threads</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"></path></svg></span><span class="mp-text"><span class="mp-label">YouTube</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M496 256c0 137-111 248-248 248-25.6 0-50.2-3.9-73.4-11.1 10.1-16.5 25.2-43.5 30.8-65 3-11.6 15.4-59 15.4-59 8.1 15.4 31.7 28.5 56.8 28.5 74.8 0 128.7-68.8 128.7-154.3 0-81.9-66.9-143.2-152.9-143.2-107 0-163.9 71.8-163.9 150.1 0 36.4 19.4 81.7 50.3 96.1 4.7 2.2 7.2 1.2 8.3-3.3.8-3.4 5-20.3 6.9-28.1.6-2.5.3-4.7-1.7-7.1-10.1-12.5-18.3-35.3-18.3-56.6 0-54.7 41.4-107.6 112-107.6 60.9 0 103.6 41.5 103.6 100.9 0 67.1-33.9 113.6-78 113.6-24.3 0-42.6-20.1-36.7-44.8 7-29.5 20.5-61.3 20.5-82.6 0-19-10.2-34.9-31.4-34.9-24.9 0-44.9 25.7-44.9 60.2 0 22 7.4 36.8 7.4 36.8s-24.5 103.8-29 123.2c-5 21.4-3 51.6-.9 71.2C65.4 450.9 0 361.1 0 256 0 119 111 8 248 8s248 111 248 248z"></path></svg></span><span class="mp-text"><span class="mp-label">Pinterest</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 488 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path></svg></span><span class="mp-text"><span class="mp-label">Google Biz</span></span></div></div></div></div><div class="mp-featured"><div class="mp-featured-eyebrow">POPULAR</div><div class="mp-featured-title">Built for one-person marketing teams</div><p class="mp-featured-desc">Local businesses publish to six channels a week on Shoutly — without hiring an agency.</p><a href="/#who-we-help" class="mp-cta">See how it works <span aria-hidden="true">→</span></a></div></div></div><div class="sh-panel" data-menu="features"><div class="mp-inner"><div class="mp-cols" style="grid-template-columns:repeat(3,minmax(0,1fr))"><div class="mp-col"><div class="mp-col-title">AI creation</div><div class="mp-col-items"><a href="/shoutlyai-ai-content-generator.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles" aria-hidden="true"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg></span><span class="mp-text"><span class="mp-label">AI Content Generator<span class="mp-badge">POPULAR</span></span><span class="mp-desc">Turn one prompt into a week of posts.</span></span></a><a href="/shoutlyai-ai-image-generator.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path></svg></span><span class="mp-text"><span class="mp-label">AI Image Generator</span><span class="mp-desc">On-brand visuals in your colors and fonts.</span></span></a><a href="/#generator" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clapperboard" aria-hidden="true"><path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z"></path><path d="m6.2 5.3 3.1 3.9"></path><path d="m12.4 3.4 3.1 4"></path><path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"></path></svg></span><span class="mp-text"><span class="mp-label">AI Reel Generator<span class="mp-badge">NEW</span></span><span class="mp-desc">Short-form video from a script or a URL.</span></span></a><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square" aria-hidden="true"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"></path></svg></span><span class="mp-text"><span class="mp-label">AI Caption Generator</span><span class="mp-desc">Captions tuned per platform, not copy-pasted.</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hash" aria-hidden="true"><line x1="4" x2="20" y1="9" y2="9"></line><line x1="4" x2="20" y1="15" y2="15"></line><line x1="10" x2="8" y1="3" y2="21"></line><line x1="16" x2="14" y1="3" y2="21"></line></svg></span><span class="mp-text"><span class="mp-label">AI Hashtag Generator</span><span class="mp-desc">Tags ranked by reach, not by volume.</span></span></div></div></div><div class="mp-col"><div class="mp-col-title">Publishing</div><div class="mp-col-items"><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock" aria-hidden="true"><path d="M12 6v6l4 2"></path><circle cx="12" cy="12" r="10"></circle></svg></span><span class="mp-text"><span class="mp-label">Social Media Scheduler</span><span class="mp-desc">Queue posts for the times your audience shows up.</span></span></div><a href="/free-editorial" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar" aria-hidden="true"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg></span><span class="mp-text"><span class="mp-label">Content Calendar</span><span class="mp-desc">Every channel on one drag-and-drop grid.</span></span></a><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 lucide-share-2" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg></span><span class="mp-text"><span class="mp-label">Multi-Platform Publishing</span><span class="mp-desc">Write once, reformat for each network.</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-checks" aria-hidden="true"><path d="M13 5h8"></path><path d="M13 12h8"></path><path d="M13 19h8"></path><path d="m3 17 2 2 4-4"></path><path d="m3 7 2 2 4-4"></path></svg></span><span class="mp-text"><span class="mp-label">Bulk Scheduling</span><span class="mp-desc">Upload a CSV, fill the whole quarter.</span></span></div></div></div><div class="mp-col"><div class="mp-col-title">Management</div><div class="mp-col-items"><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-column" aria-hidden="true"><path d="M3 3v16a2 2 0 0 0 2 2h16"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></span><span class="mp-text"><span class="mp-label">Analytics Dashboard</span><span class="mp-desc">See what earned reach, and what didn't.</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-palette" aria-hidden="true"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"></path><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle></svg></span><span class="mp-text"><span class="mp-label">Brand Kit</span><span class="mp-desc">Lock your colors, fonts, and voice.</span></span></div><a href="/#library" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-open" aria-hidden="true"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"></path></svg></span><span class="mp-text"><span class="mp-label">Media Library</span><span class="mp-desc">Every asset, searchable and reusable.</span></span></a><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg></span><span class="mp-text"><span class="mp-label">Team Collaboration</span><span class="mp-desc">Comment, assign, and hand off in place.</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-check-big" aria-hidden="true"><path d="M21 10.656V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12.344"></path><path d="m9 11 3 3L22 4"></path></svg></span><span class="mp-text"><span class="mp-label">Approval Workflow</span><span class="mp-desc">Nothing ships until the right person signs off.</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plug" aria-hidden="true"><path d="M12 22v-5"></path><path d="M15 8V2"></path><path d="M17 8a1 1 0 0 1 1 1v4a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1z"></path><path d="M9 8V2"></path></svg></span><span class="mp-text"><span class="mp-label">Integrations</span><span class="mp-desc">Canva, Drive, Slack, Zapier, and more.</span></span></div></div></div></div><div class="mp-featured"><div class="mp-featured-eyebrow">NEW THIS MONTH</div><div class="mp-featured-title">AI Reel Generator</div><p class="mp-featured-desc">Paste a product URL. Shoutly writes the script, cuts the clips, adds captions, and queues it to Reels, TikTok, and Shorts.</p><a href="/#generator" class="mp-cta">Generate a reel <span aria-hidden="true">→</span></a></div></div></div><div class="sh-panel" data-menu="compare"><div class="mp-inner"><div class="mp-cols" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div class="mp-col"><div class="mp-col-title">Popular comparisons</div><div class="mp-col-items mp-col-grid"><a href="/compare/buffer-vs-shoutly-ai" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-right" aria-hidden="true"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg></span><span class="mp-text"><span class="mp-label">Buffer vs Shoutly AI</span></span></a><a href="/compare/hootsuite-vs-shoutly-ai" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-right" aria-hidden="true"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg></span><span class="mp-text"><span class="mp-label">Hootsuite vs Shoutly AI</span></span></a><a href="/compare/later-vs-shoutly-ai" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-right" aria-hidden="true"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg></span><span class="mp-text"><span class="mp-label">Later vs Shoutly AI</span></span></a><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-right" aria-hidden="true"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg></span><span class="mp-text"><span class="mp-label">SocialPilot vs Shoutly AI</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-right" aria-hidden="true"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg></span><span class="mp-text"><span class="mp-label">Metricool vs Shoutly AI</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-right" aria-hidden="true"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg></span><span class="mp-text"><span class="mp-label">Publer vs Shoutly AI</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-right" aria-hidden="true"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg></span><span class="mp-text"><span class="mp-label">Canva vs Shoutly AI</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-right" aria-hidden="true"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg></span><span class="mp-text"><span class="mp-label">Sprout Social vs Shoutly AI</span></span></div></div></div><div class="mp-col"><div class="mp-col-title">Alternatives</div><div class="mp-col-items mp-col-grid"><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></span><span class="mp-text"><span class="mp-label">Buffer Alternative</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></span><span class="mp-text"><span class="mp-label">Hootsuite Alternative</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></span><span class="mp-text"><span class="mp-label">Later Alternative</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></span><span class="mp-text"><span class="mp-label">SocialPilot Alternative</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></span><span class="mp-text"><span class="mp-label">Metricool Alternative</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></span><span class="mp-text"><span class="mp-label">Canva Alternative</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></span><span class="mp-text"><span class="mp-label">Sprout Social Alternative</span></span></div></div></div></div><div class="mp-featured"><div class="mp-featured-eyebrow">SIDE BY SIDE</div><div class="mp-featured-title">Every tool, one table</div><p class="mp-featured-desc">Features, limits, and real pricing across eight platforms — no marketing math.</p><span class="mp-cta mp-cta-off" title="Coming soon">View all comparisons <span aria-hidden="true">→</span></span></div></div></div><div class="sh-panel" data-menu="pricing"><div class="mp-inner"><div class="mp-cols" style="grid-template-columns:repeat(1,minmax(0,1fr))"><div class="mp-col"><div class="mp-col-title">Plans &amp; billing</div><div class="mp-col-items"><a href="/pricing" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg></span><span class="mp-text"><span class="mp-label">Pricing Plans</span><span class="mp-desc">Start free. Upgrade when you outgrow it.</span></span></a><a href="/pricing" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-columns3 lucide-columns-3" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M9 3v18"></path><path d="M15 3v18"></path></svg></span><span class="mp-text"><span class="mp-label">Compare Plans</span><span class="mp-desc">Every limit and feature, line by line.</span></span></a><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-landmark" aria-hidden="true"><path d="M10 18v-7"></path><path d="M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949z"></path><path d="M14 18v-7"></path><path d="M18 18v-7"></path><path d="M3 22h18"></path><path d="M6 18v-7"></path></svg></span><span class="mp-text"><span class="mp-label">Enterprise</span><span class="mp-desc">SSO, SLAs, and a named contact.</span></span></div><a href="/pricing" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-question-mark" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg></span><span class="mp-text"><span class="mp-label">FAQs</span><span class="mp-desc">Billing, seats, limits, and cancellation.</span></span></a><a href="/shoutlyai-demo.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-check" aria-hidden="true"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="m9 16 2 2 4-4"></path></svg></span><span class="mp-text"><span class="mp-label">Book a Demo</span><span class="mp-desc">30 minutes with a product specialist.</span></span></a></div></div></div><div class="mp-featured"><div class="mp-featured-eyebrow">FREE FOREVER</div><div class="mp-featured-title">Three channels, no card</div><p class="mp-featured-desc">Generate, schedule, and publish on the free plan for as long as you like.</p><a href="/sign-up" class="mp-cta">Start Free Trial <span aria-hidden="true">→</span></a></div></div></div><div class="sh-panel" data-menu="company"><div class="mp-inner"><div class="mp-cols" style="grid-template-columns:repeat(1,minmax(0,1fr))"><div class="mp-col"><div class="mp-col-title">Company &amp; resources</div><div class="mp-col-items mp-col-grid"><a href="/about-us" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-user" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="10" r="3"></circle><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"></path></svg></span><span class="mp-text"><span class="mp-label">About Us</span><span class="mp-desc">Who we are and why we built this.</span></span></a><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-handshake" aria-hidden="true"><path d="m11 17 2 2a1 1 0 1 0 3-3"></path><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"></path><path d="m21 3 1 11h-2"></path><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"></path><path d="M3 4h8"></path></svg></span><span class="mp-text"><span class="mp-label">Partners</span><span class="mp-desc">Agencies and resellers building on Shoutly.</span></span></div><a href="/help-center" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-question-mark" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg></span><span class="mp-text"><span class="mp-label">Help Center</span><span class="mp-desc">Guides, troubleshooting, and API docs.</span></span></a><a href="/security" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg></span><span class="mp-text"><span class="mp-label">Security</span><span class="mp-desc">How we protect your accounts and data.</span></span></a><a href="/careers" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase" aria-hidden="true"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path><rect width="20" height="14" x="2" y="6" rx="2"></rect></svg></span><span class="mp-text"><span class="mp-label">Careers<span class="mp-badge">HIRING</span></span><span class="mp-desc">Open roles across product and growth.</span></span></a><a href="https://blog.shoutlyai.com/" class="mp-row" target="_blank" rel="noopener noreferrer"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text" aria-hidden="true"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"></path><path d="M14 2v5a1 1 0 0 0 1 1h5"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg></span><span class="mp-text"><span class="mp-label">Blog</span><span class="mp-desc">Playbooks, teardowns, and benchmarks.</span></span></a><a href="/contact-us" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail" aria-hidden="true"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"></path><rect x="2" y="4" width="20" height="16" rx="2"></rect></svg></span><span class="mp-text"><span class="mp-label">Contact</span><span class="mp-desc">Talk to sales or support.</span></span></a><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scale" aria-hidden="true"><path d="M12 3v18"></path><path d="m19 8 3 8a5 5 0 0 1-6 0zV7"></path><path d="M3 7h1a17 17 0 0 0 8-2 17 17 0 0 0 8 2h1"></path><path d="m5 8 3 8a5 5 0 0 1-6 0zV7"></path><path d="M7 21h10"></path></svg></span><span class="mp-text"><span class="mp-label">Legal Hub</span><span class="mp-desc">Privacy, terms, GDPR, DPDP, and more.</span></span></div></div></div></div><div class="mp-featured"><div class="mp-featured-eyebrow">TRUST</div><div class="mp-featured-title">Enterprise-ready by default</div><p class="mp-featured-desc">SSL, GDPR, CCPA, and DPDP compliant. 99.9% uptime, hosted on AWS.</p><a href="/security" class="mp-cta">Read the security brief <span aria-hidden="true">→</span></a></div></div></div></div>
+  <div class="sh-mobile" id="sh-mobile-menu"><a href="/">Home</a><a href="/solutions/local-businesses">Solutions</a><a href="/shoutlyai-ai-content-generator.html">Features</a><a href="/compare/buffer-vs-shoutly-ai">Compare</a><a href="/pricing">Pricing</a><a href="/about-us">Company</a><div class="sh-mobile-cta" id="sh-mobile-auth-guest"><a href="/sign-in" class="sh-login">Log in</a><a href="/sign-up" class="sh-start">Start Free Trial</a></div><div class="sh-mobile-profile" id="sh-mobile-profile" style="display:none"><div class="sh-profile-info" id="sh-mobile-profile-info"><p class="sh-profile-name" id="sh-mobile-profile-name"></p><p class="sh-profile-email" id="sh-mobile-profile-email"></p></div><a href="/dashboards/settings" class="sh-profile-item">Profile</a><a href="/dashboards" class="sh-profile-item">Dashboard</a><button type="button" class="sh-profile-item sh-signout" id="sh-mobile-signout">Sign Out</button></div></div>
+</header>
+
+<main>
+
+<!-- HERO -->
+<section class="hero" aria-labelledby="hero-h1">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow"><span class="ey-dot"></span>Why Shoutly AI &mdash; Get oriented</div>
+    <h1 class="hero-h1" id="hero-h1">Not a scheduler.<br><span class="grad">Something different.</span></h1>
+    <p class="hero-sub">Buffer, Hootsuite, Later &mdash; these are tools for distributing content you already created. Shoutly AI is something else. It creates the content, brands it, schedules it, publishes it, and improves it automatically. Here&rsquo;s the real difference.</p>
+    <div class="hero-ctas">
+      <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-lg">Start free trial <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+      <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-lg">Book a live demo</a>
+    </div>
+  </div>
+</section>
+
+<!-- THE ONE-LINE TRUTH -->
+<div class="truth-section" data-r>
+  <div class="wrap">
+    <div class="truth-card">
+      <div class="truth-pre">The fundamental difference</div>
+      <h2 class="truth-h">A scheduler moves content you already made.<br>Shoutly AI <em>makes the content</em> &mdash; then moves it.</h2>
+      <div class="truth-row">
+        <div class="truth-col bad">
+          <div class="truth-col-label">&#10007; A regular scheduler</div>
+          <div class="truth-col-text">You write the post. You design the image. You choose the hashtags. You pick the time. You schedule it. The scheduler publishes it. You do all the work &mdash; the scheduler just clicks the button at the right moment.</div>
+        </div>
+        <div class="truth-vs">VS</div>
+        <div class="truth-col good">
+          <div class="truth-col-label">&#10003; Shoutly AI</div>
+          <div class="truth-col-text">You describe your business once. Shoutly AI writes the post, generates the image in your brand colours, adds the right hashtags, picks the optimal time, and publishes it. You approve in bulk once a month. Everything else is automatic.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- THE 5 REASONS -->
+<section class="section" aria-labelledby="reasons-h2" data-r>
+  <div class="wrap">
+    <div style="margin-bottom:56px">
+      <span class="sec-ey">5 real differences</span>
+      <h2 class="sec-h2" id="reasons-h2">Why businesses switch from schedulers to Shoutly AI.</h2>
+      <p class="sec-p">These aren&rsquo;t feature comparisons. These are the actual workflow differences that change how much time you spend on social media every week.</p>
+    </div>
+    <div class="reasons-grid">
+
+      <div class="reason-item">
+        <div class="reason-num">01</div>
+        <div class="reason-body">
+          <div class="reason-title">Schedulers assume you already have content. Most businesses don&rsquo;t.</div>
+          <div class="reason-desc">A scheduler is a distribution tool. It moves content from point A (your device) to point B (social media). It does nothing about the hardest part &mdash; creating the content in the first place. Most small businesses don&rsquo;t post consistently because they run out of ideas, not because they lack a scheduler. Shoutly AI solves the actual problem: it generates the post, the image, the caption, and the hashtags automatically. The scheduler just runs in the background once everything is created.</div>
+          <div class="reason-proof">
+            <span class="rp-chip">&#10022; AI Content Generator</span>
+            <span class="rp-chip">&#127912; AI Image Generator</span>
+            <span class="rp-chip">&#9999;&#65039; AI Caption Generator</span>
+            <span class="rp-chip"># AI Hashtag Generator</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="reason-item">
+        <div class="reason-num">02</div>
+        <div class="reason-body">
+          <div class="reason-title">Schedulers don&rsquo;t know your brand. Every post requires manual briefing.</div>
+          <div class="reason-desc">When you create content in Buffer or Hootsuite, you still have to manually apply your brand every single time &mdash; the right colours, the right logo, the right font, the right tone of voice. There&rsquo;s no memory. Every post starts from zero. Shoutly AI&rsquo;s Brand Kit stores your entire brand identity once. Your logo is placed correctly on every image. Your exact hex colour codes are used on every graphic. Your brand voice is applied to every caption. Set it up in 5 minutes. Every post after that is on-brand automatically &mdash; without you specifying it.</div>
+          <div class="reason-proof">
+            <span class="rp-chip">&#127859; Brand Kit &mdash; colours, fonts, voice</span>
+            <span class="rp-chip">&#128218; Brand Assets library</span>
+            <span class="rp-chip">&#10003; Set once, works forever</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="reason-item">
+        <div class="reason-num">03</div>
+        <div class="reason-body">
+          <div class="reason-title">Schedulers don&rsquo;t learn. Shoutly AI improves your content every month automatically.</div>
+          <div class="reason-desc">A scheduler publishes your posts and forgets them. It has no idea whether any of them worked. You have to manually log into each platform, pull the analytics, figure out what performed well, and then try to replicate it next month &mdash; if you remember, if you have time, and if you know what to look for. Shoutly AI&rsquo;s analytics engine reads every post&rsquo;s performance across all 10 platforms, identifies the patterns (posting time, content type, caption style, hashtag mix) that drove reach and engagement, and automatically adjusts next month&rsquo;s content calendar based on what worked. Your social media gets better every month without any effort from you.</div>
+          <div class="reason-proof">
+            <span class="rp-chip">&#128202; Analytics Dashboard &mdash; all 10 platforms</span>
+            <span class="rp-chip">&#128257; Auto-adjusts content calendar</span>
+            <span class="rp-chip">&#128336; Recalculates posting times weekly</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="reason-item">
+        <div class="reason-num">04</div>
+        <div class="reason-body">
+          <div class="reason-title">Schedulers don&rsquo;t plan. You still have to decide what to post and when.</div>
+          <div class="reason-desc">Using a scheduler without a content strategy is like having a car with no destination. You can drive, but you don&rsquo;t know where you&rsquo;re going. Most businesses using schedulers end up posting whatever comes to mind, whenever they remember &mdash; which leads to inconsistent frequency, missed festival opportunities, and no cohesive content mix. Shoutly AI plans your entire content calendar automatically &mdash; the right mix of educational, promotional, engagement, and festival posts for your business type &mdash; scheduled at the optimal time for your specific audience on each platform. You see a full month of planned content before a single post goes live.</div>
+          <div class="reason-proof">
+            <span class="rp-chip">&#128200; Full content calendar planned automatically</span>
+            <span class="rp-chip">&#127881; 30+ Indian festivals pre-planned</span>
+            <span class="rp-chip">&#128336; AI picks optimal posting times</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="reason-item">
+        <div class="reason-num">05</div>
+        <div class="reason-body">
+          <div class="reason-title">Schedulers work on 3&ndash;4 platforms. Shoutly AI handles all 10 simultaneously.</div>
+          <div class="reason-desc">Most schedulers support the main platforms &mdash; Instagram, Facebook, Twitter, LinkedIn. But your customers are also on Google Business (which directly impacts how you appear in Maps searches), TikTok (the fastest-growing platform for local businesses), Pinterest (high-purchase-intent audience), Threads, and Bluesky. Connecting all 10 platforms through separate schedulers means multiple subscriptions, multiple login sessions, and multiple sets of analytics. Shoutly AI connects all 10 platforms via their official APIs, auto-formats every post for each platform&rsquo;s specific requirements, and unifies all analytics in one dashboard. One plan. One login. All 10 platforms.</div>
+          <div class="reason-proof">
+            <span class="rp-chip">&#127760; All 10 platforms via official APIs</span>
+            <span class="rp-chip">&#128228; Auto-formatted per platform</span>
+            <span class="rp-chip">&#128202; Unified analytics across all 10</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SIDE-BY-SIDE COMPARISON TABLE -->
+<section class="section section-alt" aria-labelledby="comp-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">Feature by feature</span>
+      <h2 class="sec-h2" id="comp-h2">What schedulers do. What Shoutly AI does.</h2>
+      <p class="sec-p">A direct comparison. No spin. Just what each type of tool actually does &mdash; and doesn&rsquo;t do.</p>
+    </div>
+    <table class="comp-table" aria-label="Comparison table">
+      <thead>
+        <tr class="ct-head">
+          <th class="th-feat" style="width:38%">Capability</th>
+          <th class="th-sched" style="width:27%;text-align:center">Regular Scheduler<br><span style="font-size:10px;font-weight:600;opacity:.7">(Buffer, Hootsuite, Later, SocialPilot)</span></th>
+          <th class="th-shoutly" style="width:27%;text-align:center">Shoutly AI</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="td-feat">Writes your social media posts</td><td class="td-no">&#10007;</td><td class="td-yes">&#10003;</td></tr>
+        <tr><td class="td-feat">Generates branded images for posts</td><td class="td-no">&#10007;</td><td class="td-yes">&#10003;</td></tr>
+        <tr><td class="td-feat">Generates hashtag sets per post</td><td class="td-no">&#10007;</td><td class="td-yes">&#10003;</td></tr>
+        <tr><td class="td-feat">Writes Reel scripts and video hooks</td><td class="td-no">&#10007;</td><td class="td-yes">&#10003;</td></tr>
+        <tr><td class="td-feat">Stores your brand (colours, fonts, voice)</td><td class="td-no">&#10007;</td><td class="td-yes">&#10003;</td></tr>
+        <tr><td class="td-feat">Applies brand to every AI post automatically</td><td class="td-no">&#10007;</td><td class="td-yes">&#10003;</td></tr>
+        <tr><td class="td-feat">Plans a full content calendar for you</td><td class="td-no">&#10007;</td><td class="td-yes">&#10003;</td></tr>
+        <tr><td class="td-feat">Includes Indian festival posts automatically</td><td class="td-no">&#10007;</td><td class="td-yes">&#10003;</td></tr>
+        <tr><td class="td-feat">Publishes posts at optimal times for your audience</td><td class="td-partial">&#9888; Generic times only</td><td class="td-yes">&#10003; Your specific audience</td></tr>
+        <tr><td class="td-feat">Schedules and publishes posts</td><td class="td-yes">&#10003;</td><td class="td-yes">&#10003;</td></tr>
+        <tr><td class="td-feat">Bulk scheduling (approve a month at once)</td><td class="td-partial">&#9888; Limited</td><td class="td-yes">&#10003;</td></tr>
+        <tr><td class="td-feat">Auto-formats posts per platform</td><td class="td-partial">&#9888; Basic resizing only</td><td class="td-yes">&#10003; Full format + caption</td></tr>
+        <tr><td class="td-feat">Unified analytics across all platforms</td><td class="td-partial">&#9888; 3&ndash;4 platforms</td><td class="td-yes">&#10003; All 10 platforms</td></tr>
+        <tr><td class="td-feat">Uses analytics to improve next month&rsquo;s content</td><td class="td-no">&#10007;</td><td class="td-yes">&#10003;</td></tr>
+        <tr><td class="td-feat">Supports Google Business Profile posts</td><td class="td-no">&#10007;</td><td class="td-yes">&#10003;</td></tr>
+        <tr><td class="td-feat">Supports Bluesky and Threads</td><td class="td-partial">&#9888; Partial</td><td class="td-yes">&#10003;</td></tr>
+        <tr><td class="td-feat">Media library for reusable assets</td><td class="td-partial">&#9888; Basic</td><td class="td-yes">&#10003; AI-tagged, searchable</td></tr>
+        <tr><td class="td-feat">White-label PDF reports for agencies</td><td class="td-partial">&#9888; Paid add-on</td><td class="td-yes">&#10003; Included</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12.5px;color:var(--ink4);text-align:center;margin-top:14px">&#9888; indicates the feature exists in some form but with significant limitations. &#10007; indicates the feature does not exist in any form.</p>
+  </div>
+</section>
+
+<!-- SAME SCENARIO, TWO OUTCOMES -->
+<section class="section" aria-labelledby="scenario-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">Same situation, two outcomes</span>
+      <h2 class="sec-h2" id="scenario-h2">What each tool actually looks like in real life.</h2>
+      <p class="sec-p">Same business. Same goal. Same week. Here&rsquo;s what managing social media looks like with a scheduler vs with Shoutly AI.</p>
+    </div>
+    <div class="diff-grid">
+
+      <div class="diff-item">
+        <div class="diff-side before">
+          <div class="ds-label red">&#10007; With a regular scheduler</div>
+          <div class="ds-title">Monday morning &mdash; need to post this week</div>
+          <div class="ds-scenario">Open Canva. Design a post from scratch. Export it. Open the scheduler. Upload the image. Write the caption. Google &ldquo;best hashtags for restaurants.&rdquo; Copy 30 hashtags. Set a time. Repeat for Tuesday. Wednesday. Thursday. Friday. Saturday. Sunday. Then do it all again next week. And the week after that. For every platform. Forever.</div>
+        </div>
+        <div class="diff-side after">
+          <div class="ds-label green">&#10003; With Shoutly AI</div>
+          <div class="ds-title">Monday morning &mdash; posts are already scheduled</div>
+          <div class="ds-scenario">At the start of last month, you spent 10 minutes reviewing the AI-generated content calendar. You clicked &ldquo;Approve All.&rdquo; This week&rsquo;s posts &mdash; with your brand colours, your logo, captions in your voice, the right hashtags &mdash; already went live automatically at the best time for your audience. You didn&rsquo;t do anything this week. Or last week. Or the week before.</div>
+        </div>
+      </div>
+
+      <div class="diff-item">
+        <div class="diff-side before">
+          <div class="ds-label red">&#10007; With a regular scheduler</div>
+          <div class="ds-title">Diwali is in 3 weeks &mdash; need festive content</div>
+          <div class="ds-scenario">Realise Diwali is approaching. Open Canva. Search for Diwali templates. None match your brand colours. Edit the template. Re-upload your logo. Write a festive caption from scratch. Pick hashtags manually. Hope it performs. Miss the 3-week lead-up window where Diwali content gets the most reach because you only posted on the day itself.</div>
+        </div>
+        <div class="diff-side after">
+          <div class="ds-label green">&#10003; With Shoutly AI</div>
+          <div class="ds-title">Diwali content was ready 3 weeks ago</div>
+          <div class="ds-scenario">When you approved this month&rsquo;s calendar on October 1st, Diwali posts were already in the queue &mdash; scheduled for October 15, 20, 25, and November 1st. Each one uses your exact brand colours, your logo, a caption in your voice, and a hashtag set built for festive reach. The 3-week lead-up campaign is already running. You didn&rsquo;t have to think about it.</div>
+        </div>
+      </div>
+
+      <div class="diff-item">
+        <div class="diff-side before">
+          <div class="ds-label red">&#10007; With a regular scheduler</div>
+          <div class="ds-title">End of month &mdash; was social media working?</div>
+          <div class="ds-scenario">Open Instagram Insights. Screenshot a few numbers. Open Facebook Business Suite. Screenshot more numbers. Open LinkedIn Analytics. Open Google Business Insights. Open TikTok Analytics. Spend 45 minutes pulling numbers from 5 different apps. Still not sure what actually worked or what to do differently next month. Post roughly the same content again and hope for better results.</div>
+        </div>
+        <div class="diff-side after">
+          <div class="ds-label green">&#10003; With Shoutly AI</div>
+          <div class="ds-title">End of month &mdash; already know what worked</div>
+          <div class="ds-scenario">Open Shoutly AI&rsquo;s Analytics Dashboard. All 10 platforms, all metrics, one view. AI already identified: Reels outperformed feed posts 4:1, Tuesday 9am was your peak reach window, festival posts drove 3x your average follower gain. Next month&rsquo;s calendar has already adjusted automatically &mdash; more Reels, more Tuesday 9am slots, more festival content. You didn&rsquo;t have to do anything.</div>
+        </div>
+      </div>
+
+      <div class="diff-item">
+        <div class="diff-side before">
+          <div class="ds-label red">&#10007; With a regular scheduler</div>
+          <div class="ds-title">Agency with 12 clients &mdash; content day</div>
+          <div class="ds-scenario">Open client brief for Client A. Design post in Canva &mdash; remember to use their blue, not their old teal. Write caption. Add their hashtags from a saved doc. Schedule in the tool. Open Client B. Repeat. 12 clients &times; 30 posts per month = 360 posts to manually create, design, caption, and schedule. Takes 3 team members and the entire week. Mistakes happen. Wrong brand colours go out. Clients complain.</div>
+        </div>
+        <div class="diff-side after">
+          <div class="ds-label green">&#10003; With Shoutly AI</div>
+          <div class="ds-title">Agency with 12 clients &mdash; approval day</div>
+          <div class="ds-scenario">Switch to Client A&rsquo;s account. Brand Kit automatically loaded &mdash; their exact colours, logo, fonts, voice. Review the AI-generated month of content. 10 minutes, approve. Switch to Client B. Repeat. All 12 clients approved in one morning. Every post on-brand automatically. No Canva sessions. No caption writing. No hashtag research. One team member handles the workload that used to need three.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- WHO SHOULD STICK WITH A SCHEDULER -->
+<section class="section section-alt" aria-labelledby="who-h2" data-r>
+  <div class="wrap">
+    <div style="margin-bottom:48px">
+      <span class="sec-ey">Honest answer</span>
+      <h2 class="sec-h2" id="who-h2">When should you use a scheduler? When should you use Shoutly AI?</h2>
+      <p class="sec-p">Schedulers are good tools for the right use case. Here&rsquo;s when each one makes sense.</p>
+    </div>
+    <div class="who-grid">
+      <div class="who-card">
+        <div class="who-head" style="background:#fef2f2;color:var(--red)">&#128197; Use a regular scheduler if&hellip;</div>
+        <div class="who-body">
+          <div class="who-row"><span style="color:var(--ink4);font-size:15px;flex-shrink:0">&#8594;</span><span>You have a dedicated content team that creates all posts manually and just needs a distribution tool</span></div>
+          <div class="who-row"><span style="color:var(--ink4);font-size:15px;flex-shrink:0">&#8594;</span><span>You only post to 1&ndash;2 platforms and don&rsquo;t need cross-platform analytics</span></div>
+          <div class="who-row"><span style="color:var(--ink4);font-size:15px;flex-shrink:0">&#8594;</span><span>Your content strategy requires heavy human editorial control on every single post</span></div>
+          <div class="who-row"><span style="color:var(--ink4);font-size:15px;flex-shrink:0">&#8594;</span><span>You&rsquo;re a large brand with an in-house creative team and a separate analytics team</span></div>
+          <div class="who-row"><span style="color:var(--ink4);font-size:15px;flex-shrink:0">&#8594;</span><span>Your budget is very tight and you&rsquo;re comfortable creating all content yourself</span></div>
+        </div>
+      </div>
+      <div class="who-card">
+        <div class="who-head" style="background:#f0fdf4;color:var(--green)">&#10022; Use Shoutly AI if&hellip;</div>
+        <div class="who-body">
+          <div class="who-row"><span style="color:var(--green);font-size:15px;flex-shrink:0">&#10003;</span><span>You don&rsquo;t have a content team and need the platform to create the content for you</span></div>
+          <div class="who-row"><span style="color:var(--green);font-size:15px;flex-shrink:0">&#10003;</span><span>You want to post consistently across multiple platforms without daily manual work</span></div>
+          <div class="who-row"><span style="color:var(--green);font-size:15px;flex-shrink:0">&#10003;</span><span>You need your social media to look professional and on-brand on every post</span></div>
+          <div class="who-row"><span style="color:var(--green);font-size:15px;flex-shrink:0">&#10003;</span><span>You want to understand what&rsquo;s working across all platforms without opening 10 analytics apps</span></div>
+          <div class="who-row"><span style="color:var(--green);font-size:15px;flex-shrink:0">&#10003;</span><span>You manage multiple client accounts and need to scale without hiring more staff</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SWITCHER TESTIMONIALS -->
+<section class="section" aria-labelledby="switch-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">From schedulers to Shoutly AI</span>
+      <h2 class="sec-h2" id="switch-h2">What businesses say after making the switch.</h2>
+    </div>
+    <div class="switch-grid">
+      <article class="switch-card">
+        <div class="sc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="sc-from">Previously on Buffer <span class="sc-from-arrow">&#8594;</span> Now on Shoutly AI</div>
+        <blockquote class="sc-quote">&ldquo;Buffer was great for publishing &mdash; but I still had to do all the work of creating the content first. That&rsquo;s the part that took 90% of my time. Shoutly AI handles the creation. Buffer was a distribution tool. Shoutly AI is a complete social media team. I cancelled Buffer the day I got my first month of AI content back.&rdquo;</blockquote>
+        <div class="sc-author">
+          <div class="sc-av">RK</div>
+          <div><span class="sc-name">Ravi Kumar</span><span class="sc-biz">Spice Garden Restaurant &middot; Bengaluru</span></div>
+        </div>
+      </article>
+      <article class="switch-card">
+        <div class="sc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="sc-from">Previously on Hootsuite <span class="sc-from-arrow">&#8594;</span> Now on Shoutly AI</div>
+        <blockquote class="sc-quote">&ldquo;We were paying for Hootsuite Enterprise and still spending 40 hours a month per client on content creation. Hootsuite never solved the content problem &mdash; it just solved the posting problem. With Shoutly AI, the creation and posting are both handled. We went from 3 team members managing 8 clients to 1 team member managing 22 clients.&rdquo;</blockquote>
+        <div class="sc-author">
+          <div class="sc-av" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">AM</div>
+          <div><span class="sc-name">Anjali Mehta</span><span class="sc-biz">Social Media Agency &middot; Delhi</span></div>
+        </div>
+      </article>
+      <article class="switch-card">
+        <div class="sc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="sc-from">Previously on Later <span class="sc-from-arrow">&#8594;</span> Now on Shoutly AI</div>
+        <blockquote class="sc-quote">&ldquo;Later is a good scheduler. But I still had to design everything in Canva, write every caption myself, research hashtags, and remember to do it every week. I&rsquo;d fall behind and post nothing for 3 weeks. Shoutly AI means my social media never stops even when I&rsquo;m busy &mdash; because the AI generated and scheduled everything at the start of the month.&rdquo;</blockquote>
+        <div class="sc-author">
+          <div class="sc-av" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">PS</div>
+          <div><span class="sc-name">Priya Sharma</span><span class="sc-biz">Glow Salon &middot; Mumbai</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section section-alt" aria-labelledby="faq-h2" data-r>
+  <div class="wrap center">
+    <span class="sec-ey">Still not sure?</span>
+    <h2 class="sec-h2" id="faq-h2">Honest answers to the questions people actually ask.</h2>
+    <div class="faq-list">
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Can&rsquo;t I just use ChatGPT for content and Buffer for scheduling?<span class="faq-arr">+</span></button><div class="faq-a"><p>You can &mdash; and many businesses do. But it requires three separate tools (ChatGPT for content, Canva for images, Buffer for scheduling), three separate subscriptions, and the manual work of moving content between them. You still have to brief ChatGPT every time, manually apply your brand in Canva every time, and schedule every post individually in Buffer. Shoutly AI does all three in one place, with your brand applied automatically, scheduled in bulk, and analytics flowing back to improve future content. It&rsquo;s not about capability &mdash; it&rsquo;s about how much manual work stays in the loop.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">I already pay for Canva Pro. Why would I pay for Shoutly AI too?<span class="faq-arr">+</span></button><div class="faq-a"><p>Canva is a design tool &mdash; it gives you templates and lets you create graphics. It doesn&rsquo;t write captions. It doesn&rsquo;t generate hashtags. It doesn&rsquo;t schedule posts. It doesn&rsquo;t analyse performance. It doesn&rsquo;t plan your content calendar. It doesn&rsquo;t publish to 10 platforms. Many Shoutly AI users cancel Canva Pro because Shoutly AI&rsquo;s AI Image Generator creates branded graphics automatically &mdash; they no longer need to open Canva for every post. Whether you keep both depends on how much custom design work your content needs. For most local businesses, Shoutly AI&rsquo;s image generation is sufficient on its own.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Will the AI content actually sound like my business?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes &mdash; and this is one of the most common things people are surprised by after setup. The Brand Kit&rsquo;s voice feature lets you define your tone (Warm, Local, Professional, Energetic, Playful) and provide example sentences from content you&rsquo;ve already written. The AI internalises this and writes in your voice &mdash; not a generic corporate tone. It also uses your business name, your city, your specific offerings, and your keywords in every post. Most businesses say the AI content needs minimal editing by month 2 because the system has learned what they want. You&rsquo;re always able to edit anything before approving.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">What if I don&rsquo;t like what the AI generates?<span class="faq-arr">+</span></button><div class="faq-a"><p>Every piece of AI-generated content is editable before you approve it. Open any post in the bulk queue, edit the caption, swap the image, change the time, or remove the post entirely. You&rsquo;re never locked into AI output &mdash; it&rsquo;s a starting point, not a final decision. Most businesses find they approve 80&ndash;90% of posts without changes and lightly edit the remaining 10&ndash;20%. Over time, as the AI learns your preferences from your edits, that edit rate drops further.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Is Shoutly AI more expensive than a scheduler?<span class="faq-arr">+</span></button><div class="faq-a"><p>Shoutly AI is &#8377;10,000/month (~$119/month). Popular schedulers range from &#8377;1,000&ndash;4,000/month for basic plans, but those only cover scheduling &mdash; you still need Canva Pro (~&#8377;4,000/month), possibly ChatGPT Plus (~&#8377;1,700/month), and the time cost of doing everything manually. The total cost of a typical &ldquo;scheduler + Canva + ChatGPT&rdquo; stack is comparable to Shoutly AI &mdash; but with significantly more manual work. For agencies billing clients for social media management, Shoutly AI pays for itself within the first client account it enables them to take on without additional headcount.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" aria-labelledby="cta-h2">
+  <div class="wrap">
+    <h2 id="cta-h2">You&rsquo;ve seen the difference.<br><span class="grad">Try it yourself, free.</span></h2>
+    <p>14-day free trial. The whole platform &mdash; AI content, brand kit, scheduler, analytics, all 10 platforms. No credit card. No commitment.</p>
+    <div class="cta-btns">
+      <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-xl">Start free trial <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+      <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-xl">Book a live demo</a>
+    </div>
+    <div class="cta-trust">
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Creates content automatically</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>All 10 platforms</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>No credit card required</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>&#8377;10,000/month &mdash; everything included</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>4.9&#9733; &mdash; 41,000+ businesses</span>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="sf-inner">
+
+    <!-- Brand blurb + newsletter -->
+    <div class="sf-newsletter">
+      <div class="sf-brand">
+        <a href="/" class="sf-brand-logo-wrap"><img class="sf-brand-logo" src="/images/logo-master-white.png" alt="Shoutly AI logo"></a>
+        <p>Shoutly AI transforms one idea into 365 days of ready-to-publish social media content. Create, schedule, and grow your brand across every major platform.</p>
+        <div class="sf-plats">
+          <div class="sf-plats-label">Post across 10 platforms</div>
+          <div class="sf-plats-row">
+            <div class="sf-plat-ico" style="background:#000000"><i class="fa-brands fa-x-twitter" style="color:#fff;font-size:16px"></i></div>
+            <div class="sf-plat-ico" style="background:#0A66C2"><i class="fa-brands fa-linkedin-in" style="color:#fff;font-size:16px"></i></div>
+            <div class="sf-plat-ico" style="background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)"><i class="fa-brands fa-instagram" style="color:#fff;font-size:16px"></i></div>
+            <div class="sf-plat-ico" style="background:#010101"><i class="fa-brands fa-tiktok" style="color:#fff;font-size:16px"></i></div>
+            <div class="sf-plat-ico" style="background:#1877F2"><i class="fa-brands fa-facebook-f" style="color:#fff;font-size:16px"></i></div>
+            <div class="sf-plat-ico" style="background:#000000"><i class="fa-brands fa-threads" style="color:#fff;font-size:16px"></i></div>
+            <div class="sf-plat-ico" style="background:#0085ff"><i class="fa-brands fa-bluesky" style="color:#fff;font-size:16px"></i></div>
+            <div class="sf-plat-ico" style="background:#FF0000"><i class="fa-brands fa-youtube" style="color:#fff;font-size:16px"></i></div>
+            <div class="sf-plat-ico" style="background:#E60023"><i class="fa-brands fa-pinterest-p" style="color:#fff;font-size:16px"></i></div>
+            <div class="sf-plat-ico" style="background:#FFFC00"><i class="fa-brands fa-snapchat" style="color:#000;font-size:16px"></i></div>
+          </div>
+        </div>
+        <span class="sf-status" style="margin-top:14px;display:inline-flex">
+          <span class="sf-status-dot"></span>
+          All systems operational — <span style="text-decoration:underline">status</span>
+        </span>
+      </div>
+      <div class="sf-newsletter-box">
+        <div class="sf-nl-title">The weekly signal</div>
+        <p class="sf-nl-sub">AI marketing tactics, product updates, and new feature releases. Sent Thursdays.</p>
+        <div class="sf-nl-form">
+          <input type="email" id="sf-nl-email" placeholder="you@company.com">
+          <button type="button" id="sf-nl-btn">Subscribe</button>
+        </div>
+        <p id="sf-nl-msg" style="font-size:12px;font-weight:500;color:#6b7280;margin-top:12px">No spam. Unsubscribe anytime.</p>
+      </div>
+    </div>
+
+    <!-- Link columns -->
+    <div class="sf-cols">
+      <div class="sf-col">
+        <div class="sf-col-title">Product</div>
+        <a href="/#generator">AI Content Generator</a>
+        <a href="/#generator">AI Image Generator</a>
+        <a href="/#generator">AI Reel Generator</a>
+        <a href="/free-editorial">Content Calendar</a>
+        <a href="/pricing">Pricing</a>
+      </div>
+      <div class="sf-col">
+        <div class="sf-col-title">Solutions</div>
+        <a href="/solutions/local-businesses">Local Businesses</a>
+        <a href="/social-media-marketing-for-restaurants.html">Restaurants</a>
+        <a href="/social-media-marketing-for-gyms.html">Fitness</a>
+        <a href="/social-media-marketing-for-interior-designers.html">Interior Design</a>
+        <a href="/digital-marketing-for-real-estate-agents.html">Real Estate</a>
+      </div>
+      <div class="sf-col">
+        <div class="sf-col-title">Channels</div>
+        <a href="/channel/facebook">Facebook</a>
+        <a href="/channel/instagram">Instagram</a>
+        <a href="/channel/twitter-x">X</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">TikTok</a>
+      </div>
+      <div class="sf-col">
+        <div class="sf-col-title">Compare</div>
+        <a href="/compare/buffer-vs-shoutly-ai">Buffer vs Shoutly AI</a>
+        <a href="/compare/hootsuite-vs-shoutly-ai">Hootsuite vs Shoutly AI</a>
+        <a href="#">Later vs Shoutly AI</a>
+        <a href="#">Canva vs Shoutly AI</a>
+      </div>
+      <div class="sf-col">
+        <div class="sf-col-title">Resources</div>
+        <a href="https://blog.shoutlyai.com/" target="_blank" rel="noopener noreferrer">Blog</a>
+        <a href="/help-center">Help Center</a>
+        <a href="/#library">Image Library</a>
+        <a href="#">Affiliate Program</a>
+      </div>
+      <div class="sf-col">
+        <div class="sf-col-title">Company</div>
+        <a href="/about-us">About Us</a>
+        <a href="/careers">Careers</a>
+        <a href="/contact-us">Contact</a>
+        <a href="#">Brand Assets</a>
+      </div>
+    </div>
+
+    <!-- Trust & compliance -->
+    <div class="sf-trust">
+      <div class="sf-trust-title">Trust &amp; compliance</div>
+      <div class="sf-badges">
+        <span class="sf-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 2l8 3v6c0 5-3.4 8.4-8 11-4.6-2.6-8-6-8-11V5z"/></svg>Enterprise Security</span>
+        <span class="sf-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>SSL Secured</span>
+        <span class="sf-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>GDPR Ready</span>
+        <span class="sf-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>CCPA Compliant</span>
+        <span class="sf-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>DPDP Act Compliant</span>
+        <span class="sf-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>99.9% Uptime</span>
+        <span class="sf-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M8 6L3 12l5 6M16 6l5 6-5 6"/></svg>API Available</span>
+        <span class="sf-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 10h-1.26A8 8 0 108 20h10a5 5 0 000-10z"/></svg>AWS Cloud Hosted</span>
+        <span class="sf-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg>AI Powered</span>
+        <span class="sf-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M3 11a9 9 0 0118 0M3 11v7a2 2 0 002 2h1v-9H5a2 2 0 00-2 2zm18 0v7a2 2 0 01-2 2h-1v-9h1a2 2 0 012 2z"/></svg>24/7 Support</span>
+      </div>
+    </div>
+
+    <!-- Legal hub -->
+    <div class="sf-legal">
+      <div class="sf-legal-head">
+        <div class="t">Legal hub</div>
+        <p>Every policy governing how we handle your data, content, and account.</p>
+      </div>
+      <div class="sf-legal-links">
+        <a href="/policy">Privacy Policy</a><span class="sep">|</span>
+        <a href="/terms">Terms of Service</a><span class="sep">|</span>
+        <a href="/cookie">Cookie Policy</a><span class="sep">|</span>
+        <a href="/gdpr">GDPR</a><span class="sep">|</span>
+        <a href="/ccpa">CCPA</a><span class="sep">|</span>
+        <a href="/dpdp">DPDP Act</a><span class="sep">|</span>
+        <a href="/refunds">Refunds</a><span class="sep">|</span>
+        <a href="/security">Security</a><span class="sep">|</span>
+        <a href="/dmca">DMCA</a><span class="sep">|</span>
+        <a href="/eula">EULA</a>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="sf-bottom">
+      <p class="sf-copy">&copy; 2026 shoutlyai &mdash; Qubixel Technologies Private Limited. All rights reserved.<span class="sub">smart ai powering your social media for the next 365 days.</span></p>
+      <div class="sf-bottom-right">
+        <span class="muted">English ▾</span>
+        <span class="muted">Global ▾</span>
+        <a href="/sitemap.xml">Sitemap</a>
+        <div class="sf-social">
+          <a href="https://www.facebook.com/people/Shoutly-AI/61583485633639/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+          <a href="https://www.instagram.com/ai.shoutly/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://www.linkedin.com/company/shoutlyai/?viewAsMember=true" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+          <a href="https://x.com/shoutlyai" target="_blank" rel="noopener noreferrer" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="https://youtube.com/@shoutlyai" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<script>
+function faq(btn) {
+  var item = btn.closest('.faq-item');
+  var open = item.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(open));
+}
+if ('IntersectionObserver' in window) {
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+  }, { threshold: .06, rootMargin: '0px 0px -28px 0px' });
+  document.querySelectorAll('[data-r]').forEach(function(el) { obs.observe(el); });
+} else {
+  document.querySelectorAll('[data-r]').forEach(function(el) { el.classList.add('vis'); });
+}
+</script>
+<script src="/js/site-nav.js" defer></script>
+<script src="/js/site-footer.js" defer></script>
+</body>
+</html>
+

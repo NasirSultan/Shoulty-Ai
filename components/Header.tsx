@@ -64,8 +64,8 @@ const MEGA_MENUS: MegaMenu[] = [
             {
                 title: "Get oriented",
                 items: [
-                    { label: "Overview", href: "/", icon: LayoutGrid, desc: "See how the whole platform fits together." },
-                    { label: "Why Shoutly AI", href: "/#who-we-help", icon: Sparkles, desc: "What makes it different from a scheduler." },
+                    { label: "Overview", href: "/shoutlyai-overview.html", icon: LayoutGrid, desc: "See how the whole platform fits together." },
+                    { label: "Why Shoutly AI", href: "/shoutlyai-why-shoutly-ai.html", icon: Sparkles, desc: "What makes it different from a scheduler." },
                     { label: "What's new", icon: Volume2, desc: "Latest releases, shipped weekly.", badge: "NEW" },
                 ],
             },
@@ -207,7 +207,7 @@ const MEGA_MENUS: MegaMenu[] = [
                 items: [
                     { label: "Pricing Plans", href: "/pricing", icon: CreditCard, desc: "Start free. Upgrade when you outgrow it." },
                     { label: "Compare Plans", href: "/pricing", icon: Columns3, desc: "Every limit and feature, line by line." },
-                    { label: "Enterprise", icon: Landmark, desc: "SSO, SLAs, and a named contact." },
+                    { label: "Enterprise", href: "/shoutlyai-enterprise.html", icon: Landmark, desc: "SSO, SLAs, and a named contact." },
                     { label: "FAQs", href: "/pricing", icon: HelpCircle, desc: "Billing, seats, limits, and cancellation." },
                     { label: "Book a Demo", href: "/shoutlyai-demo.html", icon: CalendarCheck, desc: "30 minutes with a product specialist." },
                 ],

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Enterprise Plan &mdash; Shoutly AI for Large Teams, Agencies &amp; Brands</title>
+<meta name="description" content="Shoutly AI Enterprise: custom seats, unlimited brand kits, white-label reporting, SSO, dedicated account manager, SLA, and API access. Built for agencies managing 20+ clients and brands with 5+ team members.">
+<link rel="canonical" href="https://shoutlyai.com/enterprise">
+<meta property="og:title" content="Enterprise Plan &mdash; Shoutly AI">
+<meta property="og:description" content="Custom seats, white-label, SSO, dedicated support, and API access. Built for agencies and large teams that have outgrown standard plans.">
+<meta property="og:url" content="https://shoutlyai.com/enterprise">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shoutly AI">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:#0f0f0f;-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+:root{
+  --orange:#f97316;
+  --pg:linear-gradient(135deg,#f97316,#ea580c);
+  --dark:#08021a;
+  --glow:rgba(249,115,22,.28);
+  --ink:#0f0f0f;--ink2:#262626;--ink3:#525252;--ink4:#a3a3a3;
+  --surface:#f7f7fb;--border:#e5e4f0;--border2:#ccc9ea;
+  --green:#16a34a;
+  --max:1200px;--r:8px;--r2:12px;--r3:16px;--r4:22px;--r5:30px;
+}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:62px;display:flex;align-items:center;transition:box-shadow .2s}
+.nav.scrolled{box-shadow:0 1px 14px rgba(0,0,0,.07)}
+.nav-inner{display:flex;align-items:center;width:100%;max-width:var(--max);margin:0 auto;padding:0 28px;gap:8px}
+.nav-logo{display:flex;align-items:center;gap:9px;font-size:15.5px;font-weight:800;color:var(--ink)}
+.nav-mark{width:32px;height:32px;border-radius:9px;background:var(--pg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-mark svg{width:16px;height:16px;fill:#fff}
+.feat-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#fff7ed,#ffedd5);border:1px solid #fed7aa;color:var(--orange);border-radius:100px;padding:3px 10px;font-size:11.5px;font-weight:700;margin-left:6px}
+.nav-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:600;border-radius:var(--r2);padding:9px 20px;transition:all .15s;cursor:pointer;border:1.5px solid transparent;white-space:nowrap}
+.btn-ghost{color:var(--ink2);border-color:var(--border2)}.btn-ghost:hover{background:var(--surface)}
+.btn-primary{background:var(--pg);color:#fff;border:none;box-shadow:0 2px 10px var(--glow)}.btn-primary:hover{opacity:.88;transform:translateY(-1px)}
+.btn-white{background:#fff;color:var(--orange);font-weight:700;border:none}.btn-white:hover{background:#fff7ed;transform:translateY(-1px)}
+.btn-wh-ghost{background:transparent;color:rgba(255,255,255,.8);border:1.5px solid rgba(255,255,255,.3)}.btn-wh-ghost:hover{border-color:rgba(255,255,255,.65);color:#fff}
+.btn-lg{padding:13px 28px;font-size:15.5px;font-weight:700;border-radius:var(--r3)}
+.btn-xl{padding:15px 34px;font-size:16px;font-weight:700;border-radius:var(--r3)}
+.btn-sm{padding:7px 16px;font-size:13px}
+
+/* BC */
+.bc{background:var(--surface);border-bottom:1px solid var(--border);padding:11px 0}
+.bc-inner{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink4)}
+.bc-inner a{color:var(--ink4)}.bc-inner a:hover{color:var(--orange)}
+
+/* HERO */
+.hero{background:var(--dark);padding:90px 0 80px;position:relative;overflow:hidden}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none}
+.hero-orb-1{width:800px;height:800px;background:radial-gradient(circle,rgba(249,115,22,.45),transparent 68%);top:-300px;left:-200px}
+.hero-orb-2{width:500px;height:500px;background:radial-gradient(circle,rgba(234,88,12,.26),transparent 65%);bottom:-100px;right:-100px}
+.hero-grid{display:grid;grid-template-columns:1fr 420px;gap:60px;align-items:center;position:relative;z-index:1}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(249,115,22,.16);border:1px solid rgba(249,115,22,.38);border-radius:100px;padding:5px 14px 5px 9px;font-size:12.5px;font-weight:600;color:#fdba74;margin-bottom:22px}
+.ey-dot{width:7px;height:7px;border-radius:50%;background:#fb923c;animation:pulse 2.2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+.hero-h1{font-family:'Inter Tight',sans-serif;font-size:clamp(36px,5vw,62px);font-weight:900;letter-spacing:-3px;line-height:.94;color:#fff;margin-bottom:20px}
+.hero-h1 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(15px,1.6vw,18px);color:rgba(255,255,255,.55);line-height:1.75;margin-bottom:32px;max-width:520px}
+.hero-proof-list{display:flex;flex-direction:column;gap:9px;margin-bottom:36px}
+.hp{display:flex;align-items:center;gap:9px;font-size:14px;color:rgba(255,255,255,.65)}
+.hp-ico{width:20px;height:20px;border-radius:50%;background:rgba(249,115,22,.2);border:1px solid rgba(249,115,22,.4);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;color:#fdba74}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap}
+
+/* CONTACT CARD */
+.contact-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:var(--r4);padding:32px;backdrop-filter:blur(10px)}
+.cc-title{font-size:16px;font-weight:800;color:#fff;margin-bottom:6px}
+.cc-sub{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:24px;line-height:1.6}
+.cc-field{margin-bottom:14px}
+.cc-label{font-size:11.5px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:6px}
+.cc-input{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:var(--r2);padding:10px 14px;font-size:14px;color:#fff;font-family:inherit;transition:border-color .16s;outline:none}
+.cc-input::placeholder{color:rgba(255,255,255,.25)}
+.cc-input:focus{border-color:rgba(249,115,22,.6);background:rgba(249,115,22,.08)}
+.cc-select{appearance:none;cursor:pointer}
+.cc-btn{width:100%;background:var(--pg);color:#fff;border:none;border-radius:var(--r2);padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:6px;transition:all .16s;display:flex;align-items:center;justify-content:center;gap:7px}
+.cc-btn:hover{opacity:.88;transform:translateY(-1px)}
+.cc-note{font-size:11.5px;color:rgba(255,255,255,.3);text-align:center;margin-top:10px;line-height:1.5}
+.cc-note a{color:rgba(255,255,255,.5)}.cc-note a:hover{color:#fdba74}
+
+/* SOCIAL PROOF STRIP */
+.proof-strip{background:rgba(255,255,255,.03);border-top:1px solid rgba(255,255,255,.07);padding:24px 0;position:relative;z-index:1}
+.proof-inner{display:flex;align-items:center;gap:40px;flex-wrap:wrap;justify-content:center}
+.proof-item{text-align:center}
+.pi-n{font-family:'Inter Tight',sans-serif;font-size:28px;font-weight:900;color:#fff;letter-spacing:-1.5px;line-height:1;background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.pi-l{font-size:11.5px;color:rgba(255,255,255,.38);font-weight:600;margin-top:2px}
+
+/* SECTIONS */
+.section{padding:88px 0}
+.section-alt{background:var(--surface)}
+.sec-ey{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--orange);margin-bottom:10px;display:block}
+.sec-h2{font-family:'Inter Tight',sans-serif;font-size:clamp(26px,3.3vw,42px);font-weight:900;letter-spacing:-1.5px;color:var(--ink);line-height:1.05;margin-bottom:12px}
+.sec-p{font-size:17px;color:var(--ink2);line-height:1.72;max-width:600px}
+.center{text-align:center}.center .sec-p{margin:0 auto}
+
+/* WHO IS IT FOR */
+.who-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.who-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:28px;transition:all .2s}
+.who-card:hover{border-color:var(--orange);box-shadow:0 6px 24px rgba(249,115,22,.1);transform:translateY(-2px)}
+.wc-ico{font-size:32px;margin-bottom:12px}
+.wc-title{font-size:16px;font-weight:800;color:var(--ink);margin-bottom:8px;letter-spacing:-.3px}
+.wc-desc{font-size:13.5px;color:var(--ink3);line-height:1.65;margin-bottom:14px}
+.wc-tags{display:flex;flex-wrap:wrap;gap:5px}
+.wc-tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;background:var(--surface);border:1px solid var(--border);color:var(--ink4)}
+
+/* WHAT'S INCLUDED */
+.inc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.inc-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:26px;display:flex;gap:16px;transition:all .18s}
+.inc-card:hover{border-color:var(--orange);box-shadow:0 4px 16px rgba(249,115,22,.08)}
+.inc-ico{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.inc-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.inc-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+.inc-tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--orange);background:#fff7ed;border-radius:100px;padding:2px 8px;margin-top:7px}
+
+/* PLAN COMPARISON */
+.plan-compare{border:1px solid var(--border);border-radius:var(--r4);overflow:hidden}
+.pc-head{display:grid;grid-template-columns:2fr 1fr 1fr 1.2fr;background:var(--surface);border-bottom:1px solid var(--border)}
+.pc-head-cell{padding:16px 20px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;border-right:1px solid var(--border)}
+.pc-head-cell:last-child{border-right:none;background:var(--pg);color:#fff}
+.pc-head-cell:not(:last-child){color:var(--ink3)}
+.pc-row{display:grid;grid-template-columns:2fr 1fr 1fr 1.2fr;border-bottom:1px solid var(--border)}
+.pc-row:last-child{border-bottom:none}
+.pc-row:hover{background:#fff8f0}
+.pc-cell{padding:12px 20px;font-size:13.5px;border-right:1px solid var(--border);display:flex;align-items:center}
+.pc-cell:last-child{border-right:none;background:rgba(249,115,22,.03)}
+.pc-feat{font-weight:600;color:var(--ink)}
+.pc-yes{color:var(--green);font-weight:700;font-size:17px}
+.pc-no{color:var(--ink4);font-size:16px}
+.pc-custom{font-size:12.5px;font-weight:700;color:var(--orange)}
+.pc-val{font-size:13px;font-weight:600;color:var(--ink3)}
+
+/* PROCESS STEPS */
+.process-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
+.process-grid::before{content:'';position:absolute;top:28px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,var(--border),var(--border),transparent)}
+.ps-step{padding:0 16px;text-align:center;position:relative;z-index:1}
+.ps-num{width:56px;height:56px;border-radius:50%;background:#fff;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-family:'Inter Tight',sans-serif;font-size:18px;font-weight:900;background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;box-shadow:0 2px 12px rgba(249,115,22,.15)}
+.ps-title{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.ps-desc{font-size:13px;color:var(--ink3);line-height:1.6}
+.ps-time{display:inline-flex;font-size:11px;font-weight:700;color:var(--orange);background:#fff7ed;border-radius:100px;padding:2px 8px;margin-top:6px}
+
+/* TESTIMONIALS */
+.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.test-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:28px;display:flex;flex-direction:column;transition:all .18s}
+.test-card:hover{border-color:var(--orange);box-shadow:0 6px 24px rgba(249,115,22,.08);transform:translateY(-2px)}
+.test-stars{color:#f59e0b;font-size:13px;letter-spacing:2px;margin-bottom:13px}
+.test-quote{font-size:14px;color:var(--ink2);line-height:1.76;font-style:italic;flex:1;margin-bottom:18px}
+.test-author{display:flex;align-items:center;gap:11px}
+.ta-av{width:40px;height:40px;border-radius:50%;background:var(--pg);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+.ta-name{font-size:13.5px;font-weight:700;color:var(--ink);display:block}
+.ta-biz{font-size:12px;color:var(--ink4)}
+
+/* FAQ */
+.faq-list{border:1px solid var(--border);border-radius:var(--r4);overflow:hidden;max-width:760px;margin:40px auto 0}
+.faq-item{border-bottom:1px solid var(--border)}.faq-item:last-child{border-bottom:none}
+.faq-q{width:100%;padding:18px 22px;background:#fff;border:none;display:flex;align-items:center;justify-content:space-between;text-align:left;cursor:pointer;font-size:15px;font-weight:600;color:var(--ink);gap:14px;transition:background .14s;font-family:inherit}
+.faq-q:hover{background:var(--surface)}
+.faq-arr{width:24px;height:24px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--ink4);flex-shrink:0;transition:all .22s}
+.faq-item.open .faq-arr{background:var(--pg);border-color:transparent;color:#fff;transform:rotate(45deg)}
+.faq-a{display:none;padding:0 22px 18px;font-size:14.5px;color:var(--ink2);line-height:1.75;background:#fff}
+.faq-item.open .faq-a{display:block}
+
+/* BOTTOM CTA */
+.cta-section{background:var(--dark);padding:96px 0;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 65% at 50% 110%,rgba(249,115,22,.3) 0%,transparent 70%);pointer-events:none}
+.cta-grid{display:grid;grid-template-columns:1fr 400px;gap:64px;align-items:center;position:relative;z-index:1}
+.cta-h2{font-family:'Inter Tight',sans-serif;font-size:clamp(28px,4vw,48px);font-weight:900;letter-spacing:-2px;line-height:1.04;color:#fff;margin-bottom:14px}
+.cta-h2 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-p{font-size:16.5px;color:rgba(255,255,255,.55);line-height:1.72;margin-bottom:28px}
+.cta-trust-list{display:flex;flex-direction:column;gap:8px}
+.cta-trust-item{display:flex;align-items:center;gap:9px;font-size:13.5px;color:rgba(255,255,255,.6)}
+.cta-trust-ico{color:#4ade80;font-size:15px;flex-shrink:0}
+.cta-form-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:var(--r4);padding:32px}
+
+/* FOOTER */
+.footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.07);padding:32px 0}
+.ft-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ft-logo{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:800;color:rgba(255,255,255,.6)}
+.ft-links{display:flex;gap:18px;flex-wrap:wrap}
+.ft-links a{font-size:13px;color:rgba(255,255,255,.3);transition:color .14s}.ft-links a:hover{color:rgba(255,255,255,.65)}
+.ft-copy{font-size:12px;color:rgba(255,255,255,.2);margin-top:14px}
+
+@media(max-width:1024px){
+  .hero-grid{grid-template-columns:1fr;gap:44px}
+  .contact-card{max-width:480px}
+  .who-grid{grid-template-columns:1fr 1fr}
+  .inc-grid{grid-template-columns:1fr}
+  .test-grid{grid-template-columns:1fr 1fr}
+  .process-grid{grid-template-columns:1fr 1fr;gap:32px}
+  .process-grid::before{display:none}
+  .cta-grid{grid-template-columns:1fr;gap:40px}
+  .pc-head,.pc-row{grid-template-columns:1.6fr 1fr 1fr 1.2fr}
+}
+@media(max-width:720px){
+  .nav-right .btn-ghost{display:none}
+  .who-grid,.test-grid,.process-grid{grid-template-columns:1fr}
+  .section{padding:60px 0}
+  .wrap{padding:0 18px}
+  .pc-head,.pc-row{grid-template-columns:1.4fr 0 0 1fr}
+  .pc-cell:nth-child(2),.pc-cell:nth-child(3),.pc-head-cell:nth-child(2),.pc-head-cell:nth-child(3){display:none}
+  .proof-inner{gap:24px}
+}
+@media(prefers-reduced-motion:reduce){.ey-dot{animation:none}}
+[data-r]{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}
+[data-r].vis{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<main>
+
+<!-- HERO -->
+<section class="hero" aria-labelledby="hero-h1">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-eyebrow"><span class="ey-dot"></span>Enterprise Plan &mdash; Custom pricing</div>
+        <h1 class="hero-h1" id="hero-h1">Built for teams<br>that have <span class="grad">outgrown<br>standard plans.</span></h1>
+        <p class="hero-sub">For agencies managing 20+ clients, brands with multiple locations, and large teams that need custom seats, white-label reporting, SSO, API access, and a dedicated account manager &mdash; not a help desk ticket.</p>
+        <div class="hero-proof-list">
+          <div class="hp"><div class="hp-ico">&#10003;</div>Unlimited Brand Kits &mdash; one per client or location</div>
+          <div class="hp"><div class="hp-ico">&#10003;</div>Custom team seats &mdash; pay for exactly what you need</div>
+          <div class="hp"><div class="hp-ico">&#10003;</div>White-label platform &mdash; your logo, your domain</div>
+          <div class="hp"><div class="hp-ico">&#10003;</div>Single Sign-On (SSO) &mdash; SAML 2.0 &amp; Google Workspace</div>
+          <div class="hp"><div class="hp-ico">&#10003;</div>Dedicated account manager &mdash; direct line, no queue</div>
+          <div class="hp"><div class="hp-ico">&#10003;</div>API access &mdash; integrate Shoutly AI into your own stack</div>
+          <div class="hp"><div class="hp-ico">&#10003;</div>SLA &mdash; 99.9% uptime guaranteed, contractually</div>
+        </div>
+        <div class="hero-ctas">
+          <a href="mailto:enterprise@shoutlyai.com?subject=Enterprise%20Plan%20Enquiry" class="btn btn-white btn-lg">Talk to sales <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+          <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-lg">Book a demo</a>
+        </div>
+      </div>
+
+      <!-- CONTACT CARD -->
+      <div>
+        <div class="contact-card">
+          <div class="cc-title">Get Enterprise pricing</div>
+          <div class="cc-sub">Tell us about your team. We&rsquo;ll send a custom quote within 1 business day.</div>
+          <div class="cc-field">
+            <label class="cc-label" for="e-name">Your name</label>
+            <input class="cc-input" id="e-name" type="text" placeholder="Anjali Mehta">
+          </div>
+          <div class="cc-field">
+            <label class="cc-label" for="e-email">Work email</label>
+            <input class="cc-input" id="e-email" type="email" placeholder="anjali@youragency.com">
+          </div>
+          <div class="cc-field">
+            <label class="cc-label" for="e-company">Company / Agency name</label>
+            <input class="cc-input" id="e-company" type="text" placeholder="Growth Media Agency">
+          </div>
+          <div class="cc-field">
+            <label class="cc-label" for="e-team">Team size</label>
+            <select class="cc-input cc-select" id="e-team">
+              <option value="" disabled selected style="background:#0c0820">Select team size</option>
+              <option value="5-10" style="background:#0c0820">5&ndash;10 members</option>
+              <option value="11-25" style="background:#0c0820">11&ndash;25 members</option>
+              <option value="26-50" style="background:#0c0820">26&ndash;50 members</option>
+              <option value="51-100" style="background:#0c0820">51&ndash;100 members</option>
+              <option value="100+" style="background:#0c0820">100+ members</option>
+            </select>
+          </div>
+          <div class="cc-field">
+            <label class="cc-label" for="e-clients">Clients / Brands managed</label>
+            <select class="cc-input cc-select" id="e-clients">
+              <option value="" disabled selected style="background:#0c0820">Select number of clients</option>
+              <option value="10-20" style="background:#0c0820">10&ndash;20 clients</option>
+              <option value="21-50" style="background:#0c0820">21&ndash;50 clients</option>
+              <option value="51-100" style="background:#0c0820">51&ndash;100 clients</option>
+              <option value="100+" style="background:#0c0820">100+ clients</option>
+            </select>
+          </div>
+          <button class="cc-btn" onclick="submitEnquiry()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+            Get my custom quote
+          </button>
+          <div class="cc-note">Or email us directly: <a href="mailto:enterprise@shoutlyai.com">enterprise@shoutlyai.com</a><br>Response within 1 business day &bull; No commitment required</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROOF STRIP -->
+  <div class="proof-strip">
+    <div class="wrap">
+      <div class="proof-inner">
+        <div class="proof-item"><div class="pi-n">41K+</div><div class="pi-l">Businesses on platform</div></div>
+        <div class="proof-item"><div class="pi-n">250+</div><div class="pi-l">Enterprise agencies</div></div>
+        <div class="proof-item"><div class="pi-n">10</div><div class="pi-l">Platforms integrated</div></div>
+        <div class="proof-item"><div class="pi-n">99.9%</div><div class="pi-l">Uptime SLA</div></div>
+        <div class="proof-item"><div class="pi-n">4.9&#9733;</div><div class="pi-l">Average rating</div></div>
+        <div class="proof-item"><div class="pi-n">&lt;4hr</div><div class="pi-l">Enterprise support response</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IS IT FOR -->
+<section class="section" aria-labelledby="who-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:52px">
+      <span class="sec-ey">Who Enterprise is built for</span>
+      <h2 class="sec-h2" id="who-h2">Three types of organisations that need Enterprise.</h2>
+      <p class="sec-p">Enterprise isn&rsquo;t a bigger version of the standard plan. It&rsquo;s a completely different operational setup &mdash; built for teams where the standard plan&rsquo;s limits are the bottleneck, not the features.</p>
+    </div>
+    <div class="who-grid">
+      <div class="who-card">
+        <div class="wc-ico">&#128188;</div>
+        <div class="wc-title">Large Social Media Agencies</div>
+        <div class="wc-desc">Managing 20+ client accounts with 5+ team members across content creation, scheduling, reporting, and client approvals. You need isolated workspaces per client, role-based permissions so junior staff can&rsquo;t accidentally publish to the wrong account, white-label reports your clients think came from your own tool, and a single dashboard your entire team operates from simultaneously.</div>
+        <div class="wc-tags">
+          <span class="wc-tag">20+ clients</span>
+          <span class="wc-tag">5+ team seats</span>
+          <span class="wc-tag">White-label</span>
+          <span class="wc-tag">Client approval workflows</span>
+        </div>
+      </div>
+      <div class="who-card">
+        <div class="wc-ico">&#127981;</div>
+        <div class="wc-title">Multi-Location Brands &amp; Franchises</div>
+        <div class="wc-desc">Brands with 10+ locations &mdash; restaurant chains, gym franchises, retail stores, hotel groups &mdash; where each location needs its own social accounts, its own posting schedule, and its own local content, but all within consistent brand guardrails set by the central marketing team. Enterprise lets your HQ set brand rules that local managers can&rsquo;t override, while giving each location their own content calendar.</div>
+        <div class="wc-tags">
+          <span class="wc-tag">10+ locations</span>
+          <span class="wc-tag">Central brand control</span>
+          <span class="wc-tag">Local content calendars</span>
+          <span class="wc-tag">Role-based access</span>
+        </div>
+      </div>
+      <div class="who-card">
+        <div class="wc-ico">&#127970;</div>
+        <div class="wc-title">Enterprise Brands &amp; In-House Teams</div>
+        <div class="wc-desc">Large companies with in-house marketing teams managing multiple sub-brands, product lines, or regional markets simultaneously. You need SSO so your IT team controls access, audit logs for compliance, API access to integrate Shoutly AI into your existing marketing stack, and a dedicated account manager who knows your business &mdash; not a shared support inbox.</div>
+        <div class="wc-tags">
+          <span class="wc-tag">SSO &amp; SAML 2.0</span>
+          <span class="wc-tag">Audit logs</span>
+          <span class="wc-tag">API access</span>
+          <span class="wc-tag">Dedicated AM</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT'S INCLUDED -->
+<section class="section section-alt" aria-labelledby="inc-h2" data-r>
+  <div class="wrap">
+    <div style="margin-bottom:52px">
+      <span class="sec-ey">Enterprise features</span>
+      <h2 class="sec-h2" id="inc-h2">Everything in the standard plan &mdash; plus everything large teams need.</h2>
+      <p class="sec-p">Enterprise includes every feature from the standard plan (all AI tools, all 10 platforms, full analytics, brand kit, brand assets, bulk scheduling) plus these additional capabilities built specifically for large teams and agencies.</p>
+    </div>
+    <div class="inc-grid">
+
+      <div class="inc-card">
+        <div class="inc-ico" style="background:linear-gradient(135deg,#fff7ed,#ffedd5)">&#128101;</div>
+        <div>
+          <div class="inc-title">Custom team seats</div>
+          <div class="inc-desc">Add exactly the number of seats your team needs &mdash; no forced bundles. Pay for 7 seats, 14 seats, or 200 seats. Assign roles: Admin, Manager, Creator, Viewer, or Client. Role-based permissions control what each team member can see, edit, approve, and publish. Junior staff get Creator access; clients get read-only Viewer access; senior staff get Approval authority.</div>
+          <span class="inc-tag">Role-based access control</span>
+        </div>
+      </div>
+
+      <div class="inc-card">
+        <div class="inc-ico" style="background:linear-gradient(135deg,#fff7ed,#ffedd5)">&#128218;</div>
+        <div>
+          <div class="inc-title">Unlimited workspaces &mdash; full client isolation</div>
+          <div class="inc-desc">Create a completely isolated workspace for every client or brand. Each workspace has its own Brand Kit, content calendar, analytics, brand assets, and team access. There is zero cross-contamination between workspaces &mdash; a team member on Client A&rsquo;s workspace cannot see or access Client B. Clients can be granted view-only access to their own workspace for direct approval without needing a Shoutly AI seat.</div>
+          <span class="inc-tag">Zero brand bleed between clients</span>
+        </div>
+      </div>
+
+      <div class="inc-card">
+        <div class="inc-ico" style="background:linear-gradient(135deg,#fff7ed,#ffedd5)">&#127775;</div>
+        <div>
+          <div class="inc-title">White-label platform</div>
+          <div class="inc-desc">Run Shoutly AI under your own brand. Your agency logo replaces Shoutly AI in the interface. Your domain (e.g. <em>app.youragency.com</em>) serves the platform. Custom colour scheme matches your brand. Email notifications come from your domain. Client approval links show your branding, not Shoutly AI&rsquo;s. Your clients think they&rsquo;re using a proprietary tool you built &mdash; because to them, they are.</div>
+          <span class="inc-tag">Custom domain + logo + colours</span>
+        </div>
+      </div>
+
+      <div class="inc-card">
+        <div class="inc-ico" style="background:linear-gradient(135deg,#fff7ed,#ffedd5)">&#128274;</div>
+        <div>
+          <div class="inc-title">Single Sign-On (SSO)</div>
+          <div class="inc-desc">Authenticate your entire team through your organisation&rsquo;s existing identity provider. Supports SAML 2.0 (Okta, Azure AD, OneLogin, Ping Identity) and Google Workspace SSO. Team members use their existing company credentials to log in &mdash; no separate password management. When a team member leaves, revoking access in your identity provider instantly removes their Shoutly AI access. IT-managed, fully auditable.</div>
+          <span class="inc-tag">SAML 2.0 &bull; Okta &bull; Azure AD &bull; Google</span>
+        </div>
+      </div>
+
+      <div class="inc-card">
+        <div class="inc-ico" style="background:linear-gradient(135deg,#fff7ed,#ffedd5)">&#128241;</div>
+        <div>
+          <div class="inc-title">Dedicated account manager</div>
+          <div class="inc-desc">A named person at Shoutly AI whose job is your account. Not a shared inbox. Not a rotating support team. One person who knows your clients, your workflows, your posting schedule, and your business goals. Available via direct email, WhatsApp, and monthly strategy calls. Onboards your team, trains new hires, and proactively flags issues before they affect your clients.</div>
+          <span class="inc-tag">Direct line &bull; Monthly strategy call</span>
+        </div>
+      </div>
+
+      <div class="inc-card">
+        <div class="inc-ico" style="background:linear-gradient(135deg,#fff7ed,#ffedd5)">&#128200;</div>
+        <div>
+          <div class="inc-title">Advanced analytics &amp; custom reporting</div>
+          <div class="inc-desc">Custom analytics dashboards per client with your agency&rsquo;s branding. Automated monthly PDF reports sent directly to clients on your schedule. Cross-client performance benchmarking &mdash; see which clients are growing fastest and identify patterns to apply across your roster. Custom date ranges, custom metric sets, and raw data export via CSV or API for your own BI tools.</div>
+          <span class="inc-tag">White-label PDF &bull; Automated delivery &bull; API export</span>
+        </div>
+      </div>
+
+      <div class="inc-card">
+        <div class="inc-ico" style="background:linear-gradient(135deg,#fff7ed,#ffedd5)">&#128196;</div>
+        <div>
+          <div class="inc-title">Client approval workflows</div>
+          <div class="inc-desc">Send clients a shareable approval link &mdash; no Shoutly AI account required on their end. They review the month&rsquo;s content calendar, leave comments on individual posts, approve or request changes, and get a notification when their content is published. Full approval audit trail: who approved what, and when. Removes the back-and-forth email chain from every client&rsquo;s content review.</div>
+          <span class="inc-tag">No client seat required &bull; Full audit trail</span>
+        </div>
+      </div>
+
+      <div class="inc-card">
+        <div class="inc-ico" style="background:linear-gradient(135deg,#fff7ed,#ffedd5)">&#128257;</div>
+        <div>
+          <div class="inc-title">API access &amp; integrations</div>
+          <div class="inc-desc">Full REST API access to integrate Shoutly AI into your existing marketing stack &mdash; CRM, project management, reporting tools, custom dashboards. Trigger content generation from external systems. Pull analytics data into your own BI platform. Push approved posts from your workflow into Shoutly AI&rsquo;s scheduler. Webhooks for real-time event notifications. Dedicated API rate limits, not shared with standard plan users.</div>
+          <span class="inc-tag">REST API &bull; Webhooks &bull; Custom rate limits</span>
+        </div>
+      </div>
+
+      <div class="inc-card">
+        <div class="inc-ico" style="background:linear-gradient(135deg,#fff7ed,#ffedd5)">&#128203;</div>
+        <div>
+          <div class="inc-title">Audit logs &amp; compliance</div>
+          <div class="inc-desc">Complete audit trail of every action in your account &mdash; who logged in, who created a post, who approved content, who published, who changed Brand Kit settings. 90-day log retention (extensible to 1 year). Exportable for compliance, internal review, or client dispute resolution. Essential for agencies where client trust and accountability are contractually required.</div>
+          <span class="inc-tag">90-day retention &bull; Exportable &bull; Compliance-ready</span>
+        </div>
+      </div>
+
+      <div class="inc-card">
+        <div class="inc-ico" style="background:linear-gradient(135deg,#fff7ed,#ffedd5)">&#128177;</div>
+        <div>
+          <div class="inc-title">99.9% uptime SLA &amp; priority infrastructure</div>
+          <div class="inc-desc">Contractual 99.9% uptime guarantee. Enterprise accounts run on dedicated infrastructure &mdash; your publishing queue is never delayed by traffic spikes from standard plan users. Priority support queue with a maximum 4-hour response time during business hours. Scheduled maintenance windows communicated 72 hours in advance. For agencies where a missed post is a client service failure, this matters.</div>
+          <span class="inc-tag">Contractual SLA &bull; Dedicated infrastructure</span>
+        </div>
+      </div>
+
+      <div class="inc-card">
+        <div class="inc-ico" style="background:linear-gradient(135deg,#fff7ed,#ffedd5)">&#128247;</div>
+        <div>
+          <div class="inc-title">Custom AI training &amp; brand voice refinement</div>
+          <div class="inc-desc">Work directly with Shoutly AI&rsquo;s team to fine-tune the AI for each client&rsquo;s brand voice using examples from their existing content. For agencies whose clients have highly specific tonal requirements &mdash; legal firms, luxury brands, government bodies &mdash; this produces AI output that requires minimal human editing before approval, saving your team hours per client per month.</div>
+          <span class="inc-tag">Custom AI &bull; Per-client voice training</span>
+        </div>
+      </div>
+
+      <div class="inc-card">
+        <div class="inc-ico" style="background:linear-gradient(135deg,#fff7ed,#ffedd5)">&#128218;</div>
+        <div>
+          <div class="inc-title">Priority onboarding &amp; team training</div>
+          <div class="inc-desc">Dedicated onboarding sessions for your entire team &mdash; not a self-serve help centre and 3-minute tutorial video. A Shoutly AI specialist runs live training sessions for your team, sets up all client workspaces, configures Brand Kits for your existing clients, and gets your first month of content approved before your official go-live date. New team member joined? Your account manager trains them directly.</div>
+          <span class="inc-tag">Live onboarding &bull; All client setup included</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PLAN COMPARISON -->
+<section class="section" aria-labelledby="comp-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">Plan comparison</span>
+      <h2 class="sec-h2" id="comp-h2">Standard plan vs Enterprise &mdash; what changes.</h2>
+      <p class="sec-p">Enterprise includes everything in the standard &#8377;10,000/month plan, plus the capabilities below that are exclusive to Enterprise accounts.</p>
+    </div>
+    <div class="plan-compare">
+      <div class="pc-head">
+        <div class="pc-head-cell">Capability</div>
+        <div class="pc-head-cell" style="text-align:center">Starter<br><span style="font-size:10px;opacity:.6;font-weight:500">&#8377;0 / free trial</span></div>
+        <div class="pc-head-cell" style="text-align:center">Standard<br><span style="font-size:10px;opacity:.6;font-weight:500">&#8377;10,000/mo</span></div>
+        <div class="pc-head-cell" style="text-align:center">Enterprise<br><span style="font-size:10px;opacity:.7;font-weight:500">Custom pricing</span></div>
+      </div>
+      <div class="pc-row"><div class="pc-cell pc-feat">All 5 AI tools</div><div class="pc-cell" style="justify-content:center"><span class="pc-val">Limited</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-yes">&#10003;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-yes">&#10003;</span></div></div>
+      <div class="pc-row"><div class="pc-cell pc-feat">All 10 platforms</div><div class="pc-cell" style="justify-content:center"><span class="pc-val">3 platforms</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-yes">&#10003;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-yes">&#10003;</span></div></div>
+      <div class="pc-row"><div class="pc-cell pc-feat">Analytics Dashboard</div><div class="pc-cell" style="justify-content:center"><span class="pc-val">Basic</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-yes">&#10003;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-yes">&#10003; + Custom</span></div></div>
+      <div class="pc-row"><div class="pc-cell pc-feat">Brand Kits</div><div class="pc-cell" style="justify-content:center"><span class="pc-val">1</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-val">10</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-custom">Unlimited</span></div></div>
+      <div class="pc-row"><div class="pc-cell pc-feat">Team seats</div><div class="pc-cell" style="justify-content:center"><span class="pc-val">1</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-val">3 seats</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-custom">Custom</span></div></div>
+      <div class="pc-row"><div class="pc-cell pc-feat">Client workspaces</div><div class="pc-cell" style="justify-content:center"><span class="pc-no">&mdash;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-val">10</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-custom">Unlimited</span></div></div>
+      <div class="pc-row"><div class="pc-cell pc-feat">White-label platform</div><div class="pc-cell" style="justify-content:center"><span class="pc-no">&mdash;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-no">&mdash;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-yes">&#10003;</span></div></div>
+      <div class="pc-row"><div class="pc-cell pc-feat">Single Sign-On (SSO)</div><div class="pc-cell" style="justify-content:center"><span class="pc-no">&mdash;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-no">&mdash;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-yes">&#10003;</span></div></div>
+      <div class="pc-row"><div class="pc-cell pc-feat">Role-based permissions</div><div class="pc-cell" style="justify-content:center"><span class="pc-no">&mdash;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-val">Basic</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-yes">&#10003; Advanced</span></div></div>
+      <div class="pc-row"><div class="pc-cell pc-feat">Client approval workflows</div><div class="pc-cell" style="justify-content:center"><span class="pc-no">&mdash;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-val">Basic</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-yes">&#10003; Full audit</span></div></div>
+      <div class="pc-row"><div class="pc-cell pc-feat">API access</div><div class="pc-cell" style="justify-content:center"><span class="pc-no">&mdash;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-no">&mdash;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-yes">&#10003;</span></div></div>
+      <div class="pc-row"><div class="pc-cell pc-feat">Audit logs</div><div class="pc-cell" style="justify-content:center"><span class="pc-no">&mdash;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-no">&mdash;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-yes">&#10003; 90 days</span></div></div>
+      <div class="pc-row"><div class="pc-cell pc-feat">Dedicated account manager</div><div class="pc-cell" style="justify-content:center"><span class="pc-no">&mdash;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-no">&mdash;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-yes">&#10003;</span></div></div>
+      <div class="pc-row"><div class="pc-cell pc-feat">Uptime SLA</div><div class="pc-cell" style="justify-content:center"><span class="pc-no">&mdash;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-no">&mdash;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-yes">&#10003; 99.9%</span></div></div>
+      <div class="pc-row"><div class="pc-cell pc-feat">Support response time</div><div class="pc-cell" style="justify-content:center"><span class="pc-val">48 hrs</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-val">24 hrs</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-yes">&#10003; &lt;4 hrs</span></div></div>
+      <div class="pc-row"><div class="pc-cell pc-feat">Custom AI voice training</div><div class="pc-cell" style="justify-content:center"><span class="pc-no">&mdash;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-no">&mdash;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-yes">&#10003;</span></div></div>
+      <div class="pc-row"><div class="pc-cell pc-feat">Priority onboarding</div><div class="pc-cell" style="justify-content:center"><span class="pc-no">&mdash;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-no">&mdash;</span></div><div class="pc-cell" style="justify-content:center"><span class="pc-yes">&#10003; Live sessions</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- GETTING STARTED PROCESS -->
+<section class="section section-alt" aria-labelledby="process-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:56px">
+      <span class="sec-ey">How it works</span>
+      <h2 class="sec-h2" id="process-h2">From first contact to fully live &mdash; in under a week.</h2>
+      <p class="sec-p">Enterprise onboarding is handled entirely by our team. You don&rsquo;t set up anything yourself. We configure your workspaces, migrate your client Brand Kits, and train your team before you go live.</p>
+    </div>
+    <div class="process-grid">
+      <div class="ps-step">
+        <div class="ps-num">1</div>
+        <div class="ps-title">Talk to sales</div>
+        <div class="ps-desc">Fill in the form or email enterprise@shoutlyai.com. Tell us about your team size, number of clients, and what you need. We&rsquo;ll schedule a 30-minute discovery call.</div>
+        <span class="ps-time">&#8987; Day 1</span>
+      </div>
+      <div class="ps-step">
+        <div class="ps-num">2</div>
+        <div class="ps-title">Custom quote</div>
+        <div class="ps-desc">Based on your team size, client count, and required features, we send a tailored proposal. Price is based on seats and workspaces &mdash; you only pay for what you actually need.</div>
+        <span class="ps-time">&#8987; Day 2&ndash;3</span>
+      </div>
+      <div class="ps-step">
+        <div class="ps-num">3</div>
+        <div class="ps-title">Dedicated onboarding</div>
+        <div class="ps-desc">Your account manager sets up all client workspaces, configures Brand Kits, enables SSO, and runs live training sessions for your team. Everything is ready before you go live.</div>
+        <span class="ps-time">&#8987; Day 4&ndash;6</span>
+      </div>
+      <div class="ps-step">
+        <div class="ps-num">4</div>
+        <div class="ps-title">Go live &amp; ongoing support</div>
+        <div class="ps-desc">Your team is live. Your account manager checks in weekly for the first month, monthly thereafter. Direct line for questions &mdash; no support tickets, no queue.</div>
+        <span class="ps-time">&#8987; Day 7+</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section" aria-labelledby="test-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">Enterprise customers</span>
+      <h2 class="sec-h2" id="test-h2">What agencies and large teams say about Enterprise.</h2>
+    </div>
+    <div class="test-grid">
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;The white-label feature alone justified the upgrade. Our clients log into what they believe is our proprietary social media management tool &mdash; with our logo, our domain, our colour scheme. We present it in pitches as a competitive differentiator. The fact that it&rsquo;s powered by Shoutly AI is our operational advantage, not theirs to question.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av">AM</div>
+          <div><span class="ta-name">Anjali Mehta</span><span class="ta-biz">Social Media Agency &middot; Delhi &bull; 22 clients</span></div>
+        </div>
+      </article>
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;We manage 47 restaurant locations across South India, each with their own Instagram, Facebook, and Google Business accounts. Before Shoutly AI Enterprise, that was 141 social accounts managed in a spreadsheet and a shared Hootsuite login. Now our HQ team controls brand guardrails centrally, each location manager handles their own calendar, and nothing goes out without our head of marketing&rsquo;s approval. It replaced a full operations headcount.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">SK</div>
+          <div><span class="ta-name">Suresh Kumar</span><span class="ta-biz">Restaurant Chain &middot; South India &bull; 47 locations</span></div>
+        </div>
+      </article>
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;Our IT team required SSO before any new tool could be onboarded company-wide. Shoutly AI Enterprise had SAML 2.0 and Azure AD integration. Setup took 2 hours. Every one of our 34 marketing team members now logs in through their existing Microsoft credentials. When someone leaves, IT revokes access in Azure and they&rsquo;re out of Shoutly AI immediately. This is what enterprise software should be.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av" style="background:linear-gradient(135deg,#0077b5,#0ea5e9)">NP</div>
+          <div><span class="ta-name">Neeraj Patel</span><span class="ta-biz">FMCG Brand &middot; Mumbai &bull; 34-member team</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section section-alt" aria-labelledby="faq-h2" data-r>
+  <div class="wrap center">
+    <span class="sec-ey">Enterprise questions</span>
+    <h2 class="sec-h2" id="faq-h2">Everything you need to know before talking to sales.</h2>
+    <div class="faq-list">
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">How is Enterprise priced?<span class="faq-arr">+</span></button><div class="faq-a"><p>Enterprise pricing is custom &mdash; based on the number of team seats, number of client workspaces, and which Enterprise-specific features you need (white-label, SSO, API access, audit logs, dedicated AM). Unlike per-user pricing models that penalise team growth, Shoutly AI Enterprise is negotiated as a flat annual contract covering your team and client count. We don&rsquo;t publish pricing because every Enterprise account is sized differently. Fill in the form or email enterprise@shoutlyai.com and we&rsquo;ll send a custom quote within 1 business day.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">What&rsquo;s the minimum team size for Enterprise?<span class="faq-arr">+</span></button><div class="faq-a"><p>Enterprise is designed for teams of 5+ members managing 20+ client accounts, or organisations that specifically need Enterprise-only features like SSO, white-label, API access, or a dedicated account manager. If you&rsquo;re a smaller agency on the standard plan but need one of these features, contact us &mdash; we can often accommodate specific Enterprise feature add-ons to standard accounts for growing teams.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Can clients access and approve content without a Shoutly AI account?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Enterprise includes shareable client approval links that require no Shoutly AI login. Send your client a link to their content calendar. They can review every post, leave comments, approve or request changes &mdash; all through a clean, white-labelled interface with your branding. A complete approval audit trail (who approved what, when) is maintained for your records. Client approvals are a common bottleneck in agency operations &mdash; Enterprise removes it.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Does Enterprise include a contract and SLA?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Enterprise is a contractual annual agreement that includes a 99.9% uptime SLA, dedicated infrastructure (your account runs on isolated resources, not shared infrastructure), a maximum 4-hour support response time during business hours, and 72-hour advance notice of scheduled maintenance windows. For agencies that have contractual obligations to their own clients around social media delivery, this is essential coverage.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">How long does onboarding take?<span class="faq-arr">+</span></button><div class="faq-a"><p>Most Enterprise accounts are fully live within 5&ndash;7 business days of contract signing. Your dedicated account manager handles all setup: creating client workspaces, configuring Brand Kits for existing clients, enabling SSO, setting up role-based permissions, and running live training sessions for your team. You don&rsquo;t need to set up anything yourself &mdash; we handle the migration from your existing tool. The first month of content for every client is typically approved and scheduled before your official go-live date.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Can I migrate from the standard plan to Enterprise?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Migration from a standard plan to Enterprise is seamless &mdash; all your existing Brand Kits, content calendars, analytics history, and brand assets migrate automatically. Your account manager handles the transition. There is no data loss and no interruption to your publishing schedule. Pro-rated credits from your remaining standard plan billing period are applied to your Enterprise contract.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="cta-section" aria-labelledby="cta-h2">
+  <div class="wrap">
+    <div class="cta-grid">
+      <div>
+        <h2 class="cta-h2">Ready to talk?<br><span class="grad">Let&rsquo;s build your<br>custom plan.</span></h2>
+        <p class="cta-p">No standard pricing page. No automated checkout. A real conversation about your team, your clients, and what you actually need &mdash; followed by a custom quote within 1 business day.</p>
+        <div class="cta-trust-list">
+          <div class="cta-trust-item"><span class="cta-trust-ico">&#10003;</span>Custom quote within 1 business day</div>
+          <div class="cta-trust-item"><span class="cta-trust-ico">&#10003;</span>Fully managed onboarding &mdash; your team is up in under a week</div>
+          <div class="cta-trust-item"><span class="cta-trust-ico">&#10003;</span>Dedicated account manager from day one</div>
+          <div class="cta-trust-item"><span class="cta-trust-ico">&#10003;</span>99.9% uptime SLA, contractually guaranteed</div>
+          <div class="cta-trust-item"><span class="cta-trust-ico">&#10003;</span>No commitment required to get a quote</div>
+        </div>
+      </div>
+      <div class="cta-form-card">
+        <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px">Talk to our Enterprise team</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:20px">Or email us directly at <a href="mailto:enterprise@shoutlyai.com" style="color:rgba(255,255,255,.55)">enterprise@shoutlyai.com</a></div>
+        <div class="cc-field"><label class="cc-label" for="b-name">Name</label><input class="cc-input" id="b-name" type="text" placeholder="Your name"></div>
+        <div class="cc-field"><label class="cc-label" for="b-email">Work email</label><input class="cc-input" id="b-email" type="email" placeholder="you@company.com"></div>
+        <div class="cc-field"><label class="cc-label" for="b-msg">Tell us about your team (optional)</label><textarea class="cc-input" id="b-msg" rows="3" placeholder="Number of clients, team size, tools you use today..." style="resize:vertical;min-height:72px"></textarea></div>
+        <button class="cc-btn" onclick="submitEnquiry()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+          Request Enterprise quote
+        </button>
+        <div class="cc-note">Response within 1 business day &bull; No commitment required</div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<script>
+function submitEnquiry() {
+  var btn = event.target.closest('button');
+  var orig = btn.innerHTML;
+  btn.innerHTML = '&#10003; Sent! We\u2019ll reply within 1 business day';
+  btn.style.background = 'linear-gradient(135deg,#16a34a,#15803d)';
+  btn.disabled = true;
+  setTimeout(function() { btn.innerHTML = orig; btn.style.background = ''; btn.disabled = false; }, 4000);
+}
+function faq(btn) {
+  var item = btn.closest('.faq-item');
+  var open = item.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(open));
+}
+if ('IntersectionObserver' in window) {
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+  }, { threshold: .06, rootMargin: '0px 0px -28px 0px' });
+  document.querySelectorAll('[data-r]').forEach(function(el) { obs.observe(el); });
+} else {
+  document.querySelectorAll('[data-r]').forEach(function(el) { el.classList.add('vis'); });
+}
+</script>
+</body>
+</html>

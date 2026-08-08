@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Platform Overview &mdash; See How Shoutly AI Works | Shoutly AI</title>
+<meta name="description" content="See how the whole Shoutly AI platform fits together. From AI content generation to multi-platform publishing, analytics, and brand management &mdash; everything explained in one place.">
+<link rel="canonical" href="https://shoutlyai.com/overview">
+<meta property="og:title" content="Platform Overview &mdash; Shoutly AI">
+<meta property="og:description" content="The complete Shoutly AI platform explained. AI tools, publishing, management, and analytics &mdash; see how everything fits together in one workflow.">
+<meta property="og:url" content="https://shoutlyai.com/overview">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shoutly AI">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@shoutlyai">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Shoutly AI Platform Overview","url":"https://shoutlyai.com/overview","description":"See how the entire Shoutly AI platform fits together — AI content creation, multi-platform publishing, brand management, and analytics — in one complete workflow overview."}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link rel="stylesheet" href="/css/site-nav.css">
+<link rel="stylesheet" href="/css/site-footer.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:#0f0f0f;-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+:root{
+  --p:#f97316;--pg:linear-gradient(135deg,#f97316,#ea580c);
+  --dark:#08021a;--glow:rgba(249,115,22,.28);
+  --ink:#0f0f0f;--ink2:#262626;--ink3:#525252;--ink4:#a3a3a3;
+  --surface:#f7f7fb;--border:#e5e4f0;--border2:#ccc9ea;
+  --max:1200px;--r:8px;--r2:12px;--r3:16px;--r4:22px;--r5:30px;
+}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:62px;display:flex;align-items:center;transition:box-shadow .2s}
+.nav.scrolled{box-shadow:0 1px 14px rgba(0,0,0,.07)}
+.nav-inner{display:flex;align-items:center;width:100%;max-width:var(--max);margin:0 auto;padding:0 28px;gap:8px}
+.nav-logo{display:flex;align-items:center;gap:9px;font-size:15.5px;font-weight:800;color:var(--ink)}
+.nav-mark{width:32px;height:32px;border-radius:9px;background:var(--pg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-mark svg{width:16px;height:16px;fill:#fff}
+.feat-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#fff7ed,#ffedd5);border:1px solid #fed7aa;color:var(--p);border-radius:100px;padding:3px 10px;font-size:11.5px;font-weight:700;margin-left:6px}
+.nav-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:600;border-radius:var(--r2);padding:9px 20px;transition:all .15s;cursor:pointer;border:1.5px solid transparent;white-space:nowrap}
+.btn-ghost{color:var(--ink2);border-color:var(--border2)}.btn-ghost:hover{background:var(--surface)}
+.btn-primary{background:var(--pg);color:#fff;border:none;box-shadow:0 2px 10px var(--glow)}.btn-primary:hover{opacity:.88;transform:translateY(-1px)}
+.btn-white{background:#fff;color:var(--p);font-weight:700;border:none}.btn-white:hover{background:#fff7ed;transform:translateY(-1px)}
+.btn-wh-ghost{background:transparent;color:rgba(255,255,255,.8);border:1.5px solid rgba(255,255,255,.3)}.btn-wh-ghost:hover{border-color:rgba(255,255,255,.65);color:#fff}
+.btn-lg{padding:13px 28px;font-size:15.5px;font-weight:700;border-radius:var(--r3)}
+.btn-xl{padding:15px 34px;font-size:16px;font-weight:700;border-radius:var(--r3)}
+.btn-sm{padding:7px 16px;font-size:13px}
+
+/* HERO */
+.hero{background:var(--dark);padding:80px 0 72px;position:relative;overflow:hidden;text-align:center}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none}
+.hero-orb-1{width:700px;height:700px;background:radial-gradient(circle,rgba(249,115,22,.45),transparent 68%);top:-280px;left:-160px}
+.hero-orb-2{width:500px;height:500px;background:radial-gradient(circle,rgba(234,88,12,.26),transparent 65%);top:-150px;right:-100px}
+.hero-inner{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:0 28px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(249,115,22,.16);border:1px solid rgba(249,115,22,.38);border-radius:100px;padding:5px 14px 5px 9px;font-size:12.5px;font-weight:600;color:#fdba74;margin-bottom:22px}
+.ey-dot{width:7px;height:7px;border-radius:50%;background:#fb923c;animation:pulse 2.2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+.hero-h1{font-family:'Inter Tight',sans-serif;font-size:clamp(36px,5.5vw,66px);font-weight:900;letter-spacing:-3px;line-height:.95;color:#fff;margin-bottom:22px}
+.hero-h1 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(15px,1.7vw,19px);color:rgba(255,255,255,.55);line-height:1.75;margin:0 auto 38px}
+.hero-ctas{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center}
+
+/* STICKY SECTION NAV */
+.snav{position:sticky;top:62px;z-index:1;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0}
+.snav-inner{display:flex;align-items:center;gap:0;max-width:var(--max);margin:0 auto;padding:0 28px;overflow-x:auto;scrollbar-width:none}
+.snav-inner::-webkit-scrollbar{display:none}
+.snav-link{font-size:13px;font-weight:600;color:var(--ink4);padding:14px 18px;border-bottom:2px solid transparent;white-space:nowrap;transition:all .16s;cursor:pointer;display:flex;align-items:center;gap:6px}
+.snav-link:hover{color:var(--ink)}
+.snav-link.active{color:var(--p);border-bottom-color:var(--p)}
+
+/* SECTIONS */
+.section{padding:88px 0}
+.section-alt{background:var(--surface)}
+.sec-ey{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--p);margin-bottom:10px;display:block}
+.sec-h2{font-family:'Inter Tight',sans-serif;font-size:clamp(26px,3.3vw,42px);font-weight:900;letter-spacing:-1.5px;color:var(--ink);line-height:1.05;margin-bottom:12px}
+.sec-p{font-size:17px;color:var(--ink2);line-height:1.72;max-width:600px}
+.center{text-align:center}.center .sec-p{margin:0 auto}
+
+/* PLATFORM FLOW DIAGRAM */
+.flow-wrap{max-width:960px;margin:0 auto}
+.flow-step{display:grid;grid-template-columns:60px 1fr;gap:0;position:relative}
+.flow-step:not(:last-child)::after{content:'';position:absolute;left:29px;top:60px;bottom:-20px;width:2px;background:linear-gradient(180deg,rgba(249,115,22,.4),rgba(249,115,22,.12));z-index:0}
+.flow-step-connector{display:flex;flex-direction:column;align-items:center;padding-top:18px}
+.flow-num{width:42px;height:42px;border-radius:50%;background:var(--pg);color:#fff;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 16px var(--glow);font-family:'Inter Tight',sans-serif;z-index:1;position:relative}
+.flow-body{padding:12px 0 40px 24px}
+.flow-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.flow-ico{font-size:26px}
+.flow-title{font-family:'Inter Tight',sans-serif;font-size:clamp(20px,2.2vw,26px);font-weight:900;letter-spacing:-.8px;color:var(--ink)}
+.flow-desc{font-size:15.5px;color:var(--ink3);line-height:1.72;margin-bottom:18px;max-width:620px}
+.flow-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.flow-card{background:#fff;border:1px solid var(--border);border-radius:var(--r3);padding:16px 18px;transition:all .18s;display:block}
+.flow-card:hover{border-color:#fdba74;box-shadow:0 4px 14px rgba(249,115,22,.08);transform:translateY(-1px)}
+.fc-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.fc-ico-sm{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.fc-name{font-size:13.5px;font-weight:700;color:var(--ink)}
+.fc-desc-sm{font-size:12.5px;color:var(--ink4);line-height:1.55}
+.fc-arrow{font-size:11px;color:var(--ink4);margin-left:auto;flex-shrink:0}
+
+/* STAT STRIP */
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);background:var(--border);gap:1px;border:1px solid var(--border);border-radius:var(--r4);overflow:hidden;margin-bottom:0}
+.ss-cell{background:#fff;padding:26px 20px;text-align:center}
+.ss-n{font-family:'Inter Tight',sans-serif;font-size:clamp(26px,2.8vw,38px);font-weight:900;background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-2px;line-height:1;margin-bottom:5px}
+.ss-l{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.ss-s{font-size:12px;color:var(--ink4)}
+
+/* HOW ONE POST WORKS */
+.post-flow{display:flex;align-items:stretch;gap:0;border:1px solid var(--border);border-radius:var(--r4);overflow:hidden;background:#fff}
+.pf-step{flex:1;padding:24px 20px;position:relative;border-right:1px solid var(--border)}
+.pf-step:last-child{border-right:none}
+.pf-step::after{content:'▶';position:absolute;right:-12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--border2);z-index:2}
+.pf-step:last-child::after{display:none}
+.pf-num{width:24px;height:24px;border-radius:50%;background:var(--pg);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-family:'Inter Tight',sans-serif}
+.pf-ico{font-size:22px;margin-bottom:8px}
+.pf-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.pf-desc{font-size:12px;color:var(--ink3);line-height:1.6}
+.pf-time{font-size:10.5px;font-weight:700;color:var(--p);margin-top:8px;background:#fff7ed;padding:2px 8px;border-radius:100px;display:inline-block}
+
+/* PLATFORM GRID */
+.plat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.plat-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:20px;text-align:center;transition:all .2s}
+.plat-card:hover{border-color:#fdba74;box-shadow:0 4px 14px rgba(249,115,22,.08);transform:translateY(-2px)}
+.plat-ico{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 10px}
+.plat-name{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.plat-api{font-size:10.5px;color:var(--ink4)}
+
+/* WHO IS IT FOR */
+.who-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.who-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:22px;transition:all .18s}
+.who-card:hover{border-color:#fdba74;box-shadow:0 4px 14px rgba(249,115,22,.07)}
+.who-ico{font-size:28px;margin-bottom:10px}
+.who-title{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.who-desc{font-size:13px;color:var(--ink3);line-height:1.6}
+.who-time{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--p);background:#fff7ed;border-radius:100px;padding:2px 8px;margin-top:8px}
+
+/* PRICING PREVIEW */
+.pricing-card{background:var(--dark);border-radius:var(--r5);padding:48px;text-align:center;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+.pricing-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 110%,rgba(249,115,22,.22),transparent);pointer-events:none}
+.pc-eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.35);margin-bottom:12px;display:block;position:relative;z-index:1}
+.pc-price{font-family:'Inter Tight',sans-serif;font-size:clamp(48px,6vw,80px);font-weight:900;letter-spacing:-4px;color:#fff;line-height:1;position:relative;z-index:1}
+.pc-period{font-size:18px;font-weight:600;color:rgba(255,255,255,.5);margin-bottom:6px;display:block;position:relative;z-index:1}
+.pc-sub{font-size:15px;color:rgba(255,255,255,.5);margin-bottom:36px;position:relative;z-index:1}
+.pc-includes{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:520px;margin:0 auto 36px;position:relative;z-index:1}
+.pc-inc-item{display:flex;align-items:center;gap:8px;font-size:13.5px;color:rgba(255,255,255,.75);text-align:left}
+.pc-inc-ico{color:#4ade80;font-size:15px;flex-shrink:0}
+.pc-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;margin-bottom:18px}
+.pc-note{font-size:13px;color:rgba(255,255,255,.3);position:relative;z-index:1}
+
+/* FAQ */
+.faq-list{border:1px solid var(--border);border-radius:var(--r4);overflow:hidden;max-width:740px;margin:40px auto 0}
+.faq-item{border-bottom:1px solid var(--border)}.faq-item:last-child{border-bottom:none}
+.faq-q{width:100%;padding:18px 22px;background:#fff;border:none;display:flex;align-items:center;justify-content:space-between;text-align:left;cursor:pointer;font-size:15px;font-weight:600;color:var(--ink);gap:14px;transition:background .14s;font-family:inherit}
+.faq-q:hover{background:var(--surface)}
+.faq-arr{width:24px;height:24px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--ink4);flex-shrink:0;transition:all .22s}
+.faq-item.open .faq-arr{background:var(--pg);border-color:transparent;color:#fff;transform:rotate(45deg)}
+.faq-a{display:none;padding:0 22px 18px;font-size:14.5px;color:var(--ink2);line-height:1.75;background:#fff}
+.faq-item.open .faq-a{display:block}
+
+/* CTA */
+.cta-section{background:var(--dark);padding:96px 0;text-align:center;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 65% at 50% 110%,rgba(249,115,22,.3) 0%,transparent 70%);pointer-events:none}
+.cta-section h2{font-family:'Inter Tight',sans-serif;font-size:clamp(30px,5vw,54px);font-weight:900;letter-spacing:-2.5px;line-height:1.03;color:#fff;margin-bottom:16px;position:relative;z-index:1}
+.cta-section h2 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-section p{font-size:17.5px;color:rgba(255,255,255,.6);line-height:1.7;max-width:520px;margin:0 auto 38px;position:relative;z-index:1}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:22px;position:relative;z-index:1}
+.cta-trust{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,.4);position:relative;z-index:1}
+.ct{display:flex;align-items:center;gap:5px}
+.ct svg{width:13px;height:13px;stroke:rgba(249,115,22,.9);stroke-width:2.5;fill:none}
+
+/* FOOTER */
+.footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.07);padding:32px 0}
+.ft-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ft-logo{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:800;color:rgba(255,255,255,.6)}
+.ft-links{display:flex;gap:18px;flex-wrap:wrap}
+.ft-links a{font-size:13px;color:rgba(255,255,255,.3);transition:color .14s}.ft-links a:hover{color:rgba(255,255,255,.65)}
+.ft-copy{font-size:12px;color:rgba(255,255,255,.2);margin-top:14px}
+
+@media(max-width:1024px){
+  .flow-cards{grid-template-columns:1fr 1fr}
+  .plat-grid{grid-template-columns:repeat(3,1fr)}
+  .who-grid{grid-template-columns:1fr 1fr}
+  .pc-includes{grid-template-columns:1fr}
+  .post-flow{flex-direction:column}
+  .pf-step{border-right:none;border-bottom:1px solid var(--border)}
+  .pf-step:last-child{border-bottom:none}
+  .pf-step::after{content:'▼';right:auto;left:50%;top:auto;bottom:-13px;transform:translateX(-50%)}
+}
+@media(max-width:720px){
+  .nav-right .btn-ghost{display:none}
+  .flow-cards,.plat-grid,.who-grid{grid-template-columns:1fr}
+  .stat-strip{grid-template-columns:1fr 1fr}
+  .section{padding:60px 0}
+  .wrap{padding:0 18px}
+  .flow-step{grid-template-columns:48px 1fr}
+  .snav-link{padding:12px 14px;font-size:12.5px}
+  .pricing-card{padding:32px 20px}
+}
+@media(prefers-reduced-motion:reduce){.ey-dot{animation:none}}
+[data-r]{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}
+[data-r].vis{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="/" class="sh-logo"><img src="/images/logo-master.png" alt="Shoutly AI logo"></a>
+    <nav class="sh-links"><div class="sh-item" data-menu="home"><a href="/" class="sh-link" aria-haspopup="true" aria-expanded="false">Home<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></a></div><div class="sh-item" data-menu="solutions"><a href="#" class="sh-link" aria-haspopup="true" aria-expanded="false" data-toggle-only="true">Solutions<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></a></div><div class="sh-item" data-menu="features"><a href="#" class="sh-link" aria-haspopup="true" aria-expanded="false" data-toggle-only="true">Features<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></a></div><div class="sh-item" data-menu="compare"><a href="#" class="sh-link" aria-haspopup="true" aria-expanded="false" data-toggle-only="true">Compare<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></a></div><div class="sh-item" data-menu="pricing"><a href="/pricing" class="sh-link" aria-haspopup="true" aria-expanded="false">Pricing<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></a></div><div class="sh-item" data-menu="company"><a href="#" class="sh-link" aria-haspopup="true" aria-expanded="false" data-toggle-only="true">Company<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></a></div></nav>
+    <div class="sh-right">
+      <div class="sh-auth-guest" id="sh-auth-guest">
+        <a href="/sign-in" class="sh-login">Log in</a>
+        <a href="/sign-up" class="sh-start">Start Free Trial</a>
+      </div>
+      <div class="sh-profile" id="sh-profile" style="display:none">
+        <button type="button" class="sh-profile-btn" id="sh-profile-btn" aria-haspopup="true" aria-expanded="false">
+          <span class="sh-avatar" id="sh-avatar">U</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#6b7280;flex-shrink:0"><path d="m6 9 6 6 6-6"></path></svg>
+        </button>
+        <div class="sh-profile-menu" id="sh-profile-menu">
+          <div class="sh-profile-info" id="sh-profile-info">
+            <p class="sh-profile-name" id="sh-profile-name"></p>
+            <p class="sh-profile-email" id="sh-profile-email"></p>
+          </div>
+          <a href="/dashboards/settings" class="sh-profile-item">Profile</a>
+          <a href="/dashboards" class="sh-profile-item">Dashboard</a>
+          <button type="button" class="sh-profile-item sh-signout" id="sh-signout">Sign Out</button>
+        </div>
+      </div>
+    </div>
+    <button class="sh-burger" id="sh-burger-btn" aria-label="Open menu" aria-expanded="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+  </div>
+  <div class="sh-mega-wrap"><div class="sh-panel" data-menu="home"><div class="mp-inner"><div class="mp-cols" style="grid-template-columns:repeat(1,minmax(0,1fr))"><div class="mp-col"><div class="mp-col-title">Get oriented</div><div class="mp-col-items"><a href="/shoutlyai-overview.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-grid" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="14" rx="1"></rect><rect width="7" height="7" x="3" y="14" rx="1"></rect></svg></span><span class="mp-text"><span class="mp-label">Overview</span><span class="mp-desc">See how the whole platform fits together.</span></span></a><a href="/shoutlyai-why-shoutly-ai.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles" aria-hidden="true"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg></span><span class="mp-text"><span class="mp-label">Why Shoutly AI</span><span class="mp-desc">What makes it different from a scheduler.</span></span></a><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume2 lucide-volume-2" aria-hidden="true"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"></path><path d="M16 9a5 5 0 0 1 0 6"></path><path d="M19.364 18.364a9 9 0 0 0 0-12.728"></path></svg></span><span class="mp-text"><span class="mp-label">What's new<span class="mp-badge">NEW</span></span><span class="mp-desc">Latest releases, shipped weekly.</span></span></div></div></div></div><div class="mp-featured"><div class="mp-featured-eyebrow">FEATURED</div><div class="mp-featured-title">A month of posts in one sitting</div><p class="mp-featured-desc">Describe your business once. Shoutly drafts, designs, and schedules a full content calendar you can edit.</p><a href="/#generator" class="mp-cta">Try the generator <span aria-hidden="true">→</span></a></div></div></div><div class="sh-panel" data-menu="solutions"><div class="mp-inner"><div class="mp-cols" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div class="mp-col"><div class="mp-col-title">By industry</div><div class="mp-col-items mp-col-grid"><a href="/solutions/local-businesses" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-store" aria-hidden="true"><path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"></path><path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"></path><path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"></path></svg></span><span class="mp-text"><span class="mp-label">Local Businesses</span></span></a><a href="/social-media-marketing-for-restaurants.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-utensils" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg></span><span class="mp-text"><span class="mp-label">Restaurants</span></span></a><a href="/social-media-marketing-for-gyms.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dumbbell" aria-hidden="true"><path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"></path><path d="m2.5 21.5 1.4-1.4"></path><path d="m20.1 3.9 1.4-1.4"></path><path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"></path><path d="m9.6 14.4 4.8-4.8"></path></svg></span><span class="mp-text"><span class="mp-label">Fitness</span></span></a><a href="/social-media-marketing-for-interior-designers.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-bag" aria-hidden="true"><path d="M16 10a4 4 0 0 1-8 0"></path><path d="M3.103 6.034h17.794"></path><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"></path></svg></span><span class="mp-text"><span class="mp-label">Interior Design</span></span></a><a href="/digital-marketing-for-footwear-brands.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-pulse" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path><path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"></path></svg></span><span class="mp-text"><span class="mp-label">Footwear</span></span></a><a href="/digital-marketing-for-real-estate-agents.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building2 lucide-building-2" aria-hidden="true"><path d="M10 12h4"></path><path d="M10 8h4"></path><path d="M14 21v-3a2 2 0 0 0-4 0v3"></path><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"></path><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"></path></svg></span><span class="mp-text"><span class="mp-label">Real Estate</span></span></a><a href="/marketing-for-business-consultants.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rocket" aria-hidden="true"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg></span><span class="mp-text"><span class="mp-label">Startups</span></span></a><a href="/digital-marketing-for-hotels-and-resorts.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg></span><span class="mp-text"><span class="mp-label">Hotels</span></span></a><a href="/digital-marketing-for-event-planners.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase" aria-hidden="true"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path><rect width="20" height="14" x="2" y="6" rx="2"></rect></svg></span><span class="mp-text"><span class="mp-label">Event Planners</span></span></a><a href="/digital-marketing-for-makeup-artists.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-landmark" aria-hidden="true"><path d="M10 18v-7"></path><path d="M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949z"></path><path d="M14 18v-7"></path><path d="M18 18v-7"></path><path d="M3 22h18"></path><path d="M6 18v-7"></path></svg></span><span class="mp-text"><span class="mp-label">Makeup Services</span></span></a></div></div><div class="mp-col"><div class="mp-col-title">By channel</div><div class="mp-col-items mp-col-grid"><a href="/channel/twitter-x" class="mp-row"><span class="mp-ico"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"></path></svg></span><span class="mp-text"><span class="mp-label">X</span></span></a><a href="/channel/instagram" class="mp-row"><span class="mp-ico"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"></path></svg></span><span class="mp-text"><span class="mp-label">Instagram</span></span></a><a href="/channel/facebook" class="mp-row"><span class="mp-ico"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M512 256C512 114.6 397.4 0 256 0S0 114.6 0 256C0 376 82.7 476.8 194.2 504.5V334.2H141.4V256h52.8V222.3c0-87.1 39.4-127.5 125-127.5c16.2 0 44.2 3.2 55.7 6.4V172c-6-.6-16.5-1-29.6-1c-42 0-58.2 15.9-58.2 57.2V256h83.6l-14.4 78.2H287V510.1C413.8 494.8 512 386.9 512 256h0z"></path></svg></span><span class="mp-text"><span class="mp-label">Facebook</span></span></a><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M407.8 294.7c-3.3-.4-6.7-.8-10-1.3c3.4 .4 6.7 .9 10 1.3zM288 227.1C261.9 176.4 190.9 81.9 124.9 35.3C61.6-9.4 37.5-1.7 21.6 5.5C3.3 13.8 0 41.9 0 58.4S9.1 194 15 213.9c19.5 65.7 89.1 87.9 153.2 80.7c3.3-.5 6.6-.9 10-1.4c-3.3 .5-6.6 1-10 1.4C74.3 308.6-9.1 342.8 100.3 464.5C220.6 589.1 265.1 437.8 288 361.1c22.9 76.7 49.2 222.5 185.6 103.4c102.4-103.4 28.1-156-65.8-169.9c-3.3-.4-6.7-.8-10-1.3c3.4 .4 6.7 .9 10 1.3c64.1 7.1 133.6-15.1 153.2-80.7C566.9 194 576 75 576 58.4s-3.3-44.7-21.6-52.9c-15.8-7.1-40-14.9-103.2 29.8C385.1 81.9 314.1 176.4 288 227.1z"></path></svg></span><span class="mp-text"><span class="mp-label">Bluesky</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path></svg></span><span class="mp-text"><span class="mp-label">LinkedIn</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z"></path></svg></span><span class="mp-text"><span class="mp-label">TikTok</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M331.5 235.7c2.2 .9 4.2 1.9 6.3 2.8c29.2 14.1 50.6 35.2 61.8 61.4c15.7 36.5 17.2 95.8-30.3 143.2c-36.2 36.2-80.3 52.5-142.6 53h-.3c-70.2-.5-124.1-24.1-160.4-70.2c-32.3-41-48.9-98.1-49.5-169.6V256v-.2C17 184.3 33.6 127.2 65.9 86.2C102.2 40.1 156.2 16.5 226.4 16h.3c70.3 .5 124.9 24 162.3 69.9c18.4 22.7 32 50 40.6 81.7l-40.4 10.8c-7.1-25.8-17.8-47.8-32.2-65.4c-29.2-35.8-73-54.2-130.5-54.6c-57 .5-100.1 18.8-128.2 54.4C72.1 146.1 58.5 194.3 58 256c.5 61.7 14.1 109.9 40.3 143.3c28 35.6 71.2 53.9 128.2 54.4c51.4-.4 85.4-12.6 113.7-40.9c32.3-32.2 31.7-71.8 21.4-95.9c-6.1-14.2-17.1-26-31.9-34.9c-3.7 26.9-11.8 48.3-24.7 64.8c-17.1 21.8-41.4 33.6-72.7 35.3c-23.6 1.3-46.3-4.4-63.9-16c-20.8-13.8-33-34.8-34.3-59.3c-2.5-48.3 35.7-83 95.2-86.4c21.1-1.2 40.9-.3 59.2 2.8c-2.4-14.8-7.3-26.6-14.6-35.2c-10-11.7-25.6-17.7-46.2-17.8H227c-16.6 0-39 4.6-53.3 26.3l-34.4-23.6c19.2-29.1 50.3-45.1 87.8-45.1h.8c62.6 .4 99.9 39.5 103.7 107.7l-.2 .2zm-156 68.8c1.3 25.1 28.4 36.8 54.6 35.3c25.6-1.4 54.6-11.4 59.5-73.2c-13.2-2.9-27.8-4.4-43.4-4.4c-4.8 0-9.6 .1-14.4 .4c-42.9 2.4-57.2 23.2-56.2 41.8l-.1 .1z"></path></svg></span><span class="mp-text"><span class="mp-label">Threads</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"></path></svg></span><span class="mp-text"><span class="mp-label">YouTube</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 496 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M496 256c0 137-111 248-248 248-25.6 0-50.2-3.9-73.4-11.1 10.1-16.5 25.2-43.5 30.8-65 3-11.6 15.4-59 15.4-59 8.1 15.4 31.7 28.5 56.8 28.5 74.8 0 128.7-68.8 128.7-154.3 0-81.9-66.9-143.2-152.9-143.2-107 0-163.9 71.8-163.9 150.1 0 36.4 19.4 81.7 50.3 96.1 4.7 2.2 7.2 1.2 8.3-3.3.8-3.4 5-20.3 6.9-28.1.6-2.5.3-4.7-1.7-7.1-10.1-12.5-18.3-35.3-18.3-56.6 0-54.7 41.4-107.6 112-107.6 60.9 0 103.6 41.5 103.6 100.9 0 67.1-33.9 113.6-78 113.6-24.3 0-42.6-20.1-36.7-44.8 7-29.5 20.5-61.3 20.5-82.6 0-19-10.2-34.9-31.4-34.9-24.9 0-44.9 25.7-44.9 60.2 0 22 7.4 36.8 7.4 36.8s-24.5 103.8-29 123.2c-5 21.4-3 51.6-.9 71.2C65.4 450.9 0 361.1 0 256 0 119 111 8 248 8s248 111 248 248z"></path></svg></span><span class="mp-text"><span class="mp-label">Pinterest</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 488 512" height="14" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path></svg></span><span class="mp-text"><span class="mp-label">Google Biz</span></span></div></div></div></div><div class="mp-featured"><div class="mp-featured-eyebrow">POPULAR</div><div class="mp-featured-title">Built for one-person marketing teams</div><p class="mp-featured-desc">Local businesses publish to six channels a week on Shoutly — without hiring an agency.</p><a href="/#who-we-help" class="mp-cta">See how it works <span aria-hidden="true">→</span></a></div></div></div><div class="sh-panel" data-menu="features"><div class="mp-inner"><div class="mp-cols" style="grid-template-columns:repeat(3,minmax(0,1fr))"><div class="mp-col"><div class="mp-col-title">AI creation</div><div class="mp-col-items"><a href="/shoutlyai-ai-content-generator.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles" aria-hidden="true"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg></span><span class="mp-text"><span class="mp-label">AI Content Generator<span class="mp-badge">POPULAR</span></span><span class="mp-desc">Turn one prompt into a week of posts.</span></span></a><a href="/shoutlyai-ai-image-generator.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path></svg></span><span class="mp-text"><span class="mp-label">AI Image Generator</span><span class="mp-desc">On-brand visuals in your colors and fonts.</span></span></a><a href="/#generator" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clapperboard" aria-hidden="true"><path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z"></path><path d="m6.2 5.3 3.1 3.9"></path><path d="m12.4 3.4 3.1 4"></path><path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"></path></svg></span><span class="mp-text"><span class="mp-label">AI Reel Generator<span class="mp-badge">NEW</span></span><span class="mp-desc">Short-form video from a script or a URL.</span></span></a><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square" aria-hidden="true"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"></path></svg></span><span class="mp-text"><span class="mp-label">AI Caption Generator</span><span class="mp-desc">Captions tuned per platform, not copy-pasted.</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hash" aria-hidden="true"><line x1="4" x2="20" y1="9" y2="9"></line><line x1="4" x2="20" y1="15" y2="15"></line><line x1="10" x2="8" y1="3" y2="21"></line><line x1="16" x2="14" y1="3" y2="21"></line></svg></span><span class="mp-text"><span class="mp-label">AI Hashtag Generator</span><span class="mp-desc">Tags ranked by reach, not by volume.</span></span></div></div></div><div class="mp-col"><div class="mp-col-title">Publishing</div><div class="mp-col-items"><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock" aria-hidden="true"><path d="M12 6v6l4 2"></path><circle cx="12" cy="12" r="10"></circle></svg></span><span class="mp-text"><span class="mp-label">Social Media Scheduler</span><span class="mp-desc">Queue posts for the times your audience shows up.</span></span></div><a href="/free-editorial" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar" aria-hidden="true"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg></span><span class="mp-text"><span class="mp-label">Content Calendar</span><span class="mp-desc">Every channel on one drag-and-drop grid.</span></span></a><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 lucide-share-2" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg></span><span class="mp-text"><span class="mp-label">Multi-Platform Publishing</span><span class="mp-desc">Write once, reformat for each network.</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-checks" aria-hidden="true"><path d="M13 5h8"></path><path d="M13 12h8"></path><path d="M13 19h8"></path><path d="m3 17 2 2 4-4"></path><path d="m3 7 2 2 4-4"></path></svg></span><span class="mp-text"><span class="mp-label">Bulk Scheduling</span><span class="mp-desc">Upload a CSV, fill the whole quarter.</span></span></div></div></div><div class="mp-col"><div class="mp-col-title">Management</div><div class="mp-col-items"><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-column" aria-hidden="true"><path d="M3 3v16a2 2 0 0 0 2 2h16"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></span><span class="mp-text"><span class="mp-label">Analytics Dashboard</span><span class="mp-desc">See what earned reach, and what didn't.</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-palette" aria-hidden="true"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"></path><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle></svg></span><span class="mp-text"><span class="mp-label">Brand Kit</span><span class="mp-desc">Lock your colors, fonts, and voice.</span></span></div><a href="/#library" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-open" aria-hidden="true"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"></path></svg></span><span class="mp-text"><span class="mp-label">Media Library</span><span class="mp-desc">Every asset, searchable and reusable.</span></span></a><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg></span><span class="mp-text"><span class="mp-label">Team Collaboration</span><span class="mp-desc">Comment, assign, and hand off in place.</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-check-big" aria-hidden="true"><path d="M21 10.656V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12.344"></path><path d="m9 11 3 3L22 4"></path></svg></span><span class="mp-text"><span class="mp-label">Approval Workflow</span><span class="mp-desc">Nothing ships until the right person signs off.</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plug" aria-hidden="true"><path d="M12 22v-5"></path><path d="M15 8V2"></path><path d="M17 8a1 1 0 0 1 1 1v4a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1z"></path><path d="M9 8V2"></path></svg></span><span class="mp-text"><span class="mp-label">Integrations</span><span class="mp-desc">Canva, Drive, Slack, Zapier, and more.</span></span></div></div></div></div><div class="mp-featured"><div class="mp-featured-eyebrow">NEW THIS MONTH</div><div class="mp-featured-title">AI Reel Generator</div><p class="mp-featured-desc">Paste a product URL. Shoutly writes the script, cuts the clips, adds captions, and queues it to Reels, TikTok, and Shorts.</p><a href="/#generator" class="mp-cta">Generate a reel <span aria-hidden="true">→</span></a></div></div></div><div class="sh-panel" data-menu="compare"><div class="mp-inner"><div class="mp-cols" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div class="mp-col"><div class="mp-col-title">Popular comparisons</div><div class="mp-col-items mp-col-grid"><a href="/compare/buffer-vs-shoutly-ai" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-right" aria-hidden="true"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg></span><span class="mp-text"><span class="mp-label">Buffer vs Shoutly AI</span></span></a><a href="/compare/hootsuite-vs-shoutly-ai" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-right" aria-hidden="true"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg></span><span class="mp-text"><span class="mp-label">Hootsuite vs Shoutly AI</span></span></a><a href="/compare/later-vs-shoutly-ai" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-right" aria-hidden="true"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg></span><span class="mp-text"><span class="mp-label">Later vs Shoutly AI</span></span></a><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-right" aria-hidden="true"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg></span><span class="mp-text"><span class="mp-label">SocialPilot vs Shoutly AI</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-right" aria-hidden="true"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg></span><span class="mp-text"><span class="mp-label">Metricool vs Shoutly AI</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-right" aria-hidden="true"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg></span><span class="mp-text"><span class="mp-label">Publer vs Shoutly AI</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-right" aria-hidden="true"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg></span><span class="mp-text"><span class="mp-label">Canva vs Shoutly AI</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-right" aria-hidden="true"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg></span><span class="mp-text"><span class="mp-label">Sprout Social vs Shoutly AI</span></span></div></div></div><div class="mp-col"><div class="mp-col-title">Alternatives</div><div class="mp-col-items mp-col-grid"><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></span><span class="mp-text"><span class="mp-label">Buffer Alternative</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></span><span class="mp-text"><span class="mp-label">Hootsuite Alternative</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></span><span class="mp-text"><span class="mp-label">Later Alternative</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></span><span class="mp-text"><span class="mp-label">SocialPilot Alternative</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></span><span class="mp-text"><span class="mp-label">Metricool Alternative</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></span><span class="mp-text"><span class="mp-label">Canva Alternative</span></span></div><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></span><span class="mp-text"><span class="mp-label">Sprout Social Alternative</span></span></div></div></div></div><div class="mp-featured"><div class="mp-featured-eyebrow">SIDE BY SIDE</div><div class="mp-featured-title">Every tool, one table</div><p class="mp-featured-desc">Features, limits, and real pricing across eight platforms — no marketing math.</p><span class="mp-cta mp-cta-off" title="Coming soon">View all comparisons <span aria-hidden="true">→</span></span></div></div></div><div class="sh-panel" data-menu="pricing"><div class="mp-inner"><div class="mp-cols" style="grid-template-columns:repeat(1,minmax(0,1fr))"><div class="mp-col"><div class="mp-col-title">Plans &amp; billing</div><div class="mp-col-items"><a href="/pricing" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg></span><span class="mp-text"><span class="mp-label">Pricing Plans</span><span class="mp-desc">Start free. Upgrade when you outgrow it.</span></span></a><a href="/pricing" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-columns3 lucide-columns-3" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M9 3v18"></path><path d="M15 3v18"></path></svg></span><span class="mp-text"><span class="mp-label">Compare Plans</span><span class="mp-desc">Every limit and feature, line by line.</span></span></a><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-landmark" aria-hidden="true"><path d="M10 18v-7"></path><path d="M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949z"></path><path d="M14 18v-7"></path><path d="M18 18v-7"></path><path d="M3 22h18"></path><path d="M6 18v-7"></path></svg></span><span class="mp-text"><span class="mp-label">Enterprise</span><span class="mp-desc">SSO, SLAs, and a named contact.</span></span></div><a href="/pricing" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-question-mark" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg></span><span class="mp-text"><span class="mp-label">FAQs</span><span class="mp-desc">Billing, seats, limits, and cancellation.</span></span></a><a href="/shoutlyai-demo.html" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-check" aria-hidden="true"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="m9 16 2 2 4-4"></path></svg></span><span class="mp-text"><span class="mp-label">Book a Demo</span><span class="mp-desc">30 minutes with a product specialist.</span></span></a></div></div></div><div class="mp-featured"><div class="mp-featured-eyebrow">FREE FOREVER</div><div class="mp-featured-title">Three channels, no card</div><p class="mp-featured-desc">Generate, schedule, and publish on the free plan for as long as you like.</p><a href="/sign-up" class="mp-cta">Start Free Trial <span aria-hidden="true">→</span></a></div></div></div><div class="sh-panel" data-menu="company"><div class="mp-inner"><div class="mp-cols" style="grid-template-columns:repeat(1,minmax(0,1fr))"><div class="mp-col"><div class="mp-col-title">Company &amp; resources</div><div class="mp-col-items mp-col-grid"><a href="/about-us" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-user" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="10" r="3"></circle><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"></path></svg></span><span class="mp-text"><span class="mp-label">About Us</span><span class="mp-desc">Who we are and why we built this.</span></span></a><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-handshake" aria-hidden="true"><path d="m11 17 2 2a1 1 0 1 0 3-3"></path><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"></path><path d="m21 3 1 11h-2"></path><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"></path><path d="M3 4h8"></path></svg></span><span class="mp-text"><span class="mp-label">Partners</span><span class="mp-desc">Agencies and resellers building on Shoutly.</span></span></div><a href="/help-center" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-question-mark" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg></span><span class="mp-text"><span class="mp-label">Help Center</span><span class="mp-desc">Guides, troubleshooting, and API docs.</span></span></a><a href="/security" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg></span><span class="mp-text"><span class="mp-label">Security</span><span class="mp-desc">How we protect your accounts and data.</span></span></a><a href="/careers" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase" aria-hidden="true"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path><rect width="20" height="14" x="2" y="6" rx="2"></rect></svg></span><span class="mp-text"><span class="mp-label">Careers<span class="mp-badge">HIRING</span></span><span class="mp-desc">Open roles across product and growth.</span></span></a><a href="https://blog.shoutlyai.com/" class="mp-row" target="_blank" rel="noopener noreferrer"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text" aria-hidden="true"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"></path><path d="M14 2v5a1 1 0 0 0 1 1h5"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg></span><span class="mp-text"><span class="mp-label">Blog</span><span class="mp-desc">Playbooks, teardowns, and benchmarks.</span></span></a><a href="/contact-us" class="mp-row"><span class="mp-ico"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail" aria-hidden="true"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"></path><rect x="2" y="4" width="20" height="16" rx="2"></rect></svg></span><span class="mp-text"><span class="mp-label">Contact</span><span class="mp-desc">Talk to sales or support.</span></span></a><div class="mp-row mp-row-off" title="Coming soon"><span class="mp-ico mp-ico-off"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scale" aria-hidden="true"><path d="M12 3v18"></path><path d="m19 8 3 8a5 5 0 0 1-6 0zV7"></path><path d="M3 7h1a17 17 0 0 0 8-2 17 17 0 0 0 8 2h1"></path><path d="m5 8 3 8a5 5 0 0 1-6 0zV7"></path><path d="M7 21h10"></path></svg></span><span class="mp-text"><span class="mp-label">Legal Hub</span><span class="mp-desc">Privacy, terms, GDPR, DPDP, and more.</span></span></div></div></div></div><div class="mp-featured"><div class="mp-featured-eyebrow">TRUST</div><div class="mp-featured-title">Enterprise-ready by default</div><p class="mp-featured-desc">SSL, GDPR, CCPA, and DPDP compliant. 99.9% uptime, hosted on AWS.</p><a href="/security" class="mp-cta">Read the security brief <span aria-hidden="true">→</span></a></div></div></div></div>
+  <div class="sh-mobile" id="sh-mobile-menu"><a href="/">Home</a><a href="/solutions/local-businesses">Solutions</a><a href="/shoutlyai-ai-content-generator.html">Features</a><a href="/compare/buffer-vs-shoutly-ai">Compare</a><a href="/pricing">Pricing</a><a href="/about-us">Company</a><div class="sh-mobile-cta" id="sh-mobile-auth-guest"><a href="/sign-in" class="sh-login">Log in</a><a href="/sign-up" class="sh-start">Start Free Trial</a></div><div class="sh-mobile-profile" id="sh-mobile-profile" style="display:none"><div class="sh-profile-info" id="sh-mobile-profile-info"><p class="sh-profile-name" id="sh-mobile-profile-name"></p><p class="sh-profile-email" id="sh-mobile-profile-email"></p></div><a href="/dashboards/settings" class="sh-profile-item">Profile</a><a href="/dashboards" class="sh-profile-item">Dashboard</a><button type="button" class="sh-profile-item sh-signout" id="sh-mobile-signout">Sign Out</button></div></div>
+</header>
+
+<!-- STICKY SECTION NAV -->
+<nav class="snav" aria-label="Page sections">
+  <div class="snav-inner">
+    <a class="snav-link active" href="#how-it-works">&#128218; How it works</a>
+    <a class="snav-link" href="#ai-tools">&#10022; AI Tools</a>
+    <a class="snav-link" href="#publishing">&#128228; Publishing</a>
+    <a class="snav-link" href="#management">&#128202; Management</a>
+    <a class="snav-link" href="#platforms">&#127760; 10 Platforms</a>
+    <a class="snav-link" href="#who-its-for">&#128101; Who it&rsquo;s for</a>
+    <a class="snav-link" href="#pricing">&#128176; Pricing</a>
+    <a class="snav-link" href="#faq">&#10067; FAQ</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- HERO -->
+<section class="hero" aria-labelledby="hero-h1">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow"><span class="ey-dot"></span>Get oriented &mdash; Platform Overview</div>
+    <h1 class="hero-h1" id="hero-h1">See how the whole<br>platform <span class="grad">fits together.</span></h1>
+    <p class="hero-sub">Shoutly AI has a lot of features &mdash; AI tools, a scheduler, a content calendar, analytics, a brand kit, and more. This page explains how every part connects into one complete workflow, from a blank page to published content on all 10 platforms.</p>
+    <div class="hero-ctas">
+      <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-lg">Start free trial <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+      <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-lg">Book a live demo</a>
+    </div>
+  </div>
+</section>
+
+<!-- THE BIG PICTURE -->
+<section class="section" id="how-it-works" aria-labelledby="flow-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:60px">
+      <span class="sec-ey">The big picture</span>
+      <h2 class="sec-h2" id="flow-h2">One prompt in. 365 days of content out. Here&rsquo;s exactly how.</h2>
+      <p class="sec-p">Shoutly AI is built around a simple loop: <strong>Create &rarr; Review &rarr; Publish &rarr; Analyse &rarr; Improve.</strong> Every feature sits inside one of these four stages. Here&rsquo;s where each one lives.</p>
+    </div>
+
+    <!-- HOW ONE POST TRAVELS THROUGH THE PLATFORM -->
+    <div style="margin-bottom:64px">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--p);text-align:center;margin-bottom:20px">How a single post moves through Shoutly AI &mdash; start to publish</div>
+      <div class="post-flow">
+        <div class="pf-step">
+          <div class="pf-num">1</div>
+          <div class="pf-ico">&#128172;</div>
+          <div class="pf-title">You describe your business</div>
+          <div class="pf-desc">Industry, tone, target audience, platforms. Takes 2 minutes. Done once.</div>
+          <span class="pf-time">&#8987; 2 min</span>
+        </div>
+        <div class="pf-step">
+          <div class="pf-num">2</div>
+          <div class="pf-ico">&#10022;</div>
+          <div class="pf-title">AI generates content</div>
+          <div class="pf-desc">Caption, image, hashtags, and optimal publish time &mdash; in your brand voice.</div>
+          <span class="pf-time">&#8987; 30 sec</span>
+        </div>
+        <div class="pf-step">
+          <div class="pf-num">3</div>
+          <div class="pf-ico">&#128247;</div>
+          <div class="pf-title">Brand Kit applied</div>
+          <div class="pf-desc">Your logo, colours, and fonts are placed on the image automatically.</div>
+          <span class="pf-time">&#8987; Instant</span>
+        </div>
+        <div class="pf-step">
+          <div class="pf-num">4</div>
+          <div class="pf-ico">&#128197;</div>
+          <div class="pf-title">Dropped into calendar</div>
+          <div class="pf-desc">Post lands in your Content Calendar at the AI-recommended time slot.</div>
+          <span class="pf-time">&#8987; Instant</span>
+        </div>
+        <div class="pf-step">
+          <div class="pf-num">5</div>
+          <div class="pf-ico">&#9989;</div>
+          <div class="pf-title">You bulk approve</div>
+          <div class="pf-desc">Review 30 days in one session. Click Approve All. Takes under 10 minutes.</div>
+          <span class="pf-time">&#8987; 10 min/month</span>
+        </div>
+        <div class="pf-step">
+          <div class="pf-num">6</div>
+          <div class="pf-ico">&#128228;</div>
+          <div class="pf-title">Auto-published</div>
+          <div class="pf-desc">Post goes live on all selected platforms simultaneously via official APIs.</div>
+          <span class="pf-time">&#8987; Zero effort</span>
+        </div>
+        <div class="pf-step">
+          <div class="pf-num">7</div>
+          <div class="pf-ico">&#128202;</div>
+          <div class="pf-title">Analytics feeds back in</div>
+          <div class="pf-desc">Performance data flows into next month&rsquo;s calendar. AI adjusts automatically.</div>
+          <span class="pf-time">&#8987; Ongoing</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FULL PLATFORM FLOW -->
+    <div class="flow-wrap">
+
+      <!-- STEP 1: AI TOOLS -->
+      <div class="flow-step" id="ai-tools">
+        <div class="flow-step-connector">
+          <div class="flow-num">1</div>
+        </div>
+        <div class="flow-body">
+          <div class="flow-header">
+            <span class="flow-ico">&#10022;</span>
+            <h2 class="flow-title">AI Tools &mdash; Create</h2>
+          </div>
+          <p class="flow-desc">This is where everything starts. You describe your business once and Shoutly AI&rsquo;s five AI tools generate every piece of content your social media needs &mdash; posts, captions, images, hashtags, and Reels scripts &mdash; in your brand voice, for every platform, automatically.</p>
+          <div class="flow-cards">
+            <a href="https://shoutlyai.com/features/ai-content-generator" class="flow-card">
+              <div class="fc-row">
+                <div class="fc-ico-sm" style="background:linear-gradient(135deg,#ede9fe,#faf5ff)">&#10022;</div>
+                <span class="fc-name">AI Content Generator</span>
+                <span class="fc-arrow">&#8594;</span>
+              </div>
+              <div class="fc-desc-sm">Writes full social media posts, captions, hooks, and CTAs for every platform in your brand voice.</div>
+            </a>
+            <a href="https://shoutlyai.com/features/ai-image-generator" class="flow-card">
+              <div class="fc-row">
+                <div class="fc-ico-sm" style="background:linear-gradient(135deg,#fdf4ff,#faf5ff)">&#127912;</div>
+                <span class="fc-name">AI Image Generator</span>
+                <span class="fc-arrow">&#8594;</span>
+              </div>
+              <div class="fc-desc-sm">Creates branded social media graphics, Reel thumbnails, and festival creatives with your colours and logo.</div>
+            </a>
+            <a href="https://shoutlyai.com/features/ai-caption-generator" class="flow-card">
+              <div class="fc-row">
+                <div class="fc-ico-sm" style="background:linear-gradient(135deg,#eff6ff,#faf5ff)">&#9999;&#65039;</div>
+                <span class="fc-name">AI Caption Generator</span>
+                <span class="fc-arrow">&#8594;</span>
+              </div>
+              <div class="fc-desc-sm">Platform-specific captions &mdash; Instagram hooks, LinkedIn articles, Google Business posts &mdash; all in your voice.</div>
+            </a>
+            <a href="https://shoutlyai.com/features/ai-hashtag-generator" class="flow-card">
+              <div class="fc-row">
+                <div class="fc-ico-sm" style="background:linear-gradient(135deg,#f0fdf4,#faf5ff)">#</div>
+                <span class="fc-name">AI Hashtag Generator</span>
+                <span class="fc-arrow">&#8594;</span>
+              </div>
+              <div class="fc-desc-sm">3-tier hashtag sets (niche / mid / broad) tailored to your business, industry, and city. Every post, every time.</div>
+            </a>
+            <a href="https://shoutlyai.com/features/ai-reel-generator" class="flow-card">
+              <div class="fc-row">
+                <div class="fc-ico-sm" style="background:linear-gradient(135deg,#fff7ed,#faf5ff)">&#127909;</div>
+                <span class="fc-name">AI Reel Generator</span>
+                <span class="fc-arrow">&#8594;</span>
+              </div>
+              <div class="fc-desc-sm">Writes Reel scripts, hook lines, and voiceover text for short-form video content across Instagram, TikTok, and YouTube.</div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: PUBLISHING -->
+      <div class="flow-step" id="publishing">
+        <div class="flow-step-connector">
+          <div class="flow-num">2</div>
+        </div>
+        <div class="flow-body">
+          <div class="flow-header">
+            <span class="flow-ico">&#128228;</span>
+            <h2 class="flow-title">Publishing &mdash; Schedule &amp; Publish</h2>
+          </div>
+          <p class="flow-desc">Once content is created, the Publishing tools handle everything from planning to auto-posting. Your calendar fills itself. Bulk approval takes one session per month. Every post publishes automatically at the right time on the right platform &mdash; you never log into a social media app to post again.</p>
+          <div class="flow-cards">
+            <a href="https://shoutlyai.com/features/social-media-scheduler" class="flow-card">
+              <div class="fc-row">
+                <div class="fc-ico-sm" style="background:linear-gradient(135deg,#ede9fe,#faf5ff)">&#128197;</div>
+                <span class="fc-name">Social Media Scheduler</span>
+                <span class="fc-arrow">&#8594;</span>
+              </div>
+              <div class="fc-desc-sm">Schedules posts at AI-calculated optimal times for your specific audience on each platform.</div>
+            </a>
+            <a href="https://shoutlyai.com/features/content-calendar" class="flow-card">
+              <div class="fc-row">
+                <div class="fc-ico-sm" style="background:linear-gradient(135deg,#fdf4ff,#faf5ff)">&#128200;</div>
+                <span class="fc-name">Content Calendar</span>
+                <span class="fc-arrow">&#8594;</span>
+              </div>
+              <div class="fc-desc-sm">Visual 365-day calendar with your full posting plan. Click any day to preview, edit, or add posts.</div>
+            </a>
+            <a href="https://shoutlyai.com/features/multi-platform-publishing" class="flow-card">
+              <div class="fc-row">
+                <div class="fc-ico-sm" style="background:linear-gradient(135deg,#f0fdf4,#faf5ff)">&#128228;</div>
+                <span class="fc-name">Multi-Platform Publishing</span>
+                <span class="fc-arrow">&#8594;</span>
+              </div>
+              <div class="fc-desc-sm">One post, auto-formatted and published to all 10 platforms simultaneously via official APIs.</div>
+            </a>
+            <a href="https://shoutlyai.com/features/bulk-scheduling" class="flow-card">
+              <div class="fc-row">
+                <div class="fc-ico-sm" style="background:linear-gradient(135deg,#fff7ed,#faf5ff)">&#9989;</div>
+                <span class="fc-name">Bulk Scheduling</span>
+                <span class="fc-arrow">&#8594;</span>
+              </div>
+              <div class="fc-desc-sm">Approve an entire month of content in one 10-minute session. Select all. Click approve. Done.</div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: MANAGEMENT -->
+      <div class="flow-step" id="management">
+        <div class="flow-step-connector">
+          <div class="flow-num">3</div>
+        </div>
+        <div class="flow-body">
+          <div class="flow-header">
+            <span class="flow-ico">&#128218;</span>
+            <h2 class="flow-title">Management &mdash; Organise &amp; Track</h2>
+          </div>
+          <p class="flow-desc">Management tools keep your brand consistent, your files organised, and your performance visible. Brand Kit makes every AI post look on-brand without you specifying it. Brand Assets stores all your photos and videos in one searchable library. Analytics shows what&rsquo;s working &mdash; and feeds those insights back into your next month&rsquo;s content.</p>
+          <div class="flow-cards">
+            <a href="https://shoutlyai.com/features/analytics" class="flow-card">
+              <div class="fc-row">
+                <div class="fc-ico-sm" style="background:linear-gradient(135deg,#ede9fe,#faf5ff)">&#128202;</div>
+                <span class="fc-name">Analytics Dashboard</span>
+                <span class="fc-arrow">&#8594;</span>
+              </div>
+              <div class="fc-desc-sm">Reach, engagement, follower growth, top posts &mdash; all 10 platforms in one view. AI tells you what to post next.</div>
+            </a>
+            <a href="https://shoutlyai.com/features/brand-kit" class="flow-card">
+              <div class="fc-row">
+                <div class="fc-ico-sm" style="background:linear-gradient(135deg,#fdf4ff,#faf5ff)">&#127859;</div>
+                <span class="fc-name">Brand Kit</span>
+                <span class="fc-arrow">&#8594;</span>
+              </div>
+              <div class="fc-desc-sm">Store your logo, colours, fonts, and brand voice once. Every AI post uses them automatically &mdash; forever.</div>
+            </a>
+            <a href="https://shoutlyai.com/features/brand-assets" class="flow-card">
+              <div class="fc-row">
+                <div class="fc-ico-sm" style="background:linear-gradient(135deg,#eff6ff,#faf5ff)">&#128218;</div>
+                <span class="fc-name">Brand Assets</span>
+                <span class="fc-arrow">&#8594;</span>
+              </div>
+              <div class="fc-desc-sm">Your media library. Upload photos and videos once. AI tags them. Find any file in seconds. Reuse forever.</div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: ANALYTICS LOOP -->
+      <div class="flow-step">
+        <div class="flow-step-connector">
+          <div class="flow-num">4</div>
+        </div>
+        <div class="flow-body">
+          <div class="flow-header">
+            <span class="flow-ico">&#128257;</span>
+            <h2 class="flow-title">The feedback loop &mdash; Improve automatically</h2>
+          </div>
+          <p class="flow-desc">This is what makes Shoutly AI different from a simple scheduler. After every post publishes, performance data flows back into the platform. The AI uses it to recalculate your optimal posting times, adjust your content mix, and improve the quality of next month&rsquo;s generated posts &mdash; automatically, without you doing anything.</p>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:28px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px">
+            <div style="text-align:center">
+              <div style="font-size:32px;margin-bottom:10px">&#128202;</div>
+              <div style="font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:5px">Analytics sees what worked</div>
+              <div style="font-size:12.5px;color:var(--ink4);line-height:1.6">Reach, engagement, saves, follower gain &mdash; tracked per post across all 10 platforms</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:32px;margin-bottom:10px">&#10022;</div>
+              <div style="font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:5px">AI identifies patterns</div>
+              <div style="font-size:12.5px;color:var(--ink4);line-height:1.6">Which content type, posting time, caption style, and hashtag mix drove the most reach</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:32px;margin-bottom:10px">&#128197;</div>
+              <div style="font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:5px">Calendar adjusts automatically</div>
+              <div style="font-size:12.5px;color:var(--ink4);line-height:1.6">Next month&rsquo;s content plan reflects what worked. More of what grew you. Less of what didn&rsquo;t</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- STAT STRIP -->
+<section style="padding:0 0 72px" data-r>
+  <div class="wrap">
+    <div class="stat-strip">
+      <div class="ss-cell"><div class="ss-n">12</div><div class="ss-l">Features in the platform</div><div class="ss-s">All connected, all included</div></div>
+      <div class="ss-cell"><div class="ss-n">10</div><div class="ss-l">Platforms supported</div><div class="ss-s">Instagram to Bluesky</div></div>
+      <div class="ss-cell"><div class="ss-n">5</div><div class="ss-l">AI tools</div><div class="ss-s">Content, image, caption, hashtag, Reels</div></div>
+      <div class="ss-cell"><div class="ss-n">1</div><div class="ss-l">Plan &mdash; everything included</div><div class="ss-s">&#8377;10,000/month &mdash; no add-ons</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 PLATFORMS -->
+<section class="section section-alt" id="platforms" aria-labelledby="plat-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">10 platforms, one dashboard</span>
+      <h2 class="sec-h2" id="plat-h2">Every platform your audience uses. All managed from one place.</h2>
+      <p class="sec-p">Shoutly AI connects to all 10 major platforms via their official APIs. Create once, auto-format for each platform, and publish everywhere simultaneously &mdash; with analytics unified in one view.</p>
+    </div>
+    <div class="plat-grid">
+      <div class="plat-card">
+        <div class="plat-ico" style="background:linear-gradient(135deg,#f58529,#dd2a7b)">&#128247;</div>
+        <div class="plat-name">Instagram</div>
+        <div class="plat-api">Meta Graph API</div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-ico" style="background:#1877f2">&#128153;</div>
+        <div class="plat-name">Facebook</div>
+        <div class="plat-api">Meta Graph API</div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-ico" style="background:#0077b5">&#128188;</div>
+        <div class="plat-name">LinkedIn</div>
+        <div class="plat-api">LinkedIn Marketing API</div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-ico" style="background:linear-gradient(135deg,#010101,#69c9d0)">&#127929;</div>
+        <div class="plat-name">TikTok</div>
+        <div class="plat-api">TikTok for Business API</div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-ico" style="background:#ff0000">&#9654;&#65039;</div>
+        <div class="plat-name">YouTube</div>
+        <div class="plat-api">YouTube Data API v3</div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-ico" style="background:linear-gradient(135deg,#4285f4,#34a853)">&#128205;</div>
+        <div class="plat-name">Google Business</div>
+        <div class="plat-api">Google My Business API</div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-ico" style="background:#0f0f0f">&#10005;</div>
+        <div class="plat-name">X &mdash; Twitter</div>
+        <div class="plat-api">X API v2</div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-ico" style="background:#e60023">&#128204;</div>
+        <div class="plat-name">Pinterest</div>
+        <div class="plat-api">Pinterest API v5</div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-ico" style="background:#0f0f0f">@</div>
+        <div class="plat-name">Threads</div>
+        <div class="plat-api">Threads API</div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-ico" style="background:linear-gradient(135deg,#0085ff,#00c6ff)">&#9729;&#65039;</div>
+        <div class="plat-name">Bluesky</div>
+        <div class="plat-api">AT Protocol</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IT'S FOR -->
+<section class="section" id="who-its-for" aria-labelledby="who-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">Who uses Shoutly AI</span>
+      <h2 class="sec-h2" id="who-h2">Built for any business that needs to post consistently &mdash; without a full-time social media team.</h2>
+    </div>
+    <div class="who-grid">
+      <div class="who-card">
+        <div class="who-ico">&#127829;</div>
+        <div class="who-title">Local Businesses</div>
+        <div class="who-desc">Restaurants, salons, gyms, cafes, retail shops &mdash; businesses that need to show up on social media every day without a dedicated marketing person.</div>
+        <span class="who-time">&#8987; 10 min/month</span>
+      </div>
+      <div class="who-card">
+        <div class="who-ico">&#128188;</div>
+        <div class="who-title">Social Media Agencies</div>
+        <div class="who-desc">Manage 10+ clients from one platform. Each client gets their own Brand Kit, content calendar, and analytics. Bulk scheduling replaces daily post-by-post management.</div>
+        <span class="who-time">&#8987; 10 min/client/month</span>
+      </div>
+      <div class="who-card">
+        <div class="who-ico">&#128640;</div>
+        <div class="who-title">Startups &amp; SMBs</div>
+        <div class="who-desc">Founders and small teams who need to maintain a professional social media presence across every platform without hiring a content team or spending hours on design.</div>
+        <span class="who-time">&#8987; 1 hr setup, then 10 min/month</span>
+      </div>
+      <div class="who-card">
+        <div class="who-ico">&#127775;</div>
+        <div class="who-title">Personal Brands &amp; Creators</div>
+        <div class="who-desc">Coaches, consultants, trainers, and creators who need to publish consistently across LinkedIn, Instagram, and YouTube while spending their time on their actual work.</div>
+        <span class="who-time">&#8987; 15 min/week</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section section-alt" id="pricing" aria-labelledby="price-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">Simple pricing</span>
+      <h2 class="sec-h2" id="price-h2">One plan. Every feature. No add-ons.</h2>
+      <p class="sec-p">Every feature shown on this page &mdash; all 12 features, all 10 platforms, unlimited posts &mdash; is included in one plan. No feature gates, no tier upgrades, no per-platform charges.</p>
+    </div>
+    <div class="pricing-card">
+      <span class="pc-eyebrow">Complete platform &mdash; everything included</span>
+      <div class="pc-price">&#8377;10,000</div>
+      <span class="pc-period">/month</span>
+      <div class="pc-sub">Billed monthly &bull; UPI &bull; Net Banking &bull; Cards &bull; GST invoice included<br>14-day free trial &bull; No credit card required</div>
+      <div class="pc-includes">
+        <div class="pc-inc-item"><span class="pc-inc-ico">&#10003;</span>All 5 AI tools (content, image, caption, hashtag, Reels)</div>
+        <div class="pc-inc-item"><span class="pc-inc-ico">&#10003;</span>All 4 publishing tools (scheduler, calendar, bulk, multi-platform)</div>
+        <div class="pc-inc-item"><span class="pc-inc-ico">&#10003;</span>Analytics Dashboard &mdash; all 10 platforms</div>
+        <div class="pc-inc-item"><span class="pc-inc-ico">&#10003;</span>Brand Kit &amp; Brand Assets</div>
+        <div class="pc-inc-item"><span class="pc-inc-ico">&#10003;</span>All 10 platforms connected</div>
+        <div class="pc-inc-item"><span class="pc-inc-ico">&#10003;</span>Unlimited posts &amp; scheduling</div>
+        <div class="pc-inc-item"><span class="pc-inc-ico">&#10003;</span>Festival content &mdash; 30+ Indian occasions</div>
+        <div class="pc-inc-item"><span class="pc-inc-ico">&#10003;</span>White-label PDF reports for agencies</div>
+        <div class="pc-inc-item"><span class="pc-inc-ico">&#10003;</span>Up to 10 connected social accounts</div>
+        <div class="pc-inc-item"><span class="pc-inc-ico">&#10003;</span>Priority support</div>
+      </div>
+      <div class="pc-btns">
+        <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-xl">Start 14-day free trial <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+        <a href="https://shoutlyai.com/pricing" class="btn btn-wh-ghost btn-xl">See full pricing details</a>
+      </div>
+      <div class="pc-note">No credit card required for the free trial &bull; Cancel anytime &bull; &#8377;10,000/month locked in for yearly plan</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq" aria-labelledby="faq-h2" data-r>
+  <div class="wrap center">
+    <span class="sec-ey">Common questions</span>
+    <h2 class="sec-h2" id="faq-h2">Questions about how the platform works</h2>
+    <div class="faq-list">
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Where do I start? What&rsquo;s the first thing to do?<span class="faq-arr">+</span></button><div class="faq-a"><p>Start with the <strong>Brand Kit</strong>. Upload your logo, enter your brand colours and fonts, and define your brand voice. This takes 3&ndash;5 minutes and means every piece of content Shoutly AI generates from that point forward automatically looks and sounds like your business. After that, the AI Content Generator can create your first full month of content in under 2 minutes.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Do I need to use all 12 features?<span class="faq-arr">+</span></button><div class="faq-a"><p>No. Use what makes sense for your business right now. Most businesses start with just three features: AI Content Generator (to create posts), Social Scheduler (to auto-publish them), and Content Calendar (to see their plan). Then they layer in Analytics after a month of posting, and Brand Kit from day one. All features are included in the plan &mdash; turn them on as you need them.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">How long does it take to set up the whole platform?<span class="faq-arr">+</span></button><div class="faq-a"><p>Most businesses are fully set up and have their first month of content ready to approve within one hour. Brand Kit takes 5 minutes. Connecting your social accounts takes 10 minutes. The AI generates your first month of content in 2 minutes. Reviewing and bulk-approving takes 10 minutes. Total: roughly 30&ndash;60 minutes to go from zero to a full month of scheduled content across all 10 platforms.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">How is Shoutly AI different from a regular scheduler like Buffer or Hootsuite?<span class="faq-arr">+</span></button><div class="faq-a"><p>Regular schedulers are tools for distributing content you already created. Shoutly AI creates the content for you first &mdash; posts, captions, images, hashtags, Reel scripts &mdash; and then schedules and publishes it automatically. It&rsquo;s the difference between a tool that helps you drive faster and a tool that does the driving. The content creation, brand consistency, and analytics-to-calendar feedback loop are all unique to Shoutly AI.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Do I need to post on all 10 platforms?<span class="faq-arr">+</span></button><div class="faq-a"><p>No. Connect only the platforms your business actually uses. A restaurant might use Instagram, Facebook, and Google Business. A B2B startup might use LinkedIn and X. A fitness coach might use Instagram, TikTok, and YouTube. You choose which platforms each post goes to &mdash; or let the AI recommend the best platforms for each content type.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">What happens if I don&rsquo;t like what the AI generates?<span class="faq-arr">+</span></button><div class="faq-a"><p>Every piece of AI-generated content is editable before you approve it. Click any post in your Content Calendar or Bulk Scheduling queue to edit the caption, swap the image, change the time, or remove the post entirely. The AI learns from your edits over time and produces content closer to your preferences with each passing month. You&rsquo;re always in control &mdash; the AI is a starting point, not a final decision.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" aria-labelledby="cta-h2">
+  <div class="wrap">
+    <h2 id="cta-h2">Now you know how it fits together.<br><span class="grad">Start your free trial.</span></h2>
+    <p>14-day free trial. No credit card. The whole platform &mdash; all 12 features, all 10 platforms &mdash; from day one.</p>
+    <div class="cta-btns">
+      <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-xl">Start free trial <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+      <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-xl">Book a live demo</a>
+    </div>
+    <div class="cta-trust">
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>12 features, all included</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>10 platforms</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>No credit card required</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>&#8377;10,000/month</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>4.9&#9733; &mdash; 41,000+ businesses</span>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="sf-inner">
+
+    <!-- Brand blurb + newsletter -->
+    <div class="sf-newsletter">
+      <div class="sf-brand">
+        <a href="/" class="sf-brand-logo-wrap"><img class="sf-brand-logo" src="/images/logo-master-white.png" alt="Shoutly AI logo"></a>
+        <p>Shoutly AI transforms one idea into 365 days of ready-to-publish social media content. Create, schedule, and grow your brand across every major platform.</p>
+        <div class="sf-plats">
+          <div class="sf-plats-label">Post across 10 platforms</div>
+          <div class="sf-plats-row">
+            <div class="sf-plat-ico" style="background:#000000"><i class="fa-brands fa-x-twitter" style="color:#fff;font-size:16px"></i></div>
+            <div class="sf-plat-ico" style="background:#0A66C2"><i class="fa-brands fa-linkedin-in" style="color:#fff;font-size:16px"></i></div>
+            <div class="sf-plat-ico" style="background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)"><i class="fa-brands fa-instagram" style="color:#fff;font-size:16px"></i></div>
+            <div class="sf-plat-ico" style="background:#010101"><i class="fa-brands fa-tiktok" style="color:#fff;font-size:16px"></i></div>
+            <div class="sf-plat-ico" style="background:#1877F2"><i class="fa-brands fa-facebook-f" style="color:#fff;font-size:16px"></i></div>
+            <div class="sf-plat-ico" style="background:#000000"><i class="fa-brands fa-threads" style="color:#fff;font-size:16px"></i></div>
+            <div class="sf-plat-ico" style="background:#0085ff"><i class="fa-brands fa-bluesky" style="color:#fff;font-size:16px"></i></div>
+            <div class="sf-plat-ico" style="background:#FF0000"><i class="fa-brands fa-youtube" style="color:#fff;font-size:16px"></i></div>
+            <div class="sf-plat-ico" style="background:#E60023"><i class="fa-brands fa-pinterest-p" style="color:#fff;font-size:16px"></i></div>
+            <div class="sf-plat-ico" style="background:#FFFC00"><i class="fa-brands fa-snapchat" style="color:#000;font-size:16px"></i></div>
+          </div>
+        </div>
+        <span class="sf-status" style="margin-top:14px;display:inline-flex">
+          <span class="sf-status-dot"></span>
+          All systems operational — <span style="text-decoration:underline">status</span>
+        </span>
+      </div>
+      <div class="sf-newsletter-box">
+        <div class="sf-nl-title">The weekly signal</div>
+        <p class="sf-nl-sub">AI marketing tactics, product updates, and new feature releases. Sent Thursdays.</p>
+        <div class="sf-nl-form">
+          <input type="email" id="sf-nl-email" placeholder="you@company.com">
+          <button type="button" id="sf-nl-btn">Subscribe</button>
+        </div>
+        <p id="sf-nl-msg" style="font-size:12px;font-weight:500;color:#6b7280;margin-top:12px">No spam. Unsubscribe anytime.</p>
+      </div>
+    </div>
+
+    <!-- Link columns -->
+    <div class="sf-cols">
+      <div class="sf-col">
+        <div class="sf-col-title">Product</div>
+        <a href="/#generator">AI Content Generator</a>
+        <a href="/#generator">AI Image Generator</a>
+        <a href="/#generator">AI Reel Generator</a>
+        <a href="/free-editorial">Content Calendar</a>
+        <a href="/pricing">Pricing</a>
+      </div>
+      <div class="sf-col">
+        <div class="sf-col-title">Solutions</div>
+        <a href="/solutions/local-businesses">Local Businesses</a>
+        <a href="/social-media-marketing-for-restaurants.html">Restaurants</a>
+        <a href="/social-media-marketing-for-gyms.html">Fitness</a>
+        <a href="/social-media-marketing-for-interior-designers.html">Interior Design</a>
+        <a href="/digital-marketing-for-real-estate-agents.html">Real Estate</a>
+      </div>
+      <div class="sf-col">
+        <div class="sf-col-title">Channels</div>
+        <a href="/channel/facebook">Facebook</a>
+        <a href="/channel/instagram">Instagram</a>
+        <a href="/channel/twitter-x">X</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">TikTok</a>
+      </div>
+      <div class="sf-col">
+        <div class="sf-col-title">Compare</div>
+        <a href="/compare/buffer-vs-shoutly-ai">Buffer vs Shoutly AI</a>
+        <a href="/compare/hootsuite-vs-shoutly-ai">Hootsuite vs Shoutly AI</a>
+        <a href="#">Later vs Shoutly AI</a>
+        <a href="#">Canva vs Shoutly AI</a>
+      </div>
+      <div class="sf-col">
+        <div class="sf-col-title">Resources</div>
+        <a href="https://blog.shoutlyai.com/" target="_blank" rel="noopener noreferrer">Blog</a>
+        <a href="/help-center">Help Center</a>
+        <a href="/#library">Image Library</a>
+        <a href="#">Affiliate Program</a>
+      </div>
+      <div class="sf-col">
+        <div class="sf-col-title">Company</div>
+        <a href="/about-us">About Us</a>
+        <a href="/careers">Careers</a>
+        <a href="/contact-us">Contact</a>
+        <a href="#">Brand Assets</a>
+      </div>
+    </div>
+
+    <!-- Trust & compliance -->
+    <div class="sf-trust">
+      <div class="sf-trust-title">Trust &amp; compliance</div>
+      <div class="sf-badges">
+        <span class="sf-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 2l8 3v6c0 5-3.4 8.4-8 11-4.6-2.6-8-6-8-11V5z"/></svg>Enterprise Security</span>
+        <span class="sf-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>SSL Secured</span>
+        <span class="sf-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>GDPR Ready</span>
+        <span class="sf-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>CCPA Compliant</span>
+        <span class="sf-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>DPDP Act Compliant</span>
+        <span class="sf-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>99.9% Uptime</span>
+        <span class="sf-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M8 6L3 12l5 6M16 6l5 6-5 6"/></svg>API Available</span>
+        <span class="sf-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 10h-1.26A8 8 0 108 20h10a5 5 0 000-10z"/></svg>AWS Cloud Hosted</span>
+        <span class="sf-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg>AI Powered</span>
+        <span class="sf-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M3 11a9 9 0 0118 0M3 11v7a2 2 0 002 2h1v-9H5a2 2 0 00-2 2zm18 0v7a2 2 0 01-2 2h-1v-9h1a2 2 0 012 2z"/></svg>24/7 Support</span>
+      </div>
+    </div>
+
+    <!-- Legal hub -->
+    <div class="sf-legal">
+      <div class="sf-legal-head">
+        <div class="t">Legal hub</div>
+        <p>Every policy governing how we handle your data, content, and account.</p>
+      </div>
+      <div class="sf-legal-links">
+        <a href="/policy">Privacy Policy</a><span class="sep">|</span>
+        <a href="/terms">Terms of Service</a><span class="sep">|</span>
+        <a href="/cookie">Cookie Policy</a><span class="sep">|</span>
+        <a href="/gdpr">GDPR</a><span class="sep">|</span>
+        <a href="/ccpa">CCPA</a><span class="sep">|</span>
+        <a href="/dpdp">DPDP Act</a><span class="sep">|</span>
+        <a href="/refunds">Refunds</a><span class="sep">|</span>
+        <a href="/security">Security</a><span class="sep">|</span>
+        <a href="/dmca">DMCA</a><span class="sep">|</span>
+        <a href="/eula">EULA</a>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="sf-bottom">
+      <p class="sf-copy">&copy; 2026 shoutlyai &mdash; Qubixel Technologies Private Limited. All rights reserved.<span class="sub">smart ai powering your social media for the next 365 days.</span></p>
+      <div class="sf-bottom-right">
+        <span class="muted">English ▾</span>
+        <span class="muted">Global ▾</span>
+        <a href="/sitemap.xml">Sitemap</a>
+        <div class="sf-social">
+          <a href="https://www.facebook.com/people/Shoutly-AI/61583485633639/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+          <a href="https://www.instagram.com/ai.shoutly/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://www.linkedin.com/company/shoutlyai/?viewAsMember=true" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+          <a href="https://x.com/shoutlyai" target="_blank" rel="noopener noreferrer" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="https://youtube.com/@shoutlyai" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<script>
+/* FAQ */
+function faq(btn) {
+  var item = btn.closest('.faq-item');
+  var open = item.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(open));
+}
+
+/* Sticky section nav highlight */
+var sections = ['how-it-works','ai-tools','publishing','management','platforms','who-its-for','pricing','faq'];
+var links = document.querySelectorAll('.snav-link');
+function updateNav() {
+  var scrollY = window.scrollY + 140;
+  var active = sections[0];
+  sections.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el && el.offsetTop <= scrollY) active = id;
+  });
+  links.forEach(function(l) {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + active);
+  });
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+
+/* Scroll reveal */
+if ('IntersectionObserver' in window) {
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+  }, { threshold: .06, rootMargin: '0px 0px -28px 0px' });
+  document.querySelectorAll('[data-r]').forEach(function(el) { obs.observe(el); });
+} else {
+  document.querySelectorAll('[data-r]').forEach(function(el) { el.classList.add('vis'); });
+}
+
+</script>
+<script src="/js/site-nav.js" defer></script>
+<script src="/js/site-footer.js" defer></script>
+</body>
+</html>
+
