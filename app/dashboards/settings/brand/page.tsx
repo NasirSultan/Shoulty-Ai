@@ -174,23 +174,6 @@ export default function BrandOverlayPage() {
   const { toast, show: showToast } = useToast();
 
 
-  useEffect(() => {
-    let cancelled = false;
-    fetchImages()
-      .then((images: Array<{ file?: string; url?: string }>) => {
-        if (cancelled) return;
-        const urls = (images || []).map((img) => img.file || img.url || "").filter(Boolean);
-        if (urls.length) {
-          setBgOptions(urls);
-          setBgImg(urls[0]);
-        }
-      })
-      .catch(() => {
-        // Keep the static fallback images if the live library is unreachable.
-      });
-    return () => { cancelled = true; };
-  }, []);
-
   const cachedBrand = useRef(readBrandCache()).current;
 
   const [S, setS] = useState<OverlayState>(cachedBrand?.overlay ?? {
@@ -213,6 +196,24 @@ export default function BrandOverlayPage() {
 
   const selectedIndustry = industries.find(ind => String(ind.id) === String(industryId));
   const selectedSubIndustry = selectedIndustry?.subIndustries.find(sub => String(sub.id) === String(subIndustryId));
+
+  // Show background/test images matching the user's selected industry, falling back to a random preview.
+  useEffect(() => {
+    let cancelled = false;
+    fetchImages(subIndustryId || null)
+      .then((images: Array<{ file?: string; url?: string }>) => {
+        if (cancelled) return;
+        const urls = (images || []).map((img) => img.file || img.url || "").filter(Boolean);
+        if (urls.length) {
+          setBgOptions(urls);
+          setBgImg(urls[0]);
+        }
+      })
+      .catch(() => {
+        // Keep the static fallback images if the live library is unreachable.
+      });
+    return () => { cancelled = true; };
+  }, [subIndustryId]);
 
   // Keep the 7-day brand settings cache in sync with every change, not just on Save.
   useEffect(() => {

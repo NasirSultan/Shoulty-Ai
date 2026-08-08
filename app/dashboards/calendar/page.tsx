@@ -3,10 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import AdminHeader from "../AdminHeader";
-import {
-  resolveGeneratorProfileFields,
-  streamGeneratePosts,
-} from "@/api/postGeneratorApi";
+import { resolveGeneratorProfileFields } from "@/api/postGeneratorApi";
 import { createMonthlyPlan, getUserPlan, getPostDetail, updateCalendarPost, createCalendarPost, createManualPost } from "@/api/calendarApi";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { API_BASE_URL } from "@/api/configApi";
@@ -619,8 +616,6 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
 }) {
   const p = state.postId ? posts.find(x => x.id === state.postId) : null;
   const [caption, setCaption] = useState("");
-  const [aiLoading, setAiLoading] = useState(false);
-  const [aiResult, setAiResult] = useState("");
   const [dateVal, setDateVal] = useState("");
   const [typeVal, setTypeVal] = useState<PostType>("image");
   const [selPlats, setSelPlats] = useState<PlatKey[]>(["ig"]);
@@ -668,7 +663,6 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
     }
     setShowImagePreviewPopup(false);
     setImageZoom(1); setImagePan({ x: 0, y: 0 }); setIsPanningImage(false);
-    setAiResult(""); setAiLoading(false);
   }, [state.open, state.postId]);
 
   const clampZoom = (value: number) => Math.min(4, Math.max(1, value));
@@ -718,58 +712,6 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
   };
 
   const togglePlat = (pl: PlatKey) => setSelPlats(prev => prev.includes(pl) ? prev.filter(x => x !== pl) : [...prev, pl]);
-
-  const applyCaptionWithRelatedTags = (nextCaption: string) => {
-    setCaption(nextCaption);
-    if (nextCaption.trim()) {
-      setTags(buildRelevantHashtags(nextCaption, img));
-    }
-  };
-
-  const doAiRewrite = async () => {
-    if (!industrySelection?.industryId || !industrySelection?.subIndustryId) {
-      showToast("Select industry/sub-industry before rewrite", "red");
-      return;
-    }
-
-    setAiLoading(true);
-    setAiResult("");
-    let received = false;
-
-    try {
-      await streamGeneratePosts(
-        {
-          industryId: industrySelection.industryId,
-          subIndustryId: industrySelection.subIndustryId,
-          prompt: caption.trim()
-            ? `Rewrite this post for higher engagement: ${caption}`
-            : "Write an engaging social media caption for this post.",
-        },
-        {
-          onChunk: (chunk) => {
-            const text = chunk.post?.text?.trim();
-            if (!text) return;
-            if (received && chunk.post?.source !== "LLM") return;
-
-            setAiResult(text);
-            if (!received || chunk.post?.source === "LLM") {
-              received = true;
-              setAiLoading(false);
-            }
-          },
-          onDone: () => {
-            if (!received) {
-              showToast("No rewrite received from stream", "red");
-            }
-            setAiLoading(false);
-          },
-        }
-      );
-    } catch {
-      setAiLoading(false);
-      showToast("Rewrite failed from API", "red");
-    }
-  };
 
   const onTagKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if ((e.key === "Enter" || e.key === ",") && tagInput.trim()) {
@@ -883,32 +825,10 @@ function EditModal({ state, posts, today, onClose, onSave, onPublishNow, onCreat
           </div>
           {/* Form */}
           <div className="cal-modal-form" style={{ flex: 1, overflowY: "auto", padding: "16px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
-            {/* AI Rewrite */}
-            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 7, background: "linear-gradient(135deg,#EEEEFF,rgba(236,233,255,.4))", border: "1px solid #E0E0FA" }}>
-              <i className="fa-solid fa-wand-magic-sparkles" style={{ color: "#F97316", fontSize: 14, flexShrink: 0 }} />
-              <div style={{ flex: 1, fontSize: 12.5, color: "#4B4D6B" }}>
-                <strong style={{ color: "#F97316" }}>AI ready</strong> — {caption.trim() ? "Rewrite this caption for your brand voice" : "Generate a caption for this post"}
-              </div>
-              <button onClick={doAiRewrite} disabled={aiLoading} style={{ display: "flex", alignItems: "center", gap: 5, padding: "6px 13px", borderRadius: 7, background: "linear-gradient(115deg,#F97316,#EA580C)", color: "#fff", fontSize: 12, fontWeight: 700, cursor: aiLoading ? "default" : "pointer", border: "none", fontFamily: "Sora,sans-serif", flexShrink: 0, opacity: aiLoading ? 0.7 : 1 }}>
-                {aiLoading
-                  ? <><i className="fa-solid fa-spinner" style={{ fontSize: 11, animation: "spin 1s linear infinite" }} /> Working…</>
-                  : <><i className="fa-solid fa-wand-magic-sparkles" style={{ fontSize: 11 }} /> {caption.trim() ? "Rewrite" : "Generate"}</>}
-              </button>
-            </div>
-            {(aiLoading || aiResult) && (
-              <div style={{ background: "#EEEEFF", border: "1px solid #E0E0FA", borderRadius: 7, padding: "11px 13px", fontSize: 13.5, color: "#0B0C1A", lineHeight: 1.7 }}>
-                {aiLoading ? "Rewriting for your brand…" : (
-                  <>
-                    <div>{aiResult}</div>
-                    <button onClick={() => { applyCaptionWithRelatedTags(aiResult); setAiResult(""); showToast("✦ Caption applied!", "brand"); }} style={{ marginTop: 8, padding: "5px 12px", borderRadius: 6, background: "linear-gradient(115deg,#F97316,#EA580C)", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Sora,sans-serif", border: "none" }}>Use this →</button>
-                  </>
-                )}
-              </div>
-            )}
             {/* Caption */}
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".5px", color: "#8486AB", fontFamily: "Sora,sans-serif", marginBottom: 6 }}>Caption</div>
-              <textarea ref={captionRef} required value={caption} onChange={e => applyCaptionWithRelatedTags(e.target.value)} placeholder="Write your caption here…"
+              <textarea ref={captionRef} required value={caption} onChange={e => setCaption(e.target.value)} placeholder="Write your caption here…"
                 style={{ width: "100%", padding: "10px 12px", borderRadius: 7, border: "1px solid #E2E4F0", background: "#F0F1F9", color: "#0B0C1A", fontSize: 13.5, outline: "none", resize: "none", minHeight: 80, fontFamily: "inherit", lineHeight: 1.6 }} />
               <div style={{ textAlign: "right", fontSize: 11, color: "#BFC1D9", fontFamily: "JetBrains Mono,monospace", marginTop: 3 }}>{caption.length} / 2200</div>
             </div>
