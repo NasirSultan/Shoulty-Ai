@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Brand Assets &mdash; Your Media Library for Social Media | Shoutly AI</title>
+<meta name="description" content="Shoutly AI's Brand Assets is your central media library. Upload photos, videos, and graphics once. Search, reuse, and publish them across all 10 platforms instantly — no more hunting for files.">
+<link rel="canonical" href="https://shoutlyai.com/features/brand-assets">
+<meta property="og:title" content="Brand Assets — Media Library | Shoutly AI">
+<meta property="og:description" content="Upload your photos and videos once. Find any asset in seconds. Reuse across all 10 platforms. Your entire content library, organised and searchable in one place.">
+<meta property="og:url" content="https://shoutlyai.com/features/brand-assets">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shoutly AI">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@shoutlyai">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Inter+Tight:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:#0f0f0f;-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+:root{
+  --p:#f97316;--pg:linear-gradient(135deg,#f97316,#ea580c);
+  --dark:#08021a;--glow:rgba(249,115,22,.25);
+  --ink:#0f0f0f;--ink2:#262626;--ink3:#525252;--ink4:#a3a3a3;
+  --surface:#f7f7fb;--border:#e5e4f0;--border2:#ccc9ea;
+  --green:#16a34a;
+  --max:1200px;--r:8px;--r2:12px;--r3:16px;--r4:22px;--r5:30px;
+}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);height:62px;display:flex;align-items:center;transition:box-shadow .2s}
+.nav.scrolled{box-shadow:0 1px 14px rgba(0,0,0,.07)}
+.nav-inner{display:flex;align-items:center;width:100%;max-width:var(--max);margin:0 auto;padding:0 28px;gap:8px}
+.nav-logo{display:flex;align-items:center;gap:9px;font-size:15.5px;font-weight:800;color:var(--ink)}
+.nav-mark{width:32px;height:32px;border-radius:9px;background:var(--pg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-mark svg{width:16px;height:16px;fill:#fff}
+.feat-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#fff7ed,#ffedd5);border:1px solid #fed7aa;color:var(--p);border-radius:100px;padding:3px 10px;font-size:11.5px;font-weight:700;margin-left:6px}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:18px}
+.nav-links a{font-size:13.5px;color:var(--ink3);padding:5px 12px;border-radius:var(--r);font-weight:500;transition:all .14s}
+.nav-links a:hover{color:var(--ink);background:var(--surface)}
+.nav-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:600;border-radius:var(--r2);padding:9px 20px;transition:all .15s;cursor:pointer;border:1.5px solid transparent;white-space:nowrap}
+.btn-ghost{color:var(--ink2);border-color:var(--border2)}.btn-ghost:hover{background:var(--surface)}
+.btn-primary{background:var(--pg);color:#fff;border:none;box-shadow:0 2px 10px var(--glow)}.btn-primary:hover{opacity:.88;transform:translateY(-1px)}
+.btn-lg{padding:13px 28px;font-size:15.5px;font-weight:700;border-radius:var(--r3)}
+.btn-xl{padding:15px 34px;font-size:16px;font-weight:700;border-radius:var(--r3)}
+.btn-white{background:#fff;color:var(--p);font-weight:700;border:none}.btn-white:hover{background:#fff7ed;transform:translateY(-1px)}
+.btn-wh-ghost{background:transparent;color:rgba(255,255,255,.8);border:1.5px solid rgba(255,255,255,.3)}.btn-wh-ghost:hover{border-color:rgba(255,255,255,.65);color:#fff}
+.btn-sm{padding:7px 16px;font-size:13px}
+
+/* BC */
+.bc{background:var(--surface);border-bottom:1px solid var(--border);padding:11px 0}
+.bc-inner{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink4)}
+.bc-inner a{color:var(--ink4)}.bc-inner a:hover{color:var(--p)}
+
+/* HERO */
+.hero{background:var(--dark);padding:80px 0 0;position:relative;overflow:hidden}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none}
+.hero-orb-1{width:700px;height:700px;background:radial-gradient(circle,rgba(249,115,22,.35),transparent 68%);top:-250px;left:-180px}
+.hero-orb-2{width:450px;height:450px;background:radial-gradient(circle,rgba(234,88,12,.2),transparent 65%);bottom:0;right:-80px}
+.hero-top{position:relative;z-index:1;text-align:center;padding-bottom:52px;max-width:720px;margin:0 auto;padding-left:28px;padding-right:28px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(249,115,22,.14);border:1px solid rgba(249,115,22,.28);border-radius:100px;padding:5px 14px 5px 9px;font-size:12.5px;font-weight:600;color:#fdba74;margin-bottom:22px}
+.ey-dot{width:7px;height:7px;border-radius:50%;background:#ea580c;animation:pulse 2.2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+.hero-h1{font-family:'Inter Tight',sans-serif;font-size:clamp(36px,5.5vw,64px);font-weight:900;letter-spacing:-3px;line-height:.94;color:#fff;margin-bottom:22px}
+.hero-h1 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(15px,1.7vw,19px);color:rgba(255,255,255,.58);line-height:1.72;margin:0 auto 36px}
+.hero-ctas{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:28px}
+.hero-proof{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center}
+.hp{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.42)}
+.hp svg{width:13px;height:13px;stroke:rgba(249,115,22,.9);stroke-width:2.5;fill:none;flex-shrink:0}
+
+/* ═══ MEDIA LIBRARY WINDOW ═══════════════════════════════════════════ */
+.ml-container{position:relative;z-index:2;max-width:1040px;margin:0 auto;padding:0 28px}
+.ml-window{background:#0c0820;border:1px solid rgba(255,255,255,.1);border-radius:20px 20px 0 0;overflow:hidden;box-shadow:0 -8px 60px rgba(249,115,22,.16),0 0 0 1px rgba(249,115,22,.1)}
+/* titlebar */
+.ml-bar{background:#150e2e;border-bottom:1px solid rgba(255,255,255,.07);padding:10px 18px;display:flex;align-items:center;gap:10px}
+.ml-dots{display:flex;gap:6px}
+.ml-dot{width:10px;height:10px;border-radius:50%}
+.ml-dot.r{background:#ff5f57}.ml-dot.y{background:#febc2e}.ml-dot.g{background:#28c840}
+.ml-title-txt{font-size:12px;font-weight:700;color:rgba(255,255,255,.4);margin-left:8px;font-family:'Inter Tight',sans-serif}
+/* toolbar */
+.ml-toolbar{background:#130a28;border-bottom:1px solid rgba(255,255,255,.06);padding:9px 18px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ml-search{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:var(--r);padding:5px 12px;font-size:11.5px;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:6px;flex:1;max-width:240px;cursor:text}
+.ml-search-ico{font-size:12px}
+.ml-filter-row{display:flex;gap:5px;flex-wrap:wrap}
+.ml-chip{font-size:10px;font-weight:700;padding:4px 11px;border-radius:100px;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.38);cursor:pointer;transition:all .15s;white-space:nowrap}
+.ml-chip.active{background:rgba(249,115,22,.16);border-color:rgba(249,115,22,.32);color:#fdba74}
+.ml-upload-btn{margin-left:auto;background:var(--pg);color:#fff;border:none;border-radius:var(--r);padding:5px 14px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:inherit;flex-shrink:0}
+/* stats row */
+.ml-stats-row{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid rgba(255,255,255,.05)}
+.ml-stat{padding:9px 16px;border-right:1px solid rgba(255,255,255,.04)}
+.ml-stat:last-child{border-right:none}
+.ml-stat-n{font-size:16px;font-weight:900;color:#fff;font-family:'Inter Tight',sans-serif;letter-spacing:-.5px}
+.ml-stat-l{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.28);margin-top:1px}
+/* grid */
+.ml-grid-wrap{padding:14px 16px;display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.ml-asset{border-radius:var(--r2);overflow:hidden;cursor:pointer;transition:all .18s;position:relative;border:1.5px solid transparent}
+.ml-asset:hover{border-color:rgba(249,115,22,.35);transform:scale(1.03)}
+.ml-asset.selected{border-color:#fb923c;box-shadow:0 0 0 2px rgba(249,115,22,.28)}
+.ml-asset-thumb{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:26px;position:relative}
+.ml-asset-type{position:absolute;top:4px;left:4px;font-size:8px;font-weight:800;padding:2px 5px;border-radius:4px;backdrop-filter:blur(4px)}
+.ml-asset-check{position:absolute;top:4px;right:4px;width:16px;height:16px;border-radius:50%;background:rgba(249,115,22,.9);display:none;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:800}
+.ml-asset.selected .ml-asset-check{display:flex}
+.ml-asset-meta{background:#130a28;padding:4px 6px}
+.ml-asset-name{font-size:8.5px;font-weight:600;color:rgba(255,255,255,.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ml-asset-size{font-size:7.5px;color:rgba(255,255,255,.25)}
+/* sidebar preview */
+.ml-body{display:grid;grid-template-columns:1fr 200px}
+.ml-main{border-right:1px solid rgba(255,255,255,.05)}
+.ml-sidebar{padding:14px;background:#0e0924}
+.ml-sb-lbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:rgba(255,255,255,.28);margin-bottom:10px}
+.ml-sb-prev{width:100%;aspect-ratio:1;background:linear-gradient(135deg,#f58529,#dd2a7b);border-radius:var(--r2);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:10px}
+.ml-sb-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:10px}
+.ml-sb-key{color:rgba(255,255,255,.3);font-weight:600}
+.ml-sb-val{color:rgba(255,255,255,.65);font-weight:700;text-align:right}
+.ml-sb-use-btn{display:block;width:100%;background:var(--pg);color:#fff;border:none;border-radius:var(--r);padding:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:10px;text-align:center}
+.ml-sb-posts{margin-top:12px}
+.ml-sb-post{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:var(--r);padding:6px 8px;margin-bottom:5px;font-size:9.5px;color:rgba(255,255,255,.45)}
+
+/* STAT STRIP */
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);background:var(--border);gap:1px;border:1px solid var(--border);border-radius:var(--r4);overflow:hidden}
+.ss-cell{background:#fff;padding:26px 20px;text-align:center}
+.ss-n{font-family:'Inter Tight',sans-serif;font-size:clamp(26px,2.8vw,38px);font-weight:900;background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-2px;line-height:1;margin-bottom:5px}
+.ss-l{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.ss-s{font-size:12px;color:var(--ink4)}
+
+/* SECTIONS */
+.section{padding:88px 0}.section-alt{background:var(--surface)}
+.sec-ey{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--p);margin-bottom:10px;display:block}
+.sec-h2{font-family:'Inter Tight',sans-serif;font-size:clamp(26px,3.3vw,42px);font-weight:900;letter-spacing:-1.5px;color:var(--ink);line-height:1.05;margin-bottom:12px}
+.sec-p{font-size:17px;color:var(--ink2);line-height:1.72;max-width:600px}
+.center{text-align:center}.center .sec-p{margin:0 auto}
+
+/* PAIN */
+.pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pain-card{background:#fff;border:1px solid var(--border);border-radius:var(--r3);padding:22px;display:flex;gap:14px;transition:border-color .18s}
+.pain-card:hover{border-color:var(--border2)}
+.pain-ico{width:42px;height:42px;border-radius:11px;background:#fef2f2;border:1px solid #fecaca;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.pain-title{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.pain-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+
+/* WHAT'S INSIDE */
+.inside-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.inside-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:26px;transition:all .2s}
+.inside-card:hover{border-color:#fdba74;box-shadow:0 4px 18px rgba(249,115,22,.07);transform:translateY(-2px)}
+.ic-ico{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:14px}
+.ic-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:7px}
+.ic-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+.ic-tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--p);background:#fff7ed;border-radius:100px;padding:2px 8px;margin-top:8px}
+
+/* HOW IT WORKS */
+.hiw-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+.hiw-steps{display:flex;flex-direction:column}
+.hiw-step{display:flex;gap:18px;position:relative;padding-bottom:28px}
+.hiw-step:last-child{padding-bottom:0}
+.hiw-step::before{content:'';position:absolute;left:19px;top:44px;bottom:0;width:2px;background:var(--border)}
+.hiw-step:last-child::before{display:none}
+.hiw-num{width:40px;height:40px;border-radius:50%;background:var(--pg);color:#fff;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 12px var(--glow);z-index:1;font-family:'Inter Tight',sans-serif}
+.hiw-body{padding-top:8px}
+.hiw-title{font-size:15.5px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.hiw-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+.hiw-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--p);background:#fff7ed;border-radius:100px;padding:2px 8px;margin-top:6px}
+
+/* DIFF CARD */
+.diff-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.diff-card{border-radius:var(--r4);overflow:hidden}
+.diff-head{padding:16px 22px;font-size:14px;font-weight:800;display:flex;align-items:center;gap:10px}
+.diff-body{padding:18px 22px;display:flex;flex-direction:column;gap:9px}
+.diff-row{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;line-height:1.55}
+
+/* FILE TYPES */
+.filetypes-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.ft-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:20px;text-align:center;transition:all .18s}
+.ft-card:hover{border-color:#fdba74;box-shadow:0 4px 14px rgba(249,115,22,.07)}
+.ft-ico{font-size:32px;margin-bottom:10px}
+.ft-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.ft-exts{font-size:12px;color:var(--ink4);margin-bottom:8px}
+.ft-note{font-size:12.5px;color:var(--ink3);line-height:1.55}
+
+/* FEATURES */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.feat-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:26px;transition:all .18s}
+.feat-card:hover{border-color:#fdba74;box-shadow:0 4px 18px rgba(249,115,22,.06)}
+.fc-ico{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#fff7ed,#ffedd5);display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:13px}
+.fc-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:7px}
+.fc-desc{font-size:13.5px;color:var(--ink3);line-height:1.65}
+
+/* TESTIMONIALS */
+.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.test-card{background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:28px;display:flex;flex-direction:column;transition:all .18s}
+.test-card:hover{border-color:var(--border2);box-shadow:0 6px 24px rgba(249,115,22,.07);transform:translateY(-2px)}
+.test-stars{color:#f59e0b;font-size:13px;letter-spacing:2px;margin-bottom:13px}
+.test-quote{font-size:14px;color:var(--ink2);line-height:1.76;font-style:italic;flex:1;margin-bottom:18px}
+.test-author{display:flex;align-items:center;gap:11px}
+.ta-av{width:40px;height:40px;border-radius:50%;background:var(--pg);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+.ta-name{font-size:13.5px;font-weight:700;color:var(--ink);display:block}
+.ta-biz{font-size:12px;color:var(--ink4)}
+
+/* FAQ */
+.faq-list{border:1px solid var(--border);border-radius:var(--r4);overflow:hidden;max-width:740px;margin:40px auto 0}
+.faq-item{border-bottom:1px solid var(--border)}.faq-item:last-child{border-bottom:none}
+.faq-q{width:100%;padding:18px 22px;background:#fff;border:none;display:flex;align-items:center;justify-content:space-between;text-align:left;cursor:pointer;font-size:15px;font-weight:600;color:var(--ink);gap:14px;transition:background .14s;font-family:inherit}
+.faq-q:hover{background:var(--surface)}
+.faq-arr{width:24px;height:24px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--ink4);flex-shrink:0;transition:all .22s}
+.faq-item.open .faq-arr{background:var(--pg);border-color:transparent;color:#fff;transform:rotate(45deg)}
+.faq-a{display:none;padding:0 22px 18px;font-size:14.5px;color:var(--ink2);line-height:1.75;background:#fff}
+.faq-item.open .faq-a{display:block}
+
+/* LINKS */
+.links-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.link-card{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:var(--r2);padding:12px 14px;font-size:13.5px;font-weight:500;color:var(--ink2);transition:all .15s}
+.link-card:hover{border-color:#fdba74;background:#fff7ed;color:var(--p)}
+.link-arr{margin-left:auto;font-size:12px;color:var(--ink4)}
+
+/* CTA */
+.cta-section{background:var(--dark);padding:96px 0;text-align:center;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 65% at 50% 110%,rgba(249,115,22,.22) 0%,transparent 70%);pointer-events:none}
+.cta-section h2{font-family:'Inter Tight',sans-serif;font-size:clamp(30px,5vw,54px);font-weight:900;letter-spacing:-2.5px;line-height:1.03;color:#fff;margin-bottom:16px;position:relative;z-index:1}
+.cta-section h2 .grad{background:var(--pg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-section p{font-size:17.5px;color:rgba(255,255,255,.6);line-height:1.7;max-width:520px;margin:0 auto 38px;position:relative;z-index:1}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:22px;position:relative;z-index:1}
+.cta-trust{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,.4);position:relative;z-index:1}
+.ct{display:flex;align-items:center;gap:5px}
+.ct svg{width:13px;height:13px;stroke:rgba(249,115,22,.9);stroke-width:2.5;fill:none}
+
+/* FOOTER */
+.footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.07);padding:32px 0}
+.ft-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ft-logo{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:800;color:rgba(255,255,255,.6)}
+.ft-links{display:flex;gap:18px;flex-wrap:wrap}
+.ft-links a{font-size:13px;color:rgba(255,255,255,.3);transition:color .14s}.ft-links a:hover{color:rgba(255,255,255,.65)}
+.ft-copy{font-size:12px;color:rgba(255,255,255,.2);margin-top:14px}
+
+@media(max-width:1024px){
+  .ml-grid-wrap{grid-template-columns:repeat(5,1fr)}
+  .ml-body{grid-template-columns:1fr}
+  .ml-sidebar{display:none}
+  .inside-grid{grid-template-columns:1fr 1fr}
+  .feat-grid,.test-grid{grid-template-columns:1fr 1fr}
+  .hiw-grid{grid-template-columns:1fr;gap:44px}
+  .filetypes-grid,.links-grid{grid-template-columns:1fr 1fr}
+  .diff-grid{grid-template-columns:1fr}
+}
+@media(max-width:720px){
+  .nav-links,.nav-right .btn-ghost{display:none}
+  .pain-grid,.inside-grid,.feat-grid,.test-grid,.filetypes-grid{grid-template-columns:1fr}
+  .stat-strip{grid-template-columns:1fr 1fr}
+  .ml-stats-row{grid-template-columns:repeat(3,1fr)}
+  .ml-grid-wrap{grid-template-columns:repeat(4,1fr)}
+  .section{padding:60px 0}
+  .wrap,.ml-container{padding:0 18px}
+}
+@media(prefers-reduced-motion:reduce){.ey-dot{animation:none}}
+[data-r]{opacity:1;transform:none}.js [data-r]{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}
+[data-r].vis{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<main>
+
+<!-- HERO -->
+<section class="hero" aria-labelledby="hero-h1">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="wrap">
+    <div class="hero-top">
+      <div class="hero-eyebrow"><span class="ey-dot"></span>Brand Assets &mdash; Management</div>
+      <h1 class="hero-h1" id="hero-h1">Every photo. Every video.<br><span class="grad">Always one click away.</span></h1>
+      <p class="hero-sub">Upload your photos, videos, graphics, and AI-generated images once. Find any asset in seconds. Reuse it across any post on any platform &mdash; without hunting through WhatsApp, Google Drive, or your camera roll ever again.</p>
+      <div class="hero-ctas">
+        <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-lg">Start uploading free <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+        <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-lg">See a live demo</a>
+      </div>
+      <div class="hero-proof">
+        <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Upload once, reuse forever</span>
+        <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Search by keyword, not filename</span>
+        <span class="hp"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Auto-resized for every platform</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEDIA LIBRARY WINDOW -->
+  <div class="ml-container">
+    <div class="ml-window" role="region" aria-label="Brand Assets media library preview">
+      <div class="ml-bar">
+        <div class="ml-dots"><div class="ml-dot r"></div><div class="ml-dot y"></div><div class="ml-dot g"></div></div>
+        <span class="ml-title-txt">Shoutly AI &mdash; Brand Assets &mdash; Media Library</span>
+      </div>
+      <div class="ml-toolbar">
+        <div class="ml-search"><span class="ml-search-ico">&#128269;</span><span>Search assets&hellip;</span></div>
+        <div class="ml-filter-row">
+          <span class="ml-chip active" onclick="filterAssets('all',this)">All (247)</span>
+          <span class="ml-chip" onclick="filterAssets('photo',this)">&#128247; Photos (184)</span>
+          <span class="ml-chip" onclick="filterAssets('video',this)">&#127909; Videos (38)</span>
+          <span class="ml-chip" onclick="filterAssets('graphic',this)">&#127912; Graphics (25)</span>
+          <span class="ml-chip" onclick="filterAssets('ai',this)">&#10022; AI Generated</span>
+        </div>
+        <button class="ml-upload-btn">&#8679; Upload</button>
+      </div>
+      <div class="ml-stats-row">
+        <div class="ml-stat"><div class="ml-stat-n">247</div><div class="ml-stat-l">Total assets</div></div>
+        <div class="ml-stat"><div class="ml-stat-n">184</div><div class="ml-stat-l">Photos</div></div>
+        <div class="ml-stat"><div class="ml-stat-n">38</div><div class="ml-stat-l">Videos</div></div>
+        <div class="ml-stat"><div class="ml-stat-n">4.2GB</div><div class="ml-stat-l">Storage used</div></div>
+        <div class="ml-stat"><div class="ml-stat-n">63</div><div class="ml-stat-l">Used in posts</div></div>
+      </div>
+      <div class="ml-body">
+        <div class="ml-main">
+          <div class="ml-grid-wrap" id="ml-grid"></div>
+        </div>
+        <div class="ml-sidebar">
+          <div class="ml-sb-lbl">Selected asset</div>
+          <div class="ml-sb-prev">&#127829;</div>
+          <div class="ml-sb-row"><span class="ml-sb-key">Name</span><span class="ml-sb-val">biryani_hero.jpg</span></div>
+          <div class="ml-sb-row"><span class="ml-sb-key">Type</span><span class="ml-sb-val">JPEG Photo</span></div>
+          <div class="ml-sb-row"><span class="ml-sb-key">Size</span><span class="ml-sb-val">2.4 MB</span></div>
+          <div class="ml-sb-row"><span class="ml-sb-key">Dimensions</span><span class="ml-sb-val">4032 &times; 3024</span></div>
+          <div class="ml-sb-row"><span class="ml-sb-key">Uploaded</span><span class="ml-sb-val">Nov 2</span></div>
+          <div class="ml-sb-row"><span class="ml-sb-key">Used in</span><span class="ml-sb-val">8 posts</span></div>
+          <button class="ml-sb-use-btn">&#10133; Use in new post</button>
+          <div class="ml-sb-posts">
+            <div class="ml-sb-post">&#128247; Instagram &bull; Nov 3</div>
+            <div class="ml-sb-post">&#128153; Facebook &bull; Nov 3</div>
+            <div class="ml-sb-post">&#128205; Google Biz &bull; Nov 5</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STAT STRIP -->
+<section style="padding:52px 0 0" data-r>
+  <div class="wrap">
+    <div class="stat-strip">
+      <div class="ss-cell"><div class="ss-n">1x</div><div class="ss-l">Upload</div><div class="ss-s">Reuse across every platform forever</div></div>
+      <div class="ss-cell"><div class="ss-n">10</div><div class="ss-l">Platforms auto-resized</div><div class="ss-s">One file, every format handled</div></div>
+      <div class="ss-cell"><div class="ss-n">AI</div><div class="ss-l">Smart search</div><div class="ss-s">Find by content, not filename</div></div>
+      <div class="ss-cell"><div class="ss-n">&#8734;</div><div class="ss-l">Asset history</div><div class="ss-s">Every post it appeared in, tracked</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN -->
+<section class="section" aria-labelledby="pain-h2" data-r>
+  <div class="wrap">
+    <div style="margin-bottom:48px">
+      <span class="sec-ey">The content file problem</span>
+      <h2 class="sec-h2" id="pain-h2">Every business is losing hours a week hunting for photos they already have.</h2>
+      <p class="sec-p">Your best dish photo is in a WhatsApp chat. Your logo variants are in a folder on your laptop. Your Reel footage is on your phone. Your designer sent the festival graphic over email. Without a central library, every post starts with a file hunt.</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card"><div class="pain-ico">&#128241;</div><div><div class="pain-title">Your best content is scattered across WhatsApp, Google Drive, email, and your phone</div><div class="pain-desc">You took a great dish photo last week. Now you want to reuse it. Where is it? Your camera roll has 4,000 photos. Your WhatsApp has 80 shared images in a dozen chats. Your Google Drive has folders that haven&rsquo;t been touched in months. Finding a specific file takes 15&ndash;20 minutes &mdash; every single time.</div></div></div>
+      <div class="pain-card"><div class="pain-ico">&#128257;</div><div><div class="pain-title">You re-upload the same image to every platform separately</div><div class="pain-desc">Instagram needs a square crop. Facebook wants 16:9. LinkedIn prefers 1.91:1. Google Business uses 4:3. Without a central library with auto-resizing, you&rsquo;re manually cropping and re-uploading the same photo four times for a single post &mdash; then doing it again when you reuse it next week.</div></div></div>
+      <div class="pain-card"><div class="pain-ico">&#128683;</div><div><div class="pain-title">No record of which image was used in which post</div><div class="pain-desc">You want to reuse your most popular Diwali graphic from last year. But which file was it? What did the caption say? Which platforms did it go on? Without an asset library that tracks post history, every reuse decision starts from scratch &mdash; and your best-performing assets get forgotten and wasted.</div></div></div>
+      <div class="pain-card"><div class="pain-ico">&#127912;</div><div><div class="pain-title">AI-generated images vanish after you download them once</div><div class="pain-desc">Shoutly AI generated the perfect Biryani graphic last month. You used it once. Now you want to reuse it for a new post. But it&rsquo;s not in your downloads folder, it&rsquo;s not in your Drive, you can&rsquo;t remember what prompt generated it. Without a library, every AI image is a one-time-use file that gets lost.</div></div></div>
+      <div class="pain-card"><div class="pain-ico">&#128101;</div><div><div class="pain-title">Agencies sending files back and forth with clients over email</div><div class="pain-desc">Client sends photos over WhatsApp at low resolution. You ask for the full-res version. They email it. You download it. You resize it. You upload it to the scheduler. The client wants to change the image &mdash; the whole process starts again. Multiply by 12 clients and 30 posts a month and content file management is a full-time job.</div></div></div>
+      <div class="pain-card"><div class="pain-ico">&#9888;&#65039;</div><div><div class="pain-title">Inconsistent image quality goes unnoticed until after publishing</div><div class="pain-desc">A team member uploaded a compressed WhatsApp image instead of the original high-res file. It looked fine on their phone screen. On a desktop monitor, it&rsquo;s visibly pixelated. Without a central library where every asset is quality-checked and stored at full resolution, low-quality images slip through and damage your brand&rsquo;s professional appearance.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT'S INSIDE -->
+<section class="section section-alt" id="whats-inside" aria-labelledby="inside-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:52px">
+      <span class="sec-ey">What Brand Assets stores</span>
+      <h2 class="sec-h2" id="inside-h2">Every type of content file your business creates &mdash; in one searchable place.</h2>
+      <p class="sec-p">Brand Assets is your media library inside Shoutly AI. Upload once, find instantly, reuse endlessly. Every file type your social media content needs is supported.</p>
+    </div>
+    <div class="inside-grid">
+      <div class="inside-card">
+        <div class="ic-ico" style="background:linear-gradient(135deg,#fff7ed,#ffedd5)">&#128247;</div>
+        <div class="ic-title">Photos</div>
+        <div class="ic-desc">Your product shots, food photos, interior images, team photos, event pictures &mdash; every photo you upload is stored at full resolution and auto-cropped to the correct ratio for each platform the moment you use it in a post.</div>
+        <span class="ic-tag">JPG &bull; PNG &bull; WebP &bull; HEIC</span>
+      </div>
+      <div class="inside-card">
+        <div class="ic-ico" style="background:linear-gradient(135deg,#fff7ed,#ffedd5)">&#127909;</div>
+        <div class="ic-title">Videos &amp; Reels footage</div>
+        <div class="ic-desc">Raw Reel footage, product videos, testimonials, behind-the-scenes clips. Upload once and attach to any post or Reel across Instagram, TikTok, YouTube, and Facebook without re-uploading every time.</div>
+        <span class="ic-tag">MP4 &bull; MOV &bull; AVI &bull; WebM</span>
+      </div>
+      <div class="inside-card">
+        <div class="ic-ico" style="background:linear-gradient(135deg,#fdf4ff,#ffedd5)">&#127912;</div>
+        <div class="ic-title">Designed graphics</div>
+        <div class="ic-desc">Festival creatives, promotional banners, offer cards, branded social templates &mdash; any graphic your designer creates or you download from Canva can be uploaded here and reused in future posts without hunting for the file.</div>
+        <span class="ic-tag">PNG &bull; SVG &bull; PDF &bull; PSD</span>
+      </div>
+      <div class="inside-card">
+        <div class="ic-ico" style="background:linear-gradient(135deg,#f0fdf4,#ffedd5)">&#10022;</div>
+        <div class="ic-title">AI-generated images</div>
+        <div class="ic-desc">Every image Shoutly AI generates for your posts is automatically saved to your Brand Assets library. No manual downloading, no lost files. Find any AI image by the post it was used in, the date it was created, or the prompt that generated it.</div>
+        <span class="ic-tag">Auto-saved &bull; Always searchable</span>
+      </div>
+      <div class="inside-card">
+        <div class="ic-ico" style="background:linear-gradient(135deg,#eff6ff,#ffedd5)">&#128247;</div>
+        <div class="ic-title">Logo files</div>
+        <div class="ic-desc">Store all your logo variants here alongside the Brand Kit &mdash; primary, dark background, light background, horizontal, icon-only, watermark. Pull any variant into a post with one click without searching your laptop folders.</div>
+        <span class="ic-tag">PNG &bull; SVG &bull; EPS &bull; AI</span>
+      </div>
+      <div class="inside-card">
+        <div class="ic-ico" style="background:linear-gradient(135deg,#fff7ed,#ffedd5)">&#128196;</div>
+        <div class="ic-title">Documents &amp; menus</div>
+        <div class="ic-desc">PDF menus, price lists, service brochures, certificates &mdash; any document you want to share as a post image or carousel slide. Shoutly AI converts PDF pages into high-quality post images automatically.</div>
+        <span class="ic-tag">PDF &bull; Auto-converted to images</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how-it-works" aria-labelledby="hiw-h2" data-r>
+  <div class="wrap">
+    <div class="hiw-grid">
+      <div>
+        <span class="sec-ey">How Brand Assets works</span>
+        <h2 class="sec-h2" id="hiw-h2">Upload once. Find in seconds. Reuse anywhere.</h2>
+        <p class="sec-p" style="margin-bottom:40px">Brand Assets replaces the scattered file system every business operates with &mdash; camera rolls, WhatsApp groups, Google Drive folders &mdash; with one organised, searchable library that lives right where you create your content.</p>
+        <div class="hiw-steps">
+          <div class="hiw-step">
+            <div class="hiw-num">1</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Upload your files &mdash; any format, any size</div>
+              <div class="hiw-desc">Drag and drop photos, videos, graphics, and documents directly into Brand Assets. Or connect your Google Drive or Dropbox and import files in bulk without re-uploading from your local device. All files are stored at full resolution.</div>
+              <span class="hiw-badge">&#8679; Drag, drop or connect Drive</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">2</div>
+            <div class="hiw-body">
+              <div class="hiw-title">AI tags and organises every asset automatically</div>
+              <div class="hiw-desc">The moment you upload a file, Shoutly AI reads the image content and auto-tags it &mdash; &ldquo;food&rdquo;, &ldquo;interior&rdquo;, &ldquo;team&rdquo;, &ldquo;offer&rdquo;, &ldquo;festival&rdquo;, &ldquo;product&rdquo;. You never manually categorise or rename files. Every asset is instantly searchable by what&rsquo;s in it, not what you named the file.</div>
+              <span class="hiw-badge">&#10022; Auto-tagged by AI</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">3</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Search and find any asset in under 5 seconds</div>
+              <div class="hiw-desc">Type &ldquo;Diwali&rdquo; to find every festival graphic you&rsquo;ve ever uploaded or generated. Type &ldquo;biryani&rdquo; to find every food photo with that dish. Filter by file type, date, platform usage, or folder. Finding any asset takes seconds &mdash; not the 15-minute hunt through your camera roll.</div>
+              <span class="hiw-badge">&#128269; Search by content, not filename</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">4</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Pick any asset and attach it to a post instantly</div>
+              <div class="hiw-desc">When creating or scheduling a post, click &ldquo;Choose from Brand Assets&rdquo; to open your library. Select any image or video &mdash; it&rsquo;s automatically resized and formatted for the platform and post type you&rsquo;re creating. No manual cropping, no separate editing step.</div>
+              <span class="hiw-badge">&#128228; Auto-resized per platform</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">5</div>
+            <div class="hiw-body">
+              <div class="hiw-title">Track every post each asset has been used in</div>
+              <div class="hiw-desc">Click any asset to see its full history &mdash; which posts it was used in, which platforms, which dates, and how those posts performed. Know exactly which of your photos drove the most engagement so you can reuse your highest-performing visual assets strategically.</div>
+              <span class="hiw-badge">&#128202; Full usage history tracked</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Brand Kit vs Brand Assets clarity card + agency card -->
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <!-- diff card -->
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r4);padding:24px">
+          <div style="font-size:13px;font-weight:800;color:var(--ink);margin-bottom:16px">&#128218; Brand Assets vs Brand Kit &mdash; what&rsquo;s the difference?</div>
+          <div class="diff-grid" style="gap:14px">
+            <div>
+              <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--p);margin-bottom:8px">Brand Assets</div>
+              <div style="display:flex;flex-direction:column;gap:7px">
+                <div style="font-size:13px;color:var(--ink3);display:flex;align-items:flex-start;gap:8px"><span style="color:var(--green);font-size:15px;flex-shrink:0">&#10003;</span>Your actual files &mdash; photos, videos, graphics</div>
+                <div style="font-size:13px;color:var(--ink3);display:flex;align-items:flex-start;gap:8px"><span style="color:var(--green);font-size:15px;flex-shrink:0">&#10003;</span>You add to it constantly</div>
+                <div style="font-size:13px;color:var(--ink3);display:flex;align-items:flex-start;gap:8px"><span style="color:var(--green);font-size:15px;flex-shrink:0">&#10003;</span>Your Google Drive inside Shoutly</div>
+                <div style="font-size:13px;color:var(--ink3);display:flex;align-items:flex-start;gap:8px"><span style="color:var(--green);font-size:15px;flex-shrink:0">&#10003;</span>Raw material the AI picks from</div>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink4);margin-bottom:8px">Brand Kit</div>
+              <div style="display:flex;flex-direction:column;gap:7px">
+                <div style="font-size:13px;color:var(--ink3);display:flex;align-items:flex-start;gap:8px"><span style="color:var(--ink4);font-size:15px;flex-shrink:0">&#8594;</span>Your rules &mdash; colours, fonts, voice</div>
+                <div style="font-size:13px;color:var(--ink3);display:flex;align-items:flex-start;gap:8px"><span style="color:var(--ink4);font-size:15px;flex-shrink:0">&#8594;</span>You set it once, rarely change it</div>
+                <div style="font-size:13px;color:var(--ink3);display:flex;align-items:flex-start;gap:8px"><span style="color:var(--ink4);font-size:15px;flex-shrink:0">&#8594;</span>Your brand guidelines document</div>
+                <div style="font-size:13px;color:var(--ink3);display:flex;align-items:flex-start;gap:8px"><span style="color:var(--ink4);font-size:15px;flex-shrink:0">&#8594;</span>Rules the AI follows on every post</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Agency card -->
+        <div style="background:var(--pg);border-radius:var(--r4);padding:26px;color:#fff">
+          <div style="font-size:13px;font-weight:800;margin-bottom:8px">&#128101; For agencies: separate asset library per client</div>
+          <div style="font-size:13.5px;color:rgba(255,255,255,.75);line-height:1.7;margin-bottom:14px">Each client gets their own isolated Brand Assets library. Photos, videos, and graphics never mix between accounts. Switch between clients and their library is instantly available, fully separate &mdash; no chance of accidentally using one client&rsquo;s photo in another client&rsquo;s post.</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px">&#10003;</span>One library per client &mdash; fully isolated</div>
+            <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px">&#10003;</span>Client can upload directly to their library</div>
+            <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:rgba(255,255,255,.85)"><span style="color:#4ade80;font-size:16px">&#10003;</span>No asset bleed between accounts</div>
+          </div>
+        </div>
+
+        <!-- Integration card -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r4);padding:24px">
+          <div style="font-size:13px;font-weight:800;color:var(--ink);margin-bottom:10px">&#128257; Import from Google Drive &amp; Dropbox</div>
+          <div style="font-size:13.5px;color:var(--ink3);line-height:1.7;margin-bottom:12px">Connect your Google Drive or Dropbox folder and import your existing media library into Brand Assets in bulk. All future uploads from your connected folder sync automatically &mdash; no manual re-uploading.</div>
+          <div style="display:flex;gap:8px">
+            <span style="font-size:11px;font-weight:700;padding:4px 11px;border-radius:100px;background:var(--surface);border:1px solid var(--border);color:var(--ink3);display:flex;align-items:center;gap:5px">&#128196; Google Drive</span>
+            <span style="font-size:11px;font-weight:700;padding:4px 11px;border-radius:100px;background:var(--surface);border:1px solid var(--border);color:var(--ink3);display:flex;align-items:center;gap:5px">&#128196; Dropbox</span>
+            <span style="font-size:11px;font-weight:700;padding:4px 11px;border-radius:100px;background:var(--surface);border:1px solid var(--border);color:var(--ink3);display:flex;align-items:center;gap:5px">&#128247; Camera roll</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FILE TYPES -->
+<section class="section section-alt" id="file-types" aria-labelledby="ft-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">Supported file types</span>
+      <h2 class="sec-h2" id="ft-h2">Every file format your social media content needs.</h2>
+      <p class="sec-p">Brand Assets accepts all standard image, video, and document formats. Every file is stored at full resolution and auto-converted for each platform&rsquo;s format requirements when you use it in a post.</p>
+    </div>
+    <div class="filetypes-grid">
+      <div class="ft-card">
+        <div class="ft-ico">&#128247;</div>
+        <div class="ft-title">Photos</div>
+        <div class="ft-exts">JPG &bull; PNG &bull; WebP &bull; HEIC &bull; TIFF</div>
+        <div class="ft-note">Up to 50MB per file. Auto-compressed for web without quality loss. Full-resolution original always preserved.</div>
+      </div>
+      <div class="ft-card">
+        <div class="ft-ico">&#127909;</div>
+        <div class="ft-title">Videos</div>
+        <div class="ft-exts">MP4 &bull; MOV &bull; AVI &bull; WebM &bull; MKV</div>
+        <div class="ft-note">Up to 2GB per file. Auto-transcoded to platform-specific formats (1080p Reels, 9:16 TikTok, 16:9 YouTube).</div>
+      </div>
+      <div class="ft-card">
+        <div class="ft-ico">&#127912;</div>
+        <div class="ft-title">Graphics &amp; Design files</div>
+        <div class="ft-exts">SVG &bull; PSD &bull; AI &bull; EPS &bull; PDF</div>
+        <div class="ft-note">Vector files preserved at infinite resolution. PSD and AI files rendered to PNG automatically for platform use.</div>
+      </div>
+      <div class="ft-card">
+        <div class="ft-ico">&#128196;</div>
+        <div class="ft-title">Documents</div>
+        <div class="ft-exts">PDF &bull; DOCX &bull; PPTX</div>
+        <div class="ft-note">Menus, brochures, and price lists auto-converted to high-quality post images &mdash; each page becomes a carousel slide.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" aria-labelledby="feat-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">Everything in Brand Assets</span>
+      <h2 class="sec-h2" id="feat-h2">Your complete media library &mdash; built for social media</h2>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card"><div class="fc-ico">&#128269;</div><div class="fc-title">AI-powered search</div><div class="fc-desc">Search by what&rsquo;s in the image &mdash; not the filename. Type &ldquo;biryani&rdquo; to find every food photo with that dish. Type &ldquo;Diwali&rdquo; to find every festival graphic. Type &ldquo;team&rdquo; to find every staff photo. No manual tagging required &mdash; AI reads every image automatically on upload.</div></div>
+      <div class="feat-card"><div class="fc-ico">&#127912;</div><div class="fc-title">Auto-resize for every platform</div><div class="fc-desc">Upload one photo. When you use it in a post, Brand Assets automatically crops and resizes it to the correct dimensions for that platform &mdash; 1:1 for Instagram feed, 9:16 for Reels and Stories, 1.91:1 for Facebook, 4:3 for Google Business. No manual cropping ever.</div></div>
+      <div class="feat-card"><div class="fc-ico">&#128202;</div><div class="fc-title">Asset usage tracking</div><div class="fc-desc">Every asset shows a complete history of every post it was used in, which platforms, which dates, and how those posts performed. Know your highest-performing visuals and reuse them strategically &mdash; not randomly.</div></div>
+      <div class="feat-card"><div class="fc-ico">&#128193;</div><div class="fc-title">Folders &amp; collections</div><div class="fc-desc">Organise assets into folders &mdash; Diwali 2026, Weekend Specials, Staff Photos, Menu Items, Festival Graphics. Create collections for recurring campaigns so your content team can find exactly what they need without asking.</div></div>
+      <div class="feat-card"><div class="fc-ico">&#8679;</div><div class="fc-title">Bulk upload &amp; import</div><div class="fc-desc">Drag and drop hundreds of files at once. Or connect Google Drive or Dropbox and import your existing media library in bulk. All files are auto-tagged and organised the moment they arrive &mdash; no manual work required.</div></div>
+      <div class="feat-card"><div class="fc-ico">&#128101;</div><div class="fc-title">Team access &amp; permissions</div><div class="fc-desc">Give team members or clients access to upload directly to the Brand Assets library. Set permissions: view only, upload, or full management. Client uploads a new batch of food photos &mdash; they appear instantly in your scheduler without a WhatsApp chain.</div></div>
+      <div class="feat-card"><div class="fc-ico">&#10022;</div><div class="fc-title">AI-generated image library</div><div class="fc-desc">Every image Shoutly AI generates is automatically saved to your Brand Assets library. Browse, search, and reuse any AI-generated image in future posts without regenerating it. Your entire AI image history, always accessible.</div></div>
+      <div class="feat-card"><div class="fc-ico">&#128196;</div><div class="fc-title">PDF to carousel converter</div><div class="fc-desc">Upload your menu, brochure, or price list as a PDF. Brand Assets converts each page into a high-quality image automatically. Use them as LinkedIn carousel slides, Instagram carousels, or Facebook album posts &mdash; no design software needed.</div></div>
+      <div class="feat-card"><div class="fc-ico">&#128274;</div><div class="fc-title">Secure cloud storage</div><div class="fc-desc">All assets stored on encrypted cloud infrastructure with automatic backups. Your media library is never lost &mdash; even if your laptop dies, your phone breaks, or your Google Drive gets accidentally deleted. Every file backed up with full-resolution preservation.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section section-alt" aria-labelledby="test-h2" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:48px">
+      <span class="sec-ey">What businesses say</span>
+      <h2 class="sec-h2" id="test-h2">Businesses that stopped hunting for files</h2>
+    </div>
+    <div class="test-grid">
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;I used to waste 20 minutes every single time I wanted to reuse a photo &mdash; scrolling through 6,000 camera roll images trying to find the right dish shot. Now I just type &lsquo;thali&rsquo; in Brand Assets and every thali photo I&rsquo;ve ever uploaded comes up in 2 seconds. It sounds small but it has saved me hours every week.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av">RK</div>
+          <div><span class="ta-name">Ravi Kumar</span><span class="ta-biz">Spice Garden Restaurant &middot; Bengaluru</span></div>
+        </div>
+      </article>
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;Before Brand Assets, getting content from clients was a nightmare. WhatsApp, email, Google Drive links, Wetransfer links &mdash; files everywhere at different quality levels. Now every client uploads directly to their Brand Assets folder. I open Shoutly, everything&rsquo;s there at full resolution, already tagged. The client file-chasing is completely gone.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av" style="background:linear-gradient(135deg,#ec4899,#fb923c)">AM</div>
+          <div><span class="ta-name">Anjali Mehta</span><span class="ta-biz">Social Media Agency &middot; Delhi</span></div>
+        </div>
+      </article>
+      <article class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote class="test-quote">&ldquo;The AI-generated image library is what I didn&rsquo;t know I needed. I used to generate an AI image, use it once, and it was gone. Now every AI image is saved automatically. I can see that our Diwali graphic from last year got 3x more reach than our usual posts &mdash; and I can reuse it with one click this year instead of regenerating it.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="ta-av" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">VS</div>
+          <div><span class="ta-name">Vikram Shetty</span><span class="ta-biz">FitZone Gym &middot; Pune</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq" aria-labelledby="faq-h2" data-r>
+  <div class="wrap center">
+    <span class="sec-ey">Common questions</span>
+    <h2 class="sec-h2" id="faq-h2">Everything about Brand Assets</h2>
+    <div class="faq-list">
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">What is the difference between Brand Assets and Brand Kit?<span class="faq-arr">+</span></button><div class="faq-a"><p><strong>Brand Assets</strong> is your media library &mdash; it stores your actual files: photos, videos, graphics, AI-generated images. Think of it as your Google Drive inside Shoutly AI. You add to it constantly every time you upload new content. <strong>Brand Kit</strong> is your brand identity rules &mdash; it stores your colours, fonts, logo, and voice. You set it up once and the AI follows those rules automatically on every post it generates. Both work together: Brand Kit tells the AI how your brand should look and sound; Brand Assets gives the AI the actual photos and videos to use.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">How much storage is included?<span class="faq-arr">+</span></button><div class="faq-a"><p>The &#8377;10,000/month Shoutly AI plan includes generous cloud storage for your Brand Assets library. For businesses with large video libraries or agencies managing many clients, additional storage can be added. Contact support@shoutlyai.com for enterprise storage requirements.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Can I import my existing Google Drive or Dropbox files?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Connect your Google Drive or Dropbox account and import your existing media library into Brand Assets in bulk. All files are auto-tagged by AI on import and become instantly searchable. You can also set up automatic sync so any new file added to your connected folder appears in Brand Assets without manual uploading.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Are AI-generated images automatically saved to Brand Assets?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Every image Shoutly AI generates for your posts is automatically saved to your Brand Assets library &mdash; no manual downloading or saving required. You can browse your full AI image history, see which posts each image was used in, and reuse any AI image in future posts with one click.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Does Brand Assets automatically resize images for each platform?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. When you select an asset from Brand Assets to use in a post, it is automatically resized and cropped to the correct dimensions for that platform and post type &mdash; 1:1 for Instagram feed, 9:16 for Reels and Stories, 1.91:1 for Facebook link posts, 4:3 for Google Business, and so on. The original full-resolution file is always preserved in the library.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Can clients upload directly to their Brand Assets library?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. For agencies, you can grant clients upload access to their specific Brand Assets library. Clients upload photos and videos directly through a simple upload link &mdash; no Shoutly AI account required for the client. Files appear in the library immediately at full resolution, AI-tagged and ready to use in posts.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="faq(this)" aria-expanded="false">Is Brand Assets included in the plan?<span class="faq-arr">+</span></button><div class="faq-a"><p>Yes. Brand Assets is fully included in the &#8377;10,000/month Shoutly AI plan &mdash; no extra cost. The plan also includes Brand Kit, AI Content Generator, AI Caption Generator, AI Image Generator, AI Hashtag Generator, Social Scheduler, Content Calendar, Bulk Scheduling, Multi-Platform Publishing, and Analytics Dashboard.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LINKS -->
+<section class="section section-alt" data-r>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:36px">
+      <span class="sec-ey">Related features</span>
+      <h2 class="sec-h2" style="font-size:clamp(22px,2.8vw,34px)">Brand Assets works with every Shoutly AI feature</h2>
+    </div>
+    <div class="links-grid">
+      <a href="https://shoutlyai.com/features/brand-kit" class="link-card"><span style="font-size:18px">&#127859;</span> Brand Kit <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/ai-image-generator" class="link-card"><span style="font-size:18px">&#127912;</span> AI Image Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/ai-content-generator" class="link-card"><span style="font-size:18px">&#10022;</span> AI Content Generator <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/content-calendar" class="link-card"><span style="font-size:18px">&#128200;</span> Content Calendar <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/bulk-scheduling" class="link-card"><span style="font-size:18px">&#128197;</span> Bulk Scheduling <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/multi-platform-publishing" class="link-card"><span style="font-size:18px">&#128228;</span> Multi-Platform Publishing <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/analytics" class="link-card"><span style="font-size:18px">&#128202;</span> Analytics Dashboard <span class="link-arr">&#8594;</span></a>
+      <a href="https://shoutlyai.com/features/ai-reel-generator" class="link-card"><span style="font-size:18px">&#127909;</span> AI Reel Generator <span class="link-arr">&#8594;</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" aria-labelledby="cta-h2">
+  <div class="wrap">
+    <h2 id="cta-h2">Stop hunting for files.<br><span class="grad">Every asset, one click away.</span></h2>
+    <p>Upload your photos, videos, and graphics once. Find any file in seconds. Reuse across all 10 platforms automatically. Free 14-day trial, no credit card required.</p>
+    <div class="cta-btns">
+      <a href="https://shoutlyai.com/sign-up" class="btn btn-white btn-xl">Start uploading free <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8h10M8 3l5 5-5 5"/></svg></a>
+      <a href="https://shoutlyai.com/demo" class="btn btn-wh-ghost btn-xl">Book a live demo</a>
+    </div>
+    <div class="cta-trust">
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>AI search &mdash; find anything in seconds</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Auto-resized for all 10 platforms</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>No credit card required</span>
+      <span class="ct"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>&#8377;10,000/month &mdash; all features</span>
+    </div>
+  </div>
+</section>
+</main>
+<script>document.documentElement.classList.add('js');
+/* ── Asset grid data ─────────────────────────────────────────────────── */
+var assets = [
+  {e:'&#127829;',bg:'linear-gradient(135deg,#fb923c,#f59e0b)',type:'PHOTO',typeC:'rgba(251,146,60,.8)',name:'biryani_hero.jpg',sz:'2.4 MB',cat:'photo'},
+  {e:'&#127828;',bg:'linear-gradient(135deg,#ef4444,#dc2626)',type:'PHOTO',typeC:'rgba(239,68,68,.8)',name:'thali_combo.jpg',sz:'1.8 MB',cat:'photo'},
+  {e:'&#127909;',bg:'linear-gradient(135deg,#fb923c,#f97316)',type:'VIDEO',typeC:'rgba(139,92,246,.8)',name:'kitchen_reel.mp4',sz:'84 MB',cat:'video'},
+  {e:'&#127983;',bg:'linear-gradient(135deg,#f59e0b,#d97706)',type:'GRAPHIC',typeC:'rgba(245,158,11,.8)',name:'diwali_2026.png',sz:'890 KB',cat:'graphic'},
+  {e:'&#127860;',bg:'linear-gradient(135deg,#22c55e,#16a34a)',type:'PHOTO',typeC:'rgba(34,197,94,.8)',name:'veg_special.jpg',sz:'3.1 MB',cat:'photo'},
+  {e:'&#127752;',bg:'linear-gradient(135deg,#ec4899,#ea580c)',type:'GRAPHIC',typeC:'rgba(236,72,153,.8)',name:'holi_post.png',sz:'1.2 MB',cat:'graphic'},
+  {e:'&#128104;&#8205;&#127859;',bg:'linear-gradient(135deg,#0ea5e9,#f97316)',type:'PHOTO',typeC:'rgba(14,165,233,.8)',name:'chef_portrait.jpg',sz:'4.2 MB',cat:'photo'},
+  {e:'&#127905;',bg:'linear-gradient(135deg,#f43f5e,#e11d48)',type:'GRAPHIC',typeC:'rgba(244,63,94,.8)',name:'valentines.png',sz:'670 KB',cat:'graphic'},
+  {e:'&#127891;',bg:'linear-gradient(135deg,#f97316,#ea580c)',type:'VIDEO',typeC:'rgba(139,92,246,.8)',name:'promo_reel.mp4',sz:'112 MB',cat:'video'},
+  {e:'&#127789;',bg:'linear-gradient(135deg,#f97316,#ea580c)',type:'PHOTO',typeC:'rgba(249,115,22,.8)',name:'salad_menu.jpg',sz:'2.7 MB',cat:'photo'},
+  {e:'&#10022;',bg:'linear-gradient(135deg,#f97316,#ec4899)',type:'AI',typeC:'rgba(249,115,22,.78)',name:'ai_diwali_card.png',sz:'1.1 MB',cat:'ai'},
+  {e:'&#127968;',bg:'linear-gradient(135deg,#1c1917,#44403c)',type:'PHOTO',typeC:'rgba(34,197,94,.8)',name:'restaurant_ext.jpg',sz:'5.6 MB',cat:'photo'},
+  {e:'&#9749;',bg:'linear-gradient(135deg,#7c3aed,#5b21b6)',type:'PHOTO',typeC:'rgba(251,146,60,.8)',name:'coffee_closeup.jpg',sz:'1.9 MB',cat:'photo'},
+  {e:'&#10022;',bg:'linear-gradient(135deg,#ea580c,#f97316)',type:'AI',typeC:'rgba(249,115,22,.78)',name:'ai_promo_card.png',sz:'980 KB',cat:'ai'},
+];
+
+var selected = new Set();
+var currentFilter = 'all';
+
+function renderGrid(filter) {
+  var grid = document.getElementById('ml-grid');
+  var filtered = filter === 'all' ? assets : assets.filter(function(a) { return a.cat === filter; });
+  grid.innerHTML = '';
+  filtered.forEach(function(a, i) {
+    var div = document.createElement('div');
+    div.className = 'ml-asset' + (selected.has(i) ? ' selected' : '');
+    div.innerHTML =
+      '<div class="ml-asset-thumb" style="background:' + a.bg + '">' + a.e +
+        '<span class="ml-asset-type" style="background:' + a.typeC + ';color:#fff">' + a.type + '</span>' +
+        '<span class="ml-asset-check">&#10003;</span>' +
+      '</div>' +
+      '<div class="ml-asset-meta"><div class="ml-asset-name">' + a.name + '</div><div class="ml-asset-size">' + a.sz + '</div></div>';
+    div.addEventListener('click', function() {
+      if (selected.has(i)) selected.delete(i); else selected.add(i);
+      renderGrid(currentFilter);
+    });
+    grid.appendChild(div);
+  });
+}
+
+function filterAssets(type, el) {
+  currentFilter = type;
+  document.querySelectorAll('.ml-chip').forEach(function(c) { c.classList.remove('active'); });
+  el.classList.add('active');
+  selected.clear();
+  renderGrid(type);
+}
+
+/* FAQ */
+function faq(btn) {
+  var item = btn.closest('.faq-item');
+  var open = item.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(open));
+}
+
+/* Scroll reveal */
+if ('IntersectionObserver' in window) {
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+  }, { threshold: .07, rootMargin: '0px 0px -28px 0px' });
+  document.querySelectorAll('[data-r]').forEach(function(el) { obs.observe(el); });
+} else {
+  document.querySelectorAll('[data-r]').forEach(function(el) { el.classList.add('vis'); });
+}
+
+window.addEventListener('scroll', function() {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 8);
+}, { passive: true });
+
+renderGrid('all');
+</script>
+</body>
+</html>
